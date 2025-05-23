@@ -3,7 +3,7 @@
   import Avatar from '$lib/components/ui/avatar/avatar.svelte';
   import { DropdownMenu } from '$lib/components/ui/dropdown-menu';
   import Collapsible from '$lib/components/ui/collapsible/collapsible.svelte';
-  import { ChevronsUpDown, Link } from '@lucide/svelte';
+  import { ChevronsUpDown } from '@lucide/svelte';
   import CollapsibleTrigger from '$lib/components/ui/collapsible/collapsible-trigger.svelte';
   import CollapsibleContent from '$lib/components/ui/collapsible/collapsible-content.svelte';
   import DropdownMenuTrigger from '$lib/components/ui/dropdown-menu/dropdown-menu-trigger.svelte';
@@ -18,10 +18,11 @@
 
   function logout() {}
 
-  const user = {
-    name: 'John Doe',
-    id: '12345'
-  };
+  const user = null;
+  // const user = {
+  //   name: 'John Doe',
+  //   id: '12345'
+  // };
 </script>
 
 <div class="mx-8 grid h-screen grid-cols-[auto_1fr] grid-rows-[auto_1fr] gap-6 py-6">
@@ -33,38 +34,38 @@
 
   <header class="flex items-center justify-between">
     <div>Breadcrumb</div>
-    <!-- {#if user} -->
-    <DropdownMenu>
-      <DropdownMenuTrigger>
-        <Avatar class="cursor-pointer hover:brightness-75">
-          <AvatarImage
-            src={`https://api.dicebear.com/9.x/lorelei/svg?seed=${user.name}`}
-            alt={user.name}
-            referrerpolicy="no-referrer"
-          />
-          <AvatarFallback>{user.name}</AvatarFallback>
-        </Avatar>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent>
-        <DropdownMenuLabel>{user.name}</DropdownMenuLabel>
-        <DropdownMenuSeparator />
-        <DropdownMenuItem>
-          <Link to={`/dashboard/users/${user.id}`}>Profile</Link>
-        </DropdownMenuItem>
-        <DropdownMenuItem>Settings</DropdownMenuItem>
-        <DropdownMenuItem>Logout</DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
-    <!-- {:else}
-			<LoginButton class="w-52" />
-		{/if} -->
+    {#if user}
+      <DropdownMenu>
+        <DropdownMenuTrigger>
+          <Avatar class="cursor-pointer hover:brightness-75">
+            <AvatarImage
+              src={`https://api.dicebear.com/9.x/lorelei/svg?seed=${user.name}`}
+              alt={user.name}
+              referrerpolicy="no-referrer"
+            />
+            <AvatarFallback>{user.name}</AvatarFallback>
+          </Avatar>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent>
+          <DropdownMenuLabel>{user.name}</DropdownMenuLabel>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem>
+            <a href={`/dashboard/users/${user.id}`}>Profile</a>
+          </DropdownMenuItem>
+          <DropdownMenuItem>Settings</DropdownMenuItem>
+          <DropdownMenuItem>Logout</DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+    {:else}
+      <Button class="cursor-pointer" variant="outline">Log In</Button>
+    {/if}
   </header>
 
   <aside class="flex h-full w-3xs flex-col justify-between">
     <div>
       <Button class="mb-4 w-full cursor-pointer">New Scenario</Button>
       <Collapsible class="mb-2 w-full">
-        <CollapsibleTrigger>
+        <CollapsibleTrigger class="w-full">
           <Button variant="ghost" size="sm" class="mb-2 w-full">
             <span class="w-full text-left">Scenarios</span>
             <ChevronsUpDown class="h-4 w-4" />
@@ -81,7 +82,7 @@
         </CollapsibleContent>
       </Collapsible>
       <Collapsible class="w-full">
-        <CollapsibleTrigger>
+        <CollapsibleTrigger class="w-full">
           <Button variant="ghost" size="sm" class="mb-2 w-full">
             <span class="w-full text-left">Shared Scenarios</span>
             <ChevronsUpDown class="h-4 w-4" />

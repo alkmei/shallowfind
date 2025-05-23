@@ -1,0 +1,12 @@
+{
+    "name": "server",
+    "version": "0.0.1",
+    "scripts": {
+        "preinstall": "uv sync",
+        "dev": "uv run manage.py runserver",
+        "migrate": "uv run manage.py migrate",
+        "makemigrations": "uv run manage.py makemigrations",
+        "test": "uv run manage.py test",
+        "lint": "uv run ruff check shallowfind"
+    }
+}
