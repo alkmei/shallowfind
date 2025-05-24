@@ -18,11 +18,10 @@
 
   function logout() {}
 
-  const user = null;
-  // const user = {
-  //   name: 'John Doe',
-  //   id: '12345'
-  // };
+  const user = {
+    name: 'John Doe',
+    id: '12345'
+  };
 </script>
 
 <div class="mx-8 grid h-screen grid-cols-[auto_1fr] grid-rows-[auto_1fr] gap-6 py-6">

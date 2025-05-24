@@ -37,6 +37,9 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "rest_framework",
+    "rest_framework_simplejwt.token_blacklist",
+    "drf_spectacular",
 ]
 
 MIDDLEWARE = [
@@ -67,6 +70,21 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = "shallowfind.wsgi.application"
+
+REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
+    ],
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
+}
+
+SPECTACULAR_SETTINGS = {
+    "TITLE": "Shallowfind API",
+    "DESCRIPTION": "Shallowfind Financial Planner",
+    "VERSION": "0.0.1",
+    "SERVE_INCLUDE_SCHEMA": False,
+    # OTHER SETTINGS
+}
 
 
 # Database
