@@ -80,11 +80,10 @@ REST_FRAMEWORK = {
 }
 
 SPECTACULAR_SETTINGS = {
-    "TITLE": "Shallowfind API",
+    "TITLE": "Shallowfind",
     "DESCRIPTION": "Shallowfind Financial Planner",
     "VERSION": "0.0.1",
     "SERVE_INCLUDE_SCHEMA": False,
-    # OTHER SETTINGS
 }
 
 
