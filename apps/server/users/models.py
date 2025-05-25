@@ -13,3 +13,5 @@ class User(AbstractUser):
         },
         help_text=_("Required. Enter a valid email address."),
     )
+    USERNAME_FIELD = "email"
+    REQUIRED_FIELDS = []
