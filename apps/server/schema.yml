@@ -1,6 +1,6 @@
 openapi: 3.0.3
 info:
-  title: Shallowfind API
+  title: Shallowfind
   version: 0.0.1
   description: Shallowfind Financial Planner
 paths:
