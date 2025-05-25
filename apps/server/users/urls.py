@@ -9,7 +9,14 @@ urlpatterns = [
     ),
     path(
         "<int:pk>/",
-        UserViewSet.as_view({"get": "retrieve", "put": "update", "delete": "destroy"}),
+        UserViewSet.as_view(
+            {
+                "get": "retrieve",
+                "put": "update",
+                "delete": "destroy",
+                "patch": "partial_update",
+            }
+        ),
         name="user-detail",
     ),
 ]

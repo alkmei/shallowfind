@@ -7,6 +7,7 @@
         "migrate": "uv run manage.py migrate",
         "makemigrations": "uv run manage.py makemigrations",
         "test": "uv run manage.py test",
-        "lint": "uv run ruff check shallowfind"
+        "lint": "uv run ruff check shallowfind",
+        "generate:schema": "uv run manage.py spectacular --color --file schema.yml"
     }
 }
