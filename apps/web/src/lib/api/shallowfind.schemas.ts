@@ -22,6 +22,10 @@ export interface PatchedUser {
   is_staff?: boolean;
 }
 
+export interface TokenBlacklist {
+  refresh: string;
+}
+
 export interface TokenObtainPair {
   email: string;
   password: string;

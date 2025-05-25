@@ -22,6 +22,7 @@ import type {
 } from 'axios';
 
 import type {
+  TokenBlacklist,
   TokenObtainPair,
   TokenRefresh
 } from '../shallowfind.schemas';
@@ -113,6 +114,65 @@ const {mutation: mutationOptions, axios: axiosOptions} = options ?
       > => {
 
       const mutationOptions = getTokenCreateMutationOptions(options);
+
+      return createMutation(mutationOptions );
+    }
+    /**
+ * Takes a token and blacklists it. Must be used with the
+`rest_framework_simplejwt.token_blacklist` app installed.
+ */
+export const tokenDestroyCreate = (
+    tokenBlacklist: TokenBlacklist, options?: AxiosRequestConfig
+ ): Promise<AxiosResponse<TokenBlacklist>> => {
+    
+    
+    return axios.post(
+      `/api/token/destroy/`,
+      tokenBlacklist,options
+    );
+  }
+
+
+
+export const getTokenDestroyCreateMutationOptions = <TError = AxiosError<unknown>,
+    TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof tokenDestroyCreate>>, TError,{data: TokenBlacklist}, TContext>, axios?: AxiosRequestConfig}
+): CreateMutationOptions<Awaited<ReturnType<typeof tokenDestroyCreate>>, TError,{data: TokenBlacklist}, TContext> => {
+
+const mutationKey = ['tokenDestroyCreate'];
+const {mutation: mutationOptions, axios: axiosOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, axios: undefined};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof tokenDestroyCreate>>, {data: TokenBlacklist}> = (props) => {
+          const {data} = props ?? {};
+
+          return  tokenDestroyCreate(data,axiosOptions)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type TokenDestroyCreateMutationResult = NonNullable<Awaited<ReturnType<typeof tokenDestroyCreate>>>
+    export type TokenDestroyCreateMutationBody = TokenBlacklist
+    export type TokenDestroyCreateMutationError = AxiosError<unknown>
+
+    export const createTokenDestroyCreate = <TError = AxiosError<unknown>,
+    TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof tokenDestroyCreate>>, TError,{data: TokenBlacklist}, TContext>, axios?: AxiosRequestConfig}
+ ): CreateMutationResult<
+        Awaited<ReturnType<typeof tokenDestroyCreate>>,
+        TError,
+        {data: TokenBlacklist},
+        TContext
+      > => {
+
+      const mutationOptions = getTokenDestroyCreateMutationOptions(options);
 
       return createMutation(mutationOptions );
     }

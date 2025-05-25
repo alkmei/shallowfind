@@ -27,6 +27,18 @@ export const tokenCreateResponse = zod.object({
 })
 
 /**
+ * Takes a token and blacklists it. Must be used with the
+`rest_framework_simplejwt.token_blacklist` app installed.
+ */
+export const tokenDestroyCreateBody = zod.object({
+  "refresh": zod.string()
+})
+
+export const tokenDestroyCreateResponse = zod.object({
+  "refresh": zod.string()
+})
+
+/**
  * Takes a refresh type JSON web token and returns an access type JSON web
 token if the refresh token is valid.
  */
