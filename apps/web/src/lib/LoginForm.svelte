@@ -5,15 +5,18 @@
   import { Input } from '$lib/components/ui/input';
   import { superForm, defaults } from 'sveltekit-superforms';
   import { zod, zodClient } from 'sveltekit-superforms/adapters';
-  import { tokenCreateBody } from '$lib/api/token/token.zod';
-    import { tokenCreate } from './api/token/token';
+  import { sessionCreateBody } from './api/session/session.zod';
+  import { sessionCreate } from './api/session/session';
 
-  const form = superForm(defaults(zod(tokenCreateBody)), {
-    validators: zodClient(tokenCreateBody),
+  const form = superForm(defaults(zod(sessionCreateBody)), {
+    validators: zodClient(sessionCreateBody),
     SPA: true,
-    onUpdate({form}) {
-      if (!form.valid) return
-    },
+    async onUpdate({ form }) {
+      if (!form.valid) return;
+
+      const res = await sessionCreate(form.data);
+      console.log(res);
+    }
   });
 
   const { form: formData, enhance } = form;

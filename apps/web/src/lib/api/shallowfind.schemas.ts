@@ -22,6 +22,15 @@ export interface PatchedUser {
   is_staff?: boolean;
 }
 
+/**
+ * Serializer for handling user login data.
+ */
+export interface Session {
+  /** @maxLength 150 */
+  email: string;
+  password: string;
+}
+
 export interface User {
   readonly id: number;
   /**
