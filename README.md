@@ -1,32 +1,15 @@
-# Turborepo Svelte starter
+# Shallowfind Financial Planner
 
-This Turborepo starter is maintained by the Turborepo core team.
+## Disclaimer
 
-## Using this example
+This financial planner is heavily simplified and more of an exercise in software development, including project management and the use of new technologies.
 
-Run the following command:
+## Overview
 
-```sh
-npx create-turbo@latest -e with-svelte
-```
+This repo hosts a recreation of the original project, which was made using the MERN stack. This project uses Sveltekit for the frontend and Django for the backend. Sveltekit is set to SPA mode, and Django is using DRF.
 
-## What's inside?
+Inside the `/docs` folder is the original project documents from the class for reference.
 
-This Turborepo includes the following packages/apps:
+## Setup Details
 
-### Apps and Packages
-
-- `docs`: a [svelte-kit](https://kit.svelte.dev/) app
-- `web`: another [svelte-kit](https://kit.svelte.dev/) app
-- `ui`: a stub Svelte component library shared by both `web` and `docs` applications
-- `eslint-config-custom`: `eslint` configurations (includes `eslint-plugin-svelte` and `eslint-config-prettier`)
-
-Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
-
-### Utilities
-
-This Turborepo has some additional tools already setup for you:
-
-- [TypeScript](https://www.typescriptlang.org/) for static type checking
-- [ESLint](https://eslint.org/) for code linting
-- [Prettier](https://prettier.io) for code formatting
+TBD
