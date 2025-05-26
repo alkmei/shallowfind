@@ -12,6 +12,7 @@ from .models import (
     Investment,
     InvestmentAllocation,
     EventSeries,
+    InvestmentType,
 )
 
 
@@ -114,6 +115,17 @@ class InvestmentAllocationModelTest(TestCase):
         self.alloc_glide = AssetAllocation.objects.create(
             type=AssetAllocation.GLIDEPATH
         )
+        scenario = Scenario.objects.create(
+            name="Test Scenario",
+            marital_status=MaritalStatus.SINGLE,
+            financial_goal=Money(0, "USD"),
+            residence_state="NY",
+        )
+
+        inv_type = InvestmentType.objects.create(
+            name="Test Type", description="A test investment type", scenario=scenario
+        )
+
         inv = Investment.objects.create(
             scenario=Scenario.objects.create(
                 name="A",
@@ -121,7 +133,7 @@ class InvestmentAllocationModelTest(TestCase):
                 financial_goal=Money(0, "USD"),
                 residence_state="NY",
             ),
-            investment_type=None,  # assume nullable or skip relationships if needed
+            investment_type=inv_type,
             value=Money(100, "USD"),
             tax_status=Investment.NON_RETIRE,
         )
