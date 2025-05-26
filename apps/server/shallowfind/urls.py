@@ -19,6 +19,7 @@ from django.contrib import admin
 from django.urls import include, path
 
 from drf_spectacular.views import SpectacularAPIView
+from sessions.views import SessionView
 
 
 urlpatterns = [
@@ -26,5 +27,6 @@ urlpatterns = [
     path(
         "api/schema/", SpectacularAPIView.as_view(), name="schema"
     ),  # Remove on prod? idk
+    path("api/session/", SessionView.as_view(), name="session"),
     path("api/users/", include("users.urls")),
 ]

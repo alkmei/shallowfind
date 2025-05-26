@@ -22,22 +22,6 @@ export interface PatchedUser {
   is_staff?: boolean;
 }
 
-export interface TokenBlacklist {
-  refresh: string;
-}
-
-export interface TokenObtainPair {
-  email: string;
-  password: string;
-  readonly access: string;
-  readonly refresh: string;
-}
-
-export interface TokenRefresh {
-  readonly access: string;
-  refresh: string;
-}
-
 export interface User {
   readonly id: number;
   /**

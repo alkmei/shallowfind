@@ -80,7 +80,7 @@ WSGI_APPLICATION = "shallowfind.wsgi.application"
 
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": [
-        "django.contrib.sessions.middleware.SessionMiddleware",
+        "rest_framework.authentication.SessionAuthentication",
     ],
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
 }

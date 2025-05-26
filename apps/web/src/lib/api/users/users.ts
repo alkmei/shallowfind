@@ -14,7 +14,9 @@ import type {
   CreateMutationResult,
   CreateQueryOptions,
   CreateQueryResult,
+  DataTag,
   MutationFunction,
+  QueryClient,
   QueryFunction,
   QueryKey
 } from '@tanstack/svelte-query';
@@ -81,7 +83,7 @@ export const getUsersListQueryKey = () => {
     }
 
     
-export const getUsersListQueryOptions = <TData = Awaited<ReturnType<typeof usersList>>, TError = AxiosError<unknown>>( options?: { query?:CreateQueryOptions<Awaited<ReturnType<typeof usersList>>, TError, TData>, axios?: AxiosRequestConfig}
+export const getUsersListQueryOptions = <TData = Awaited<ReturnType<typeof usersList>>, TError = AxiosError<unknown>>( options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof usersList>>, TError, TData>>, axios?: AxiosRequestConfig}
 ) => {
 
 const {query: queryOptions, axios: axiosOptions} = options ?? {};
@@ -96,7 +98,7 @@ const {query: queryOptions, axios: axiosOptions} = options ?? {};
 
       
 
-   return  { queryKey, queryFn, ...queryOptions} as CreateQueryOptions<Awaited<ReturnType<typeof usersList>>, TError, TData> & { queryKey: QueryKey }
+   return  { queryKey, queryFn, ...queryOptions} as CreateQueryOptions<Awaited<ReturnType<typeof usersList>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
 }
 
 export type UsersListQueryResult = NonNullable<Awaited<ReturnType<typeof usersList>>>
@@ -105,13 +107,13 @@ export type UsersListQueryError = AxiosError<unknown>
 
 
 export function createUsersList<TData = Awaited<ReturnType<typeof usersList>>, TError = AxiosError<unknown>>(
-  options?: { query?:CreateQueryOptions<Awaited<ReturnType<typeof usersList>>, TError, TData>, axios?: AxiosRequestConfig}
-  
- ): CreateQueryResult<TData, TError> & { queryKey: QueryKey } {
+  options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof usersList>>, TError, TData>>, axios?: AxiosRequestConfig}
+ , queryClient?: QueryClient 
+ ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
   const queryOptions = getUsersListQueryOptions(options)
 
-  const query = createQuery(queryOptions ) as CreateQueryResult<TData, TError> & { queryKey: QueryKey };
+  const query = createQuery(queryOptions , queryClient) as CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
   query.queryKey = queryOptions.queryKey ;
 
@@ -167,7 +169,7 @@ const {mutation: mutationOptions, axios: axiosOptions} = options ?
 
     export const createUsersCreate = <TError = AxiosError<unknown>,
     TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof usersCreate>>, TError,{data: NonReadonly<User>}, TContext>, axios?: AxiosRequestConfig}
- ): CreateMutationResult<
+ , queryClient?: QueryClient): CreateMutationResult<
         Awaited<ReturnType<typeof usersCreate>>,
         TError,
         {data: NonReadonly<User>},
@@ -176,7 +178,7 @@ const {mutation: mutationOptions, axios: axiosOptions} = options ?
 
       const mutationOptions = getUsersCreateMutationOptions(options);
 
-      return createMutation(mutationOptions );
+      return createMutation(mutationOptions , queryClient);
     }
     /**
  * A viewset for viewing and editing user instances.
@@ -197,7 +199,7 @@ export const getUsersRetrieveQueryKey = (id: number,) => {
     }
 
     
-export const getUsersRetrieveQueryOptions = <TData = Awaited<ReturnType<typeof usersRetrieve>>, TError = AxiosError<unknown>>(id: number, options?: { query?:CreateQueryOptions<Awaited<ReturnType<typeof usersRetrieve>>, TError, TData>, axios?: AxiosRequestConfig}
+export const getUsersRetrieveQueryOptions = <TData = Awaited<ReturnType<typeof usersRetrieve>>, TError = AxiosError<unknown>>(id: number, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof usersRetrieve>>, TError, TData>>, axios?: AxiosRequestConfig}
 ) => {
 
 const {query: queryOptions, axios: axiosOptions} = options ?? {};
@@ -212,7 +214,7 @@ const {query: queryOptions, axios: axiosOptions} = options ?? {};
 
       
 
-   return  { queryKey, queryFn, enabled: !!(id), ...queryOptions} as CreateQueryOptions<Awaited<ReturnType<typeof usersRetrieve>>, TError, TData> & { queryKey: QueryKey }
+   return  { queryKey, queryFn, enabled: !!(id), ...queryOptions} as CreateQueryOptions<Awaited<ReturnType<typeof usersRetrieve>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
 }
 
 export type UsersRetrieveQueryResult = NonNullable<Awaited<ReturnType<typeof usersRetrieve>>>
@@ -221,13 +223,13 @@ export type UsersRetrieveQueryError = AxiosError<unknown>
 
 
 export function createUsersRetrieve<TData = Awaited<ReturnType<typeof usersRetrieve>>, TError = AxiosError<unknown>>(
- id: number, options?: { query?:CreateQueryOptions<Awaited<ReturnType<typeof usersRetrieve>>, TError, TData>, axios?: AxiosRequestConfig}
-  
- ): CreateQueryResult<TData, TError> & { queryKey: QueryKey } {
+ id: number, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof usersRetrieve>>, TError, TData>>, axios?: AxiosRequestConfig}
+ , queryClient?: QueryClient 
+ ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
   const queryOptions = getUsersRetrieveQueryOptions(id,options)
 
-  const query = createQuery(queryOptions ) as CreateQueryResult<TData, TError> & { queryKey: QueryKey };
+  const query = createQuery(queryOptions , queryClient) as CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
   query.queryKey = queryOptions.queryKey ;
 
@@ -284,7 +286,7 @@ const {mutation: mutationOptions, axios: axiosOptions} = options ?
 
     export const createUsersUpdate = <TError = AxiosError<unknown>,
     TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof usersUpdate>>, TError,{id: number;data: NonReadonly<User>}, TContext>, axios?: AxiosRequestConfig}
- ): CreateMutationResult<
+ , queryClient?: QueryClient): CreateMutationResult<
         Awaited<ReturnType<typeof usersUpdate>>,
         TError,
         {id: number;data: NonReadonly<User>},
@@ -293,7 +295,7 @@ const {mutation: mutationOptions, axios: axiosOptions} = options ?
 
       const mutationOptions = getUsersUpdateMutationOptions(options);
 
-      return createMutation(mutationOptions );
+      return createMutation(mutationOptions , queryClient);
     }
     /**
  * A viewset for viewing and editing user instances.
@@ -343,7 +345,7 @@ const {mutation: mutationOptions, axios: axiosOptions} = options ?
 
     export const createUsersPartialUpdate = <TError = AxiosError<unknown>,
     TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof usersPartialUpdate>>, TError,{id: number;data: NonReadonly<PatchedUser>}, TContext>, axios?: AxiosRequestConfig}
- ): CreateMutationResult<
+ , queryClient?: QueryClient): CreateMutationResult<
         Awaited<ReturnType<typeof usersPartialUpdate>>,
         TError,
         {id: number;data: NonReadonly<PatchedUser>},
@@ -352,7 +354,7 @@ const {mutation: mutationOptions, axios: axiosOptions} = options ?
 
       const mutationOptions = getUsersPartialUpdateMutationOptions(options);
 
-      return createMutation(mutationOptions );
+      return createMutation(mutationOptions , queryClient);
     }
     /**
  * A viewset for viewing and editing user instances.
@@ -400,7 +402,7 @@ const {mutation: mutationOptions, axios: axiosOptions} = options ?
 
     export const createUsersDestroy = <TError = AxiosError<unknown>,
     TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof usersDestroy>>, TError,{id: number}, TContext>, axios?: AxiosRequestConfig}
- ): CreateMutationResult<
+ , queryClient?: QueryClient): CreateMutationResult<
         Awaited<ReturnType<typeof usersDestroy>>,
         TError,
         {id: number},
@@ -409,6 +411,6 @@ const {mutation: mutationOptions, axios: axiosOptions} = options ?
 
       const mutationOptions = getUsersDestroyMutationOptions(options);
 
-      return createMutation(mutationOptions );
+      return createMutation(mutationOptions , queryClient);
     }
     
