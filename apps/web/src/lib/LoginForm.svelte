@@ -6,13 +6,14 @@
   import { superForm, defaults } from 'sveltekit-superforms';
   import { zod, zodClient } from 'sveltekit-superforms/adapters';
   import { tokenCreateBody } from '$lib/api/token/token.zod';
+    import { tokenCreate } from './api/token/token';
 
   const form = superForm(defaults(zod(tokenCreateBody)), {
     validators: zodClient(tokenCreateBody),
     SPA: true,
-    onSubmit: async (data) => {
-      console.log('Form submitted:', data);
-    }
+    onUpdate({form}) {
+      if (!form.valid) return
+    },
   });
 
   const { form: formData, enhance } = form;
@@ -38,13 +39,6 @@
           {#snippet children({ props })}
             <Form.Label>Email</Form.Label>
             <Input {...props} bind:value={$formData.email} />
-          {/snippet}
-        </Form.Control>
-        <Form.FieldErrors />
-      </Form.Field>
-      <Form.Field {form} name="password">
-        <Form.Control>
-          {#snippet children({ props })}
             <Form.Label>Password</Form.Label>
             <Input type="password" {...props} bind:value={$formData.password} />
           {/snippet}
