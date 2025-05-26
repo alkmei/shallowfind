@@ -131,7 +131,7 @@ class Person(models.Model):
     )
     birth_year = models.PositiveIntegerField()
     role = models.CharField(
-        max_length=1, choices=Scenario.Role.choices, default=Scenario.Role.PRIMARY
+        max_length=1, choices=MaritalStatus.choices, default=MaritalStatus.SINGLE
     )
     life_expectancy = models.ForeignKey(
         Distribution, on_delete=models.PROTECT, related_name="+"
@@ -143,7 +143,6 @@ class Person(models.Model):
     class Meta:
         verbose_name = "Person"
         verbose_name_plural = "Persons"
-        ordering = ["name"]
 
 
 class InvestmentType(models.Model):
@@ -250,7 +249,7 @@ class EventSeries(models.Model):
     )
     name = models.CharField(max_length=100)
     type = models.CharField(max_length=10, choices=TYPE_CHOICES)
-    start_type = models.CharField(max_length=10, choices=START_CHOICES)
+    start_type = models.CharField(max_length=20, choices=START_CHOICES)
     start_distribution = models.ForeignKey(
         Distribution,
         on_delete=models.PROTECT,
