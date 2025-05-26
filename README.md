@@ -10,6 +10,11 @@ This repo hosts a recreation of the original project, which was made using the M
 
 Inside the `/docs` folder is the original project documents from the class for reference.
 
+### Liberties Taken
+
+- Google OAuth2 is not used for now.
+- Will finish project first, and then remove the simplifications
+
 ## Setup Details
 
 TBD
