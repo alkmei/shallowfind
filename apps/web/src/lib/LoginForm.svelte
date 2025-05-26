@@ -7,6 +7,7 @@
   import { zod, zodClient } from 'sveltekit-superforms/adapters';
   import { sessionCreateBody } from './api/session/session.zod';
   import { sessionCreate } from './api/session/session';
+  import { goto } from '$app/navigation';
 
   const form = superForm(defaults(zod(sessionCreateBody)), {
     validators: zodClient(sessionCreateBody),
@@ -15,7 +16,12 @@
       if (!form.valid) return;
 
       const res = await sessionCreate(form.data);
-      console.log(res);
+      if (res.status === 200) {
+        goto('/dashboard');
+      } else {
+        // TODO: Show error message to user
+        console.error('Login failed', res.data);
+      }
     }
   });
 
