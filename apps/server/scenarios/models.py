@@ -106,11 +106,21 @@ class Scenario(models.Model):
                     }
                 )
 
-        count = len(self.persons)
-        expect = 1 if self.marital_status == self.INDIVIDUAL else 2
-        if count != expect or self.life_expectancies.count() != expect:
-            msg = f"{self.marital_status} scenarios require {expect} entries."
-            raise ValidationError(msg)
+        person_count = self.persons.count()
+        if person_count > 2:
+            raise ValidationError(
+                {"persons": _("A scenario can have at most 2 persons.")}
+            )
+
+        if self.marital_status == MaritalStatus.MARRIED and person_count < 2:
+            raise ValidationError(
+                {"persons": _("Married scenarios must have exactly 2 persons.")}
+            )
+
+        if self.marital_status == MaritalStatus.SINGLE and person_count != 1:
+            raise ValidationError(
+                {"persons": _("Single scenarios must have exactly 1 person.")}
+            )
 
     def __str__(self):
         return self.name
@@ -218,6 +228,65 @@ class Investment(models.Model):
     )
 
 
+class AssetAllocation(models.Model):
+    FIXED = "fixed"
+    GLIDEPATH = "glide_path"
+    TYPE_CHOICES = [
+        (FIXED, "Fixed"),
+        (GLIDEPATH, "Glide Path"),
+    ]
+
+    type = models.CharField(max_length=12, choices=TYPE_CHOICES, default=FIXED)
+
+    def __str__(self):
+        return f"{self.get_type_display()} allocation for {self.event.name}"
+
+
+class InvestmentAllocation(models.Model):
+    PRIMARY = "primary"
+    FINAL = "final"
+    ROLE_CHOICES = [
+        (PRIMARY, "Primary Allocation"),
+        (FINAL, "Final Allocation (for glide-path)"),
+    ]
+
+    asset_allocation = models.ForeignKey(
+        AssetAllocation, on_delete=models.CASCADE, related_name="investment_allocations"
+    )
+    investment = models.ForeignKey(
+        "Investment", on_delete=models.PROTECT, related_name="+"
+    )
+    percentage = models.FloatField()
+    role = models.CharField(max_length=8, choices=ROLE_CHOICES, default=PRIMARY)
+
+    class Meta:
+        unique_together = ("asset_allocation", "investment", "role")
+
+    def clean(self):
+        """
+        Ensure that only glide-path allocations have FINAL entries,
+        and that percentages sum to 1.0 per role.
+        """
+        from django.core.exceptions import ValidationError
+
+        # Only glide-path may have final allocations
+        if (
+            self.role == self.FINAL
+            and self.asset_allocation.type != AssetAllocation.GLIDEPATH
+        ):
+            raise ValidationError("Final allocations only valid for glide-path type")
+        # Sum check
+        qs = self.asset_allocation.investment_allocations.filter(role=self.role)
+        total = sum(obj.percentage for obj in qs.exclude(pk=self.pk)) + self.percentage
+        if abs(total - 1.0) > 1e-6:
+            raise ValidationError(
+                f"Total {self.get_role_display()} must sum to 1.0 (got {total})"
+            )
+
+    def __str__(self):
+        return f"{self.investment} at {self.percentage * 100:.1f}% ({self.get_role_display()})"
+
+
 class EventSeries(models.Model):
     """
     Represents a series of events associated with a financial scenario.
@@ -278,9 +347,13 @@ class EventSeries(models.Model):
     is_social_security = models.BooleanField(null=True, blank=True)
 
     # Invest/Rebalance fields
-    asset_allocation = models.JSONField(null=True, blank=True)
-    glide_path = models.BooleanField(null=True, blank=True)
-    asset_allocation_end = models.JSONField(null=True, blank=True)
+    asset_allocation = models.OneToOneField(
+        "AssetAllocation",
+        on_delete=models.CASCADE,
+        related_name="event_series",
+        null=True,
+        blank=True,
+    )
     max_cash = MoneyField(
         max_digits=14, decimal_places=2, default_currency="USD", null=True, blank=True
     )
@@ -304,17 +377,5 @@ class EventSeries(models.Model):
         if self.type in (self.INVEST, self.REBALANCE):
             if not self.asset_allocation:
                 errors["asset_allocation"] = "Asset allocation required."
-            # percentages must sum to 1.0
-            if (
-                self.asset_allocation
-                and abs(sum(self.asset_allocation.values()) - 1.0) > 1e-6
-            ):
-                errors["asset_allocation"] = "Percentages must sum to 1.0."
-        # Glide‐path only for invest
-        if self.type == self.INVEST and self.glide_path:
-            if not self.asset_allocation_end:
-                errors["asset_allocation_end"] = (
-                    "End allocation required for glide path."
-                )
         if errors:
             raise ValidationError(errors)
