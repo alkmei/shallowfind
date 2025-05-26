@@ -8,7 +8,6 @@ class IsAdminOrSelf(BasePermission):
     """
 
     def has_permission(self, request, view):
-        # Only admins can list or create users
         if view.action in ["list", "create"]:
             return bool(request.user and request.user.is_staff)
         # Other actions require authentication
