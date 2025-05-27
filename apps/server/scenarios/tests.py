@@ -122,8 +122,16 @@ class InvestmentAllocationModelTest(TestCase):
             residence_state="NY",
         )
 
+        # Create sample distribution fixed
+        dist1 = Distribution.objects.create(type=Distribution.FIXED, value=100)
+        dist2 = Distribution.objects.create(type=Distribution.FIXED, value=200)
+
         inv_type = InvestmentType.objects.create(
-            name="Test Type", description="A test investment type", scenario=scenario
+            name="Test Type",
+            description="A test investment type",
+            scenario=scenario,
+            return_distribution=dist1,
+            income_distribution=dist2,
         )
 
         inv = Investment.objects.create(
@@ -240,7 +248,6 @@ class EventSeriesModelTest(TestCase):
                 type=Distribution.FIXED, value=2025
             ),
             duration=Distribution.objects.create(type=Distribution.FIXED, value=3),
-            glide_path=False,
             max_cash=Money(0, "USD"),
         )
         with self.assertRaises(ValidationError):
