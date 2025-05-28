@@ -4,6 +4,51 @@ info:
   version: 0.0.1
   description: Shallowfind Financial Planner
 paths:
+  /api/scenarios/:
+    get:
+      operationId: scenarios_list
+      description: List and create scenarios
+      tags:
+      - scenarios
+      security:
+      - cookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Scenario'
+          description: ''
+    post:
+      operationId: scenarios_create
+      description: List and create scenarios
+      tags:
+      - scenarios
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Scenario'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Scenario'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Scenario'
+        required: true
+      security:
+      - cookieAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Scenario'
+          description: ''
   /api/session/:
     post:
       operationId: session_create
@@ -188,6 +233,151 @@ paths:
           description: No response body
 components:
   schemas:
+    Distribution:
+      type: object
+      description: Serializer for probability distributions
+      properties:
+        type:
+          $ref: '#/components/schemas/DistributionTypeEnum'
+        value:
+          type: number
+          format: double
+          nullable: true
+        mean:
+          type: number
+          format: double
+          nullable: true
+        stdev:
+          type: number
+          format: double
+          nullable: true
+        lower:
+          type: number
+          format: double
+          nullable: true
+        upper:
+          type: number
+          format: double
+          nullable: true
+      required:
+      - type
+    DistributionTypeEnum:
+      enum:
+      - fixed
+      - normal
+      - uniform
+      type: string
+      description: |-
+        * `fixed` - Fixed
+        * `normal` - Normal
+        * `uniform` - Uniform
+    EventSeries:
+      type: object
+      description: Serializer for event series with complex nested data
+      properties:
+        name:
+          type: string
+          maxLength: 100
+        start:
+          $ref: '#/components/schemas/Distribution'
+        duration:
+          $ref: '#/components/schemas/Distribution'
+        type:
+          $ref: '#/components/schemas/EventSeriesTypeEnum'
+        initialAmount:
+          type: number
+          format: double
+        changeAmtOrPct:
+          type: string
+        changeDistribution:
+          $ref: '#/components/schemas/Distribution'
+        inflationAdjusted:
+          type: boolean
+        userFraction:
+          type: number
+          format: double
+        socialSecurity:
+          type: boolean
+        discretionary:
+          type: boolean
+        assetAllocation:
+          type: string
+          readOnly: true
+        glidePath:
+          type: boolean
+        assetAllocation2:
+          type: string
+          readOnly: true
+        maxCash:
+          type: number
+          format: double
+      required:
+      - assetAllocation
+      - assetAllocation2
+      - duration
+      - name
+      - type
+    EventSeriesTypeEnum:
+      enum:
+      - income
+      - expense
+      - invest
+      - rebalance
+      type: string
+      description: |-
+        * `income` - Income
+        * `expense` - Expense
+        * `invest` - Invest
+        * `rebalance` - Rebalance
+    Investment:
+      type: object
+      description: Serializer for individual investments
+      properties:
+        investmentType:
+          type: string
+        value:
+          type: number
+          format: double
+        taxStatus:
+          type: string
+        id:
+          type: string
+      required:
+      - id
+      - investmentType
+      - taxStatus
+      - value
+    InvestmentType:
+      type: object
+      description: Serializer for investment types
+      properties:
+        name:
+          type: string
+          maxLength: 100
+        description:
+          type: string
+        returnAmtOrPct:
+          type: string
+        returnDistribution:
+          $ref: '#/components/schemas/Distribution'
+        expenseRatio:
+          type: number
+          format: double
+        incomeAmtOrPct:
+          type: string
+        incomeDistribution:
+          $ref: '#/components/schemas/Distribution'
+        taxability:
+          type: boolean
+      required:
+      - description
+      - expenseRatio
+      - incomeAmtOrPct
+      - incomeDistribution
+      - name
+      - returnAmtOrPct
+      - returnDistribution
+      - taxability
     PatchedUser:
       type: object
       properties:
@@ -215,6 +405,78 @@ components:
           type: boolean
           title: Staff status
           description: Designates whether the user can log into this admin site.
+    Scenario:
+      type: object
+      description: Main serializer for complete scenarios matching YAML format
+      properties:
+        name:
+          type: string
+          maxLength: 200
+        maritalStatus:
+          type: string
+        birthYears:
+          type: string
+          readOnly: true
+        lifeExpectancy:
+          type: string
+          readOnly: true
+        investmentTypes:
+          type: array
+          items:
+            $ref: '#/components/schemas/InvestmentType'
+        investments:
+          type: array
+          items:
+            $ref: '#/components/schemas/Investment'
+        eventSeries:
+          type: array
+          items:
+            $ref: '#/components/schemas/EventSeries'
+        inflationAssumption:
+          $ref: '#/components/schemas/Distribution'
+        afterTaxContributionLimit:
+          type: number
+          format: double
+        spendingStrategy:
+          type: string
+          readOnly: true
+        expenseWithdrawalStrategy:
+          type: string
+          readOnly: true
+        RMDStrategy:
+          type: string
+          readOnly: true
+        RothConversionOpt:
+          type: boolean
+        RothConversionStart:
+          type: integer
+        RothConversionEnd:
+          type: integer
+        RothConversionStrategy:
+          type: string
+          readOnly: true
+        financialGoal:
+          type: number
+          format: double
+        residenceState:
+          type: string
+      required:
+      - RMDStrategy
+      - RothConversionOpt
+      - RothConversionStrategy
+      - afterTaxContributionLimit
+      - birthYears
+      - eventSeries
+      - expenseWithdrawalStrategy
+      - financialGoal
+      - inflationAssumption
+      - investmentTypes
+      - investments
+      - lifeExpectancy
+      - maritalStatus
+      - name
+      - residenceState
+      - spendingStrategy
     Session:
       type: object
       description: Serializer for handling user login data.
