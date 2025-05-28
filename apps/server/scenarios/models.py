@@ -1,381 +1,344 @@
 from django.db import models
-from django.core.exceptions import ValidationError
-from djmoney.models.fields import MoneyField
-from django.utils.translation import gettext_lazy as _
-from .enums import USState, MaritalStatus
+from django.contrib.auth import get_user_model
+
+User = get_user_model()
 
 
 class Distribution(models.Model):
-    FIXED = "fixed"
-    NORMAL = "normal"
-    UNIFORM = "uniform"
-    TYPE_CHOICES = [
-        (FIXED, "Fixed"),
-        (NORMAL, "Normal"),
-        (UNIFORM, "Uniform"),
+    """Base model for representing probability distributions"""
+
+    DISTRIBUTION_TYPES = [
+        ("fixed", "Fixed"),
+        ("normal", "Normal"),
+        ("uniform", "Uniform"),
     ]
 
-    type = models.CharField(max_length=10, choices=TYPE_CHOICES)
+    type = models.CharField(max_length=10, choices=DISTRIBUTION_TYPES)
+
+    # For fixed distributions
     value = models.FloatField(null=True, blank=True)
+
+    # For normal distributions
     mean = models.FloatField(null=True, blank=True)
     stdev = models.FloatField(null=True, blank=True)
+
+    # For uniform distributions
     lower = models.FloatField(null=True, blank=True)
     upper = models.FloatField(null=True, blank=True)
 
-    is_percentage = models.BooleanField(
-        default=False,
-        help_text=_("Indicates if the distribution is a percentage."),
+    def __str__(self):
+        if self.type == "fixed":
+            return f"Fixed({self.value})"
+        elif self.type == "normal":
+            return f"Normal(mean={self.mean}, stdev={self.stdev})"
+        elif self.type == "uniform":
+            return f"Uniform(lower={self.lower}, upper={self.upper})"
+
+
+class InvestmentType(models.Model):
+    """Defines types of investments (S&P 500, bonds, etc.)"""
+
+    name = models.CharField(max_length=100, unique=True)
+    description = models.TextField()
+
+    # Return configuration
+    return_amt_or_pct = models.CharField(
+        max_length=10, choices=[("amount", "Amount"), ("percent", "Percent")]
+    )
+    return_distribution = models.ForeignKey(
+        Distribution, on_delete=models.CASCADE, related_name="return_investment_types"
     )
 
-    def clean(self):
-        # Ensure exactly the fields required by type are set
-        if self.type == self.FIXED and self.value is None:
-            raise ValidationError({"value": "Fixed distributions require a value."})
-        if self.type == self.NORMAL and (self.mean is None or self.stdev is None):
-            raise ValidationError("Normal distributions require mean and stdev.")
-        if self.type == self.UNIFORM and (self.lower is None or self.upper is None):
-            raise ValidationError("Uniform distributions require lower and upper.")
+    expense_ratio = models.FloatField()
 
-
-class Scenario(models.Model):
-    """
-    Represents a financial scenario in the system.
-    """
-
-    # Base metadata
-    name = models.CharField(max_length=32, unique=True)
-    description = models.TextField(max_length=255, blank=True, default="")
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-
-    marital_status = models.CharField(
-        max_length=1,
-        choices=MaritalStatus.choices,
-        default=MaritalStatus.SINGLE,
+    # Income configuration
+    income_amt_or_pct = models.CharField(
+        max_length=10, choices=[("amount", "Amount"), ("percent", "Percent")]
+    )
+    income_distribution = models.ForeignKey(
+        Distribution, on_delete=models.CASCADE, related_name="income_investment_types"
     )
 
-    financial_goal = MoneyField(max_digits=19, decimal_places=4, default_currency="USD")
-    residence_state = models.CharField(
-        max_length=2, choices=USState.choices, default=USState.NEW_YORK
-    )
-    after_tax_contribution_limit = MoneyField(
-        max_digits=19, decimal_places=4, default_currency="USD", blank=True, null=True
-    )
-
-    roth_conversion_enabled = models.BooleanField(
-        default=False,
-        help_text=_("Enable Roth conversion for this scenario."),
-    )
-
-    roth_start_year = models.PositiveIntegerField(
-        blank=True,
-        null=True,
-        help_text=_("The year to start Roth conversions, if enabled."),
-    )
-
-    roth_end_year = models.PositiveIntegerField(
-        blank=True,
-        null=True,
-        help_text=_("The year to end Roth conversions, if enabled."),
-    )
-
-    def clean(self):
-        if self.roth_conversion_enabled:
-            if self.roth_start_year is None:
-                raise ValidationError(
-                    {
-                        "roth_start_year": _(
-                            "This field is required when Roth conversion is enabled."
-                        )
-                    }
-                )
-            if self.roth_end_year is None:
-                raise ValidationError(
-                    {
-                        "roth_end_year": _(
-                            "This field is required when Roth conversion is enabled."
-                        )
-                    }
-                )
-            if self.roth_start_year > self.roth_end_year:
-                raise ValidationError(
-                    {
-                        "roth_start_year": _(
-                            "Start year cannot be greater than end year."
-                        )
-                    }
-                )
-
-        person_count = self.persons.count()
-        if person_count > 2:
-            raise ValidationError(
-                {"persons": _("A scenario can have at most 2 persons.")}
-            )
-
-        if self.marital_status == MaritalStatus.MARRIED and person_count < 2:
-            raise ValidationError(
-                {"persons": _("Married scenarios must have exactly 2 persons.")}
-            )
-
-        if self.marital_status == MaritalStatus.SINGLE and person_count != 1:
-            raise ValidationError(
-                {"persons": _("Single scenarios must have exactly 1 person.")}
-            )
+    taxability = models.BooleanField()  # True = taxable, False = tax-exempt
 
     def __str__(self):
         return self.name
 
-    class Meta:
-        verbose_name = "Scenario"
-        verbose_name_plural = "Scenarios"
-        ordering = ["created_at"]
-
-
-class Person(models.Model):
-    """
-    Represents a person associated with a financial scenario.
-    """
-
-    scenario = models.ForeignKey(
-        Scenario, related_name="persons", on_delete=models.CASCADE
-    )
-    birth_year = models.PositiveIntegerField()
-    role = models.CharField(
-        max_length=1, choices=MaritalStatus.choices, default=MaritalStatus.SINGLE
-    )
-    life_expectancy = models.ForeignKey(
-        Distribution, on_delete=models.PROTECT, related_name="+"
-    )
-
-    def __str__(self):
-        return f"{self.name} ({self.scenario.name})"
-
-    class Meta:
-        verbose_name = "Person"
-        verbose_name_plural = "Persons"
-
-
-class InvestmentType(models.Model):
-    """
-    Represents an investment type associated with a financial scenario.
-    """
-
-    scenario = models.ForeignKey(
-        Scenario, related_name="investment_types", on_delete=models.CASCADE
-    )
-    name = models.CharField(max_length=32)
-    description = models.TextField(max_length=255, blank=True, default="")
-
-    return_distribution = models.ForeignKey(
-        Distribution,
-        on_delete=models.PROTECT,
-        related_name="+",
-    )
-
-    expense_ratio = models.FloatField(
-        default=0.0,
-        help_text=_("Expense ratio for the investment type, as a percentage."),
-    )
-
-    income_distribution = models.ForeignKey(
-        Distribution,
-        on_delete=models.PROTECT,
-        related_name="+",
-    )
-
-    taxability = models.BooleanField(
-        default=False,
-        help_text=_("Indicates if the investment type is taxable."),
-    )
-
-    def __str__(self):
-        return f"{self.name} ({self.scenario.name})"
-
-    class Meta:
-        verbose_name = "Investment Type"
-        verbose_name_plural = "Investment Types"
-        ordering = ["name"]
-
 
 class Investment(models.Model):
-    NON_RETIRE = "non_retirement"
-    PRE_TAX = "pre_tax"
-    AFTER_TAX = "after_tax"
-    TAX_STATUS_CHOICES = [
-        (NON_RETIRE, "Non-Retirement"),
-        (PRE_TAX, "Pre-Tax"),
-        (AFTER_TAX, "After-Tax"),
+    """Individual investment instances"""
+
+    TAX_STATUSES = [
+        ("non-retirement", "Non-retirement"),
+        ("pre-tax", "Pre-tax Retirement"),
+        ("after-tax", "After-tax Retirement"),
     ]
 
     scenario = models.ForeignKey(
-        Scenario, related_name="investments", on_delete=models.CASCADE
+        "Scenario", on_delete=models.CASCADE, related_name="investments"
     )
-    investment_type = models.ForeignKey(
-        InvestmentType, related_name="investments", on_delete=models.CASCADE
-    )
-    value = MoneyField(
-        max_digits=19,
-        decimal_places=4,
-        default_currency="USD",
-        help_text=_("Current value of the investment."),
-    )
-
-    tax_status = models.CharField(
-        max_length=15,
-        choices=TAX_STATUS_CHOICES,
-        default=NON_RETIRE,
-        help_text=_("Tax status of the investment."),
-    )
-
-
-class AssetAllocation(models.Model):
-    FIXED = "fixed"
-    GLIDEPATH = "glide_path"
-    TYPE_CHOICES = [
-        (FIXED, "Fixed"),
-        (GLIDEPATH, "Glide Path"),
-    ]
-
-    type = models.CharField(max_length=12, choices=TYPE_CHOICES, default=FIXED)
-
-    def __str__(self):
-        return f"{self.get_type_display()} allocation for {self.event.name}"
-
-
-class InvestmentAllocation(models.Model):
-    PRIMARY = "primary"
-    FINAL = "final"
-    ROLE_CHOICES = [
-        (PRIMARY, "Primary Allocation"),
-        (FINAL, "Final Allocation (for glide-path)"),
-    ]
-
-    asset_allocation = models.ForeignKey(
-        AssetAllocation, on_delete=models.CASCADE, related_name="investment_allocations"
-    )
-    investment = models.ForeignKey(
-        "Investment", on_delete=models.PROTECT, related_name="+"
-    )
-    percentage = models.FloatField()
-    role = models.CharField(max_length=8, choices=ROLE_CHOICES, default=PRIMARY)
+    investment_type = models.ForeignKey(InvestmentType, on_delete=models.CASCADE)
+    value = models.FloatField()
+    tax_status = models.CharField(max_length=15, choices=TAX_STATUSES)
+    investment_id = models.CharField(max_length=100)  # Unique identifier from YAML
 
     class Meta:
-        unique_together = ("asset_allocation", "investment", "role")
-
-    def clean(self):
-        """
-        Ensure that only glide-path allocations have FINAL entries,
-        and that percentages sum to 1.0 per role.
-        """
-        from django.core.exceptions import ValidationError
-
-        # Only glide-path may have final allocations
-        if (
-            self.role == self.FINAL
-            and self.asset_allocation.type != AssetAllocation.GLIDEPATH
-        ):
-            raise ValidationError("Final allocations only valid for glide-path type")
-        # Sum check
-        qs = self.asset_allocation.investment_allocations
-        total = sum(obj.percentage for obj in qs.exclude(pk=self.pk)) + self.percentage
-        if abs(total - 1.0) > 1e-6:
-            raise ValidationError(
-                f"Total {self.get_role_display()} must sum to 1.0 (got {total})"
-            )
+        unique_together = ["scenario", "investment_id"]
 
     def __str__(self):
-        return f"{self.investment} at {self.percentage * 100:.1f}% ({self.get_role_display()})"
+        return f"{self.investment_id} ({self.scenario.name})"
 
 
 class EventSeries(models.Model):
-    """
-    Represents a series of events associated with a financial scenario.
-    """
+    """Represents sequences of annual financial events"""
 
-    INCOME = "income"
-    EXPENSE = "expense"
-    INVEST = "invest"
-    REBALANCE = "rebalance"
-    TYPE_CHOICES = [
-        (INCOME, "Income"),
-        (EXPENSE, "Expense"),
-        (INVEST, "Invest"),
-        (REBALANCE, "Rebalance"),
+    EVENT_TYPES = [
+        ("income", "Income"),
+        ("expense", "Expense"),
+        ("invest", "Invest"),
+        ("rebalance", "Rebalance"),
     ]
 
-    START_WITH = "start_with"
-    START_AFTER = "start_after"
-    START_CHOICES = [
-        (Distribution.FIXED, "Fixed"),
-        (Distribution.NORMAL, "Normal"),
-        (Distribution.UNIFORM, "Uniform"),
-        (START_WITH, "Start With"),
-        (START_AFTER, "Start After"),
+    CHANGE_AMT_OR_PCT_CHOICES = [
+        ("amount", "Amount"),
+        ("percent", "Percent"),
+    ]
+
+    START_TYPES = [
+        ("distribution", "Distribution"),
+        ("start_with", "Start With Event"),
+        ("start_after", "Start After Event"),
     ]
 
     scenario = models.ForeignKey(
-        Scenario, related_name="event_series", on_delete=models.CASCADE
+        "Scenario", on_delete=models.CASCADE, related_name="event_series"
     )
     name = models.CharField(max_length=100)
-    type = models.CharField(max_length=10, choices=TYPE_CHOICES)
-    start_type = models.CharField(max_length=20, choices=START_CHOICES)
+    description = models.TextField(blank=True)
+
+    # Start year configuration
+    start_type = models.CharField(max_length=20, choices=START_TYPES)
     start_distribution = models.ForeignKey(
         Distribution,
-        on_delete=models.PROTECT,
-        related_name="+",
+        on_delete=models.CASCADE,
         null=True,
         blank=True,
+        related_name="start_event_series",
     )
-    start_event = models.ForeignKey(
-        "self", on_delete=models.SET_NULL, null=True, blank=True
+    start_with_event = models.ForeignKey(
+        "self",
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        related_name="start_with_dependents",
     )
-    duration = models.ForeignKey(
-        Distribution, on_delete=models.PROTECT, related_name="+"
+    start_after_event = models.ForeignKey(
+        "self",
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        related_name="start_after_dependents",
     )
+
+    # Duration
+    duration_distribution = models.ForeignKey(
+        Distribution, on_delete=models.CASCADE, related_name="duration_event_series"
+    )
+
+    type = models.CharField(max_length=10, choices=EVENT_TYPES)
 
     # Income/Expense fields
-    initial_amount = MoneyField(
-        max_digits=14, decimal_places=2, default_currency="USD", null=True, blank=True
+    initial_amount = models.FloatField(null=True, blank=True)
+    change_amt_or_pct = models.CharField(
+        max_length=10, choices=CHANGE_AMT_OR_PCT_CHOICES, null=True, blank=True
     )
-
-    expected_annual_change = models.ForeignKey(
-        Distribution, on_delete=models.PROTECT, related_name="+", null=True, blank=True
-    )
-    inflation_adjusted = models.BooleanField(null=True, blank=True)
-    user_fraction = models.FloatField(null=True, blank=True)
-    is_discretionary = models.BooleanField(null=True, blank=True)
-    is_social_security = models.BooleanField(null=True, blank=True)
-
-    # Invest/Rebalance fields
-    asset_allocation = models.OneToOneField(
-        "AssetAllocation",
+    change_distribution = models.ForeignKey(
+        Distribution,
         on_delete=models.CASCADE,
-        related_name="event_series",
         null=True,
         blank=True,
+        related_name="change_event_series",
     )
-    max_cash = MoneyField(
-        max_digits=14, decimal_places=2, default_currency="USD", null=True, blank=True
+    inflation_adjusted = models.BooleanField(default=False)
+    user_fraction = models.FloatField(null=True, blank=True)  # For married couples
+
+    # Income specific
+    social_security = models.BooleanField(default=False)
+
+    # Expense specific
+    discretionary = models.BooleanField(default=False)
+
+    # Invest/Rebalance specific
+    max_cash = models.FloatField(null=True, blank=True)
+    glide_path = models.BooleanField(default=False)
+
+    class Meta:
+        unique_together = ["scenario", "name"]
+
+    def __str__(self):
+        return f"{self.name} ({self.type})"
+
+
+class AssetAllocation(models.Model):
+    """Asset allocation for invest and rebalance events"""
+
+    event_series = models.ForeignKey(
+        EventSeries, on_delete=models.CASCADE, related_name="asset_allocations"
+    )
+    investment = models.ForeignKey(Investment, on_delete=models.CASCADE)
+    percentage = models.FloatField()
+    is_final_allocation = models.BooleanField(
+        default=False
+    )  # For glide path final allocation
+
+    class Meta:
+        unique_together = ["event_series", "investment", "is_final_allocation"]
+
+    def __str__(self):
+        allocation_type = "Final" if self.is_final_allocation else "Initial"
+        return f"{self.event_series.name} - {self.investment.investment_id}: {self.percentage}% ({allocation_type})"
+
+
+class SpendingStrategyItem(models.Model):
+    """Discretionary expense ordering for spending strategy"""
+
+    scenario = models.ForeignKey(
+        "Scenario", on_delete=models.CASCADE, related_name="spending_strategy_items"
+    )
+    event_series = models.ForeignKey(EventSeries, on_delete=models.CASCADE)
+    order = models.PositiveIntegerField()
+
+    class Meta:
+        ordering = ["order"]
+        unique_together = ["scenario", "event_series"]
+
+    def __str__(self):
+        return f"{self.scenario.name}: {self.order}. {self.event_series.name}"
+
+
+class ExpenseWithdrawalStrategyItem(models.Model):
+    """Investment ordering for expense withdrawals"""
+
+    scenario = models.ForeignKey(
+        "Scenario",
+        on_delete=models.CASCADE,
+        related_name="expense_withdrawal_strategy_items",
+    )
+    investment = models.ForeignKey(Investment, on_delete=models.CASCADE)
+    order = models.PositiveIntegerField()
+
+    class Meta:
+        ordering = ["order"]
+        unique_together = ["scenario", "investment"]
+
+    def __str__(self):
+        return f"{self.scenario.name}: {self.order}. {self.investment.investment_id}"
+
+
+class RMDStrategyItem(models.Model):
+    """Pre-tax investment ordering for RMDs"""
+
+    scenario = models.ForeignKey(
+        "Scenario", on_delete=models.CASCADE, related_name="rmd_strategy_items"
+    )
+    investment = models.ForeignKey(Investment, on_delete=models.CASCADE)
+    order = models.PositiveIntegerField()
+
+    class Meta:
+        ordering = ["order"]
+        unique_together = ["scenario", "investment"]
+
+    def __str__(self):
+        return f"{self.scenario.name}: {self.order}. {self.investment.investment_id}"
+
+
+class RothConversionStrategyItem(models.Model):
+    """Pre-tax investment ordering for Roth conversions"""
+
+    scenario = models.ForeignKey(
+        "Scenario",
+        on_delete=models.CASCADE,
+        related_name="roth_conversion_strategy_items",
+    )
+    investment = models.ForeignKey(Investment, on_delete=models.CASCADE)
+    order = models.PositiveIntegerField()
+
+    class Meta:
+        ordering = ["order"]
+        unique_together = ["scenario", "investment"]
+
+    def __str__(self):
+        return f"{self.scenario.name}: {self.order}. {self.investment.investment_id}"
+
+
+class Scenario(models.Model):
+    """Main scenario model containing all financial planning information"""
+
+    MARITAL_STATUS_CHOICES = [
+        ("individual", "Individual"),
+        ("couple", "Couple"),
+    ]
+
+    # Basic information
+    name = models.CharField(max_length=200)
+    marital_status = models.CharField(max_length=10, choices=MARITAL_STATUS_CHOICES)
+
+    # Birth years
+    user_birth_year = models.IntegerField()
+    spouse_birth_year = models.IntegerField(null=True, blank=True)
+
+    # Life expectancy distributions
+    user_life_expectancy = models.ForeignKey(
+        Distribution,
+        on_delete=models.CASCADE,
+        related_name="user_life_expectancy_scenarios",
+    )
+    spouse_life_expectancy = models.ForeignKey(
+        Distribution,
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        related_name="spouse_life_expectancy_scenarios",
     )
 
-    def clean(self):
-        errors = {}
-        # Income/Expense require financial fields
-        if self.type in (self.INCOME, self.EXPENSE):
-            for fld in (
-                "initial_amount",
-                "expected_annual_change",
-                "inflation_adjusted",
-                "user_fraction",
-            ):
-                if getattr(self, fld) in (None, ""):
-                    errors[fld] = "Required for income/expense series."
-        # Expense needs discretionary
-        if self.type == self.EXPENSE and self.is_discretionary is None:
-            errors["discretionary"] = "Must specify discretionary for expenses."
-        # Invest/Rebalance require allocation
-        if self.type in (self.INVEST, self.REBALANCE):
-            if not self.asset_allocation:
-                errors["asset_allocation"] = "Asset allocation required."
-        if errors:
-            raise ValidationError(errors)
+    # Financial settings
+    inflation_assumption = models.ForeignKey(
+        Distribution, on_delete=models.CASCADE, related_name="inflation_scenarios"
+    )
+    after_tax_contribution_limit = models.FloatField()
+    financial_goal = models.FloatField()
+    residence_state = models.CharField(max_length=2)
+
+    # Roth conversion settings
+    roth_conversion_opt = models.BooleanField(default=False)
+    roth_conversion_start = models.IntegerField(null=True, blank=True)
+    roth_conversion_end = models.IntegerField(null=True, blank=True)
+
+    # User ownership and sharing
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
+
+    # Timestamps
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.name
+
+    def get_spending_strategy(self):
+        """Get ordered list of discretionary expenses"""
+        return self.spending_strategy_items.all()
+
+    def get_expense_withdrawal_strategy(self):
+        """Get ordered list of investments for expense withdrawals"""
+        return self.expense_withdrawal_strategy_items.all()
+
+    def get_rmd_strategy(self):
+        """Get ordered list of pre-tax investments for RMDs"""
+        return self.rmd_strategy_items.all()
+
+    def get_roth_conversion_strategy(self):
+        """Get ordered list of pre-tax investments for Roth conversions"""
+        return self.roth_conversion_strategy_items.all()
+
+    class Meta:
+        ordering = ["-updated_at"]
