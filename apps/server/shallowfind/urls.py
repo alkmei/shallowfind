@@ -29,4 +29,5 @@ urlpatterns = [
     ),  # Remove on prod? idk
     path("api/session/", SessionView.as_view(), name="session"),
     path("api/users/", include("users.urls")),
+    path("api/scenarios/", include("scenarios.urls")),
 ]
