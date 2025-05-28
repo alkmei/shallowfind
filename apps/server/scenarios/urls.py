@@ -1,11 +1,10 @@
 from django.urls import include, path
-from scenarios import views
-from scenarios.views import ScenarioListCreateView
+from rest_framework import routers
 
-urlpatterns = [
-    path(
-        "",
-        ScenarioListCreateView.as_view(),
-        name="scenario",
-    ),
-]
+from scenarios.views import ScenarioViewSet
+
+router = routers.SimpleRouter()
+
+router.register(r"scenarios", ScenarioViewSet)
+
+urlpatterns = router.urls

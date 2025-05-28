@@ -7,7 +7,9 @@ paths:
   /api/scenarios/:
     get:
       operationId: scenarios_list
-      description: List and create scenarios
+      description: |-
+        ViewSet for managing scenarios with full CRUD operations.
+        Provides list, create, retrieve, update, destroy actions.
       tags:
       - scenarios
       security:
@@ -24,7 +26,9 @@ paths:
           description: ''
     post:
       operationId: scenarios_create
-      description: List and create scenarios
+      description: |-
+        ViewSet for managing scenarios with full CRUD operations.
+        Provides list, create, retrieve, update, destroy actions.
       tags:
       - scenarios
       requestBody:
@@ -44,6 +48,266 @@ paths:
       - {}
       responses:
         '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Scenario'
+          description: ''
+  /api/scenarios/{id}/:
+    get:
+      operationId: scenarios_retrieve
+      description: |-
+        ViewSet for managing scenarios with full CRUD operations.
+        Provides list, create, retrieve, update, destroy actions.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this scenario.
+        required: true
+      tags:
+      - scenarios
+      security:
+      - cookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Scenario'
+          description: ''
+    put:
+      operationId: scenarios_update
+      description: |-
+        ViewSet for managing scenarios with full CRUD operations.
+        Provides list, create, retrieve, update, destroy actions.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this scenario.
+        required: true
+      tags:
+      - scenarios
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Scenario'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Scenario'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Scenario'
+        required: true
+      security:
+      - cookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Scenario'
+          description: ''
+    patch:
+      operationId: scenarios_partial_update
+      description: |-
+        ViewSet for managing scenarios with full CRUD operations.
+        Provides list, create, retrieve, update, destroy actions.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this scenario.
+        required: true
+      tags:
+      - scenarios
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedScenario'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedScenario'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedScenario'
+      security:
+      - cookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Scenario'
+          description: ''
+    delete:
+      operationId: scenarios_destroy
+      description: |-
+        ViewSet for managing scenarios with full CRUD operations.
+        Provides list, create, retrieve, update, destroy actions.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this scenario.
+        required: true
+      tags:
+      - scenarios
+      security:
+      - cookieAuth: []
+      - {}
+      responses:
+        '204':
+          description: No response body
+  /api/scenarios/{id}/clone/:
+    post:
+      operationId: scenarios_clone_create
+      description: Clone an existing scenario
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this scenario.
+        required: true
+      tags:
+      - scenarios
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Scenario'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Scenario'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Scenario'
+        required: true
+      security:
+      - cookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Scenario'
+          description: ''
+  /api/scenarios/{id}/export/:
+    get:
+      operationId: scenarios_export_retrieve
+      description: Export scenario as YAML
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this scenario.
+        required: true
+      tags:
+      - scenarios
+      security:
+      - cookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Scenario'
+          description: ''
+  /api/scenarios/{id}/simulate/:
+    post:
+      operationId: scenarios_simulate_create
+      description: Run Monte Carlo simulations for this scenario
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this scenario.
+        required: true
+      tags:
+      - scenarios
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Scenario'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Scenario'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Scenario'
+        required: true
+      security:
+      - cookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Scenario'
+          description: ''
+  /api/scenarios/{id}/validate_scenario/:
+    get:
+      operationId: scenarios_validate_scenario_retrieve
+      description: Validate scenario for simulation readiness
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this scenario.
+        required: true
+      tags:
+      - scenarios
+      security:
+      - cookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Scenario'
+          description: ''
+  /api/scenarios/import_scenario/:
+    post:
+      operationId: scenarios_import_scenario_create
+      description: Import scenario from YAML file
+      tags:
+      - scenarios
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Scenario'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Scenario'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Scenario'
+        required: true
+      security:
+      - cookieAuth: []
+      - {}
+      responses:
+        '200':
           content:
             application/json:
               schema:
@@ -140,6 +404,7 @@ paths:
         name: id
         schema:
           type: integer
+        description: A unique integer value identifying this user.
         required: true
       tags:
       - users
@@ -160,6 +425,7 @@ paths:
         name: id
         schema:
           type: integer
+        description: A unique integer value identifying this user.
         required: true
       tags:
       - users
@@ -192,6 +458,7 @@ paths:
         name: id
         schema:
           type: integer
+        description: A unique integer value identifying this user.
         required: true
       tags:
       - users
@@ -223,6 +490,7 @@ paths:
         name: id
         schema:
           type: integer
+        description: A unique integer value identifying this user.
         required: true
       tags:
       - users
@@ -378,6 +646,61 @@ components:
       - returnAmtOrPct
       - returnDistribution
       - taxability
+    PatchedScenario:
+      type: object
+      description: Main serializer for complete scenarios matching YAML format
+      properties:
+        name:
+          type: string
+          maxLength: 200
+        maritalStatus:
+          type: string
+        birthYears:
+          type: string
+          readOnly: true
+        lifeExpectancy:
+          type: string
+          readOnly: true
+        investmentTypes:
+          type: array
+          items:
+            $ref: '#/components/schemas/InvestmentType'
+        investments:
+          type: array
+          items:
+            $ref: '#/components/schemas/Investment'
+        eventSeries:
+          type: array
+          items:
+            $ref: '#/components/schemas/EventSeries'
+        inflationAssumption:
+          $ref: '#/components/schemas/Distribution'
+        afterTaxContributionLimit:
+          type: number
+          format: double
+        spendingStrategy:
+          type: string
+          readOnly: true
+        expenseWithdrawalStrategy:
+          type: string
+          readOnly: true
+        RMDStrategy:
+          type: string
+          readOnly: true
+        RothConversionOpt:
+          type: boolean
+        RothConversionStart:
+          type: integer
+        RothConversionEnd:
+          type: integer
+        RothConversionStrategy:
+          type: string
+          readOnly: true
+        financialGoal:
+          type: number
+          format: double
+        residenceState:
+          type: string
     PatchedUser:
       type: object
       properties:
