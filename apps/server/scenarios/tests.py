@@ -173,7 +173,7 @@ class InvestmentAllocationModelTest(TestCase):
             asset_allocation=self.alloc_glide,
             investment=self.inv,
             percentage=0.7,
-            role=InvestmentAllocation.PRIMARY,
+            role=InvestmentAllocation.FINAL,
         )
         with self.assertRaises(ValidationError):
             ia2.full_clean()

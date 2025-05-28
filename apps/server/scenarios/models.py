@@ -276,7 +276,7 @@ class InvestmentAllocation(models.Model):
         ):
             raise ValidationError("Final allocations only valid for glide-path type")
         # Sum check
-        qs = self.asset_allocation.investment_allocations.filter(role=self.role)
+        qs = self.asset_allocation.investment_allocations
         total = sum(obj.percentage for obj in qs.exclude(pk=self.pk)) + self.percentage
         if abs(total - 1.0) > 1e-6:
             raise ValidationError(
