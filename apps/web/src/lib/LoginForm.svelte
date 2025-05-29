@@ -15,30 +15,34 @@
     async onUpdate({ form }) {
       if (!form.valid) return;
 
-      const res = await sessionCreate(form.data);
-      if (res.status === 200) {
-        goto('/dashboard');
-      } else {
-        // TODO: Show error message to user
-        console.error('Login failed', res.data);
+      try {
+        // Attempt to create a session with the provided credentials
+        const res = await sessionCreate(form.data);
+        if (res.status === 200) {
+          // Redirect to dashboard on successful login
+          await goto('/dashboard');
+        }
+      } catch (error) {
+        // Handle error, e.g., show a notification or alert
+        console.error('Login failed:', error);
       }
     }
   });
 
   const { form: formData, enhance } = form;
 
-  let className = '';
-  export { className as class };
+  let { children } = $props();
 </script>
 
 <Dialog.Root>
   <Dialog.Trigger>
-    <Button class={className}>Log In</Button>
+    {@render children()}
   </Dialog.Trigger>
 
   <Dialog.Content>
     <Dialog.Header
       ><Dialog.Title>Log In</Dialog.Title>
+
       <Dialog.Description>Please enter your email and password to log in.</Dialog.Description
       ></Dialog.Header
     >
@@ -46,9 +50,16 @@
       <Form.Field {form} name="email">
         <Form.Control>
           {#snippet children({ props })}
-            <Form.Label>Email</Form.Label>
+            <Form.Label>Email <span class="text-red-500">*</span></Form.Label>
             <Input {...props} bind:value={$formData.email} />
-            <Form.Label>Password</Form.Label>
+          {/snippet}
+        </Form.Control>
+        <Form.FieldErrors />
+      </Form.Field>
+      <Form.Field {form} name="password">
+        <Form.Control>
+          {#snippet children({ props })}
+            <Form.Label>Password <span class="text-red-500">*</span></Form.Label>
             <Input type="password" {...props} bind:value={$formData.password} />
           {/snippet}
         </Form.Control>

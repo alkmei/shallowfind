@@ -48,27 +48,28 @@ export interface Distribution {
 
 /**
  * * `fixed` - Fixed
- * `normal` - Normal
- * `uniform` - Uniform
+* `normal` - Normal
+* `uniform` - Uniform
  */
-export type DistributionTypeEnum = (typeof DistributionTypeEnum)[keyof typeof DistributionTypeEnum];
+export type DistributionTypeEnum = typeof DistributionTypeEnum[keyof typeof DistributionTypeEnum];
+
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export const DistributionTypeEnum = {
   fixed: 'fixed',
   normal: 'normal',
-  uniform: 'uniform'
+  uniform: 'uniform',
 } as const;
 
 /**
  * Get initial asset allocation as dict
  */
-export type EventSeriesAssetAllocation = { [key: string]: unknown };
+export type EventSeriesAssetAllocation = {[key: string]: unknown};
 
 /**
  * Get final asset allocation for glide path
  */
-export type EventSeriesAssetAllocation2 = { [key: string]: unknown };
+export type EventSeriesAssetAllocation2 = {[key: string]: unknown};
 
 /**
  * Serializer for event series with complex nested data
@@ -96,18 +97,19 @@ export interface EventSeries {
 
 /**
  * * `income` - Income
- * `expense` - Expense
- * `invest` - Invest
- * `rebalance` - Rebalance
+* `expense` - Expense
+* `invest` - Invest
+* `rebalance` - Rebalance
  */
-export type EventSeriesTypeEnum = (typeof EventSeriesTypeEnum)[keyof typeof EventSeriesTypeEnum];
+export type EventSeriesTypeEnum = typeof EventSeriesTypeEnum[keyof typeof EventSeriesTypeEnum];
+
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export const EventSeriesTypeEnum = {
   income: 'income',
   expense: 'expense',
   invest: 'invest',
-  rebalance: 'rebalance'
+  rebalance: 'rebalance',
 } as const;
 
 /**
@@ -253,3 +255,4 @@ export interface User {
   /** @nullable */
   readonly last_login: string | null;
 }
+

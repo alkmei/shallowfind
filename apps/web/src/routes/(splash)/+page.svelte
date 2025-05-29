@@ -4,7 +4,7 @@
 </script>
 
 <div class="flex flex-col">
-  <LoginForm class="mb-4 w-full" />
+  <LoginForm><Button class="mb-4 w-full">Log In</Button></LoginForm>
   <a href="/dashboard"><Button variant="outline" class="w-full">Continue As Guest</Button></a>
   <div class="mt-4 text-center text-sm text-gray-500">
     Don't have an account?{' '}
