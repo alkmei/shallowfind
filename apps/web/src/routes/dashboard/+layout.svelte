@@ -40,7 +40,7 @@
         <DropdownMenuTrigger>
           <Avatar class="cursor-pointer hover:brightness-75">
             <AvatarImage
-              src={`https://api.dicebear.com/9.x/lorelei/svg?seed=${userStore.user.name}`}
+              src={`https://api.dicebear.com/9.x/lorelei/svg?seed=${userStore.user.email}`}
               alt={userStore.user.email}
               referrerpolicy="no-referrer"
             />

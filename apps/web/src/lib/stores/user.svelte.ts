@@ -58,6 +58,13 @@ export function createUser() {
     get error() {
       return error;
     },
+    get fullName() {
+      if (!user) return '';
+      if (!user.first_name && !user.last_name) return user.email.split('@')[0];
+      if (!user.first_name) return user.last_name;
+      if (!user.last_name) return user.first_name;
+      return `${user.first_name} ${user.last_name}`.trim();
+    },
 
     fetchUser,
     logout,
