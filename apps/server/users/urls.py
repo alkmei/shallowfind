@@ -1,22 +1,9 @@
 from django.urls import path
 from .views import UserViewSet
+from rest_framework import routers
 
-urlpatterns = [
-    path(
-        "",
-        UserViewSet.as_view({"get": "list", "post": "create"}),
-        name="user-list",
-    ),
-    path(
-        "<int:pk>/",
-        UserViewSet.as_view(
-            {
-                "get": "retrieve",
-                "put": "update",
-                "delete": "destroy",
-                "patch": "partial_update",
-            }
-        ),
-        name="user-detail",
-    ),
-]
+routers = routers.SimpleRouter()
+
+routers.register(r"users", UserViewSet)
+
+urlpatterns = routers.urls

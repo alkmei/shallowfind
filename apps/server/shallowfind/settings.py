@@ -39,8 +39,11 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "rest_framework",
     "corsheaders",
+    "django_extensions",
     "drf_spectacular",
+    "djmoney",
     "users",
+    "scenarios",
 ]
 
 MIDDLEWARE = [
