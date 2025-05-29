@@ -14,7 +14,14 @@
   import DropdownMenuContent from '$lib/components/ui/dropdown-menu/dropdown-menu-content.svelte';
   import DropdownMenuSeparator from '$lib/components/ui/dropdown-menu/dropdown-menu-separator.svelte';
 
-  import { userStore } from '$lib/stores/user';
+  import { createUser } from '$lib/stores/user.svelte';
+  import { onMount } from 'svelte';
+
+  const userStore = createUser();
+
+  onMount(() => {
+    userStore.fetchUser();
+  });
 
   let { children } = $props();
 </script>
@@ -28,23 +35,23 @@
 
   <header class="flex items-center justify-between">
     <div>Breadcrumb</div>
-    {#if user}
+    {#if userStore.user}
       <DropdownMenu>
         <DropdownMenuTrigger>
           <Avatar class="cursor-pointer hover:brightness-75">
             <AvatarImage
-              src={`https://api.dicebear.com/9.x/lorelei/svg?seed=${user.name}`}
-              alt={user.name}
+              src={`https://api.dicebear.com/9.x/lorelei/svg?seed=${userStore.user.name}`}
+              alt={userStore.user.email}
               referrerpolicy="no-referrer"
             />
-            <AvatarFallback>{user.name}</AvatarFallback>
+            <AvatarFallback>{userStore.user.email}</AvatarFallback>
           </Avatar>
         </DropdownMenuTrigger>
         <DropdownMenuContent>
-          <DropdownMenuLabel>{user.name}</DropdownMenuLabel>
+          <DropdownMenuLabel>{userStore.user.email}</DropdownMenuLabel>
           <DropdownMenuSeparator />
           <DropdownMenuItem>
-            <a href={`/dashboard/users/${user.id}`}>Profile</a>
+            <a href={`/dashboard/users/${userStore.user.id}`}>Profile</a>
           </DropdownMenuItem>
           <DropdownMenuItem>Settings</DropdownMenuItem>
           <DropdownMenuItem>Logout</DropdownMenuItem>
