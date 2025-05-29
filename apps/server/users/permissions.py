@@ -1,19 +1,25 @@
-from rest_framework.permissions import BasePermission
+from rest_framework import permissions
 
 
-class IsAdminOrSelf(BasePermission):
+class IsOwnerOrReadOnly(permissions.BasePermission):
     """
-    - list & create: admin only
-    - retrieve/update/partial_update: admin or the user themselves
+    Custom permission to only allow owners of an object to edit it.
     """
-
-    def has_permission(self, request, view):
-        if view.action in ["list", "create"]:
-            return bool(request.user and request.user.is_staff)
-        # Other actions require authentication
-        return bool(request.user and request.user.is_authenticated)
 
     def has_object_permission(self, request, view, obj):
-        # Safe methods (GET, HEAD, OPTIONS) and write (PUT, PATCH) on detail:
-        # allow if admin or the object belongs to the requesting user
-        return bool(request.user.is_staff or obj == request.user)
+        # Read permissions are allowed to any request,
+        # so we'll always allow GET, HEAD or OPTIONS requests.
+        if request.method in permissions.SAFE_METHODS:
+            return True
+
+        # Write permissions are only allowed to the owner of the user account.
+        return obj == request.user
+
+
+class IsOwner(permissions.BasePermission):
+    """
+    Custom permission to only allow owners of an object to access it.
+    """
+
+    def has_object_permission(self, request, view, obj):
+        return obj == request.user

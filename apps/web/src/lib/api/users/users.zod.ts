@@ -5,138 +5,263 @@
  * Shallowfind Financial Planner
  * OpenAPI spec version: 0.0.1
  */
-import {
-  z as zod
-} from 'zod';
-
+import { z as zod } from 'zod';
 
 /**
- * A viewset for viewing and editing user instances.
+ * Get current user's information.
  */
 export const usersListResponseEmailMax = 254;
 export const usersListResponseFirstNameMax = 150;
 export const usersListResponseLastNameMax = 150;
 
-
 export const usersListResponseItem = zod.object({
-  "id": zod.number(),
-  "email": zod.string().email().max(usersListResponseEmailMax).describe('Required. Enter a valid email address.'),
-  "first_name": zod.string().max(usersListResponseFirstNameMax).optional(),
-  "last_name": zod.string().max(usersListResponseLastNameMax).optional(),
-  "is_active": zod.boolean().optional().describe('Designates whether this user should be treated as active. Unselect this instead of deleting accounts.'),
-  "is_staff": zod.boolean().optional().describe('Designates whether the user can log into this admin site.')
-})
-export const usersListResponse = zod.array(usersListResponseItem)
+  id: zod.number(),
+  email: zod
+    .string()
+    .email()
+    .max(usersListResponseEmailMax)
+    .describe('Required. Enter a valid email address.'),
+  first_name: zod.string().max(usersListResponseFirstNameMax).optional(),
+  last_name: zod.string().max(usersListResponseLastNameMax).optional(),
+  password: zod.string(),
+  password_confirm: zod.string(),
+  date_joined: zod.string().datetime({}),
+  last_login: zod.string().datetime({}).nullable()
+});
+export const usersListResponse = zod.array(usersListResponseItem);
 
 /**
- * A viewset for viewing and editing user instances.
+ * Create a new user account. This endpoint allows unauthenticated access for registration.
  */
 export const usersCreateBodyEmailMax = 254;
 export const usersCreateBodyFirstNameMax = 150;
 export const usersCreateBodyLastNameMax = 150;
 
-
 export const usersCreateBody = zod.object({
-  "email": zod.string().email().max(usersCreateBodyEmailMax).describe('Required. Enter a valid email address.'),
-  "first_name": zod.string().max(usersCreateBodyFirstNameMax).optional(),
-  "last_name": zod.string().max(usersCreateBodyLastNameMax).optional(),
-  "is_active": zod.boolean().optional().describe('Designates whether this user should be treated as active. Unselect this instead of deleting accounts.'),
-  "is_staff": zod.boolean().optional().describe('Designates whether the user can log into this admin site.')
-})
+  email: zod
+    .string()
+    .email()
+    .max(usersCreateBodyEmailMax)
+    .describe('Required. Enter a valid email address.'),
+  first_name: zod.string().max(usersCreateBodyFirstNameMax).optional(),
+  last_name: zod.string().max(usersCreateBodyLastNameMax).optional(),
+  password: zod.string(),
+  password_confirm: zod.string()
+});
 
 /**
- * A viewset for viewing and editing user instances.
+ * Get current user's information by ID.
  */
 export const usersRetrieveParams = zod.object({
-  "id": zod.number().describe('A unique integer value identifying this user.')
-})
+  id: zod.number().describe('A unique integer value identifying this user.')
+});
 
 export const usersRetrieveResponseEmailMax = 254;
 export const usersRetrieveResponseFirstNameMax = 150;
 export const usersRetrieveResponseLastNameMax = 150;
 
-
 export const usersRetrieveResponse = zod.object({
-  "id": zod.number(),
-  "email": zod.string().email().max(usersRetrieveResponseEmailMax).describe('Required. Enter a valid email address.'),
-  "first_name": zod.string().max(usersRetrieveResponseFirstNameMax).optional(),
-  "last_name": zod.string().max(usersRetrieveResponseLastNameMax).optional(),
-  "is_active": zod.boolean().optional().describe('Designates whether this user should be treated as active. Unselect this instead of deleting accounts.'),
-  "is_staff": zod.boolean().optional().describe('Designates whether the user can log into this admin site.')
-})
+  id: zod.number(),
+  email: zod
+    .string()
+    .email()
+    .max(usersRetrieveResponseEmailMax)
+    .describe('Required. Enter a valid email address.'),
+  first_name: zod.string().max(usersRetrieveResponseFirstNameMax).optional(),
+  last_name: zod.string().max(usersRetrieveResponseLastNameMax).optional(),
+  password: zod.string(),
+  password_confirm: zod.string(),
+  date_joined: zod.string().datetime({}),
+  last_login: zod.string().datetime({}).nullable()
+});
 
 /**
- * A viewset for viewing and editing user instances.
+ * Update user account (PUT).
  */
 export const usersUpdateParams = zod.object({
-  "id": zod.number().describe('A unique integer value identifying this user.')
-})
+  id: zod.number().describe('A unique integer value identifying this user.')
+});
 
 export const usersUpdateBodyEmailMax = 254;
 export const usersUpdateBodyFirstNameMax = 150;
 export const usersUpdateBodyLastNameMax = 150;
 
-
 export const usersUpdateBody = zod.object({
-  "email": zod.string().email().max(usersUpdateBodyEmailMax).describe('Required. Enter a valid email address.'),
-  "first_name": zod.string().max(usersUpdateBodyFirstNameMax).optional(),
-  "last_name": zod.string().max(usersUpdateBodyLastNameMax).optional(),
-  "is_active": zod.boolean().optional().describe('Designates whether this user should be treated as active. Unselect this instead of deleting accounts.'),
-  "is_staff": zod.boolean().optional().describe('Designates whether the user can log into this admin site.')
-})
+  email: zod
+    .string()
+    .email()
+    .max(usersUpdateBodyEmailMax)
+    .describe('Required. Enter a valid email address.'),
+  first_name: zod.string().max(usersUpdateBodyFirstNameMax).optional(),
+  last_name: zod.string().max(usersUpdateBodyLastNameMax).optional(),
+  password: zod.string(),
+  password_confirm: zod.string()
+});
 
 export const usersUpdateResponseEmailMax = 254;
 export const usersUpdateResponseFirstNameMax = 150;
 export const usersUpdateResponseLastNameMax = 150;
 
-
 export const usersUpdateResponse = zod.object({
-  "id": zod.number(),
-  "email": zod.string().email().max(usersUpdateResponseEmailMax).describe('Required. Enter a valid email address.'),
-  "first_name": zod.string().max(usersUpdateResponseFirstNameMax).optional(),
-  "last_name": zod.string().max(usersUpdateResponseLastNameMax).optional(),
-  "is_active": zod.boolean().optional().describe('Designates whether this user should be treated as active. Unselect this instead of deleting accounts.'),
-  "is_staff": zod.boolean().optional().describe('Designates whether the user can log into this admin site.')
-})
+  id: zod.number(),
+  email: zod
+    .string()
+    .email()
+    .max(usersUpdateResponseEmailMax)
+    .describe('Required. Enter a valid email address.'),
+  first_name: zod.string().max(usersUpdateResponseFirstNameMax).optional(),
+  last_name: zod.string().max(usersUpdateResponseLastNameMax).optional(),
+  password: zod.string(),
+  password_confirm: zod.string(),
+  date_joined: zod.string().datetime({}),
+  last_login: zod.string().datetime({}).nullable()
+});
 
 /**
- * A viewset for viewing and editing user instances.
+ * Partially update user account (PATCH).
  */
 export const usersPartialUpdateParams = zod.object({
-  "id": zod.number().describe('A unique integer value identifying this user.')
-})
+  id: zod.number().describe('A unique integer value identifying this user.')
+});
 
 export const usersPartialUpdateBodyEmailMax = 254;
 export const usersPartialUpdateBodyFirstNameMax = 150;
 export const usersPartialUpdateBodyLastNameMax = 150;
 
-
 export const usersPartialUpdateBody = zod.object({
-  "email": zod.string().email().max(usersPartialUpdateBodyEmailMax).optional().describe('Required. Enter a valid email address.'),
-  "first_name": zod.string().max(usersPartialUpdateBodyFirstNameMax).optional(),
-  "last_name": zod.string().max(usersPartialUpdateBodyLastNameMax).optional(),
-  "is_active": zod.boolean().optional().describe('Designates whether this user should be treated as active. Unselect this instead of deleting accounts.'),
-  "is_staff": zod.boolean().optional().describe('Designates whether the user can log into this admin site.')
-})
+  email: zod
+    .string()
+    .email()
+    .max(usersPartialUpdateBodyEmailMax)
+    .optional()
+    .describe('Required. Enter a valid email address.'),
+  first_name: zod.string().max(usersPartialUpdateBodyFirstNameMax).optional(),
+  last_name: zod.string().max(usersPartialUpdateBodyLastNameMax).optional(),
+  password: zod.string().optional(),
+  password_confirm: zod.string().optional()
+});
 
 export const usersPartialUpdateResponseEmailMax = 254;
 export const usersPartialUpdateResponseFirstNameMax = 150;
 export const usersPartialUpdateResponseLastNameMax = 150;
 
-
 export const usersPartialUpdateResponse = zod.object({
-  "id": zod.number(),
-  "email": zod.string().email().max(usersPartialUpdateResponseEmailMax).describe('Required. Enter a valid email address.'),
-  "first_name": zod.string().max(usersPartialUpdateResponseFirstNameMax).optional(),
-  "last_name": zod.string().max(usersPartialUpdateResponseLastNameMax).optional(),
-  "is_active": zod.boolean().optional().describe('Designates whether this user should be treated as active. Unselect this instead of deleting accounts.'),
-  "is_staff": zod.boolean().optional().describe('Designates whether the user can log into this admin site.')
-})
+  id: zod.number(),
+  email: zod
+    .string()
+    .email()
+    .max(usersPartialUpdateResponseEmailMax)
+    .describe('Required. Enter a valid email address.'),
+  first_name: zod.string().max(usersPartialUpdateResponseFirstNameMax).optional(),
+  last_name: zod.string().max(usersPartialUpdateResponseLastNameMax).optional(),
+  password: zod.string(),
+  password_confirm: zod.string(),
+  date_joined: zod.string().datetime({}),
+  last_login: zod.string().datetime({}).nullable()
+});
 
 /**
- * A viewset for viewing and editing user instances.
+ * Delete user account.
  */
 export const usersDestroyParams = zod.object({
-  "id": zod.number().describe('A unique integer value identifying this user.')
-})
+  id: zod.number().describe('A unique integer value identifying this user.')
+});
 
+/**
+ * Endpoint for users to manage their own profile at /users/me/
+ */
+export const usersMeRetrieveResponseEmailMax = 254;
+export const usersMeRetrieveResponseFirstNameMax = 150;
+export const usersMeRetrieveResponseLastNameMax = 150;
+
+export const usersMeRetrieveResponse = zod.object({
+  id: zod.number(),
+  email: zod
+    .string()
+    .email()
+    .max(usersMeRetrieveResponseEmailMax)
+    .describe('Required. Enter a valid email address.'),
+  first_name: zod.string().max(usersMeRetrieveResponseFirstNameMax).optional(),
+  last_name: zod.string().max(usersMeRetrieveResponseLastNameMax).optional(),
+  password: zod.string(),
+  password_confirm: zod.string(),
+  date_joined: zod.string().datetime({}),
+  last_login: zod.string().datetime({}).nullable()
+});
+
+/**
+ * Endpoint for users to manage their own profile at /users/me/
+ */
+export const usersMeUpdateBodyEmailMax = 254;
+export const usersMeUpdateBodyFirstNameMax = 150;
+export const usersMeUpdateBodyLastNameMax = 150;
+
+export const usersMeUpdateBody = zod.object({
+  email: zod
+    .string()
+    .email()
+    .max(usersMeUpdateBodyEmailMax)
+    .describe('Required. Enter a valid email address.'),
+  first_name: zod.string().max(usersMeUpdateBodyFirstNameMax).optional(),
+  last_name: zod.string().max(usersMeUpdateBodyLastNameMax).optional(),
+  password: zod.string(),
+  password_confirm: zod.string()
+});
+
+export const usersMeUpdateResponseEmailMax = 254;
+export const usersMeUpdateResponseFirstNameMax = 150;
+export const usersMeUpdateResponseLastNameMax = 150;
+
+export const usersMeUpdateResponse = zod.object({
+  id: zod.number(),
+  email: zod
+    .string()
+    .email()
+    .max(usersMeUpdateResponseEmailMax)
+    .describe('Required. Enter a valid email address.'),
+  first_name: zod.string().max(usersMeUpdateResponseFirstNameMax).optional(),
+  last_name: zod.string().max(usersMeUpdateResponseLastNameMax).optional(),
+  password: zod.string(),
+  password_confirm: zod.string(),
+  date_joined: zod.string().datetime({}),
+  last_login: zod.string().datetime({}).nullable()
+});
+
+/**
+ * Endpoint for users to manage their own profile at /users/me/
+ */
+export const usersMePartialUpdateBodyEmailMax = 254;
+export const usersMePartialUpdateBodyFirstNameMax = 150;
+export const usersMePartialUpdateBodyLastNameMax = 150;
+
+export const usersMePartialUpdateBody = zod.object({
+  email: zod
+    .string()
+    .email()
+    .max(usersMePartialUpdateBodyEmailMax)
+    .optional()
+    .describe('Required. Enter a valid email address.'),
+  first_name: zod.string().max(usersMePartialUpdateBodyFirstNameMax).optional(),
+  last_name: zod.string().max(usersMePartialUpdateBodyLastNameMax).optional(),
+  password: zod.string().optional(),
+  password_confirm: zod.string().optional()
+});
+
+export const usersMePartialUpdateResponseEmailMax = 254;
+export const usersMePartialUpdateResponseFirstNameMax = 150;
+export const usersMePartialUpdateResponseLastNameMax = 150;
+
+export const usersMePartialUpdateResponse = zod.object({
+  id: zod.number(),
+  email: zod
+    .string()
+    .email()
+    .max(usersMePartialUpdateResponseEmailMax)
+    .describe('Required. Enter a valid email address.'),
+  first_name: zod.string().max(usersMePartialUpdateResponseFirstNameMax).optional(),
+  last_name: zod.string().max(usersMePartialUpdateResponseLastNameMax).optional(),
+  password: zod.string(),
+  password_confirm: zod.string(),
+  date_joined: zod.string().datetime({}),
+  last_login: zod.string().datetime({}).nullable()
+});

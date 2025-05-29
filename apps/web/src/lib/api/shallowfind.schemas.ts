@@ -5,6 +5,30 @@
  * Shallowfind Financial Planner
  * OpenAPI spec version: 0.0.1
  */
+export interface AdminUser {
+  readonly id: number;
+  /**
+   * Required. Enter a valid email address.
+   * @maxLength 254
+   */
+  email: string;
+  /** @maxLength 150 */
+  first_name?: string;
+  /** @maxLength 150 */
+  last_name?: string;
+  password?: string;
+  password_confirm?: string;
+  /** Designates whether this user should be treated as active. Unselect this instead of deleting accounts. */
+  is_active?: boolean;
+  /** Designates whether the user can log into this admin site. */
+  is_staff?: boolean;
+  /** Designates that this user has all permissions without explicitly assigning them. */
+  is_superuser?: boolean;
+  readonly date_joined: string;
+  /** @nullable */
+  readonly last_login: string | null;
+}
+
 /**
  * Serializer for probability distributions
  */
@@ -24,28 +48,27 @@ export interface Distribution {
 
 /**
  * * `fixed` - Fixed
-* `normal` - Normal
-* `uniform` - Uniform
+ * `normal` - Normal
+ * `uniform` - Uniform
  */
-export type DistributionTypeEnum = typeof DistributionTypeEnum[keyof typeof DistributionTypeEnum];
-
+export type DistributionTypeEnum = (typeof DistributionTypeEnum)[keyof typeof DistributionTypeEnum];
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export const DistributionTypeEnum = {
   fixed: 'fixed',
   normal: 'normal',
-  uniform: 'uniform',
+  uniform: 'uniform'
 } as const;
 
 /**
  * Get initial asset allocation as dict
  */
-export type EventSeriesAssetAllocation = {[key: string]: unknown};
+export type EventSeriesAssetAllocation = { [key: string]: unknown };
 
 /**
  * Get final asset allocation for glide path
  */
-export type EventSeriesAssetAllocation2 = {[key: string]: unknown};
+export type EventSeriesAssetAllocation2 = { [key: string]: unknown };
 
 /**
  * Serializer for event series with complex nested data
@@ -73,19 +96,18 @@ export interface EventSeries {
 
 /**
  * * `income` - Income
-* `expense` - Expense
-* `invest` - Invest
-* `rebalance` - Rebalance
+ * `expense` - Expense
+ * `invest` - Invest
+ * `rebalance` - Rebalance
  */
-export type EventSeriesTypeEnum = typeof EventSeriesTypeEnum[keyof typeof EventSeriesTypeEnum];
-
+export type EventSeriesTypeEnum = (typeof EventSeriesTypeEnum)[keyof typeof EventSeriesTypeEnum];
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export const EventSeriesTypeEnum = {
   income: 'income',
   expense: 'expense',
   invest: 'invest',
-  rebalance: 'rebalance',
+  rebalance: 'rebalance'
 } as const;
 
 /**
@@ -111,6 +133,30 @@ export interface InvestmentType {
   incomeAmtOrPct: string;
   incomeDistribution: Distribution;
   taxability: boolean;
+}
+
+export interface PatchedAdminUser {
+  readonly id?: number;
+  /**
+   * Required. Enter a valid email address.
+   * @maxLength 254
+   */
+  email?: string;
+  /** @maxLength 150 */
+  first_name?: string;
+  /** @maxLength 150 */
+  last_name?: string;
+  password?: string;
+  password_confirm?: string;
+  /** Designates whether this user should be treated as active. Unselect this instead of deleting accounts. */
+  is_active?: boolean;
+  /** Designates whether the user can log into this admin site. */
+  is_staff?: boolean;
+  /** Designates that this user has all permissions without explicitly assigning them. */
+  is_superuser?: boolean;
+  readonly date_joined?: string;
+  /** @nullable */
+  readonly last_login?: string | null;
 }
 
 /**
@@ -149,10 +195,11 @@ export interface PatchedUser {
   first_name?: string;
   /** @maxLength 150 */
   last_name?: string;
-  /** Designates whether this user should be treated as active. Unselect this instead of deleting accounts. */
-  is_active?: boolean;
-  /** Designates whether the user can log into this admin site. */
-  is_staff?: boolean;
+  password?: string;
+  password_confirm?: string;
+  readonly date_joined?: string;
+  /** @nullable */
+  readonly last_login?: string | null;
 }
 
 /**
@@ -200,9 +247,9 @@ export interface User {
   first_name?: string;
   /** @maxLength 150 */
   last_name?: string;
-  /** Designates whether this user should be treated as active. Unselect this instead of deleting accounts. */
-  is_active?: boolean;
-  /** Designates whether the user can log into this admin site. */
-  is_staff?: boolean;
+  password: string;
+  password_confirm: string;
+  readonly date_joined: string;
+  /** @nullable */
+  readonly last_login: string | null;
 }
-
