@@ -48,7 +48,7 @@ export const usersCreateBody = zod.object({
  * A viewset for viewing and editing user instances.
  */
 export const usersRetrieveParams = zod.object({
-  "id": zod.number()
+  "id": zod.number().describe('A unique integer value identifying this user.')
 })
 
 export const usersRetrieveResponseEmailMax = 254;
@@ -69,7 +69,7 @@ export const usersRetrieveResponse = zod.object({
  * A viewset for viewing and editing user instances.
  */
 export const usersUpdateParams = zod.object({
-  "id": zod.number()
+  "id": zod.number().describe('A unique integer value identifying this user.')
 })
 
 export const usersUpdateBodyEmailMax = 254;
@@ -103,7 +103,7 @@ export const usersUpdateResponse = zod.object({
  * A viewset for viewing and editing user instances.
  */
 export const usersPartialUpdateParams = zod.object({
-  "id": zod.number()
+  "id": zod.number().describe('A unique integer value identifying this user.')
 })
 
 export const usersPartialUpdateBodyEmailMax = 254;
@@ -137,6 +137,6 @@ export const usersPartialUpdateResponse = zod.object({
  * A viewset for viewing and editing user instances.
  */
 export const usersDestroyParams = zod.object({
-  "id": zod.number()
+  "id": zod.number().describe('A unique integer value identifying this user.')
 })
 

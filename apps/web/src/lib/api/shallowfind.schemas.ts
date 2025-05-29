@@ -5,6 +5,139 @@
  * Shallowfind Financial Planner
  * OpenAPI spec version: 0.0.1
  */
+/**
+ * Serializer for probability distributions
+ */
+export interface Distribution {
+  type: DistributionTypeEnum;
+  /** @nullable */
+  value?: number | null;
+  /** @nullable */
+  mean?: number | null;
+  /** @nullable */
+  stdev?: number | null;
+  /** @nullable */
+  lower?: number | null;
+  /** @nullable */
+  upper?: number | null;
+}
+
+/**
+ * * `fixed` - Fixed
+* `normal` - Normal
+* `uniform` - Uniform
+ */
+export type DistributionTypeEnum = typeof DistributionTypeEnum[keyof typeof DistributionTypeEnum];
+
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const DistributionTypeEnum = {
+  fixed: 'fixed',
+  normal: 'normal',
+  uniform: 'uniform',
+} as const;
+
+/**
+ * Get initial asset allocation as dict
+ */
+export type EventSeriesAssetAllocation = {[key: string]: unknown};
+
+/**
+ * Get final asset allocation for glide path
+ */
+export type EventSeriesAssetAllocation2 = {[key: string]: unknown};
+
+/**
+ * Serializer for event series with complex nested data
+ */
+export interface EventSeries {
+  /** @maxLength 100 */
+  name: string;
+  start?: Distribution;
+  duration: Distribution;
+  type: EventSeriesTypeEnum;
+  initialAmount?: number;
+  changeAmtOrPct?: string;
+  changeDistribution?: Distribution;
+  inflationAdjusted?: boolean;
+  userFraction?: number;
+  socialSecurity?: boolean;
+  discretionary?: boolean;
+  /** Get initial asset allocation as dict */
+  readonly assetAllocation: EventSeriesAssetAllocation;
+  glidePath?: boolean;
+  /** Get final asset allocation for glide path */
+  readonly assetAllocation2: EventSeriesAssetAllocation2;
+  maxCash?: number;
+}
+
+/**
+ * * `income` - Income
+* `expense` - Expense
+* `invest` - Invest
+* `rebalance` - Rebalance
+ */
+export type EventSeriesTypeEnum = typeof EventSeriesTypeEnum[keyof typeof EventSeriesTypeEnum];
+
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const EventSeriesTypeEnum = {
+  income: 'income',
+  expense: 'expense',
+  invest: 'invest',
+  rebalance: 'rebalance',
+} as const;
+
+/**
+ * Serializer for individual investments
+ */
+export interface Investment {
+  investmentType: string;
+  value: number;
+  taxStatus: string;
+  id: string;
+}
+
+/**
+ * Serializer for investment types
+ */
+export interface InvestmentType {
+  /** @maxLength 100 */
+  name: string;
+  description: string;
+  returnAmtOrPct: string;
+  returnDistribution: Distribution;
+  expenseRatio: number;
+  incomeAmtOrPct: string;
+  incomeDistribution: Distribution;
+  taxability: boolean;
+}
+
+/**
+ * Main serializer for complete scenarios matching YAML format
+ */
+export interface PatchedScenario {
+  /** @maxLength 200 */
+  name?: string;
+  maritalStatus?: string;
+  readonly birthYears?: readonly number[];
+  readonly lifeExpectancy?: readonly Distribution[];
+  investmentTypes?: InvestmentType[];
+  investments?: Investment[];
+  eventSeries?: EventSeries[];
+  inflationAssumption?: Distribution;
+  afterTaxContributionLimit?: number;
+  readonly spendingStrategy?: readonly string[];
+  readonly expenseWithdrawalStrategy?: readonly string[];
+  readonly RMDStrategy?: readonly string[];
+  RothConversionOpt?: boolean;
+  RothConversionStart?: number;
+  RothConversionEnd?: number;
+  readonly RothConversionStrategy?: readonly string[];
+  financialGoal?: number;
+  residenceState?: string;
+}
+
 export interface PatchedUser {
   readonly id?: number;
   /**
@@ -20,6 +153,31 @@ export interface PatchedUser {
   is_active?: boolean;
   /** Designates whether the user can log into this admin site. */
   is_staff?: boolean;
+}
+
+/**
+ * Main serializer for complete scenarios matching YAML format
+ */
+export interface Scenario {
+  /** @maxLength 200 */
+  name: string;
+  maritalStatus: string;
+  readonly birthYears: readonly number[];
+  readonly lifeExpectancy: readonly Distribution[];
+  investmentTypes: InvestmentType[];
+  investments: Investment[];
+  eventSeries: EventSeries[];
+  inflationAssumption: Distribution;
+  afterTaxContributionLimit: number;
+  readonly spendingStrategy: readonly string[];
+  readonly expenseWithdrawalStrategy: readonly string[];
+  readonly RMDStrategy: readonly string[];
+  RothConversionOpt: boolean;
+  RothConversionStart?: number;
+  RothConversionEnd?: number;
+  readonly RothConversionStrategy: readonly string[];
+  financialGoal: number;
+  residenceState: string;
 }
 
 /**
