@@ -1,3 +1,7 @@
+from typing import List, Dict, Any, Optional
+
+from drf_spectacular.types import OpenApiTypes
+from drf_spectacular.utils import extend_schema_field
 from rest_framework import serializers
 from .models import (
     Distribution,
@@ -157,7 +161,8 @@ class EventSeriesSerializer(serializers.ModelSerializer):
             "maxCash",
         ]
 
-    def get_assetAllocation(self, obj):
+    @extend_schema_field(OpenApiTypes.OBJECT)
+    def get_assetAllocation(self, obj) -> Optional[Dict[str, float]]:
         """Get initial asset allocation as dict"""
         if obj.type in ["invest", "rebalance"]:
             allocations = obj.asset_allocations.filter(is_final_allocation=False)
@@ -167,7 +172,8 @@ class EventSeriesSerializer(serializers.ModelSerializer):
             }
         return None
 
-    def get_assetAllocation2(self, obj):
+    @extend_schema_field(OpenApiTypes.OBJECT)
+    def get_assetAllocation2(self, obj) -> Optional[Dict[str, float]]:
         """Get final asset allocation for glide path"""
         if obj.type in ["invest", "rebalance"] and obj.glide_path:
             allocations = obj.asset_allocations.filter(is_final_allocation=True)
@@ -327,35 +333,41 @@ class ScenarioSerializer(serializers.ModelSerializer):
             "residenceState",
         ]
 
-    def get_birthYears(self, obj):
+    @extend_schema_field(serializers.ListField(child=serializers.IntegerField()))
+    def get_birthYears(self, obj) -> List[int]:
         """Return birth years as list"""
         if obj.marital_status == "couple":
             return [obj.user_birth_year, obj.spouse_birth_year]
         return [obj.user_birth_year]
 
-    def get_lifeExpectancy(self, obj):
+    @extend_schema_field(serializers.ListField(child=DistributionSerializer()))
+    def get_lifeExpectancy(self, obj) -> List[Dict[str, Any]]:
         """Return life expectancy distributions as list"""
         result = [DistributionSerializer(obj.user_life_expectancy).data]
         if obj.marital_status == "couple" and obj.spouse_life_expectancy:
             result.append(DistributionSerializer(obj.spouse_life_expectancy).data)
         return result
 
-    def get_spendingStrategy(self, obj):
+    @extend_schema_field(serializers.ListField(child=serializers.CharField()))
+    def get_spendingStrategy(self, obj) -> List[str]:
         """Return ordered list of discretionary expense names"""
         items = obj.spending_strategy_items.all().order_by("order")
         return [item.event_series.name for item in items]
 
-    def get_expenseWithdrawalStrategy(self, obj):
+    @extend_schema_field(serializers.ListField(child=serializers.CharField()))
+    def get_expenseWithdrawalStrategy(self, obj) -> List[str]:
         """Return ordered list of investment IDs"""
         items = obj.expense_withdrawal_strategy_items.all().order_by("order")
         return [item.investment.investment_id for item in items]
 
-    def get_RMDStrategy(self, obj):
+    @extend_schema_field(serializers.ListField(child=serializers.CharField()))
+    def get_RMDStrategy(self, obj) -> List[str]:
         """Return ordered list of pre-tax investment IDs"""
         items = obj.rmd_strategy_items.all().order_by("order")
         return [item.investment.investment_id for item in items]
 
-    def get_RothConversionStrategy(self, obj):
+    @extend_schema_field(serializers.ListField(child=serializers.CharField()))
+    def get_RothConversionStrategy(self, obj) -> List[str]:
         """Return ordered list of pre-tax investment IDs"""
         items = obj.roth_conversion_strategy_items.all().order_by("order")
         return [item.investment.investment_id for item in items]

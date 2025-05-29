@@ -569,12 +569,16 @@ components:
         discretionary:
           type: boolean
         assetAllocation:
-          type: string
+          type: object
+          additionalProperties: {}
+          description: Get initial asset allocation as dict
           readOnly: true
         glidePath:
           type: boolean
         assetAllocation2:
-          type: string
+          type: object
+          additionalProperties: {}
+          description: Get final asset allocation for glide path
           readOnly: true
         maxCash:
           type: number
@@ -656,10 +660,14 @@ components:
         maritalStatus:
           type: string
         birthYears:
-          type: string
+          type: array
+          items:
+            type: integer
           readOnly: true
         lifeExpectancy:
-          type: string
+          type: array
+          items:
+            $ref: '#/components/schemas/Distribution'
           readOnly: true
         investmentTypes:
           type: array
@@ -679,13 +687,19 @@ components:
           type: number
           format: double
         spendingStrategy:
-          type: string
+          type: array
+          items:
+            type: string
           readOnly: true
         expenseWithdrawalStrategy:
-          type: string
+          type: array
+          items:
+            type: string
           readOnly: true
         RMDStrategy:
-          type: string
+          type: array
+          items:
+            type: string
           readOnly: true
         RothConversionOpt:
           type: boolean
@@ -694,7 +708,9 @@ components:
         RothConversionEnd:
           type: integer
         RothConversionStrategy:
-          type: string
+          type: array
+          items:
+            type: string
           readOnly: true
         financialGoal:
           type: number
@@ -738,10 +754,14 @@ components:
         maritalStatus:
           type: string
         birthYears:
-          type: string
+          type: array
+          items:
+            type: integer
           readOnly: true
         lifeExpectancy:
-          type: string
+          type: array
+          items:
+            $ref: '#/components/schemas/Distribution'
           readOnly: true
         investmentTypes:
           type: array
@@ -761,13 +781,19 @@ components:
           type: number
           format: double
         spendingStrategy:
-          type: string
+          type: array
+          items:
+            type: string
           readOnly: true
         expenseWithdrawalStrategy:
-          type: string
+          type: array
+          items:
+            type: string
           readOnly: true
         RMDStrategy:
-          type: string
+          type: array
+          items:
+            type: string
           readOnly: true
         RothConversionOpt:
           type: boolean
@@ -776,7 +802,9 @@ components:
         RothConversionEnd:
           type: integer
         RothConversionStrategy:
-          type: string
+          type: array
+          items:
+            type: string
           readOnly: true
         financialGoal:
           type: number
