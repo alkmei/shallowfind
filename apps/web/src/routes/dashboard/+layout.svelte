@@ -14,14 +14,9 @@
   import DropdownMenuContent from '$lib/components/ui/dropdown-menu/dropdown-menu-content.svelte';
   import DropdownMenuSeparator from '$lib/components/ui/dropdown-menu/dropdown-menu-separator.svelte';
 
+  import { userStore } from '$lib/stores/user';
+
   let { children } = $props();
-
-  function logout() {}
-
-  const user = {
-    name: 'John Doe',
-    id: '12345'
-  };
 </script>
 
 <div class="mx-8 grid h-screen grid-cols-[auto_1fr] grid-rows-[auto_1fr] gap-6 py-6">
