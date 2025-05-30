@@ -70,11 +70,15 @@ export const getAdminUsersListQueryOptions = <
   const queryFn: QueryFunction<Awaited<ReturnType<typeof adminUsersList>>> = ({ signal }) =>
     adminUsersList({ signal, ...axiosOptions });
 
-  return { queryKey, queryFn, ...queryOptions } as CreateQueryOptions<
-    Awaited<ReturnType<typeof adminUsersList>>,
-    TError,
-    TData
-  > & { queryKey: DataTag<QueryKey, TData, TError> };
+  return {
+    queryKey,
+    queryFn,
+    useQuery: true,
+    staleTime: 300000,
+    ...queryOptions
+  } as CreateQueryOptions<Awaited<ReturnType<typeof adminUsersList>>, TError, TData> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
 };
 
 export type AdminUsersListQueryResult = NonNullable<Awaited<ReturnType<typeof adminUsersList>>>;
@@ -207,11 +211,16 @@ export const getAdminUsersRetrieveQueryOptions = <
   const queryFn: QueryFunction<Awaited<ReturnType<typeof adminUsersRetrieve>>> = ({ signal }) =>
     adminUsersRetrieve(id, { signal, ...axiosOptions });
 
-  return { queryKey, queryFn, enabled: !!id, ...queryOptions } as CreateQueryOptions<
-    Awaited<ReturnType<typeof adminUsersRetrieve>>,
-    TError,
-    TData
-  > & { queryKey: DataTag<QueryKey, TData, TError> };
+  return {
+    queryKey,
+    queryFn,
+    enabled: !!id,
+    useQuery: true,
+    staleTime: 300000,
+    ...queryOptions
+  } as CreateQueryOptions<Awaited<ReturnType<typeof adminUsersRetrieve>>, TError, TData> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
 };
 
 export type AdminUsersRetrieveQueryResult = NonNullable<

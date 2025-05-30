@@ -13,17 +13,12 @@
   import DropdownMenuItem from '$lib/components/ui/dropdown-menu/dropdown-menu-item.svelte';
   import DropdownMenuContent from '$lib/components/ui/dropdown-menu/dropdown-menu-content.svelte';
   import DropdownMenuSeparator from '$lib/components/ui/dropdown-menu/dropdown-menu-separator.svelte';
-
-  import { createUser } from '$lib/stores/user.svelte';
+  import { createUsersMeRetrieve } from '$lib/api/users/users';
+  import type { AdminUser } from '$lib/api/shallowfind.schemas';
   import { onMount } from 'svelte';
 
-  const userStore = createUser();
-
-  onMount(() => {
-    userStore.fetchUser();
-  });
-
   let { children } = $props();
+  const userQuery = createUsersMeRetrieve();
 </script>
 
 <div class="mx-8 grid h-screen grid-cols-[auto_1fr] grid-rows-[auto_1fr] gap-6 py-6">
@@ -35,30 +30,33 @@
 
   <header class="flex items-center justify-between">
     <div>Breadcrumb</div>
-    {#if userStore.user}
+    {#if $userQuery.isLoading}
+      <span>Loading...</span>
+    {:else if $userQuery.isError}
+      <Button class="cursor-pointer" variant="outline">Log In</Button>
+    {:else if $userQuery.isSuccess}
+      {@const currentUser: AdminUser = $userQuery.data.data}
       <DropdownMenu>
         <DropdownMenuTrigger>
           <Avatar class="cursor-pointer hover:brightness-75">
             <AvatarImage
-              src={`https://api.dicebear.com/9.x/lorelei/svg?seed=${userStore.user.email}`}
-              alt={userStore.user.email}
+              src={`https://api.dicebear.com/9.x/lorelei/svg?seed=${currentUser.email}`}
+              alt={currentUser.email}
               referrerpolicy="no-referrer"
             />
-            <AvatarFallback>{userStore.user.email}</AvatarFallback>
+            <AvatarFallback>{currentUser.email}</AvatarFallback>
           </Avatar>
         </DropdownMenuTrigger>
         <DropdownMenuContent>
-          <DropdownMenuLabel>{userStore.user.email}</DropdownMenuLabel>
+          <DropdownMenuLabel>{currentUser.email}</DropdownMenuLabel>
           <DropdownMenuSeparator />
           <DropdownMenuItem>
-            <a href={`/dashboard/users/${userStore.user.id}`}>Profile</a>
+            <a href={`/dashboard/profile`}>Profile</a>
           </DropdownMenuItem>
           <DropdownMenuItem>Settings</DropdownMenuItem>
           <DropdownMenuItem>Logout</DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
-    {:else}
-      <Button class="cursor-pointer" variant="outline">Log In</Button>
     {/if}
   </header>
 

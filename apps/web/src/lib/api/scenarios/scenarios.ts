@@ -69,11 +69,15 @@ export const getScenariosListQueryOptions = <
   const queryFn: QueryFunction<Awaited<ReturnType<typeof scenariosList>>> = ({ signal }) =>
     scenariosList({ signal, ...axiosOptions });
 
-  return { queryKey, queryFn, ...queryOptions } as CreateQueryOptions<
-    Awaited<ReturnType<typeof scenariosList>>,
-    TError,
-    TData
-  > & { queryKey: DataTag<QueryKey, TData, TError> };
+  return {
+    queryKey,
+    queryFn,
+    useQuery: true,
+    staleTime: 300000,
+    ...queryOptions
+  } as CreateQueryOptions<Awaited<ReturnType<typeof scenariosList>>, TError, TData> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
 };
 
 export type ScenariosListQueryResult = NonNullable<Awaited<ReturnType<typeof scenariosList>>>;
@@ -208,11 +212,16 @@ export const getScenariosRetrieveQueryOptions = <
   const queryFn: QueryFunction<Awaited<ReturnType<typeof scenariosRetrieve>>> = ({ signal }) =>
     scenariosRetrieve(id, { signal, ...axiosOptions });
 
-  return { queryKey, queryFn, enabled: !!id, ...queryOptions } as CreateQueryOptions<
-    Awaited<ReturnType<typeof scenariosRetrieve>>,
-    TError,
-    TData
-  > & { queryKey: DataTag<QueryKey, TData, TError> };
+  return {
+    queryKey,
+    queryFn,
+    enabled: !!id,
+    useQuery: true,
+    staleTime: 300000,
+    ...queryOptions
+  } as CreateQueryOptions<Awaited<ReturnType<typeof scenariosRetrieve>>, TError, TData> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
 };
 
 export type ScenariosRetrieveQueryResult = NonNullable<
@@ -576,11 +585,16 @@ export const getScenariosExportRetrieveQueryOptions = <
     signal
   }) => scenariosExportRetrieve(id, { signal, ...axiosOptions });
 
-  return { queryKey, queryFn, enabled: !!id, ...queryOptions } as CreateQueryOptions<
-    Awaited<ReturnType<typeof scenariosExportRetrieve>>,
-    TError,
-    TData
-  > & { queryKey: DataTag<QueryKey, TData, TError> };
+  return {
+    queryKey,
+    queryFn,
+    enabled: !!id,
+    useQuery: true,
+    staleTime: 300000,
+    ...queryOptions
+  } as CreateQueryOptions<Awaited<ReturnType<typeof scenariosExportRetrieve>>, TError, TData> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
 };
 
 export type ScenariosExportRetrieveQueryResult = NonNullable<
@@ -724,7 +738,14 @@ export const getScenariosValidateScenarioRetrieveQueryOptions = <
     signal
   }) => scenariosValidateScenarioRetrieve(id, { signal, ...axiosOptions });
 
-  return { queryKey, queryFn, enabled: !!id, ...queryOptions } as CreateQueryOptions<
+  return {
+    queryKey,
+    queryFn,
+    enabled: !!id,
+    useQuery: true,
+    staleTime: 300000,
+    ...queryOptions
+  } as CreateQueryOptions<
     Awaited<ReturnType<typeof scenariosValidateScenarioRetrieve>>,
     TError,
     TData

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { usersCreate } from '$lib/api/users/users';
+  import { createUsersCreate, usersCreate } from '$lib/api/users/users';
   import { usersCreateBody } from '$lib/api/users/users.zod';
   import * as Form from '$lib/components/ui/form';
   import * as Card from '$lib/components/ui/card';
@@ -10,23 +10,25 @@
   import { X } from '@lucide/svelte';
   import { goto } from '$app/navigation';
 
+  const mutation = createUsersCreate({
+    mutation: {
+      onSuccess: () => {
+        // Redirect to login or dashboard after successful registration
+        goto('/');
+      },
+      onError: (error) => {
+        // Handle error, e.g., show a notification or alert
+        console.error('Registration failed:', error);
+      }
+    }
+  });
+
   const form = superForm(defaults(zod(usersCreateBody)), {
     validators: zodClient(usersCreateBody),
     SPA: true,
     async onUpdate({ form }) {
       if (!form.valid) return;
-
-      try {
-        const res = await usersCreate(form.data);
-
-        if (res.status === 201) {
-          // Redirect to login or dashboard after successful registration
-          await goto('/');
-        }
-      } catch (error) {
-        // TODO: Add error to UI, most likely duplicate user
-        console.error('Error creating user:', error);
-      }
+      $mutation.mutate({ data: form.data });
     }
   });
 

@@ -5,26 +5,28 @@
   import { superForm, defaults } from 'sveltekit-superforms';
   import { zod, zodClient } from 'sveltekit-superforms/adapters';
   import { sessionCreateBody } from './api/session/session.zod';
-  import { sessionCreate } from './api/session/session';
+  import { createSessionCreate, sessionCreate } from './api/session/session';
   import { goto } from '$app/navigation';
+
+  const createSession = createSessionCreate({
+    mutation: {
+      onSuccess: () => {
+        // Redirect to the dashboard or another page after successful login
+        goto('/dashboard');
+      },
+      onError: (error) => {
+        // Handle error, e.g., show a notification or alert
+        console.error('Login failed:', error);
+      }
+    }
+  });
 
   const form = superForm(defaults(zod(sessionCreateBody)), {
     validators: zodClient(sessionCreateBody),
     SPA: true,
-    async onUpdate({ form }) {
+    onUpdate({ form }) {
       if (!form.valid) return;
-
-      try {
-        // Attempt to create a session with the provided credentials
-        const res = await sessionCreate(form.data);
-        if (res.status === 200) {
-          // Redirect to dashboard on successful login
-          await goto('/dashboard');
-        }
-      } catch (error) {
-        // Handle error, e.g., show a notification or alert
-        console.error('Login failed:', error);
-      }
+      $createSession.mutate({ data: form.data });
     }
   });
 

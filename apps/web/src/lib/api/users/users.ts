@@ -68,11 +68,15 @@ export const getUsersListQueryOptions = <
   const queryFn: QueryFunction<Awaited<ReturnType<typeof usersList>>> = ({ signal }) =>
     usersList({ signal, ...axiosOptions });
 
-  return { queryKey, queryFn, ...queryOptions } as CreateQueryOptions<
-    Awaited<ReturnType<typeof usersList>>,
-    TError,
-    TData
-  > & { queryKey: DataTag<QueryKey, TData, TError> };
+  return {
+    queryKey,
+    queryFn,
+    useQuery: true,
+    staleTime: 300000,
+    ...queryOptions
+  } as CreateQueryOptions<Awaited<ReturnType<typeof usersList>>, TError, TData> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
 };
 
 export type UsersListQueryResult = NonNullable<Awaited<ReturnType<typeof usersList>>>;
@@ -201,11 +205,16 @@ export const getUsersRetrieveQueryOptions = <
   const queryFn: QueryFunction<Awaited<ReturnType<typeof usersRetrieve>>> = ({ signal }) =>
     usersRetrieve(id, { signal, ...axiosOptions });
 
-  return { queryKey, queryFn, enabled: !!id, ...queryOptions } as CreateQueryOptions<
-    Awaited<ReturnType<typeof usersRetrieve>>,
-    TError,
-    TData
-  > & { queryKey: DataTag<QueryKey, TData, TError> };
+  return {
+    queryKey,
+    queryFn,
+    enabled: !!id,
+    useQuery: true,
+    staleTime: 300000,
+    ...queryOptions
+  } as CreateQueryOptions<Awaited<ReturnType<typeof usersRetrieve>>, TError, TData> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
 };
 
 export type UsersRetrieveQueryResult = NonNullable<Awaited<ReturnType<typeof usersRetrieve>>>;
@@ -474,11 +483,15 @@ export const getUsersMeRetrieveQueryOptions = <
   const queryFn: QueryFunction<Awaited<ReturnType<typeof usersMeRetrieve>>> = ({ signal }) =>
     usersMeRetrieve({ signal, ...axiosOptions });
 
-  return { queryKey, queryFn, ...queryOptions } as CreateQueryOptions<
-    Awaited<ReturnType<typeof usersMeRetrieve>>,
-    TError,
-    TData
-  > & { queryKey: DataTag<QueryKey, TData, TError> };
+  return {
+    queryKey,
+    queryFn,
+    useQuery: true,
+    staleTime: 300000,
+    ...queryOptions
+  } as CreateQueryOptions<Awaited<ReturnType<typeof usersMeRetrieve>>, TError, TData> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
 };
 
 export type UsersMeRetrieveQueryResult = NonNullable<Awaited<ReturnType<typeof usersMeRetrieve>>>;
