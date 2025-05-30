@@ -1,7 +1,6 @@
 <script lang="ts">
   import * as Form from '$lib/components/ui/form';
   import * as Dialog from '$lib/components/ui/dialog';
-  import { Button } from './components/ui/button';
   import { Input } from '$lib/components/ui/input';
   import { superForm, defaults } from 'sveltekit-superforms';
   import { zod, zodClient } from 'sveltekit-superforms/adapters';
