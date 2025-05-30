@@ -27,8 +27,17 @@
     <DropdownMenu.Label>
       {currentUser.email}
     </DropdownMenu.Label>
+    <div class="grid grid-cols-2 gap-x-4 px-2 py-1.5 text-sm">
+      <div class="font-medium text-gray-500">Last Logged In:</div>
+      <div>
+        {currentUser.last_login ? new Date(currentUser.last_login).toLocaleString() : 'Never'}
+      </div>
+      <div class="font-medium text-gray-500">Date Joined:</div>
+      <div>{currentUser.date_joined ? new Date(currentUser.date_joined).toLocaleString() : ''}</div>
+      <div class="font-medium text-gray-500">Active:</div>
+      <div>{currentUser.is_active ? 'Yes' : 'No'}</div>
+    </div>
     <DropdownMenu.Separator />
-    <DropdownMenu.Item>Profile</DropdownMenu.Item>
     <DropdownMenu.Item>Settings</DropdownMenu.Item>
     <DropdownMenu.Item>Logout</DropdownMenu.Item>
   </DropdownMenu.Content>
