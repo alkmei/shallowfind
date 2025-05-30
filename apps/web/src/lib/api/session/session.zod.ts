@@ -5,27 +5,25 @@
  * Shallowfind Financial Planner
  * OpenAPI spec version: 0.0.1
  */
-import {
-  z as zod
-} from 'zod';
-
+import { z as zod } from 'zod';
 
 /**
  * Handle user login with email.
  */
 export const sessionCreateBodyEmailMax = 150;
 
-
-export const sessionCreateBody = zod.object({
-  "email": zod.string().email().max(sessionCreateBodyEmailMax),
-  "password": zod.string()
-}).describe('Serializer for handling user login data.')
+export const sessionCreateBody = zod
+  .object({
+    email: zod.string().email().max(sessionCreateBodyEmailMax),
+    password: zod.string()
+  })
+  .describe('Serializer for handling user login data.');
 
 export const sessionCreateResponseEmailMax = 150;
 
-
-export const sessionCreateResponse = zod.object({
-  "email": zod.string().email().max(sessionCreateResponseEmailMax),
-  "password": zod.string()
-}).describe('Serializer for handling user login data.')
-
+export const sessionCreateResponse = zod
+  .object({
+    email: zod.string().email().max(sessionCreateResponseEmailMax),
+    password: zod.string()
+  })
+  .describe('Serializer for handling user login data.');

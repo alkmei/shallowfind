@@ -5,9 +5,7 @@
  * Shallowfind Financial Planner
  * OpenAPI spec version: 0.0.1
  */
-import {
-  createMutation
-} from '@tanstack/svelte-query';
+import { createMutation } from '@tanstack/svelte-query';
 import type {
   CreateMutationOptions,
   CreateMutationResult,
@@ -16,133 +14,131 @@ import type {
 } from '@tanstack/svelte-query';
 
 import axios from 'axios';
-import type {
-  AxiosError,
-  AxiosRequestConfig,
-  AxiosResponse
-} from 'axios';
+import type { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios';
 
-import type {
-  Session
-} from '../shallowfind.schemas';
-
-
-
-
+import type { Session } from '../shallowfind.schemas';
 
 /**
  * Handle user login with email.
  */
 export const sessionCreate = (
-    session: Session, options?: AxiosRequestConfig
- ): Promise<AxiosResponse<Session>> => {
-    
-    
-    return axios.post(
-      `/api/session/`,
-      session,options
-    );
-  }
+  session: Session,
+  options?: AxiosRequestConfig
+): Promise<AxiosResponse<Session>> => {
+  return axios.post(`/api/session/`, session, options);
+};
 
+export const getSessionCreateMutationOptions = <
+  TError = AxiosError<unknown>,
+  TContext = unknown
+>(options?: {
+  mutation?: CreateMutationOptions<
+    Awaited<ReturnType<typeof sessionCreate>>,
+    TError,
+    { data: Session },
+    TContext
+  >;
+  axios?: AxiosRequestConfig;
+}): CreateMutationOptions<
+  Awaited<ReturnType<typeof sessionCreate>>,
+  TError,
+  { data: Session },
+  TContext
+> => {
+  const mutationKey = ['sessionCreate'];
+  const { mutation: mutationOptions, axios: axiosOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, axios: undefined };
 
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof sessionCreate>>,
+    { data: Session }
+  > = (props) => {
+    const { data } = props ?? {};
 
-export const getSessionCreateMutationOptions = <TError = AxiosError<unknown>,
-    TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof sessionCreate>>, TError,{data: Session}, TContext>, axios?: AxiosRequestConfig}
-): CreateMutationOptions<Awaited<ReturnType<typeof sessionCreate>>, TError,{data: Session}, TContext> => {
+    return sessionCreate(data, axiosOptions);
+  };
 
-const mutationKey = ['sessionCreate'];
-const {mutation: mutationOptions, axios: axiosOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, axios: undefined};
+  return { mutationFn, ...mutationOptions };
+};
 
-      
+export type SessionCreateMutationResult = NonNullable<Awaited<ReturnType<typeof sessionCreate>>>;
+export type SessionCreateMutationBody = Session;
+export type SessionCreateMutationError = AxiosError<unknown>;
 
+export const createSessionCreate = <TError = AxiosError<unknown>, TContext = unknown>(
+  options?: {
+    mutation?: CreateMutationOptions<
+      Awaited<ReturnType<typeof sessionCreate>>,
+      TError,
+      { data: Session },
+      TContext
+    >;
+    axios?: AxiosRequestConfig;
+  },
+  queryClient?: QueryClient
+): CreateMutationResult<
+  Awaited<ReturnType<typeof sessionCreate>>,
+  TError,
+  { data: Session },
+  TContext
+> => {
+  const mutationOptions = getSessionCreateMutationOptions(options);
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof sessionCreate>>, {data: Session}> = (props) => {
-          const {data} = props ?? {};
-
-          return  sessionCreate(data,axiosOptions)
-        }
-
-        
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type SessionCreateMutationResult = NonNullable<Awaited<ReturnType<typeof sessionCreate>>>
-    export type SessionCreateMutationBody = Session
-    export type SessionCreateMutationError = AxiosError<unknown>
-
-    export const createSessionCreate = <TError = AxiosError<unknown>,
-    TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof sessionCreate>>, TError,{data: Session}, TContext>, axios?: AxiosRequestConfig}
- , queryClient?: QueryClient): CreateMutationResult<
-        Awaited<ReturnType<typeof sessionCreate>>,
-        TError,
-        {data: Session},
-        TContext
-      > => {
-
-      const mutationOptions = getSessionCreateMutationOptions(options);
-
-      return createMutation(mutationOptions , queryClient);
-    }
-    /**
+  return createMutation(mutationOptions, queryClient);
+};
+/**
  * Handle user logout.
  */
-export const sessionDestroy = (
-     options?: AxiosRequestConfig
- ): Promise<AxiosResponse<void>> => {
-    
-    
-    return axios.delete(
-      `/api/session/`,options
-    );
-  }
+export const sessionDestroy = (options?: AxiosRequestConfig): Promise<AxiosResponse<void>> => {
+  return axios.delete(`/api/session/`, options);
+};
 
+export const getSessionDestroyMutationOptions = <
+  TError = AxiosError<unknown>,
+  TContext = unknown
+>(options?: {
+  mutation?: CreateMutationOptions<
+    Awaited<ReturnType<typeof sessionDestroy>>,
+    TError,
+    void,
+    TContext
+  >;
+  axios?: AxiosRequestConfig;
+}): CreateMutationOptions<Awaited<ReturnType<typeof sessionDestroy>>, TError, void, TContext> => {
+  const mutationKey = ['sessionDestroy'];
+  const { mutation: mutationOptions, axios: axiosOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, axios: undefined };
 
+  const mutationFn: MutationFunction<Awaited<ReturnType<typeof sessionDestroy>>, void> = () => {
+    return sessionDestroy(axiosOptions);
+  };
 
-export const getSessionDestroyMutationOptions = <TError = AxiosError<unknown>,
-    TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof sessionDestroy>>, TError,void, TContext>, axios?: AxiosRequestConfig}
-): CreateMutationOptions<Awaited<ReturnType<typeof sessionDestroy>>, TError,void, TContext> => {
+  return { mutationFn, ...mutationOptions };
+};
 
-const mutationKey = ['sessionDestroy'];
-const {mutation: mutationOptions, axios: axiosOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, axios: undefined};
+export type SessionDestroyMutationResult = NonNullable<Awaited<ReturnType<typeof sessionDestroy>>>;
 
-      
+export type SessionDestroyMutationError = AxiosError<unknown>;
 
+export const createSessionDestroy = <TError = AxiosError<unknown>, TContext = unknown>(
+  options?: {
+    mutation?: CreateMutationOptions<
+      Awaited<ReturnType<typeof sessionDestroy>>,
+      TError,
+      void,
+      TContext
+    >;
+    axios?: AxiosRequestConfig;
+  },
+  queryClient?: QueryClient
+): CreateMutationResult<Awaited<ReturnType<typeof sessionDestroy>>, TError, void, TContext> => {
+  const mutationOptions = getSessionDestroyMutationOptions(options);
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof sessionDestroy>>, void> = () => {
-          
-
-          return  sessionDestroy(axiosOptions)
-        }
-
-        
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type SessionDestroyMutationResult = NonNullable<Awaited<ReturnType<typeof sessionDestroy>>>
-    
-    export type SessionDestroyMutationError = AxiosError<unknown>
-
-    export const createSessionDestroy = <TError = AxiosError<unknown>,
-    TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof sessionDestroy>>, TError,void, TContext>, axios?: AxiosRequestConfig}
- , queryClient?: QueryClient): CreateMutationResult<
-        Awaited<ReturnType<typeof sessionDestroy>>,
-        TError,
-        void,
-        TContext
-      > => {
-
-      const mutationOptions = getSessionDestroyMutationOptions(options);
-
-      return createMutation(mutationOptions , queryClient);
-    }
-    
+  return createMutation(mutationOptions, queryClient);
+};

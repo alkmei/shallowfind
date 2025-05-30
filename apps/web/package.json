@@ -14,7 +14,8 @@
     "lint": "eslint .",
     "test:integration": "playwright test",
     "test:unit": "vitest",
-    "generate": "orval"
+    "generate": "orval && prettier --write src/lib/api/",
+    "format": "prettier --write ."
   },
   "dependencies": {
     "@tanstack/svelte-query": "^5.77.1",

@@ -5,10 +5,7 @@
  * Shallowfind Financial Planner
  * OpenAPI spec version: 0.0.1
  */
-import {
-  createMutation,
-  createQuery
-} from '@tanstack/svelte-query';
+import { createMutation, createQuery } from '@tanstack/svelte-query';
 import type {
   CreateMutationOptions,
   CreateMutationResult,
@@ -22,693 +19,824 @@ import type {
 } from '@tanstack/svelte-query';
 
 import axios from 'axios';
-import type {
-  AxiosError,
-  AxiosRequestConfig,
-  AxiosResponse
-} from 'axios';
+import type { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios';
 
-import type {
-  PatchedScenario,
-  Scenario
-} from '../shallowfind.schemas';
-
+import type { PatchedScenario, Scenario } from '../shallowfind.schemas';
 
 // https://stackoverflow.com/questions/49579094/typescript-conditional-types-filter-out-readonly-properties-pick-only-requir/49579497#49579497
-type IfEquals<X, Y, A = X, B = never> = (<T>() => T extends X ? 1 : 2) extends <
-T,
->() => T extends Y ? 1 : 2
-? A
-: B;
+type IfEquals<X, Y, A = X, B = never> =
+  (<T>() => T extends X ? 1 : 2) extends <T>() => T extends Y ? 1 : 2 ? A : B;
 
 type WritableKeys<T> = {
-[P in keyof T]-?: IfEquals<
-  { [Q in P]: T[P] },
-  { -readonly [Q in P]: T[P] },
-  P
->;
+  [P in keyof T]-?: IfEquals<{ [Q in P]: T[P] }, { -readonly [Q in P]: T[P] }, P>;
 }[keyof T];
 
-type UnionToIntersection<U> =
-  (U extends any ? (k: U)=>void : never) extends ((k: infer I)=>void) ? I : never;
+type UnionToIntersection<U> = (U extends any ? (k: U) => void : never) extends (k: infer I) => void
+  ? I
+  : never;
 type DistributeReadOnlyOverUnions<T> = T extends any ? NonReadonly<T> : never;
 
 type Writable<T> = Pick<T, WritableKeys<T>>;
-type NonReadonly<T> = [T] extends [UnionToIntersection<T>] ? {
-  [P in keyof Writable<T>]: T[P] extends object
-    ? NonReadonly<NonNullable<T[P]>>
-    : T[P];
-} : DistributeReadOnlyOverUnions<T>;
-
-
-
-
+type NonReadonly<T> = [T] extends [UnionToIntersection<T>]
+  ? {
+      [P in keyof Writable<T>]: T[P] extends object ? NonReadonly<NonNullable<T[P]>> : T[P];
+    }
+  : DistributeReadOnlyOverUnions<T>;
 
 /**
  * ViewSet for managing scenarios with full CRUD operations.
 Provides list, create, retrieve, update, destroy actions.
  */
-export const scenariosList = (
-     options?: AxiosRequestConfig
- ): Promise<AxiosResponse<Scenario[]>> => {
-    
-    
-    return axios.get(
-      `/api/scenarios/`,options
-    );
-  }
-
+export const scenariosList = (options?: AxiosRequestConfig): Promise<AxiosResponse<Scenario[]>> => {
+  return axios.get(`/api/scenarios/`, options);
+};
 
 export const getScenariosListQueryKey = () => {
-    return [`/api/scenarios/`] as const;
-    }
+  return [`/api/scenarios/`] as const;
+};
 
-    
-export const getScenariosListQueryOptions = <TData = Awaited<ReturnType<typeof scenariosList>>, TError = AxiosError<unknown>>( options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof scenariosList>>, TError, TData>>, axios?: AxiosRequestConfig}
-) => {
+export const getScenariosListQueryOptions = <
+  TData = Awaited<ReturnType<typeof scenariosList>>,
+  TError = AxiosError<unknown>
+>(options?: {
+  query?: Partial<CreateQueryOptions<Awaited<ReturnType<typeof scenariosList>>, TError, TData>>;
+  axios?: AxiosRequestConfig;
+}) => {
+  const { query: queryOptions, axios: axiosOptions } = options ?? {};
 
-const {query: queryOptions, axios: axiosOptions} = options ?? {};
+  const queryKey = queryOptions?.queryKey ?? getScenariosListQueryKey();
 
-  const queryKey =  queryOptions?.queryKey ?? getScenariosListQueryKey();
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof scenariosList>>> = ({ signal }) =>
+    scenariosList({ signal, ...axiosOptions });
 
-  
+  return { queryKey, queryFn, ...queryOptions } as CreateQueryOptions<
+    Awaited<ReturnType<typeof scenariosList>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof scenariosList>>> = ({ signal }) => scenariosList({ signal, ...axiosOptions });
+export type ScenariosListQueryResult = NonNullable<Awaited<ReturnType<typeof scenariosList>>>;
+export type ScenariosListQueryError = AxiosError<unknown>;
 
-      
+export function createScenariosList<
+  TData = Awaited<ReturnType<typeof scenariosList>>,
+  TError = AxiosError<unknown>
+>(
+  options?: {
+    query?: Partial<CreateQueryOptions<Awaited<ReturnType<typeof scenariosList>>, TError, TData>>;
+    axios?: AxiosRequestConfig;
+  },
+  queryClient?: QueryClient
+): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getScenariosListQueryOptions(options);
 
-      
+  const query = createQuery(queryOptions, queryClient) as CreateQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
 
-   return  { queryKey, queryFn, ...queryOptions} as CreateQueryOptions<Awaited<ReturnType<typeof scenariosList>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type ScenariosListQueryResult = NonNullable<Awaited<ReturnType<typeof scenariosList>>>
-export type ScenariosListQueryError = AxiosError<unknown>
-
-
-
-export function createScenariosList<TData = Awaited<ReturnType<typeof scenariosList>>, TError = AxiosError<unknown>>(
-  options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof scenariosList>>, TError, TData>>, axios?: AxiosRequestConfig}
- , queryClient?: QueryClient 
- ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-  const queryOptions = getScenariosListQueryOptions(options)
-
-  const query = createQuery(queryOptions , queryClient) as CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  query.queryKey = queryOptions.queryKey ;
+  query.queryKey = queryOptions.queryKey;
 
   return query;
 }
-
-
 
 /**
  * ViewSet for managing scenarios with full CRUD operations.
 Provides list, create, retrieve, update, destroy actions.
  */
 export const scenariosCreate = (
-    scenario: NonReadonly<Scenario>, options?: AxiosRequestConfig
- ): Promise<AxiosResponse<Scenario>> => {
-    
-    
-    return axios.post(
-      `/api/scenarios/`,
-      scenario,options
-    );
-  }
+  scenario: NonReadonly<Scenario>,
+  options?: AxiosRequestConfig
+): Promise<AxiosResponse<Scenario>> => {
+  return axios.post(`/api/scenarios/`, scenario, options);
+};
 
+export const getScenariosCreateMutationOptions = <
+  TError = AxiosError<unknown>,
+  TContext = unknown
+>(options?: {
+  mutation?: CreateMutationOptions<
+    Awaited<ReturnType<typeof scenariosCreate>>,
+    TError,
+    { data: NonReadonly<Scenario> },
+    TContext
+  >;
+  axios?: AxiosRequestConfig;
+}): CreateMutationOptions<
+  Awaited<ReturnType<typeof scenariosCreate>>,
+  TError,
+  { data: NonReadonly<Scenario> },
+  TContext
+> => {
+  const mutationKey = ['scenariosCreate'];
+  const { mutation: mutationOptions, axios: axiosOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, axios: undefined };
 
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof scenariosCreate>>,
+    { data: NonReadonly<Scenario> }
+  > = (props) => {
+    const { data } = props ?? {};
 
-export const getScenariosCreateMutationOptions = <TError = AxiosError<unknown>,
-    TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof scenariosCreate>>, TError,{data: NonReadonly<Scenario>}, TContext>, axios?: AxiosRequestConfig}
-): CreateMutationOptions<Awaited<ReturnType<typeof scenariosCreate>>, TError,{data: NonReadonly<Scenario>}, TContext> => {
+    return scenariosCreate(data, axiosOptions);
+  };
 
-const mutationKey = ['scenariosCreate'];
-const {mutation: mutationOptions, axios: axiosOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, axios: undefined};
+  return { mutationFn, ...mutationOptions };
+};
 
-      
+export type ScenariosCreateMutationResult = NonNullable<
+  Awaited<ReturnType<typeof scenariosCreate>>
+>;
+export type ScenariosCreateMutationBody = NonReadonly<Scenario>;
+export type ScenariosCreateMutationError = AxiosError<unknown>;
 
+export const createScenariosCreate = <TError = AxiosError<unknown>, TContext = unknown>(
+  options?: {
+    mutation?: CreateMutationOptions<
+      Awaited<ReturnType<typeof scenariosCreate>>,
+      TError,
+      { data: NonReadonly<Scenario> },
+      TContext
+    >;
+    axios?: AxiosRequestConfig;
+  },
+  queryClient?: QueryClient
+): CreateMutationResult<
+  Awaited<ReturnType<typeof scenariosCreate>>,
+  TError,
+  { data: NonReadonly<Scenario> },
+  TContext
+> => {
+  const mutationOptions = getScenariosCreateMutationOptions(options);
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof scenariosCreate>>, {data: NonReadonly<Scenario>}> = (props) => {
-          const {data} = props ?? {};
-
-          return  scenariosCreate(data,axiosOptions)
-        }
-
-        
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type ScenariosCreateMutationResult = NonNullable<Awaited<ReturnType<typeof scenariosCreate>>>
-    export type ScenariosCreateMutationBody = NonReadonly<Scenario>
-    export type ScenariosCreateMutationError = AxiosError<unknown>
-
-    export const createScenariosCreate = <TError = AxiosError<unknown>,
-    TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof scenariosCreate>>, TError,{data: NonReadonly<Scenario>}, TContext>, axios?: AxiosRequestConfig}
- , queryClient?: QueryClient): CreateMutationResult<
-        Awaited<ReturnType<typeof scenariosCreate>>,
-        TError,
-        {data: NonReadonly<Scenario>},
-        TContext
-      > => {
-
-      const mutationOptions = getScenariosCreateMutationOptions(options);
-
-      return createMutation(mutationOptions , queryClient);
-    }
-    /**
+  return createMutation(mutationOptions, queryClient);
+};
+/**
  * ViewSet for managing scenarios with full CRUD operations.
 Provides list, create, retrieve, update, destroy actions.
  */
 export const scenariosRetrieve = (
-    id: number, options?: AxiosRequestConfig
- ): Promise<AxiosResponse<Scenario>> => {
-    
-    
-    return axios.get(
-      `/api/scenarios/${id}/`,options
-    );
+  id: number,
+  options?: AxiosRequestConfig
+): Promise<AxiosResponse<Scenario>> => {
+  return axios.get(`/api/scenarios/${id}/`, options);
+};
+
+export const getScenariosRetrieveQueryKey = (id: number) => {
+  return [`/api/scenarios/${id}/`] as const;
+};
+
+export const getScenariosRetrieveQueryOptions = <
+  TData = Awaited<ReturnType<typeof scenariosRetrieve>>,
+  TError = AxiosError<unknown>
+>(
+  id: number,
+  options?: {
+    query?: Partial<
+      CreateQueryOptions<Awaited<ReturnType<typeof scenariosRetrieve>>, TError, TData>
+    >;
+    axios?: AxiosRequestConfig;
   }
-
-
-export const getScenariosRetrieveQueryKey = (id: number,) => {
-    return [`/api/scenarios/${id}/`] as const;
-    }
-
-    
-export const getScenariosRetrieveQueryOptions = <TData = Awaited<ReturnType<typeof scenariosRetrieve>>, TError = AxiosError<unknown>>(id: number, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof scenariosRetrieve>>, TError, TData>>, axios?: AxiosRequestConfig}
 ) => {
+  const { query: queryOptions, axios: axiosOptions } = options ?? {};
 
-const {query: queryOptions, axios: axiosOptions} = options ?? {};
+  const queryKey = queryOptions?.queryKey ?? getScenariosRetrieveQueryKey(id);
 
-  const queryKey =  queryOptions?.queryKey ?? getScenariosRetrieveQueryKey(id);
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof scenariosRetrieve>>> = ({ signal }) =>
+    scenariosRetrieve(id, { signal, ...axiosOptions });
 
-  
+  return { queryKey, queryFn, enabled: !!id, ...queryOptions } as CreateQueryOptions<
+    Awaited<ReturnType<typeof scenariosRetrieve>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof scenariosRetrieve>>> = ({ signal }) => scenariosRetrieve(id, { signal, ...axiosOptions });
+export type ScenariosRetrieveQueryResult = NonNullable<
+  Awaited<ReturnType<typeof scenariosRetrieve>>
+>;
+export type ScenariosRetrieveQueryError = AxiosError<unknown>;
 
-      
+export function createScenariosRetrieve<
+  TData = Awaited<ReturnType<typeof scenariosRetrieve>>,
+  TError = AxiosError<unknown>
+>(
+  id: number,
+  options?: {
+    query?: Partial<
+      CreateQueryOptions<Awaited<ReturnType<typeof scenariosRetrieve>>, TError, TData>
+    >;
+    axios?: AxiosRequestConfig;
+  },
+  queryClient?: QueryClient
+): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getScenariosRetrieveQueryOptions(id, options);
 
-      
+  const query = createQuery(queryOptions, queryClient) as CreateQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
 
-   return  { queryKey, queryFn, enabled: !!(id), ...queryOptions} as CreateQueryOptions<Awaited<ReturnType<typeof scenariosRetrieve>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type ScenariosRetrieveQueryResult = NonNullable<Awaited<ReturnType<typeof scenariosRetrieve>>>
-export type ScenariosRetrieveQueryError = AxiosError<unknown>
-
-
-
-export function createScenariosRetrieve<TData = Awaited<ReturnType<typeof scenariosRetrieve>>, TError = AxiosError<unknown>>(
- id: number, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof scenariosRetrieve>>, TError, TData>>, axios?: AxiosRequestConfig}
- , queryClient?: QueryClient 
- ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-  const queryOptions = getScenariosRetrieveQueryOptions(id,options)
-
-  const query = createQuery(queryOptions , queryClient) as CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  query.queryKey = queryOptions.queryKey ;
+  query.queryKey = queryOptions.queryKey;
 
   return query;
 }
-
-
 
 /**
  * ViewSet for managing scenarios with full CRUD operations.
 Provides list, create, retrieve, update, destroy actions.
  */
 export const scenariosUpdate = (
-    id: number,
-    scenario: NonReadonly<Scenario>, options?: AxiosRequestConfig
- ): Promise<AxiosResponse<Scenario>> => {
-    
-    
-    return axios.put(
-      `/api/scenarios/${id}/`,
-      scenario,options
-    );
-  }
+  id: number,
+  scenario: NonReadonly<Scenario>,
+  options?: AxiosRequestConfig
+): Promise<AxiosResponse<Scenario>> => {
+  return axios.put(`/api/scenarios/${id}/`, scenario, options);
+};
 
+export const getScenariosUpdateMutationOptions = <
+  TError = AxiosError<unknown>,
+  TContext = unknown
+>(options?: {
+  mutation?: CreateMutationOptions<
+    Awaited<ReturnType<typeof scenariosUpdate>>,
+    TError,
+    { id: number; data: NonReadonly<Scenario> },
+    TContext
+  >;
+  axios?: AxiosRequestConfig;
+}): CreateMutationOptions<
+  Awaited<ReturnType<typeof scenariosUpdate>>,
+  TError,
+  { id: number; data: NonReadonly<Scenario> },
+  TContext
+> => {
+  const mutationKey = ['scenariosUpdate'];
+  const { mutation: mutationOptions, axios: axiosOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, axios: undefined };
 
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof scenariosUpdate>>,
+    { id: number; data: NonReadonly<Scenario> }
+  > = (props) => {
+    const { id, data } = props ?? {};
 
-export const getScenariosUpdateMutationOptions = <TError = AxiosError<unknown>,
-    TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof scenariosUpdate>>, TError,{id: number;data: NonReadonly<Scenario>}, TContext>, axios?: AxiosRequestConfig}
-): CreateMutationOptions<Awaited<ReturnType<typeof scenariosUpdate>>, TError,{id: number;data: NonReadonly<Scenario>}, TContext> => {
+    return scenariosUpdate(id, data, axiosOptions);
+  };
 
-const mutationKey = ['scenariosUpdate'];
-const {mutation: mutationOptions, axios: axiosOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, axios: undefined};
+  return { mutationFn, ...mutationOptions };
+};
 
-      
+export type ScenariosUpdateMutationResult = NonNullable<
+  Awaited<ReturnType<typeof scenariosUpdate>>
+>;
+export type ScenariosUpdateMutationBody = NonReadonly<Scenario>;
+export type ScenariosUpdateMutationError = AxiosError<unknown>;
 
+export const createScenariosUpdate = <TError = AxiosError<unknown>, TContext = unknown>(
+  options?: {
+    mutation?: CreateMutationOptions<
+      Awaited<ReturnType<typeof scenariosUpdate>>,
+      TError,
+      { id: number; data: NonReadonly<Scenario> },
+      TContext
+    >;
+    axios?: AxiosRequestConfig;
+  },
+  queryClient?: QueryClient
+): CreateMutationResult<
+  Awaited<ReturnType<typeof scenariosUpdate>>,
+  TError,
+  { id: number; data: NonReadonly<Scenario> },
+  TContext
+> => {
+  const mutationOptions = getScenariosUpdateMutationOptions(options);
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof scenariosUpdate>>, {id: number;data: NonReadonly<Scenario>}> = (props) => {
-          const {id,data} = props ?? {};
-
-          return  scenariosUpdate(id,data,axiosOptions)
-        }
-
-        
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type ScenariosUpdateMutationResult = NonNullable<Awaited<ReturnType<typeof scenariosUpdate>>>
-    export type ScenariosUpdateMutationBody = NonReadonly<Scenario>
-    export type ScenariosUpdateMutationError = AxiosError<unknown>
-
-    export const createScenariosUpdate = <TError = AxiosError<unknown>,
-    TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof scenariosUpdate>>, TError,{id: number;data: NonReadonly<Scenario>}, TContext>, axios?: AxiosRequestConfig}
- , queryClient?: QueryClient): CreateMutationResult<
-        Awaited<ReturnType<typeof scenariosUpdate>>,
-        TError,
-        {id: number;data: NonReadonly<Scenario>},
-        TContext
-      > => {
-
-      const mutationOptions = getScenariosUpdateMutationOptions(options);
-
-      return createMutation(mutationOptions , queryClient);
-    }
-    /**
+  return createMutation(mutationOptions, queryClient);
+};
+/**
  * ViewSet for managing scenarios with full CRUD operations.
 Provides list, create, retrieve, update, destroy actions.
  */
 export const scenariosPartialUpdate = (
-    id: number,
-    patchedScenario: NonReadonly<PatchedScenario>, options?: AxiosRequestConfig
- ): Promise<AxiosResponse<Scenario>> => {
-    
-    
-    return axios.patch(
-      `/api/scenarios/${id}/`,
-      patchedScenario,options
-    );
-  }
+  id: number,
+  patchedScenario: NonReadonly<PatchedScenario>,
+  options?: AxiosRequestConfig
+): Promise<AxiosResponse<Scenario>> => {
+  return axios.patch(`/api/scenarios/${id}/`, patchedScenario, options);
+};
 
+export const getScenariosPartialUpdateMutationOptions = <
+  TError = AxiosError<unknown>,
+  TContext = unknown
+>(options?: {
+  mutation?: CreateMutationOptions<
+    Awaited<ReturnType<typeof scenariosPartialUpdate>>,
+    TError,
+    { id: number; data: NonReadonly<PatchedScenario> },
+    TContext
+  >;
+  axios?: AxiosRequestConfig;
+}): CreateMutationOptions<
+  Awaited<ReturnType<typeof scenariosPartialUpdate>>,
+  TError,
+  { id: number; data: NonReadonly<PatchedScenario> },
+  TContext
+> => {
+  const mutationKey = ['scenariosPartialUpdate'];
+  const { mutation: mutationOptions, axios: axiosOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, axios: undefined };
 
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof scenariosPartialUpdate>>,
+    { id: number; data: NonReadonly<PatchedScenario> }
+  > = (props) => {
+    const { id, data } = props ?? {};
 
-export const getScenariosPartialUpdateMutationOptions = <TError = AxiosError<unknown>,
-    TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof scenariosPartialUpdate>>, TError,{id: number;data: NonReadonly<PatchedScenario>}, TContext>, axios?: AxiosRequestConfig}
-): CreateMutationOptions<Awaited<ReturnType<typeof scenariosPartialUpdate>>, TError,{id: number;data: NonReadonly<PatchedScenario>}, TContext> => {
+    return scenariosPartialUpdate(id, data, axiosOptions);
+  };
 
-const mutationKey = ['scenariosPartialUpdate'];
-const {mutation: mutationOptions, axios: axiosOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, axios: undefined};
+  return { mutationFn, ...mutationOptions };
+};
 
-      
+export type ScenariosPartialUpdateMutationResult = NonNullable<
+  Awaited<ReturnType<typeof scenariosPartialUpdate>>
+>;
+export type ScenariosPartialUpdateMutationBody = NonReadonly<PatchedScenario>;
+export type ScenariosPartialUpdateMutationError = AxiosError<unknown>;
 
+export const createScenariosPartialUpdate = <TError = AxiosError<unknown>, TContext = unknown>(
+  options?: {
+    mutation?: CreateMutationOptions<
+      Awaited<ReturnType<typeof scenariosPartialUpdate>>,
+      TError,
+      { id: number; data: NonReadonly<PatchedScenario> },
+      TContext
+    >;
+    axios?: AxiosRequestConfig;
+  },
+  queryClient?: QueryClient
+): CreateMutationResult<
+  Awaited<ReturnType<typeof scenariosPartialUpdate>>,
+  TError,
+  { id: number; data: NonReadonly<PatchedScenario> },
+  TContext
+> => {
+  const mutationOptions = getScenariosPartialUpdateMutationOptions(options);
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof scenariosPartialUpdate>>, {id: number;data: NonReadonly<PatchedScenario>}> = (props) => {
-          const {id,data} = props ?? {};
-
-          return  scenariosPartialUpdate(id,data,axiosOptions)
-        }
-
-        
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type ScenariosPartialUpdateMutationResult = NonNullable<Awaited<ReturnType<typeof scenariosPartialUpdate>>>
-    export type ScenariosPartialUpdateMutationBody = NonReadonly<PatchedScenario>
-    export type ScenariosPartialUpdateMutationError = AxiosError<unknown>
-
-    export const createScenariosPartialUpdate = <TError = AxiosError<unknown>,
-    TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof scenariosPartialUpdate>>, TError,{id: number;data: NonReadonly<PatchedScenario>}, TContext>, axios?: AxiosRequestConfig}
- , queryClient?: QueryClient): CreateMutationResult<
-        Awaited<ReturnType<typeof scenariosPartialUpdate>>,
-        TError,
-        {id: number;data: NonReadonly<PatchedScenario>},
-        TContext
-      > => {
-
-      const mutationOptions = getScenariosPartialUpdateMutationOptions(options);
-
-      return createMutation(mutationOptions , queryClient);
-    }
-    /**
+  return createMutation(mutationOptions, queryClient);
+};
+/**
  * ViewSet for managing scenarios with full CRUD operations.
 Provides list, create, retrieve, update, destroy actions.
  */
 export const scenariosDestroy = (
-    id: number, options?: AxiosRequestConfig
- ): Promise<AxiosResponse<void>> => {
-    
-    
-    return axios.delete(
-      `/api/scenarios/${id}/`,options
-    );
-  }
+  id: number,
+  options?: AxiosRequestConfig
+): Promise<AxiosResponse<void>> => {
+  return axios.delete(`/api/scenarios/${id}/`, options);
+};
 
+export const getScenariosDestroyMutationOptions = <
+  TError = AxiosError<unknown>,
+  TContext = unknown
+>(options?: {
+  mutation?: CreateMutationOptions<
+    Awaited<ReturnType<typeof scenariosDestroy>>,
+    TError,
+    { id: number },
+    TContext
+  >;
+  axios?: AxiosRequestConfig;
+}): CreateMutationOptions<
+  Awaited<ReturnType<typeof scenariosDestroy>>,
+  TError,
+  { id: number },
+  TContext
+> => {
+  const mutationKey = ['scenariosDestroy'];
+  const { mutation: mutationOptions, axios: axiosOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, axios: undefined };
 
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof scenariosDestroy>>,
+    { id: number }
+  > = (props) => {
+    const { id } = props ?? {};
 
-export const getScenariosDestroyMutationOptions = <TError = AxiosError<unknown>,
-    TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof scenariosDestroy>>, TError,{id: number}, TContext>, axios?: AxiosRequestConfig}
-): CreateMutationOptions<Awaited<ReturnType<typeof scenariosDestroy>>, TError,{id: number}, TContext> => {
+    return scenariosDestroy(id, axiosOptions);
+  };
 
-const mutationKey = ['scenariosDestroy'];
-const {mutation: mutationOptions, axios: axiosOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, axios: undefined};
+  return { mutationFn, ...mutationOptions };
+};
 
-      
+export type ScenariosDestroyMutationResult = NonNullable<
+  Awaited<ReturnType<typeof scenariosDestroy>>
+>;
 
+export type ScenariosDestroyMutationError = AxiosError<unknown>;
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof scenariosDestroy>>, {id: number}> = (props) => {
-          const {id} = props ?? {};
+export const createScenariosDestroy = <TError = AxiosError<unknown>, TContext = unknown>(
+  options?: {
+    mutation?: CreateMutationOptions<
+      Awaited<ReturnType<typeof scenariosDestroy>>,
+      TError,
+      { id: number },
+      TContext
+    >;
+    axios?: AxiosRequestConfig;
+  },
+  queryClient?: QueryClient
+): CreateMutationResult<
+  Awaited<ReturnType<typeof scenariosDestroy>>,
+  TError,
+  { id: number },
+  TContext
+> => {
+  const mutationOptions = getScenariosDestroyMutationOptions(options);
 
-          return  scenariosDestroy(id,axiosOptions)
-        }
-
-        
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type ScenariosDestroyMutationResult = NonNullable<Awaited<ReturnType<typeof scenariosDestroy>>>
-    
-    export type ScenariosDestroyMutationError = AxiosError<unknown>
-
-    export const createScenariosDestroy = <TError = AxiosError<unknown>,
-    TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof scenariosDestroy>>, TError,{id: number}, TContext>, axios?: AxiosRequestConfig}
- , queryClient?: QueryClient): CreateMutationResult<
-        Awaited<ReturnType<typeof scenariosDestroy>>,
-        TError,
-        {id: number},
-        TContext
-      > => {
-
-      const mutationOptions = getScenariosDestroyMutationOptions(options);
-
-      return createMutation(mutationOptions , queryClient);
-    }
-    /**
+  return createMutation(mutationOptions, queryClient);
+};
+/**
  * Clone an existing scenario
  */
 export const scenariosCloneCreate = (
-    id: number,
-    scenario: NonReadonly<Scenario>, options?: AxiosRequestConfig
- ): Promise<AxiosResponse<Scenario>> => {
-    
-    
-    return axios.post(
-      `/api/scenarios/${id}/clone/`,
-      scenario,options
-    );
-  }
+  id: number,
+  scenario: NonReadonly<Scenario>,
+  options?: AxiosRequestConfig
+): Promise<AxiosResponse<Scenario>> => {
+  return axios.post(`/api/scenarios/${id}/clone/`, scenario, options);
+};
 
+export const getScenariosCloneCreateMutationOptions = <
+  TError = AxiosError<unknown>,
+  TContext = unknown
+>(options?: {
+  mutation?: CreateMutationOptions<
+    Awaited<ReturnType<typeof scenariosCloneCreate>>,
+    TError,
+    { id: number; data: NonReadonly<Scenario> },
+    TContext
+  >;
+  axios?: AxiosRequestConfig;
+}): CreateMutationOptions<
+  Awaited<ReturnType<typeof scenariosCloneCreate>>,
+  TError,
+  { id: number; data: NonReadonly<Scenario> },
+  TContext
+> => {
+  const mutationKey = ['scenariosCloneCreate'];
+  const { mutation: mutationOptions, axios: axiosOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, axios: undefined };
 
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof scenariosCloneCreate>>,
+    { id: number; data: NonReadonly<Scenario> }
+  > = (props) => {
+    const { id, data } = props ?? {};
 
-export const getScenariosCloneCreateMutationOptions = <TError = AxiosError<unknown>,
-    TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof scenariosCloneCreate>>, TError,{id: number;data: NonReadonly<Scenario>}, TContext>, axios?: AxiosRequestConfig}
-): CreateMutationOptions<Awaited<ReturnType<typeof scenariosCloneCreate>>, TError,{id: number;data: NonReadonly<Scenario>}, TContext> => {
+    return scenariosCloneCreate(id, data, axiosOptions);
+  };
 
-const mutationKey = ['scenariosCloneCreate'];
-const {mutation: mutationOptions, axios: axiosOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, axios: undefined};
+  return { mutationFn, ...mutationOptions };
+};
 
-      
+export type ScenariosCloneCreateMutationResult = NonNullable<
+  Awaited<ReturnType<typeof scenariosCloneCreate>>
+>;
+export type ScenariosCloneCreateMutationBody = NonReadonly<Scenario>;
+export type ScenariosCloneCreateMutationError = AxiosError<unknown>;
 
+export const createScenariosCloneCreate = <TError = AxiosError<unknown>, TContext = unknown>(
+  options?: {
+    mutation?: CreateMutationOptions<
+      Awaited<ReturnType<typeof scenariosCloneCreate>>,
+      TError,
+      { id: number; data: NonReadonly<Scenario> },
+      TContext
+    >;
+    axios?: AxiosRequestConfig;
+  },
+  queryClient?: QueryClient
+): CreateMutationResult<
+  Awaited<ReturnType<typeof scenariosCloneCreate>>,
+  TError,
+  { id: number; data: NonReadonly<Scenario> },
+  TContext
+> => {
+  const mutationOptions = getScenariosCloneCreateMutationOptions(options);
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof scenariosCloneCreate>>, {id: number;data: NonReadonly<Scenario>}> = (props) => {
-          const {id,data} = props ?? {};
-
-          return  scenariosCloneCreate(id,data,axiosOptions)
-        }
-
-        
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type ScenariosCloneCreateMutationResult = NonNullable<Awaited<ReturnType<typeof scenariosCloneCreate>>>
-    export type ScenariosCloneCreateMutationBody = NonReadonly<Scenario>
-    export type ScenariosCloneCreateMutationError = AxiosError<unknown>
-
-    export const createScenariosCloneCreate = <TError = AxiosError<unknown>,
-    TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof scenariosCloneCreate>>, TError,{id: number;data: NonReadonly<Scenario>}, TContext>, axios?: AxiosRequestConfig}
- , queryClient?: QueryClient): CreateMutationResult<
-        Awaited<ReturnType<typeof scenariosCloneCreate>>,
-        TError,
-        {id: number;data: NonReadonly<Scenario>},
-        TContext
-      > => {
-
-      const mutationOptions = getScenariosCloneCreateMutationOptions(options);
-
-      return createMutation(mutationOptions , queryClient);
-    }
-    /**
+  return createMutation(mutationOptions, queryClient);
+};
+/**
  * Export scenario as YAML
  */
 export const scenariosExportRetrieve = (
-    id: number, options?: AxiosRequestConfig
- ): Promise<AxiosResponse<Scenario>> => {
-    
-    
-    return axios.get(
-      `/api/scenarios/${id}/export/`,options
-    );
+  id: number,
+  options?: AxiosRequestConfig
+): Promise<AxiosResponse<Scenario>> => {
+  return axios.get(`/api/scenarios/${id}/export/`, options);
+};
+
+export const getScenariosExportRetrieveQueryKey = (id: number) => {
+  return [`/api/scenarios/${id}/export/`] as const;
+};
+
+export const getScenariosExportRetrieveQueryOptions = <
+  TData = Awaited<ReturnType<typeof scenariosExportRetrieve>>,
+  TError = AxiosError<unknown>
+>(
+  id: number,
+  options?: {
+    query?: Partial<
+      CreateQueryOptions<Awaited<ReturnType<typeof scenariosExportRetrieve>>, TError, TData>
+    >;
+    axios?: AxiosRequestConfig;
   }
-
-
-export const getScenariosExportRetrieveQueryKey = (id: number,) => {
-    return [`/api/scenarios/${id}/export/`] as const;
-    }
-
-    
-export const getScenariosExportRetrieveQueryOptions = <TData = Awaited<ReturnType<typeof scenariosExportRetrieve>>, TError = AxiosError<unknown>>(id: number, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof scenariosExportRetrieve>>, TError, TData>>, axios?: AxiosRequestConfig}
 ) => {
+  const { query: queryOptions, axios: axiosOptions } = options ?? {};
 
-const {query: queryOptions, axios: axiosOptions} = options ?? {};
+  const queryKey = queryOptions?.queryKey ?? getScenariosExportRetrieveQueryKey(id);
 
-  const queryKey =  queryOptions?.queryKey ?? getScenariosExportRetrieveQueryKey(id);
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof scenariosExportRetrieve>>> = ({
+    signal
+  }) => scenariosExportRetrieve(id, { signal, ...axiosOptions });
 
-  
+  return { queryKey, queryFn, enabled: !!id, ...queryOptions } as CreateQueryOptions<
+    Awaited<ReturnType<typeof scenariosExportRetrieve>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof scenariosExportRetrieve>>> = ({ signal }) => scenariosExportRetrieve(id, { signal, ...axiosOptions });
+export type ScenariosExportRetrieveQueryResult = NonNullable<
+  Awaited<ReturnType<typeof scenariosExportRetrieve>>
+>;
+export type ScenariosExportRetrieveQueryError = AxiosError<unknown>;
 
-      
+export function createScenariosExportRetrieve<
+  TData = Awaited<ReturnType<typeof scenariosExportRetrieve>>,
+  TError = AxiosError<unknown>
+>(
+  id: number,
+  options?: {
+    query?: Partial<
+      CreateQueryOptions<Awaited<ReturnType<typeof scenariosExportRetrieve>>, TError, TData>
+    >;
+    axios?: AxiosRequestConfig;
+  },
+  queryClient?: QueryClient
+): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getScenariosExportRetrieveQueryOptions(id, options);
 
-      
+  const query = createQuery(queryOptions, queryClient) as CreateQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
 
-   return  { queryKey, queryFn, enabled: !!(id), ...queryOptions} as CreateQueryOptions<Awaited<ReturnType<typeof scenariosExportRetrieve>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type ScenariosExportRetrieveQueryResult = NonNullable<Awaited<ReturnType<typeof scenariosExportRetrieve>>>
-export type ScenariosExportRetrieveQueryError = AxiosError<unknown>
-
-
-
-export function createScenariosExportRetrieve<TData = Awaited<ReturnType<typeof scenariosExportRetrieve>>, TError = AxiosError<unknown>>(
- id: number, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof scenariosExportRetrieve>>, TError, TData>>, axios?: AxiosRequestConfig}
- , queryClient?: QueryClient 
- ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-  const queryOptions = getScenariosExportRetrieveQueryOptions(id,options)
-
-  const query = createQuery(queryOptions , queryClient) as CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  query.queryKey = queryOptions.queryKey ;
+  query.queryKey = queryOptions.queryKey;
 
   return query;
 }
-
-
 
 /**
  * Run Monte Carlo simulations for this scenario
  */
 export const scenariosSimulateCreate = (
-    id: number,
-    scenario: NonReadonly<Scenario>, options?: AxiosRequestConfig
- ): Promise<AxiosResponse<Scenario>> => {
-    
-    
-    return axios.post(
-      `/api/scenarios/${id}/simulate/`,
-      scenario,options
-    );
-  }
+  id: number,
+  scenario: NonReadonly<Scenario>,
+  options?: AxiosRequestConfig
+): Promise<AxiosResponse<Scenario>> => {
+  return axios.post(`/api/scenarios/${id}/simulate/`, scenario, options);
+};
 
+export const getScenariosSimulateCreateMutationOptions = <
+  TError = AxiosError<unknown>,
+  TContext = unknown
+>(options?: {
+  mutation?: CreateMutationOptions<
+    Awaited<ReturnType<typeof scenariosSimulateCreate>>,
+    TError,
+    { id: number; data: NonReadonly<Scenario> },
+    TContext
+  >;
+  axios?: AxiosRequestConfig;
+}): CreateMutationOptions<
+  Awaited<ReturnType<typeof scenariosSimulateCreate>>,
+  TError,
+  { id: number; data: NonReadonly<Scenario> },
+  TContext
+> => {
+  const mutationKey = ['scenariosSimulateCreate'];
+  const { mutation: mutationOptions, axios: axiosOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, axios: undefined };
 
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof scenariosSimulateCreate>>,
+    { id: number; data: NonReadonly<Scenario> }
+  > = (props) => {
+    const { id, data } = props ?? {};
 
-export const getScenariosSimulateCreateMutationOptions = <TError = AxiosError<unknown>,
-    TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof scenariosSimulateCreate>>, TError,{id: number;data: NonReadonly<Scenario>}, TContext>, axios?: AxiosRequestConfig}
-): CreateMutationOptions<Awaited<ReturnType<typeof scenariosSimulateCreate>>, TError,{id: number;data: NonReadonly<Scenario>}, TContext> => {
+    return scenariosSimulateCreate(id, data, axiosOptions);
+  };
 
-const mutationKey = ['scenariosSimulateCreate'];
-const {mutation: mutationOptions, axios: axiosOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, axios: undefined};
+  return { mutationFn, ...mutationOptions };
+};
 
-      
+export type ScenariosSimulateCreateMutationResult = NonNullable<
+  Awaited<ReturnType<typeof scenariosSimulateCreate>>
+>;
+export type ScenariosSimulateCreateMutationBody = NonReadonly<Scenario>;
+export type ScenariosSimulateCreateMutationError = AxiosError<unknown>;
 
+export const createScenariosSimulateCreate = <TError = AxiosError<unknown>, TContext = unknown>(
+  options?: {
+    mutation?: CreateMutationOptions<
+      Awaited<ReturnType<typeof scenariosSimulateCreate>>,
+      TError,
+      { id: number; data: NonReadonly<Scenario> },
+      TContext
+    >;
+    axios?: AxiosRequestConfig;
+  },
+  queryClient?: QueryClient
+): CreateMutationResult<
+  Awaited<ReturnType<typeof scenariosSimulateCreate>>,
+  TError,
+  { id: number; data: NonReadonly<Scenario> },
+  TContext
+> => {
+  const mutationOptions = getScenariosSimulateCreateMutationOptions(options);
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof scenariosSimulateCreate>>, {id: number;data: NonReadonly<Scenario>}> = (props) => {
-          const {id,data} = props ?? {};
-
-          return  scenariosSimulateCreate(id,data,axiosOptions)
-        }
-
-        
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type ScenariosSimulateCreateMutationResult = NonNullable<Awaited<ReturnType<typeof scenariosSimulateCreate>>>
-    export type ScenariosSimulateCreateMutationBody = NonReadonly<Scenario>
-    export type ScenariosSimulateCreateMutationError = AxiosError<unknown>
-
-    export const createScenariosSimulateCreate = <TError = AxiosError<unknown>,
-    TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof scenariosSimulateCreate>>, TError,{id: number;data: NonReadonly<Scenario>}, TContext>, axios?: AxiosRequestConfig}
- , queryClient?: QueryClient): CreateMutationResult<
-        Awaited<ReturnType<typeof scenariosSimulateCreate>>,
-        TError,
-        {id: number;data: NonReadonly<Scenario>},
-        TContext
-      > => {
-
-      const mutationOptions = getScenariosSimulateCreateMutationOptions(options);
-
-      return createMutation(mutationOptions , queryClient);
-    }
-    /**
+  return createMutation(mutationOptions, queryClient);
+};
+/**
  * Validate scenario for simulation readiness
  */
 export const scenariosValidateScenarioRetrieve = (
-    id: number, options?: AxiosRequestConfig
- ): Promise<AxiosResponse<Scenario>> => {
-    
-    
-    return axios.get(
-      `/api/scenarios/${id}/validate_scenario/`,options
-    );
+  id: number,
+  options?: AxiosRequestConfig
+): Promise<AxiosResponse<Scenario>> => {
+  return axios.get(`/api/scenarios/${id}/validate_scenario/`, options);
+};
+
+export const getScenariosValidateScenarioRetrieveQueryKey = (id: number) => {
+  return [`/api/scenarios/${id}/validate_scenario/`] as const;
+};
+
+export const getScenariosValidateScenarioRetrieveQueryOptions = <
+  TData = Awaited<ReturnType<typeof scenariosValidateScenarioRetrieve>>,
+  TError = AxiosError<unknown>
+>(
+  id: number,
+  options?: {
+    query?: Partial<
+      CreateQueryOptions<
+        Awaited<ReturnType<typeof scenariosValidateScenarioRetrieve>>,
+        TError,
+        TData
+      >
+    >;
+    axios?: AxiosRequestConfig;
   }
-
-
-export const getScenariosValidateScenarioRetrieveQueryKey = (id: number,) => {
-    return [`/api/scenarios/${id}/validate_scenario/`] as const;
-    }
-
-    
-export const getScenariosValidateScenarioRetrieveQueryOptions = <TData = Awaited<ReturnType<typeof scenariosValidateScenarioRetrieve>>, TError = AxiosError<unknown>>(id: number, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof scenariosValidateScenarioRetrieve>>, TError, TData>>, axios?: AxiosRequestConfig}
 ) => {
+  const { query: queryOptions, axios: axiosOptions } = options ?? {};
 
-const {query: queryOptions, axios: axiosOptions} = options ?? {};
+  const queryKey = queryOptions?.queryKey ?? getScenariosValidateScenarioRetrieveQueryKey(id);
 
-  const queryKey =  queryOptions?.queryKey ?? getScenariosValidateScenarioRetrieveQueryKey(id);
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof scenariosValidateScenarioRetrieve>>> = ({
+    signal
+  }) => scenariosValidateScenarioRetrieve(id, { signal, ...axiosOptions });
 
-  
+  return { queryKey, queryFn, enabled: !!id, ...queryOptions } as CreateQueryOptions<
+    Awaited<ReturnType<typeof scenariosValidateScenarioRetrieve>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof scenariosValidateScenarioRetrieve>>> = ({ signal }) => scenariosValidateScenarioRetrieve(id, { signal, ...axiosOptions });
+export type ScenariosValidateScenarioRetrieveQueryResult = NonNullable<
+  Awaited<ReturnType<typeof scenariosValidateScenarioRetrieve>>
+>;
+export type ScenariosValidateScenarioRetrieveQueryError = AxiosError<unknown>;
 
-      
+export function createScenariosValidateScenarioRetrieve<
+  TData = Awaited<ReturnType<typeof scenariosValidateScenarioRetrieve>>,
+  TError = AxiosError<unknown>
+>(
+  id: number,
+  options?: {
+    query?: Partial<
+      CreateQueryOptions<
+        Awaited<ReturnType<typeof scenariosValidateScenarioRetrieve>>,
+        TError,
+        TData
+      >
+    >;
+    axios?: AxiosRequestConfig;
+  },
+  queryClient?: QueryClient
+): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getScenariosValidateScenarioRetrieveQueryOptions(id, options);
 
-      
+  const query = createQuery(queryOptions, queryClient) as CreateQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
 
-   return  { queryKey, queryFn, enabled: !!(id), ...queryOptions} as CreateQueryOptions<Awaited<ReturnType<typeof scenariosValidateScenarioRetrieve>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type ScenariosValidateScenarioRetrieveQueryResult = NonNullable<Awaited<ReturnType<typeof scenariosValidateScenarioRetrieve>>>
-export type ScenariosValidateScenarioRetrieveQueryError = AxiosError<unknown>
-
-
-
-export function createScenariosValidateScenarioRetrieve<TData = Awaited<ReturnType<typeof scenariosValidateScenarioRetrieve>>, TError = AxiosError<unknown>>(
- id: number, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof scenariosValidateScenarioRetrieve>>, TError, TData>>, axios?: AxiosRequestConfig}
- , queryClient?: QueryClient 
- ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-  const queryOptions = getScenariosValidateScenarioRetrieveQueryOptions(id,options)
-
-  const query = createQuery(queryOptions , queryClient) as CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  query.queryKey = queryOptions.queryKey ;
+  query.queryKey = queryOptions.queryKey;
 
   return query;
 }
-
-
 
 /**
  * Import scenario from YAML file
  */
 export const scenariosImportScenarioCreate = (
-    scenario: NonReadonly<Scenario>, options?: AxiosRequestConfig
- ): Promise<AxiosResponse<Scenario>> => {
-    
-    
-    return axios.post(
-      `/api/scenarios/import_scenario/`,
-      scenario,options
-    );
-  }
+  scenario: NonReadonly<Scenario>,
+  options?: AxiosRequestConfig
+): Promise<AxiosResponse<Scenario>> => {
+  return axios.post(`/api/scenarios/import_scenario/`, scenario, options);
+};
 
+export const getScenariosImportScenarioCreateMutationOptions = <
+  TError = AxiosError<unknown>,
+  TContext = unknown
+>(options?: {
+  mutation?: CreateMutationOptions<
+    Awaited<ReturnType<typeof scenariosImportScenarioCreate>>,
+    TError,
+    { data: NonReadonly<Scenario> },
+    TContext
+  >;
+  axios?: AxiosRequestConfig;
+}): CreateMutationOptions<
+  Awaited<ReturnType<typeof scenariosImportScenarioCreate>>,
+  TError,
+  { data: NonReadonly<Scenario> },
+  TContext
+> => {
+  const mutationKey = ['scenariosImportScenarioCreate'];
+  const { mutation: mutationOptions, axios: axiosOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, axios: undefined };
 
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof scenariosImportScenarioCreate>>,
+    { data: NonReadonly<Scenario> }
+  > = (props) => {
+    const { data } = props ?? {};
 
-export const getScenariosImportScenarioCreateMutationOptions = <TError = AxiosError<unknown>,
-    TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof scenariosImportScenarioCreate>>, TError,{data: NonReadonly<Scenario>}, TContext>, axios?: AxiosRequestConfig}
-): CreateMutationOptions<Awaited<ReturnType<typeof scenariosImportScenarioCreate>>, TError,{data: NonReadonly<Scenario>}, TContext> => {
+    return scenariosImportScenarioCreate(data, axiosOptions);
+  };
 
-const mutationKey = ['scenariosImportScenarioCreate'];
-const {mutation: mutationOptions, axios: axiosOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, axios: undefined};
+  return { mutationFn, ...mutationOptions };
+};
 
-      
+export type ScenariosImportScenarioCreateMutationResult = NonNullable<
+  Awaited<ReturnType<typeof scenariosImportScenarioCreate>>
+>;
+export type ScenariosImportScenarioCreateMutationBody = NonReadonly<Scenario>;
+export type ScenariosImportScenarioCreateMutationError = AxiosError<unknown>;
 
+export const createScenariosImportScenarioCreate = <
+  TError = AxiosError<unknown>,
+  TContext = unknown
+>(
+  options?: {
+    mutation?: CreateMutationOptions<
+      Awaited<ReturnType<typeof scenariosImportScenarioCreate>>,
+      TError,
+      { data: NonReadonly<Scenario> },
+      TContext
+    >;
+    axios?: AxiosRequestConfig;
+  },
+  queryClient?: QueryClient
+): CreateMutationResult<
+  Awaited<ReturnType<typeof scenariosImportScenarioCreate>>,
+  TError,
+  { data: NonReadonly<Scenario> },
+  TContext
+> => {
+  const mutationOptions = getScenariosImportScenarioCreateMutationOptions(options);
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof scenariosImportScenarioCreate>>, {data: NonReadonly<Scenario>}> = (props) => {
-          const {data} = props ?? {};
-
-          return  scenariosImportScenarioCreate(data,axiosOptions)
-        }
-
-        
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type ScenariosImportScenarioCreateMutationResult = NonNullable<Awaited<ReturnType<typeof scenariosImportScenarioCreate>>>
-    export type ScenariosImportScenarioCreateMutationBody = NonReadonly<Scenario>
-    export type ScenariosImportScenarioCreateMutationError = AxiosError<unknown>
-
-    export const createScenariosImportScenarioCreate = <TError = AxiosError<unknown>,
-    TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof scenariosImportScenarioCreate>>, TError,{data: NonReadonly<Scenario>}, TContext>, axios?: AxiosRequestConfig}
- , queryClient?: QueryClient): CreateMutationResult<
-        Awaited<ReturnType<typeof scenariosImportScenarioCreate>>,
-        TError,
-        {data: NonReadonly<Scenario>},
-        TContext
-      > => {
-
-      const mutationOptions = getScenariosImportScenarioCreateMutationOptions(options);
-
-      return createMutation(mutationOptions , queryClient);
-    }
-    
+  return createMutation(mutationOptions, queryClient);
+};
