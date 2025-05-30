@@ -25,6 +25,16 @@ export const usersListResponseItem = zod.object({
   last_name: zod.string().max(usersListResponseLastNameMax).optional(),
   password: zod.string(),
   password_confirm: zod.string(),
+  is_active: zod
+    .boolean()
+    .optional()
+    .describe(
+      'Designates whether this user should be treated as active. Unselect this instead of deleting accounts.'
+    ),
+  is_staff: zod
+    .boolean()
+    .optional()
+    .describe('Designates whether the user can log into this admin site.'),
   date_joined: zod.string().datetime({}),
   last_login: zod.string().datetime({}).nullable()
 });
@@ -46,7 +56,17 @@ export const usersCreateBody = zod.object({
   first_name: zod.string().max(usersCreateBodyFirstNameMax).optional(),
   last_name: zod.string().max(usersCreateBodyLastNameMax).optional(),
   password: zod.string(),
-  password_confirm: zod.string()
+  password_confirm: zod.string(),
+  is_active: zod
+    .boolean()
+    .optional()
+    .describe(
+      'Designates whether this user should be treated as active. Unselect this instead of deleting accounts.'
+    ),
+  is_staff: zod
+    .boolean()
+    .optional()
+    .describe('Designates whether the user can log into this admin site.')
 });
 
 /**
@@ -71,6 +91,16 @@ export const usersRetrieveResponse = zod.object({
   last_name: zod.string().max(usersRetrieveResponseLastNameMax).optional(),
   password: zod.string(),
   password_confirm: zod.string(),
+  is_active: zod
+    .boolean()
+    .optional()
+    .describe(
+      'Designates whether this user should be treated as active. Unselect this instead of deleting accounts.'
+    ),
+  is_staff: zod
+    .boolean()
+    .optional()
+    .describe('Designates whether the user can log into this admin site.'),
   date_joined: zod.string().datetime({}),
   last_login: zod.string().datetime({}).nullable()
 });
@@ -95,7 +125,17 @@ export const usersUpdateBody = zod.object({
   first_name: zod.string().max(usersUpdateBodyFirstNameMax).optional(),
   last_name: zod.string().max(usersUpdateBodyLastNameMax).optional(),
   password: zod.string(),
-  password_confirm: zod.string()
+  password_confirm: zod.string(),
+  is_active: zod
+    .boolean()
+    .optional()
+    .describe(
+      'Designates whether this user should be treated as active. Unselect this instead of deleting accounts.'
+    ),
+  is_staff: zod
+    .boolean()
+    .optional()
+    .describe('Designates whether the user can log into this admin site.')
 });
 
 export const usersUpdateResponseEmailMax = 254;
@@ -113,6 +153,16 @@ export const usersUpdateResponse = zod.object({
   last_name: zod.string().max(usersUpdateResponseLastNameMax).optional(),
   password: zod.string(),
   password_confirm: zod.string(),
+  is_active: zod
+    .boolean()
+    .optional()
+    .describe(
+      'Designates whether this user should be treated as active. Unselect this instead of deleting accounts.'
+    ),
+  is_staff: zod
+    .boolean()
+    .optional()
+    .describe('Designates whether the user can log into this admin site.'),
   date_joined: zod.string().datetime({}),
   last_login: zod.string().datetime({}).nullable()
 });
@@ -138,7 +188,17 @@ export const usersPartialUpdateBody = zod.object({
   first_name: zod.string().max(usersPartialUpdateBodyFirstNameMax).optional(),
   last_name: zod.string().max(usersPartialUpdateBodyLastNameMax).optional(),
   password: zod.string().optional(),
-  password_confirm: zod.string().optional()
+  password_confirm: zod.string().optional(),
+  is_active: zod
+    .boolean()
+    .optional()
+    .describe(
+      'Designates whether this user should be treated as active. Unselect this instead of deleting accounts.'
+    ),
+  is_staff: zod
+    .boolean()
+    .optional()
+    .describe('Designates whether the user can log into this admin site.')
 });
 
 export const usersPartialUpdateResponseEmailMax = 254;
@@ -156,6 +216,16 @@ export const usersPartialUpdateResponse = zod.object({
   last_name: zod.string().max(usersPartialUpdateResponseLastNameMax).optional(),
   password: zod.string(),
   password_confirm: zod.string(),
+  is_active: zod
+    .boolean()
+    .optional()
+    .describe(
+      'Designates whether this user should be treated as active. Unselect this instead of deleting accounts.'
+    ),
+  is_staff: zod
+    .boolean()
+    .optional()
+    .describe('Designates whether the user can log into this admin site.'),
   date_joined: zod.string().datetime({}),
   last_login: zod.string().datetime({}).nullable()
 });
@@ -185,6 +255,16 @@ export const usersMeRetrieveResponse = zod.object({
   last_name: zod.string().max(usersMeRetrieveResponseLastNameMax).optional(),
   password: zod.string(),
   password_confirm: zod.string(),
+  is_active: zod
+    .boolean()
+    .optional()
+    .describe(
+      'Designates whether this user should be treated as active. Unselect this instead of deleting accounts.'
+    ),
+  is_staff: zod
+    .boolean()
+    .optional()
+    .describe('Designates whether the user can log into this admin site.'),
   date_joined: zod.string().datetime({}),
   last_login: zod.string().datetime({}).nullable()
 });
@@ -205,7 +285,17 @@ export const usersMeUpdateBody = zod.object({
   first_name: zod.string().max(usersMeUpdateBodyFirstNameMax).optional(),
   last_name: zod.string().max(usersMeUpdateBodyLastNameMax).optional(),
   password: zod.string(),
-  password_confirm: zod.string()
+  password_confirm: zod.string(),
+  is_active: zod
+    .boolean()
+    .optional()
+    .describe(
+      'Designates whether this user should be treated as active. Unselect this instead of deleting accounts.'
+    ),
+  is_staff: zod
+    .boolean()
+    .optional()
+    .describe('Designates whether the user can log into this admin site.')
 });
 
 export const usersMeUpdateResponseEmailMax = 254;
@@ -223,6 +313,16 @@ export const usersMeUpdateResponse = zod.object({
   last_name: zod.string().max(usersMeUpdateResponseLastNameMax).optional(),
   password: zod.string(),
   password_confirm: zod.string(),
+  is_active: zod
+    .boolean()
+    .optional()
+    .describe(
+      'Designates whether this user should be treated as active. Unselect this instead of deleting accounts.'
+    ),
+  is_staff: zod
+    .boolean()
+    .optional()
+    .describe('Designates whether the user can log into this admin site.'),
   date_joined: zod.string().datetime({}),
   last_login: zod.string().datetime({}).nullable()
 });
@@ -244,7 +344,17 @@ export const usersMePartialUpdateBody = zod.object({
   first_name: zod.string().max(usersMePartialUpdateBodyFirstNameMax).optional(),
   last_name: zod.string().max(usersMePartialUpdateBodyLastNameMax).optional(),
   password: zod.string().optional(),
-  password_confirm: zod.string().optional()
+  password_confirm: zod.string().optional(),
+  is_active: zod
+    .boolean()
+    .optional()
+    .describe(
+      'Designates whether this user should be treated as active. Unselect this instead of deleting accounts.'
+    ),
+  is_staff: zod
+    .boolean()
+    .optional()
+    .describe('Designates whether the user can log into this admin site.')
 });
 
 export const usersMePartialUpdateResponseEmailMax = 254;
@@ -262,6 +372,16 @@ export const usersMePartialUpdateResponse = zod.object({
   last_name: zod.string().max(usersMePartialUpdateResponseLastNameMax).optional(),
   password: zod.string(),
   password_confirm: zod.string(),
+  is_active: zod
+    .boolean()
+    .optional()
+    .describe(
+      'Designates whether this user should be treated as active. Unselect this instead of deleting accounts.'
+    ),
+  is_staff: zod
+    .boolean()
+    .optional()
+    .describe('Designates whether the user can log into this admin site.'),
   date_joined: zod.string().datetime({}),
   last_login: zod.string().datetime({}).nullable()
 });

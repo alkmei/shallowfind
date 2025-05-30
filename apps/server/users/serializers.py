@@ -18,6 +18,8 @@ class UserSerializer(serializers.ModelSerializer):
             "last_name",
             "password",
             "password_confirm",
+            "is_active",
+            "is_staff",
             "date_joined",
             "last_login",
         )

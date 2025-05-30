@@ -4,8 +4,8 @@
   import { Input } from '$lib/components/ui/input';
   import { superForm, defaults } from 'sveltekit-superforms';
   import { zod, zodClient } from 'sveltekit-superforms/adapters';
-  import { sessionCreateBody } from './api/session/session.zod';
-  import { createSessionCreate, sessionCreate } from './api/session/session';
+  import { sessionCreateBody } from '../api/session/session.zod';
+  import { createSessionCreate, sessionCreate } from '../api/session/session';
   import { goto } from '$app/navigation';
 
   const createSession = createSessionCreate({

@@ -1200,6 +1200,15 @@ components:
         password_confirm:
           type: string
           writeOnly: true
+        is_active:
+          type: boolean
+          title: Active
+          description: Designates whether this user should be treated as active. Unselect
+            this instead of deleting accounts.
+        is_staff:
+          type: boolean
+          title: Staff status
+          description: Designates whether the user can log into this admin site.
         date_joined:
           type: string
           format: date-time
@@ -1331,6 +1340,15 @@ components:
         password_confirm:
           type: string
           writeOnly: true
+        is_active:
+          type: boolean
+          title: Active
+          description: Designates whether this user should be treated as active. Unselect
+            this instead of deleting accounts.
+        is_staff:
+          type: boolean
+          title: Staff status
+          description: Designates whether the user can log into this admin site.
         date_joined:
           type: string
           format: date-time

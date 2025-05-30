@@ -1,6 +1,6 @@
 <script lang="ts">
   import Button from '$lib/components/ui/button/button.svelte';
-  import LoginForm from '$lib/LoginForm.svelte';
+  import LoginForm from '$lib/components/LoginForm.svelte';
 </script>
 
 <div class="flex flex-col">

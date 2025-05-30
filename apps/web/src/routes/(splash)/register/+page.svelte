@@ -6,7 +6,7 @@
   import { defaults, superForm } from 'sveltekit-superforms';
   import { zod, zodClient } from 'sveltekit-superforms/adapters';
   import { Input } from '$lib/components/ui/input';
-  import LoginForm from '$lib/LoginForm.svelte';
+  import LoginForm from '$lib/components/LoginForm.svelte';
   import { X } from '@lucide/svelte';
   import { goto } from '$app/navigation';
 

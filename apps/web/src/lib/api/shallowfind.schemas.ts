@@ -197,6 +197,10 @@ export interface PatchedUser {
   last_name?: string;
   password?: string;
   password_confirm?: string;
+  /** Designates whether this user should be treated as active. Unselect this instead of deleting accounts. */
+  is_active?: boolean;
+  /** Designates whether the user can log into this admin site. */
+  is_staff?: boolean;
   readonly date_joined?: string;
   /** @nullable */
   readonly last_login?: string | null;
@@ -249,6 +253,10 @@ export interface User {
   last_name?: string;
   password: string;
   password_confirm: string;
+  /** Designates whether this user should be treated as active. Unselect this instead of deleting accounts. */
+  is_active?: boolean;
+  /** Designates whether the user can log into this admin site. */
+  is_staff?: boolean;
   readonly date_joined: string;
   /** @nullable */
   readonly last_login: string | null;

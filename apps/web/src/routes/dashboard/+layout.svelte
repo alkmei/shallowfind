@@ -15,7 +15,7 @@
   import DropdownMenuSeparator from '$lib/components/ui/dropdown-menu/dropdown-menu-separator.svelte';
   import { createUsersMeRetrieve } from '$lib/api/users/users';
   import type { AdminUser } from '$lib/api/shallowfind.schemas';
-  import { onMount } from 'svelte';
+  import DropdownProfile from '$lib/components/DropdownProfile.svelte';
 
   let { children } = $props();
   const userQuery = createUsersMeRetrieve();
@@ -36,27 +36,7 @@
       <Button class="cursor-pointer" variant="outline">Log In</Button>
     {:else if $userQuery.isSuccess}
       {@const currentUser: AdminUser = $userQuery.data.data}
-      <DropdownMenu>
-        <DropdownMenuTrigger>
-          <Avatar class="cursor-pointer hover:brightness-75">
-            <AvatarImage
-              src={`https://api.dicebear.com/9.x/lorelei/svg?seed=${currentUser.email}`}
-              alt={currentUser.email}
-              referrerpolicy="no-referrer"
-            />
-            <AvatarFallback>{currentUser.email}</AvatarFallback>
-          </Avatar>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent>
-          <DropdownMenuLabel>{currentUser.email}</DropdownMenuLabel>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem>
-            <a href={`/dashboard/profile`}>Profile</a>
-          </DropdownMenuItem>
-          <DropdownMenuItem>Settings</DropdownMenuItem>
-          <DropdownMenuItem>Logout</DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
+      <DropdownProfile {currentUser} />
     {/if}
   </header>
 
@@ -104,7 +84,7 @@
       <Button class="w-full" variant="outline">About</Button>
     </div>
   </aside>
-  <main class="h-full w-full overflow-auto rounded-2xl border p-2">
+  <main class="h-full w-full overflow-auto rounded border p-2">
     {@render children()}
   </main>
 </div>
