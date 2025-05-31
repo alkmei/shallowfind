@@ -15,6 +15,7 @@
         src={`https://api.dicebear.com/9.x/lorelei/svg?seed=${currentUser.email}`}
         alt={currentUser.email}
         referrerpolicy="no-referrer"
+        class="w-16 rounded-full border"
       />
       <Avatar.Fallback>
         {isFullNameAvailable
@@ -38,7 +39,7 @@
       <div>{currentUser.is_active ? 'Yes' : 'No'}</div>
     </div>
     <DropdownMenu.Separator />
-    <DropdownMenu.Item>Settings</DropdownMenu.Item>
+    <a href="/dashboard/settings"><DropdownMenu.Item>Settings</DropdownMenu.Item></a>
     <DropdownMenu.Item>Logout</DropdownMenu.Item>
   </DropdownMenu.Content>
 </DropdownMenu.Root>

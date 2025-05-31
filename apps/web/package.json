@@ -26,6 +26,7 @@
     "zod": "^3.25.28"
   },
   "devDependencies": {
+    "@internationalized/date": "^3.8.1",
     "@lucide/svelte": "^0.482.0",
     "@repo/eslint-config": "workspace:*",
     "@repo/typescript-config": "workspace:*",
@@ -33,7 +34,7 @@
     "@sveltejs/kit": "^2.21.1",
     "@sveltejs/vite-plugin-svelte": "^5.0.3",
     "@tailwindcss/vite": "^4.0.0",
-    "bits-ui": "^1.5.0",
+    "bits-ui": "^2.4.0",
     "clsx": "^2.1.1",
     "eslint": "^9.27.0",
     "orval": "^7.9.0",

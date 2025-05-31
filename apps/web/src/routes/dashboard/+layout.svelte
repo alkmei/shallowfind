@@ -1,21 +1,14 @@
 <script lang="ts">
   import Button from '$lib/components/ui/button/button.svelte';
-  import Avatar from '$lib/components/ui/avatar/avatar.svelte';
-  import { DropdownMenu } from '$lib/components/ui/dropdown-menu';
   import Collapsible from '$lib/components/ui/collapsible/collapsible.svelte';
   import { ChevronsUpDown } from '@lucide/svelte';
   import CollapsibleTrigger from '$lib/components/ui/collapsible/collapsible-trigger.svelte';
   import CollapsibleContent from '$lib/components/ui/collapsible/collapsible-content.svelte';
-  import DropdownMenuTrigger from '$lib/components/ui/dropdown-menu/dropdown-menu-trigger.svelte';
-  import AvatarImage from '$lib/components/ui/avatar/avatar-image.svelte';
-  import AvatarFallback from '$lib/components/ui/avatar/avatar-fallback.svelte';
-  import DropdownMenuLabel from '$lib/components/ui/dropdown-menu/dropdown-menu-label.svelte';
-  import DropdownMenuItem from '$lib/components/ui/dropdown-menu/dropdown-menu-item.svelte';
-  import DropdownMenuContent from '$lib/components/ui/dropdown-menu/dropdown-menu-content.svelte';
-  import DropdownMenuSeparator from '$lib/components/ui/dropdown-menu/dropdown-menu-separator.svelte';
   import { createUsersMeRetrieve } from '$lib/api/users/users';
   import type { AdminUser } from '$lib/api/shallowfind.schemas';
   import DropdownProfile from '$lib/components/DropdownProfile.svelte';
+  import ScrollArea from '$lib/components/ui/scroll-area/scroll-area.svelte';
+  import LightSwitch from '$lib/components/LightSwitch.svelte';
 
   let { children } = $props();
   const userQuery = createUsersMeRetrieve();
@@ -30,6 +23,7 @@
 
   <header class="flex items-center justify-between">
     <div>Breadcrumb</div>
+
     {#if $userQuery.isLoading}
       <span>Loading...</span>
     {:else if $userQuery.isError}
@@ -84,7 +78,7 @@
       <Button class="w-full" variant="outline">About</Button>
     </div>
   </aside>
-  <main class="h-full w-full overflow-auto rounded border p-2">
+  <ScrollArea class="h-full w-full overflow-auto rounded border p-2">
     {@render children()}
-  </main>
+  </ScrollArea>
 </div>
