@@ -13,7 +13,7 @@
         items: [
           {
             title: 'My Scenarios',
-            url: '/dashboard'
+            url: '/dashboard/scenarios'
           },
           {
             title: 'Create New Scenario',

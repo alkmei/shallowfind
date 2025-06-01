@@ -4,6 +4,7 @@
   import * as DropdownMenu from '$lib/components/ui/dropdown-menu/index.js';
   import * as Sidebar from '$lib/components/ui/sidebar/index.js';
   import { useSidebar } from '$lib/components/ui/sidebar/index.js';
+  import { Settings2 } from '@lucide/svelte';
   import BadgeCheckIcon from '@lucide/svelte/icons/badge-check';
   import BellIcon from '@lucide/svelte/icons/bell';
   import ChevronsUpDownIcon from '@lucide/svelte/icons/chevrons-up-down';
@@ -64,23 +65,12 @@
         <DropdownMenu.Separator />
         <DropdownMenu.Group>
           <DropdownMenu.Item>
-            <SparklesIcon />
-            Upgrade to Pro
-          </DropdownMenu.Item>
-        </DropdownMenu.Group>
-        <DropdownMenu.Separator />
-        <DropdownMenu.Group>
-          <DropdownMenu.Item>
             <BadgeCheckIcon />
             Account
           </DropdownMenu.Item>
           <DropdownMenu.Item>
-            <CreditCardIcon />
-            Billing
-          </DropdownMenu.Item>
-          <DropdownMenu.Item>
-            <BellIcon />
-            Notifications
+            <Settings2 />
+            Settings
           </DropdownMenu.Item>
         </DropdownMenu.Group>
         <DropdownMenu.Separator />
