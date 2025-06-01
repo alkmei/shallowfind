@@ -1,84 +1,48 @@
 <script lang="ts">
-  import Button from '$lib/components/ui/button/button.svelte';
-  import Collapsible from '$lib/components/ui/collapsible/collapsible.svelte';
-  import { ChevronsUpDown } from '@lucide/svelte';
-  import CollapsibleTrigger from '$lib/components/ui/collapsible/collapsible-trigger.svelte';
-  import CollapsibleContent from '$lib/components/ui/collapsible/collapsible-content.svelte';
   import { createUsersMeRetrieve } from '$lib/api/users/users';
-  import type { AdminUser } from '$lib/api/shallowfind.schemas';
-  import DropdownProfile from '$lib/components/DropdownProfile.svelte';
-  import ScrollArea from '$lib/components/ui/scroll-area/scroll-area.svelte';
-  import LightSwitch from '$lib/components/LightSwitch.svelte';
+  import AppSidebar from '$lib/components/Sidebar/AppSidebar.svelte';
+  import * as Breadcrumb from '$lib/components/ui/breadcrumb/index.js';
+  import { Separator } from '$lib/components/ui/separator/index.js';
+  import * as Sidebar from '$lib/components/ui/sidebar/index.js';
 
   let { children } = $props();
   const userQuery = createUsersMeRetrieve();
 </script>
 
-<div class="mx-8 grid h-screen grid-cols-[auto_1fr] grid-rows-[auto_1fr] gap-6 py-6">
-  <a href="/dashboard">
-    <h1 class="text-4xl">
-      <span class="font-bold">Shallow</span>Find
-    </h1>
-  </a>
-
-  <header class="flex items-center justify-between">
-    <div>Breadcrumb</div>
-
-    {#if $userQuery.isLoading}
-      <span>Loading...</span>
-    {:else if $userQuery.isError}
-      <Button class="cursor-pointer" variant="outline">Log In</Button>
-    {:else if $userQuery.isSuccess}
-      {@const currentUser: AdminUser = $userQuery.data.data}
-      <DropdownProfile {currentUser} />
-    {/if}
-  </header>
-
-  <aside class="flex h-full w-3xs flex-col justify-between">
-    <div>
-      <Button class="mb-4 w-full cursor-pointer">New Scenario</Button>
-      <Collapsible class="mb-2 w-full">
-        <CollapsibleTrigger class="w-full">
-          <Button variant="ghost" size="sm" class="mb-2 w-full">
-            <span class="w-full text-left">Scenarios</span>
-            <ChevronsUpDown class="h-4 w-4" />
-          </Button>
-        </CollapsibleTrigger>
-        <CollapsibleContent class="CollapsibleContent flex flex-col gap-2">
-          <!-- {#each scenarios as scenario}
-						<Link to={`/dashboard/scenario/${scenario.id}`}>
-							<Button class="w-full justify-normal" variant="outline">
-								{scenario.name}
-							</Button>
-						</Link>
-					{/each} -->
-        </CollapsibleContent>
-      </Collapsible>
-      <Collapsible class="w-full">
-        <CollapsibleTrigger class="w-full">
-          <Button variant="ghost" size="sm" class="mb-2 w-full">
-            <span class="w-full text-left">Shared Scenarios</span>
-            <ChevronsUpDown class="h-4 w-4" />
-          </Button>
-        </CollapsibleTrigger>
-        <CollapsibleContent class="CollapsibleContent flex flex-col gap-2">
-          <!-- {#each sharedScenarios as scenario}
-						<Link to={`/dashboard/scenario/${scenario.id}`}>
-							<Button class="w-full justify-normal" variant="outline">
-								{scenario.name}
-							</Button>
-						</Link>
-					{/each} -->
-        </CollapsibleContent>
-      </Collapsible>
+<Sidebar.Provider>
+  {#if $userQuery.isLoading}
+    <div class="flex h-full items-center justify-center">
+      <span class="text-gray-500">Loading...</span>
     </div>
-    <div class="flex flex-col gap-2">
-      <Button class="w-full" variant="outline">Import Scenario</Button>
-      <Button class="w-full" variant="outline">Support</Button>
-      <Button class="w-full" variant="outline">About</Button>
+  {:else if $userQuery.isError}
+    <div class="flex h-full items-center justify-center">
+      <span class="text-red-500">Error loading user data</span>
     </div>
-  </aside>
-  <ScrollArea class="h-full w-full overflow-auto rounded border p-2">
-    {@render children()}
-  </ScrollArea>
-</div>
+  {:else if $userQuery.isSuccess}
+    <AppSidebar user={$userQuery.data?.data} />
+  {/if}
+  <Sidebar.Inset>
+    <header
+      class="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12"
+    >
+      <div class="flex items-center gap-2 px-4">
+        <Sidebar.Trigger class="-ml-1" />
+        <Separator orientation="vertical" class="mr-2 data-[orientation=vertical]:h-4" />
+        <Breadcrumb.Root>
+          <Breadcrumb.List>
+            <Breadcrumb.Item class="hidden md:block">
+              <Breadcrumb.Link href="#">Building Your Application</Breadcrumb.Link>
+            </Breadcrumb.Item>
+            <Breadcrumb.Separator class="hidden md:block" />
+            <Breadcrumb.Item>
+              <Breadcrumb.Page>Data Fetching</Breadcrumb.Page>
+            </Breadcrumb.Item>
+          </Breadcrumb.List>
+        </Breadcrumb.Root>
+      </div>
+    </header>
+    <div class="flex flex-1 flex-col gap-4 p-4 pt-0">
+      {@render children()}
+    </div>
+  </Sidebar.Inset>
+</Sidebar.Provider>
