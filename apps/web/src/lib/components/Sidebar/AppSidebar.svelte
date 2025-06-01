@@ -10,13 +10,7 @@
   import Settings2Icon from '@lucide/svelte/icons/settings-2';
   import SquareTerminalIcon from '@lucide/svelte/icons/square-terminal';
 
-  // This is sample data.
   const data = {
-    user: {
-      name: 'shadcn',
-      email: 'm@example.com',
-      avatar: '/avatars/shadcn.jpg'
-    },
     teams: [
       {
         name: 'Acme Inc',
@@ -36,106 +30,97 @@
     ],
     navMain: [
       {
-        title: 'Playground',
+        title: 'Scenarios',
         url: '#',
-        icon: SquareTerminalIcon,
+        icon: Layers,
         isActive: true,
         items: [
           {
-            title: 'History',
+            title: 'My Scenarios',
             url: '#'
           },
           {
-            title: 'Starred',
+            title: 'Create New Scenario',
             url: '#'
           },
           {
-            title: 'Settings',
+            title: 'Scenario Explorer',
+            url: '#'
+          },
+          {
+            title: 'Financial Goals',
             url: '#'
           }
         ]
       },
       {
-        title: 'Models',
+        title: 'Simulations',
         url: '#',
-        icon: BotIcon,
+        icon: TrendingUp,
         items: [
           {
-            title: 'Genesis',
+            title: 'Run Simulations',
             url: '#'
           },
           {
-            title: 'Explorer',
+            title: 'Results Dashboard',
             url: '#'
           },
           {
-            title: 'Quantum',
+            title: 'Charts & Visualizations',
+            url: '#'
+          },
+          {
+            title: 'Comparison Tools',
             url: '#'
           }
         ]
       },
       {
-        title: 'Documentation',
+        title: 'Financial Data',
         url: '#',
-        icon: BookOpenIcon,
+        icon: BadgeDollarSign,
         items: [
           {
-            title: 'Introduction',
+            title: 'Investments',
             url: '#'
           },
           {
-            title: 'Get Started',
+            title: 'Event Series',
             url: '#'
           },
           {
-            title: 'Tutorials',
+            title: 'Tax Settings',
             url: '#'
           },
           {
-            title: 'Changelog',
+            title: 'Strategies',
             url: '#'
           }
         ]
       },
       {
-        title: 'Settings',
+        title: 'Tools & Utilities',
         url: '#',
-        icon: Settings2Icon,
+        icon: Wrench,
         items: [
           {
-            title: 'General',
+            title: 'Import/Export',
             url: '#'
           },
           {
-            title: 'Team',
+            title: 'Sharing',
             url: '#'
           },
           {
-            title: 'Billing',
+            title: 'Optimization Tools',
             url: '#'
           },
           {
-            title: 'Limits',
+            title: 'Logs & Reports',
             url: '#'
           }
         ]
-      }
-    ],
-    projects: [
-      {
-        name: 'Design Engineering',
-        url: '#',
-        icon: FrameIcon
-      },
-      {
-        name: 'Sales & Marketing',
-        url: '#',
-        icon: ChartPieIcon
-      },
-      {
-        name: 'Travel',
-        url: '#',
-        icon: MapIcon
       }
     ]
   };
@@ -143,17 +128,19 @@
 
 <script lang="ts">
   import NavMain from './NavMain.svelte';
-  import NavProjects from './NavProjects.svelte';
   import NavUser from './NavUser.svelte';
   import TeamSwitcher from './TeamSwitcher.svelte';
   import * as Sidebar from '$lib/components/ui/sidebar/index.js';
   import type { ComponentProps } from 'svelte';
+  import type { AdminUser } from '$lib/api/shallowfind.schemas';
+  import { BadgeDollarSign, Layers, TrendingUp, Wrench } from '@lucide/svelte';
 
   let {
     ref = $bindable(null),
     collapsible = 'icon',
+    user,
     ...restProps
-  }: ComponentProps<typeof Sidebar.Root> = $props();
+  }: ComponentProps<typeof Sidebar.Root> & { user: AdminUser } = $props();
 </script>
 
 <Sidebar.Root {collapsible} {...restProps}>
@@ -162,10 +149,9 @@
   </Sidebar.Header>
   <Sidebar.Content>
     <NavMain items={data.navMain} />
-    <NavProjects projects={data.projects} />
   </Sidebar.Content>
   <Sidebar.Footer>
-    <NavUser user={data.user} />
+    <NavUser {user} />
   </Sidebar.Footer>
   <Sidebar.Rail />
 </Sidebar.Root>
