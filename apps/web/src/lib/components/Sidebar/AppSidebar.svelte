@@ -4,23 +4,6 @@
   import GalleryVerticalEndIcon from '@lucide/svelte/icons/gallery-vertical-end';
 
   const data = {
-    teams: [
-      {
-        name: 'Acme Inc',
-        logo: GalleryVerticalEndIcon,
-        plan: 'Enterprise'
-      },
-      {
-        name: 'Acme Corp.',
-        logo: AudioWaveformIcon,
-        plan: 'Startup'
-      },
-      {
-        name: 'Evil Corp.',
-        logo: CommandIcon,
-        plan: 'Free'
-      }
-    ],
     navMain: [
       {
         title: 'Scenarios',
@@ -30,11 +13,11 @@
         items: [
           {
             title: 'My Scenarios',
-            url: '#'
+            url: '/dashboard'
           },
           {
             title: 'Create New Scenario',
-            url: '#'
+            url: '/dashboard/scenarios/create'
           },
           {
             title: 'Scenario Explorer',
@@ -53,7 +36,7 @@
         items: [
           {
             title: 'Run Simulations',
-            url: '#'
+            url: '/dashboard/simulations/run'
           },
           {
             title: 'Results Dashboard',
@@ -75,20 +58,20 @@
         icon: BadgeDollarSign,
         items: [
           {
-            title: 'Investments',
-            url: '#'
+            title: 'Investment Types',
+            url: '/dashboard/investment-types'
           },
           {
             title: 'Event Series',
-            url: '#'
+            url: '/dashboard/event-series'
           },
           {
             title: 'Tax Settings',
-            url: '#'
+            url: '/dashboard/tax-settings'
           },
           {
             title: 'Strategies',
-            url: '#'
+            url: '/dashboard/strategies'
           }
         ]
       },
@@ -99,11 +82,11 @@
         items: [
           {
             title: 'Import/Export',
-            url: '#'
+            url: '/dashboard/import-export'
           },
           {
             title: 'Sharing',
-            url: '#'
+            url: '/dashboard/sharing'
           },
           {
             title: 'Optimization Tools',
@@ -111,7 +94,7 @@
           },
           {
             title: 'Logs & Reports',
-            url: '#'
+            url: '/dashboard/scenarios/logs'
           }
         ]
       }
@@ -122,7 +105,7 @@
 <script lang="ts">
   import NavMain from './NavMain.svelte';
   import NavUser from './NavUser.svelte';
-  import TeamSwitcher from './TeamSwitcher.svelte';
+  import SidebarLogo from './SidebarLogo.svelte';
   import * as Sidebar from '$lib/components/ui/sidebar/index.js';
   import type { ComponentProps } from 'svelte';
   import type { AdminUser } from '$lib/api/shallowfind.schemas';
@@ -138,7 +121,7 @@
 
 <Sidebar.Root {collapsible} {...restProps}>
   <Sidebar.Header>
-    <TeamSwitcher teams={data.teams} />
+    <SidebarLogo />
   </Sidebar.Header>
   <Sidebar.Content>
     <NavMain items={data.navMain} />
