@@ -13,20 +13,20 @@ export interface AdminUser {
    */
   email: string;
   /** @maxLength 150 */
-  first_name?: string;
+  firstName?: string;
   /** @maxLength 150 */
-  last_name?: string;
+  lastName?: string;
   password?: string;
-  password_confirm?: string;
+  passwordConfirm?: string;
   /** Designates whether this user should be treated as active. Unselect this instead of deleting accounts. */
-  is_active?: boolean;
+  isActive?: boolean;
   /** Designates whether the user can log into this admin site. */
-  is_staff?: boolean;
+  isStaff?: boolean;
   /** Designates that this user has all permissions without explicitly assigning them. */
-  is_superuser?: boolean;
-  readonly date_joined: string;
+  isSuperuser?: boolean;
+  readonly dateJoined: string;
   /** @nullable */
-  readonly last_login: string | null;
+  readonly lastLogin: string | null;
 }
 
 /**
@@ -143,20 +143,20 @@ export interface PatchedAdminUser {
    */
   email?: string;
   /** @maxLength 150 */
-  first_name?: string;
+  firstName?: string;
   /** @maxLength 150 */
-  last_name?: string;
+  lastName?: string;
   password?: string;
-  password_confirm?: string;
+  passwordConfirm?: string;
   /** Designates whether this user should be treated as active. Unselect this instead of deleting accounts. */
-  is_active?: boolean;
+  isActive?: boolean;
   /** Designates whether the user can log into this admin site. */
-  is_staff?: boolean;
+  isStaff?: boolean;
   /** Designates that this user has all permissions without explicitly assigning them. */
-  is_superuser?: boolean;
-  readonly date_joined?: string;
+  isSuperuser?: boolean;
+  readonly dateJoined?: string;
   /** @nullable */
-  readonly last_login?: string | null;
+  readonly lastLogin?: string | null;
 }
 
 /**
@@ -192,18 +192,18 @@ export interface PatchedUser {
    */
   email?: string;
   /** @maxLength 150 */
-  first_name?: string;
+  firstName?: string;
   /** @maxLength 150 */
-  last_name?: string;
+  lastName?: string;
   password?: string;
-  password_confirm?: string;
+  passwordConfirm?: string;
   /** Designates whether this user should be treated as active. Unselect this instead of deleting accounts. */
-  is_active?: boolean;
+  isActive?: boolean;
   /** Designates whether the user can log into this admin site. */
-  is_staff?: boolean;
-  readonly date_joined?: string;
+  isStaff?: boolean;
+  readonly dateJoined?: string;
   /** @nullable */
-  readonly last_login?: string | null;
+  readonly lastLogin?: string | null;
 }
 
 /**
@@ -248,16 +248,16 @@ export interface User {
    */
   email: string;
   /** @maxLength 150 */
-  first_name?: string;
+  firstName?: string;
   /** @maxLength 150 */
-  last_name?: string;
+  lastName?: string;
   password: string;
-  password_confirm: string;
+  passwordConfirm: string;
   /** Designates whether this user should be treated as active. Unselect this instead of deleting accounts. */
-  is_active?: boolean;
+  isActive?: boolean;
   /** Designates whether the user can log into this admin site. */
-  is_staff?: boolean;
-  readonly date_joined: string;
+  isStaff?: boolean;
+  readonly dateJoined: string;
   /** @nullable */
-  readonly last_login: string | null;
+  readonly lastLogin: string | null;
 }

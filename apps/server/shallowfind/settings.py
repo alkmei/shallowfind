@@ -54,6 +54,7 @@ MIDDLEWARE = [
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
+    "djangorestframework_camel_case.middleware.CamelCaseMiddleWare",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
@@ -92,6 +93,18 @@ REST_FRAMEWORK = {
         "rest_framework.authentication.SessionAuthentication",
     ],
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
+    "DEFAULT_RENDERER_CLASSES": (
+        "djangorestframework_camel_case.render.CamelCaseJSONRenderer",
+        "djangorestframework_camel_case.render.CamelCaseBrowsableAPIRenderer",
+        # Any other renders
+    ),
+    "DEFAULT_PARSER_CLASSES": (
+        # If you use MultiPartFormParser or FormParser, we also have a camel case version
+        "djangorestframework_camel_case.parser.CamelCaseFormParser",
+        "djangorestframework_camel_case.parser.CamelCaseMultiPartParser",
+        "djangorestframework_camel_case.parser.CamelCaseJSONParser",
+        # Any other parsers
+    ),
 }
 
 SPECTACULAR_SETTINGS = {
@@ -99,6 +112,11 @@ SPECTACULAR_SETTINGS = {
     "DESCRIPTION": "Shallowfind Financial Planner",
     "VERSION": "0.0.1",
     "SERVE_INCLUDE_SCHEMA": False,
+    "CAMELIZE_NAMES": False,
+    "POSTPROCESSING_HOOKS": [
+        "drf_spectacular.contrib.djangorestframework_camel_case.camelize_serializer_fields",
+        "drf_spectacular.hooks.postprocess_schema_enums",
+    ],
 }
 
 

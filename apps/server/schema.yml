@@ -9,9 +9,9 @@ paths:
       operationId: admin_users_list
       description: ViewSet for admin users to manage all user accounts.
       tags:
-      - admin
+        - admin
       security:
-      - cookieAuth: []
+        - cookieAuth: []
       responses:
         '200':
           content:
@@ -25,21 +25,21 @@ paths:
       operationId: admin_users_create
       description: ViewSet for admin users to manage all user accounts.
       tags:
-      - admin
+        - admin
       requestBody:
         content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/AdminUser'
           application/x-www-form-urlencoded:
             schema:
               $ref: '#/components/schemas/AdminUser'
           multipart/form-data:
             schema:
               $ref: '#/components/schemas/AdminUser'
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AdminUser'
         required: true
       security:
-      - cookieAuth: []
+        - cookieAuth: []
       responses:
         '201':
           content:
@@ -52,16 +52,16 @@ paths:
       operationId: admin_users_retrieve
       description: ViewSet for admin users to manage all user accounts.
       parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this user.
-        required: true
+        - in: path
+          name: id
+          schema:
+            type: integer
+          description: A unique integer value identifying this user.
+          required: true
       tags:
-      - admin
+        - admin
       security:
-      - cookieAuth: []
+        - cookieAuth: []
       responses:
         '200':
           content:
@@ -73,28 +73,28 @@ paths:
       operationId: admin_users_update
       description: ViewSet for admin users to manage all user accounts.
       parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this user.
-        required: true
+        - in: path
+          name: id
+          schema:
+            type: integer
+          description: A unique integer value identifying this user.
+          required: true
       tags:
-      - admin
+        - admin
       requestBody:
         content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/AdminUser'
           application/x-www-form-urlencoded:
             schema:
               $ref: '#/components/schemas/AdminUser'
           multipart/form-data:
             schema:
               $ref: '#/components/schemas/AdminUser'
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AdminUser'
         required: true
       security:
-      - cookieAuth: []
+        - cookieAuth: []
       responses:
         '200':
           content:
@@ -106,27 +106,27 @@ paths:
       operationId: admin_users_partial_update
       description: ViewSet for admin users to manage all user accounts.
       parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this user.
-        required: true
+        - in: path
+          name: id
+          schema:
+            type: integer
+          description: A unique integer value identifying this user.
+          required: true
       tags:
-      - admin
+        - admin
       requestBody:
         content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PatchedAdminUser'
           application/x-www-form-urlencoded:
             schema:
               $ref: '#/components/schemas/PatchedAdminUser'
           multipart/form-data:
             schema:
               $ref: '#/components/schemas/PatchedAdminUser'
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedAdminUser'
       security:
-      - cookieAuth: []
+        - cookieAuth: []
       responses:
         '200':
           content:
@@ -138,16 +138,16 @@ paths:
       operationId: admin_users_destroy
       description: ViewSet for admin users to manage all user accounts.
       parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this user.
-        required: true
+        - in: path
+          name: id
+          schema:
+            type: integer
+          description: A unique integer value identifying this user.
+          required: true
       tags:
-      - admin
+        - admin
       security:
-      - cookieAuth: []
+        - cookieAuth: []
       responses:
         '204':
           description: No response body
@@ -156,28 +156,28 @@ paths:
       operationId: admin_users_activate_create
       description: Activate a user account.
       parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this user.
-        required: true
+        - in: path
+          name: id
+          schema:
+            type: integer
+          description: A unique integer value identifying this user.
+          required: true
       tags:
-      - admin
+        - admin
       requestBody:
         content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/AdminUser'
           application/x-www-form-urlencoded:
             schema:
               $ref: '#/components/schemas/AdminUser'
           multipart/form-data:
             schema:
               $ref: '#/components/schemas/AdminUser'
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AdminUser'
         required: true
       security:
-      - cookieAuth: []
+        - cookieAuth: []
       responses:
         '200':
           content:
@@ -190,28 +190,28 @@ paths:
       operationId: admin_users_deactivate_create
       description: Deactivate a user account.
       parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this user.
-        required: true
+        - in: path
+          name: id
+          schema:
+            type: integer
+          description: A unique integer value identifying this user.
+          required: true
       tags:
-      - admin
+        - admin
       requestBody:
         content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/AdminUser'
           application/x-www-form-urlencoded:
             schema:
               $ref: '#/components/schemas/AdminUser'
           multipart/form-data:
             schema:
               $ref: '#/components/schemas/AdminUser'
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AdminUser'
         required: true
       security:
-      - cookieAuth: []
+        - cookieAuth: []
       responses:
         '200':
           content:
@@ -224,28 +224,28 @@ paths:
       operationId: admin_users_make_staff_create
       description: Grant staff privileges to a user.
       parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this user.
-        required: true
+        - in: path
+          name: id
+          schema:
+            type: integer
+          description: A unique integer value identifying this user.
+          required: true
       tags:
-      - admin
+        - admin
       requestBody:
         content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/AdminUser'
           application/x-www-form-urlencoded:
             schema:
               $ref: '#/components/schemas/AdminUser'
           multipart/form-data:
             schema:
               $ref: '#/components/schemas/AdminUser'
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AdminUser'
         required: true
       security:
-      - cookieAuth: []
+        - cookieAuth: []
       responses:
         '200':
           content:
@@ -258,28 +258,28 @@ paths:
       operationId: admin_users_remove_staff_create
       description: Remove staff privileges from a user.
       parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this user.
-        required: true
+        - in: path
+          name: id
+          schema:
+            type: integer
+          description: A unique integer value identifying this user.
+          required: true
       tags:
-      - admin
+        - admin
       requestBody:
         content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/AdminUser'
           application/x-www-form-urlencoded:
             schema:
               $ref: '#/components/schemas/AdminUser'
           multipart/form-data:
             schema:
               $ref: '#/components/schemas/AdminUser'
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AdminUser'
         required: true
       security:
-      - cookieAuth: []
+        - cookieAuth: []
       responses:
         '200':
           content:
@@ -294,10 +294,10 @@ paths:
         ViewSet for managing scenarios with full CRUD operations.
         Provides list, create, retrieve, update, destroy actions.
       tags:
-      - scenarios
+        - scenarios
       security:
-      - cookieAuth: []
-      - {}
+        - cookieAuth: []
+        - {}
       responses:
         '200':
           content:
@@ -313,22 +313,22 @@ paths:
         ViewSet for managing scenarios with full CRUD operations.
         Provides list, create, retrieve, update, destroy actions.
       tags:
-      - scenarios
+        - scenarios
       requestBody:
         content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Scenario'
           application/x-www-form-urlencoded:
             schema:
               $ref: '#/components/schemas/Scenario'
           multipart/form-data:
             schema:
               $ref: '#/components/schemas/Scenario'
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Scenario'
         required: true
       security:
-      - cookieAuth: []
-      - {}
+        - cookieAuth: []
+        - {}
       responses:
         '201':
           content:
@@ -343,17 +343,17 @@ paths:
         ViewSet for managing scenarios with full CRUD operations.
         Provides list, create, retrieve, update, destroy actions.
       parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this scenario.
-        required: true
+        - in: path
+          name: id
+          schema:
+            type: integer
+          description: A unique integer value identifying this scenario.
+          required: true
       tags:
-      - scenarios
+        - scenarios
       security:
-      - cookieAuth: []
-      - {}
+        - cookieAuth: []
+        - {}
       responses:
         '200':
           content:
@@ -367,29 +367,29 @@ paths:
         ViewSet for managing scenarios with full CRUD operations.
         Provides list, create, retrieve, update, destroy actions.
       parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this scenario.
-        required: true
+        - in: path
+          name: id
+          schema:
+            type: integer
+          description: A unique integer value identifying this scenario.
+          required: true
       tags:
-      - scenarios
+        - scenarios
       requestBody:
         content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Scenario'
           application/x-www-form-urlencoded:
             schema:
               $ref: '#/components/schemas/Scenario'
           multipart/form-data:
             schema:
               $ref: '#/components/schemas/Scenario'
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Scenario'
         required: true
       security:
-      - cookieAuth: []
-      - {}
+        - cookieAuth: []
+        - {}
       responses:
         '200':
           content:
@@ -403,28 +403,28 @@ paths:
         ViewSet for managing scenarios with full CRUD operations.
         Provides list, create, retrieve, update, destroy actions.
       parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this scenario.
-        required: true
+        - in: path
+          name: id
+          schema:
+            type: integer
+          description: A unique integer value identifying this scenario.
+          required: true
       tags:
-      - scenarios
+        - scenarios
       requestBody:
         content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PatchedScenario'
           application/x-www-form-urlencoded:
             schema:
               $ref: '#/components/schemas/PatchedScenario'
           multipart/form-data:
             schema:
               $ref: '#/components/schemas/PatchedScenario'
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedScenario'
       security:
-      - cookieAuth: []
-      - {}
+        - cookieAuth: []
+        - {}
       responses:
         '200':
           content:
@@ -438,17 +438,17 @@ paths:
         ViewSet for managing scenarios with full CRUD operations.
         Provides list, create, retrieve, update, destroy actions.
       parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this scenario.
-        required: true
+        - in: path
+          name: id
+          schema:
+            type: integer
+          description: A unique integer value identifying this scenario.
+          required: true
       tags:
-      - scenarios
+        - scenarios
       security:
-      - cookieAuth: []
-      - {}
+        - cookieAuth: []
+        - {}
       responses:
         '204':
           description: No response body
@@ -457,29 +457,29 @@ paths:
       operationId: scenarios_clone_create
       description: Clone an existing scenario
       parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this scenario.
-        required: true
+        - in: path
+          name: id
+          schema:
+            type: integer
+          description: A unique integer value identifying this scenario.
+          required: true
       tags:
-      - scenarios
+        - scenarios
       requestBody:
         content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Scenario'
           application/x-www-form-urlencoded:
             schema:
               $ref: '#/components/schemas/Scenario'
           multipart/form-data:
             schema:
               $ref: '#/components/schemas/Scenario'
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Scenario'
         required: true
       security:
-      - cookieAuth: []
-      - {}
+        - cookieAuth: []
+        - {}
       responses:
         '200':
           content:
@@ -492,17 +492,17 @@ paths:
       operationId: scenarios_export_retrieve
       description: Export scenario as YAML
       parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this scenario.
-        required: true
+        - in: path
+          name: id
+          schema:
+            type: integer
+          description: A unique integer value identifying this scenario.
+          required: true
       tags:
-      - scenarios
+        - scenarios
       security:
-      - cookieAuth: []
-      - {}
+        - cookieAuth: []
+        - {}
       responses:
         '200':
           content:
@@ -515,29 +515,29 @@ paths:
       operationId: scenarios_simulate_create
       description: Run Monte Carlo simulations for this scenario
       parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this scenario.
-        required: true
+        - in: path
+          name: id
+          schema:
+            type: integer
+          description: A unique integer value identifying this scenario.
+          required: true
       tags:
-      - scenarios
+        - scenarios
       requestBody:
         content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Scenario'
           application/x-www-form-urlencoded:
             schema:
               $ref: '#/components/schemas/Scenario'
           multipart/form-data:
             schema:
               $ref: '#/components/schemas/Scenario'
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Scenario'
         required: true
       security:
-      - cookieAuth: []
-      - {}
+        - cookieAuth: []
+        - {}
       responses:
         '200':
           content:
@@ -550,17 +550,17 @@ paths:
       operationId: scenarios_validate_scenario_retrieve
       description: Validate scenario for simulation readiness
       parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this scenario.
-        required: true
+        - in: path
+          name: id
+          schema:
+            type: integer
+          description: A unique integer value identifying this scenario.
+          required: true
       tags:
-      - scenarios
+        - scenarios
       security:
-      - cookieAuth: []
-      - {}
+        - cookieAuth: []
+        - {}
       responses:
         '200':
           content:
@@ -573,22 +573,22 @@ paths:
       operationId: scenarios_import_scenario_create
       description: Import scenario from YAML file
       tags:
-      - scenarios
+        - scenarios
       requestBody:
         content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Scenario'
           application/x-www-form-urlencoded:
             schema:
               $ref: '#/components/schemas/Scenario'
           multipart/form-data:
             schema:
               $ref: '#/components/schemas/Scenario'
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Scenario'
         required: true
       security:
-      - cookieAuth: []
-      - {}
+        - cookieAuth: []
+        - {}
       responses:
         '200':
           content:
@@ -601,22 +601,22 @@ paths:
       operationId: session_create
       description: Handle user login with email.
       tags:
-      - session
+        - session
       requestBody:
         content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Session'
           application/x-www-form-urlencoded:
             schema:
               $ref: '#/components/schemas/Session'
           multipart/form-data:
             schema:
               $ref: '#/components/schemas/Session'
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Session'
         required: true
       security:
-      - cookieAuth: []
-      - {}
+        - cookieAuth: []
+        - {}
       responses:
         '200':
           content:
@@ -628,10 +628,10 @@ paths:
       operationId: session_destroy
       description: Handle user logout.
       tags:
-      - session
+        - session
       security:
-      - cookieAuth: []
-      - {}
+        - cookieAuth: []
+        - {}
       responses:
         '204':
           description: No response body
@@ -640,9 +640,9 @@ paths:
       operationId: users_list
       description: Get current user's information.
       tags:
-      - users
+        - users
       security:
-      - cookieAuth: []
+        - cookieAuth: []
       responses:
         '200':
           content:
@@ -657,21 +657,21 @@ paths:
       description: Create a new user account. This endpoint allows unauthenticated
         access for registration.
       tags:
-      - users
+        - users
       requestBody:
         content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/User'
           application/x-www-form-urlencoded:
             schema:
               $ref: '#/components/schemas/User'
           multipart/form-data:
             schema:
               $ref: '#/components/schemas/User'
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
         required: true
       security:
-      - cookieAuth: []
+        - cookieAuth: []
       responses:
         '201':
           content:
@@ -684,16 +684,16 @@ paths:
       operationId: users_retrieve
       description: Get current user's information by ID.
       parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this user.
-        required: true
+        - in: path
+          name: id
+          schema:
+            type: integer
+          description: A unique integer value identifying this user.
+          required: true
       tags:
-      - users
+        - users
       security:
-      - cookieAuth: []
+        - cookieAuth: []
       responses:
         '200':
           content:
@@ -705,28 +705,28 @@ paths:
       operationId: users_update
       description: Update user account (PUT).
       parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this user.
-        required: true
+        - in: path
+          name: id
+          schema:
+            type: integer
+          description: A unique integer value identifying this user.
+          required: true
       tags:
-      - users
+        - users
       requestBody:
         content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/User'
           application/x-www-form-urlencoded:
             schema:
               $ref: '#/components/schemas/User'
           multipart/form-data:
             schema:
               $ref: '#/components/schemas/User'
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
         required: true
       security:
-      - cookieAuth: []
+        - cookieAuth: []
       responses:
         '200':
           content:
@@ -738,27 +738,27 @@ paths:
       operationId: users_partial_update
       description: Partially update user account (PATCH).
       parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this user.
-        required: true
+        - in: path
+          name: id
+          schema:
+            type: integer
+          description: A unique integer value identifying this user.
+          required: true
       tags:
-      - users
+        - users
       requestBody:
         content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PatchedUser'
           application/x-www-form-urlencoded:
             schema:
               $ref: '#/components/schemas/PatchedUser'
           multipart/form-data:
             schema:
               $ref: '#/components/schemas/PatchedUser'
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedUser'
       security:
-      - cookieAuth: []
+        - cookieAuth: []
       responses:
         '200':
           content:
@@ -770,16 +770,16 @@ paths:
       operationId: users_destroy
       description: Delete user account.
       parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this user.
-        required: true
+        - in: path
+          name: id
+          schema:
+            type: integer
+          description: A unique integer value identifying this user.
+          required: true
       tags:
-      - users
+        - users
       security:
-      - cookieAuth: []
+        - cookieAuth: []
       responses:
         '204':
           description: No response body
@@ -788,9 +788,9 @@ paths:
       operationId: users_me_retrieve
       description: Endpoint for users to manage their own profile at /users/me/
       tags:
-      - users
+        - users
       security:
-      - cookieAuth: []
+        - cookieAuth: []
       responses:
         '200':
           content:
@@ -802,21 +802,21 @@ paths:
       operationId: users_me_update
       description: Endpoint for users to manage their own profile at /users/me/
       tags:
-      - users
+        - users
       requestBody:
         content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/User'
           application/x-www-form-urlencoded:
             schema:
               $ref: '#/components/schemas/User'
           multipart/form-data:
             schema:
               $ref: '#/components/schemas/User'
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
         required: true
       security:
-      - cookieAuth: []
+        - cookieAuth: []
       responses:
         '200':
           content:
@@ -828,20 +828,20 @@ paths:
       operationId: users_me_partial_update
       description: Endpoint for users to manage their own profile at /users/me/
       tags:
-      - users
+        - users
       requestBody:
         content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PatchedUser'
           application/x-www-form-urlencoded:
             schema:
               $ref: '#/components/schemas/PatchedUser'
           multipart/form-data:
             schema:
               $ref: '#/components/schemas/PatchedUser'
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedUser'
       security:
-      - cookieAuth: []
+        - cookieAuth: []
       responses:
         '200':
           content:
@@ -853,9 +853,9 @@ paths:
       operationId: users_me_destroy
       description: Endpoint for users to manage their own profile at /users/me/
       tags:
-      - users
+        - users
       security:
-      - cookieAuth: []
+        - cookieAuth: []
       responses:
         '204':
           description: No response body
@@ -873,46 +873,46 @@ components:
           title: Email address
           description: Required. Enter a valid email address.
           maxLength: 254
-        first_name:
+        firstName:
           type: string
           maxLength: 150
-        last_name:
+        lastName:
           type: string
           maxLength: 150
         password:
           type: string
           writeOnly: true
-        password_confirm:
+        passwordConfirm:
           type: string
           writeOnly: true
-        is_active:
+        isActive:
           type: boolean
           title: Active
           description: Designates whether this user should be treated as active. Unselect
             this instead of deleting accounts.
-        is_staff:
+        isStaff:
           type: boolean
           title: Staff status
           description: Designates whether the user can log into this admin site.
-        is_superuser:
+        isSuperuser:
           type: boolean
           title: Superuser status
           description: Designates that this user has all permissions without explicitly
             assigning them.
-        date_joined:
+        dateJoined:
           type: string
           format: date-time
           readOnly: true
-        last_login:
+        lastLogin:
           type: string
           format: date-time
           readOnly: true
           nullable: true
       required:
-      - date_joined
-      - email
-      - id
-      - last_login
+        - dateJoined
+        - email
+        - id
+        - lastLogin
     Distribution:
       type: object
       description: Serializer for probability distributions
@@ -940,12 +940,12 @@ components:
           format: double
           nullable: true
       required:
-      - type
+        - type
     DistributionTypeEnum:
       enum:
-      - fixed
-      - normal
-      - uniform
+        - fixed
+        - normal
+        - uniform
       type: string
       description: |-
         * `fixed` - Fixed
@@ -996,17 +996,17 @@ components:
           type: number
           format: double
       required:
-      - assetAllocation
-      - assetAllocation2
-      - duration
-      - name
-      - type
+        - assetAllocation
+        - assetAllocation2
+        - duration
+        - name
+        - type
     EventSeriesTypeEnum:
       enum:
-      - income
-      - expense
-      - invest
-      - rebalance
+        - income
+        - expense
+        - invest
+        - rebalance
       type: string
       description: |-
         * `income` - Income
@@ -1027,10 +1027,10 @@ components:
         id:
           type: string
       required:
-      - id
-      - investmentType
-      - taxStatus
-      - value
+        - id
+        - investmentType
+        - taxStatus
+        - value
     InvestmentType:
       type: object
       description: Serializer for investment types
@@ -1054,14 +1054,14 @@ components:
         taxability:
           type: boolean
       required:
-      - description
-      - expenseRatio
-      - incomeAmtOrPct
-      - incomeDistribution
-      - name
-      - returnAmtOrPct
-      - returnDistribution
-      - taxability
+        - description
+        - expenseRatio
+        - incomeAmtOrPct
+        - incomeDistribution
+        - name
+        - returnAmtOrPct
+        - returnDistribution
+        - taxability
     PatchedAdminUser:
       type: object
       properties:
@@ -1074,37 +1074,37 @@ components:
           title: Email address
           description: Required. Enter a valid email address.
           maxLength: 254
-        first_name:
+        firstName:
           type: string
           maxLength: 150
-        last_name:
+        lastName:
           type: string
           maxLength: 150
         password:
           type: string
           writeOnly: true
-        password_confirm:
+        passwordConfirm:
           type: string
           writeOnly: true
-        is_active:
+        isActive:
           type: boolean
           title: Active
           description: Designates whether this user should be treated as active. Unselect
             this instead of deleting accounts.
-        is_staff:
+        isStaff:
           type: boolean
           title: Staff status
           description: Designates whether the user can log into this admin site.
-        is_superuser:
+        isSuperuser:
           type: boolean
           title: Superuser status
           description: Designates that this user has all permissions without explicitly
             assigning them.
-        date_joined:
+        dateJoined:
           type: string
           format: date-time
           readOnly: true
-        last_login:
+        lastLogin:
           type: string
           format: date-time
           readOnly: true
@@ -1188,32 +1188,32 @@ components:
           title: Email address
           description: Required. Enter a valid email address.
           maxLength: 254
-        first_name:
+        firstName:
           type: string
           maxLength: 150
-        last_name:
+        lastName:
           type: string
           maxLength: 150
         password:
           type: string
           writeOnly: true
-        password_confirm:
+        passwordConfirm:
           type: string
           writeOnly: true
-        is_active:
+        isActive:
           type: boolean
           title: Active
           description: Designates whether this user should be treated as active. Unselect
             this instead of deleting accounts.
-        is_staff:
+        isStaff:
           type: boolean
           title: Staff status
           description: Designates whether the user can log into this admin site.
-        date_joined:
+        dateJoined:
           type: string
           format: date-time
           readOnly: true
-        last_login:
+        lastLogin:
           type: string
           format: date-time
           readOnly: true
@@ -1286,22 +1286,22 @@ components:
         residenceState:
           type: string
       required:
-      - RMDStrategy
-      - RothConversionOpt
-      - RothConversionStrategy
-      - afterTaxContributionLimit
-      - birthYears
-      - eventSeries
-      - expenseWithdrawalStrategy
-      - financialGoal
-      - inflationAssumption
-      - investmentTypes
-      - investments
-      - lifeExpectancy
-      - maritalStatus
-      - name
-      - residenceState
-      - spendingStrategy
+        - RMDStrategy
+        - RothConversionOpt
+        - RothConversionStrategy
+        - afterTaxContributionLimit
+        - birthYears
+        - eventSeries
+        - expenseWithdrawalStrategy
+        - financialGoal
+        - inflationAssumption
+        - investmentTypes
+        - investments
+        - lifeExpectancy
+        - maritalStatus
+        - name
+        - residenceState
+        - spendingStrategy
     Session:
       type: object
       description: Serializer for handling user login data.
@@ -1314,8 +1314,8 @@ components:
           type: string
           writeOnly: true
       required:
-      - email
-      - password
+        - email
+        - password
     User:
       type: object
       properties:
@@ -1328,43 +1328,43 @@ components:
           title: Email address
           description: Required. Enter a valid email address.
           maxLength: 254
-        first_name:
+        firstName:
           type: string
           maxLength: 150
-        last_name:
+        lastName:
           type: string
           maxLength: 150
         password:
           type: string
           writeOnly: true
-        password_confirm:
+        passwordConfirm:
           type: string
           writeOnly: true
-        is_active:
+        isActive:
           type: boolean
           title: Active
           description: Designates whether this user should be treated as active. Unselect
             this instead of deleting accounts.
-        is_staff:
+        isStaff:
           type: boolean
           title: Staff status
           description: Designates whether the user can log into this admin site.
-        date_joined:
+        dateJoined:
           type: string
           format: date-time
           readOnly: true
-        last_login:
+        lastLogin:
           type: string
           format: date-time
           readOnly: true
           nullable: true
       required:
-      - date_joined
-      - email
-      - id
-      - last_login
-      - password
-      - password_confirm
+        - dateJoined
+        - email
+        - id
+        - lastLogin
+        - password
+        - passwordConfirm
   securitySchemes:
     cookieAuth:
       type: apiKey

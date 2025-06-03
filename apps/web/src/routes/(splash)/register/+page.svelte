@@ -49,7 +49,7 @@
   $: emailInvalid = $formData.email && !validateEmail($formData.email);
   $: passwordInvalid = $formData.password && !validatePassword($formData.password);
   $: passwordMismatch =
-    $formData.password_confirm && $formData.password !== $formData.password_confirm;
+    $formData.passwordConfirm && $formData.password !== $formData.passwordConfirm;
 </script>
 
 <Card.Root class="w-128">
@@ -89,20 +89,20 @@
       </Form.Field>
 
       <div class="flex">
-        <Form.Field {form} name="first_name" class="mr-2 flex-1">
+        <Form.Field {form} name="firstName" class="mr-2 flex-1">
           <Form.Control>
             {#snippet children({ props })}
               <Form.Label>First Name</Form.Label>
-              <Input {...props} bind:value={$formData.first_name} placeholder="John" />
+              <Input {...props} bind:value={$formData.firstName} placeholder="John" />
             {/snippet}
           </Form.Control>
           <Form.FieldErrors />
         </Form.Field>
-        <Form.Field {form} name="last_name" class="ml-2 flex-1">
+        <Form.Field {form} name="lastName" class="ml-2 flex-1">
           <Form.Control>
             {#snippet children({ props })}
               <Form.Label>Last Name</Form.Label>
-              <Input {...props} bind:value={$formData.last_name} placeholder="Doe" />
+              <Input {...props} bind:value={$formData.lastName} placeholder="Doe" />
             {/snippet}
           </Form.Control>
           <Form.FieldErrors />
@@ -132,7 +132,7 @@
         </Form.Control>
       </Form.Field>
 
-      <Form.Field {form} name="password_confirm">
+      <Form.Field {form} name="passwordConfirm">
         <Form.Control>
           {#snippet children({ props })}
             <Form.Label>
@@ -141,7 +141,7 @@
             <Input
               type="password"
               {...props}
-              bind:value={$formData.password_confirm}
+              bind:value={$formData.passwordConfirm}
               required
               aria-invalid={passwordMismatch ? 'true' : undefined}
               aria-describedby={passwordMismatch ? 'password-confirm-error' : undefined}

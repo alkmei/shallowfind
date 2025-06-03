@@ -11,6 +11,7 @@ dependencies = [
     "django-filter>=25.1",
     "django-money>=3.5.4",
     "djangorestframework>=3.16.0",
+    "djangorestframework-camel-case>=1.4.2",
     "drf-spectacular>=0.28.0",
     "markdown>=3.8",
 ]

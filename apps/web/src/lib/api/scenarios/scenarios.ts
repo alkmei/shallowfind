@@ -112,7 +112,43 @@ export const scenariosCreate = (
   scenario: NonReadonly<Scenario>,
   options?: AxiosRequestConfig
 ): Promise<AxiosResponse<Scenario>> => {
-  return axios.post(`/api/scenarios/`, scenario, options);
+  const formUrlEncoded = new URLSearchParams();
+  formUrlEncoded.append(`name`, scenario.name);
+  formUrlEncoded.append(`maritalStatus`, scenario.maritalStatus);
+  scenario.birthYears.forEach((value) => formUrlEncoded.append(`birthYears`, value.toString()));
+  scenario.lifeExpectancy.forEach((value) =>
+    formUrlEncoded.append(`lifeExpectancy`, JSON.stringify(value))
+  );
+  scenario.investmentTypes.forEach((value) =>
+    formUrlEncoded.append(`investmentTypes`, JSON.stringify(value))
+  );
+  scenario.investments.forEach((value) =>
+    formUrlEncoded.append(`investments`, JSON.stringify(value))
+  );
+  scenario.eventSeries.forEach((value) =>
+    formUrlEncoded.append(`eventSeries`, JSON.stringify(value))
+  );
+  formUrlEncoded.append(`inflationAssumption`, JSON.stringify(scenario.inflationAssumption));
+  formUrlEncoded.append(`afterTaxContributionLimit`, scenario.afterTaxContributionLimit.toString());
+  scenario.spendingStrategy.forEach((value) => formUrlEncoded.append(`spendingStrategy`, value));
+  scenario.expenseWithdrawalStrategy.forEach((value) =>
+    formUrlEncoded.append(`expenseWithdrawalStrategy`, value)
+  );
+  scenario.RMDStrategy.forEach((value) => formUrlEncoded.append(`RMDStrategy`, value));
+  formUrlEncoded.append(`RothConversionOpt`, scenario.RothConversionOpt.toString());
+  if (scenario.RothConversionStart !== undefined) {
+    formUrlEncoded.append(`RothConversionStart`, scenario.RothConversionStart.toString());
+  }
+  if (scenario.RothConversionEnd !== undefined) {
+    formUrlEncoded.append(`RothConversionEnd`, scenario.RothConversionEnd.toString());
+  }
+  scenario.RothConversionStrategy.forEach((value) =>
+    formUrlEncoded.append(`RothConversionStrategy`, value)
+  );
+  formUrlEncoded.append(`financialGoal`, scenario.financialGoal.toString());
+  formUrlEncoded.append(`residenceState`, scenario.residenceState);
+
+  return axios.post(`/api/scenarios/`, formUrlEncoded, options);
 };
 
 export const getScenariosCreateMutationOptions = <
@@ -262,7 +298,43 @@ export const scenariosUpdate = (
   scenario: NonReadonly<Scenario>,
   options?: AxiosRequestConfig
 ): Promise<AxiosResponse<Scenario>> => {
-  return axios.put(`/api/scenarios/${id}/`, scenario, options);
+  const formUrlEncoded = new URLSearchParams();
+  formUrlEncoded.append(`name`, scenario.name);
+  formUrlEncoded.append(`maritalStatus`, scenario.maritalStatus);
+  scenario.birthYears.forEach((value) => formUrlEncoded.append(`birthYears`, value.toString()));
+  scenario.lifeExpectancy.forEach((value) =>
+    formUrlEncoded.append(`lifeExpectancy`, JSON.stringify(value))
+  );
+  scenario.investmentTypes.forEach((value) =>
+    formUrlEncoded.append(`investmentTypes`, JSON.stringify(value))
+  );
+  scenario.investments.forEach((value) =>
+    formUrlEncoded.append(`investments`, JSON.stringify(value))
+  );
+  scenario.eventSeries.forEach((value) =>
+    formUrlEncoded.append(`eventSeries`, JSON.stringify(value))
+  );
+  formUrlEncoded.append(`inflationAssumption`, JSON.stringify(scenario.inflationAssumption));
+  formUrlEncoded.append(`afterTaxContributionLimit`, scenario.afterTaxContributionLimit.toString());
+  scenario.spendingStrategy.forEach((value) => formUrlEncoded.append(`spendingStrategy`, value));
+  scenario.expenseWithdrawalStrategy.forEach((value) =>
+    formUrlEncoded.append(`expenseWithdrawalStrategy`, value)
+  );
+  scenario.RMDStrategy.forEach((value) => formUrlEncoded.append(`RMDStrategy`, value));
+  formUrlEncoded.append(`RothConversionOpt`, scenario.RothConversionOpt.toString());
+  if (scenario.RothConversionStart !== undefined) {
+    formUrlEncoded.append(`RothConversionStart`, scenario.RothConversionStart.toString());
+  }
+  if (scenario.RothConversionEnd !== undefined) {
+    formUrlEncoded.append(`RothConversionEnd`, scenario.RothConversionEnd.toString());
+  }
+  scenario.RothConversionStrategy.forEach((value) =>
+    formUrlEncoded.append(`RothConversionStrategy`, value)
+  );
+  formUrlEncoded.append(`financialGoal`, scenario.financialGoal.toString());
+  formUrlEncoded.append(`residenceState`, scenario.residenceState);
+
+  return axios.put(`/api/scenarios/${id}/`, formUrlEncoded, options);
 };
 
 export const getScenariosUpdateMutationOptions = <
@@ -337,7 +409,85 @@ export const scenariosPartialUpdate = (
   patchedScenario: NonReadonly<PatchedScenario>,
   options?: AxiosRequestConfig
 ): Promise<AxiosResponse<Scenario>> => {
-  return axios.patch(`/api/scenarios/${id}/`, patchedScenario, options);
+  const formUrlEncoded = new URLSearchParams();
+  if (patchedScenario.name !== undefined) {
+    formUrlEncoded.append(`name`, patchedScenario.name);
+  }
+  if (patchedScenario.maritalStatus !== undefined) {
+    formUrlEncoded.append(`maritalStatus`, patchedScenario.maritalStatus);
+  }
+  if (patchedScenario.birthYears !== undefined) {
+    patchedScenario.birthYears.forEach((value) =>
+      formUrlEncoded.append(`birthYears`, value.toString())
+    );
+  }
+  if (patchedScenario.lifeExpectancy !== undefined) {
+    patchedScenario.lifeExpectancy.forEach((value) =>
+      formUrlEncoded.append(`lifeExpectancy`, JSON.stringify(value))
+    );
+  }
+  if (patchedScenario.investmentTypes !== undefined) {
+    patchedScenario.investmentTypes.forEach((value) =>
+      formUrlEncoded.append(`investmentTypes`, JSON.stringify(value))
+    );
+  }
+  if (patchedScenario.investments !== undefined) {
+    patchedScenario.investments.forEach((value) =>
+      formUrlEncoded.append(`investments`, JSON.stringify(value))
+    );
+  }
+  if (patchedScenario.eventSeries !== undefined) {
+    patchedScenario.eventSeries.forEach((value) =>
+      formUrlEncoded.append(`eventSeries`, JSON.stringify(value))
+    );
+  }
+  if (patchedScenario.inflationAssumption !== undefined) {
+    formUrlEncoded.append(
+      `inflationAssumption`,
+      JSON.stringify(patchedScenario.inflationAssumption)
+    );
+  }
+  if (patchedScenario.afterTaxContributionLimit !== undefined) {
+    formUrlEncoded.append(
+      `afterTaxContributionLimit`,
+      patchedScenario.afterTaxContributionLimit.toString()
+    );
+  }
+  if (patchedScenario.spendingStrategy !== undefined) {
+    patchedScenario.spendingStrategy.forEach((value) =>
+      formUrlEncoded.append(`spendingStrategy`, value)
+    );
+  }
+  if (patchedScenario.expenseWithdrawalStrategy !== undefined) {
+    patchedScenario.expenseWithdrawalStrategy.forEach((value) =>
+      formUrlEncoded.append(`expenseWithdrawalStrategy`, value)
+    );
+  }
+  if (patchedScenario.RMDStrategy !== undefined) {
+    patchedScenario.RMDStrategy.forEach((value) => formUrlEncoded.append(`RMDStrategy`, value));
+  }
+  if (patchedScenario.RothConversionOpt !== undefined) {
+    formUrlEncoded.append(`RothConversionOpt`, patchedScenario.RothConversionOpt.toString());
+  }
+  if (patchedScenario.RothConversionStart !== undefined) {
+    formUrlEncoded.append(`RothConversionStart`, patchedScenario.RothConversionStart.toString());
+  }
+  if (patchedScenario.RothConversionEnd !== undefined) {
+    formUrlEncoded.append(`RothConversionEnd`, patchedScenario.RothConversionEnd.toString());
+  }
+  if (patchedScenario.RothConversionStrategy !== undefined) {
+    patchedScenario.RothConversionStrategy.forEach((value) =>
+      formUrlEncoded.append(`RothConversionStrategy`, value)
+    );
+  }
+  if (patchedScenario.financialGoal !== undefined) {
+    formUrlEncoded.append(`financialGoal`, patchedScenario.financialGoal.toString());
+  }
+  if (patchedScenario.residenceState !== undefined) {
+    formUrlEncoded.append(`residenceState`, patchedScenario.residenceState);
+  }
+
+  return axios.patch(`/api/scenarios/${id}/`, formUrlEncoded, options);
 };
 
 export const getScenariosPartialUpdateMutationOptions = <
@@ -485,7 +635,43 @@ export const scenariosCloneCreate = (
   scenario: NonReadonly<Scenario>,
   options?: AxiosRequestConfig
 ): Promise<AxiosResponse<Scenario>> => {
-  return axios.post(`/api/scenarios/${id}/clone/`, scenario, options);
+  const formUrlEncoded = new URLSearchParams();
+  formUrlEncoded.append(`name`, scenario.name);
+  formUrlEncoded.append(`maritalStatus`, scenario.maritalStatus);
+  scenario.birthYears.forEach((value) => formUrlEncoded.append(`birthYears`, value.toString()));
+  scenario.lifeExpectancy.forEach((value) =>
+    formUrlEncoded.append(`lifeExpectancy`, JSON.stringify(value))
+  );
+  scenario.investmentTypes.forEach((value) =>
+    formUrlEncoded.append(`investmentTypes`, JSON.stringify(value))
+  );
+  scenario.investments.forEach((value) =>
+    formUrlEncoded.append(`investments`, JSON.stringify(value))
+  );
+  scenario.eventSeries.forEach((value) =>
+    formUrlEncoded.append(`eventSeries`, JSON.stringify(value))
+  );
+  formUrlEncoded.append(`inflationAssumption`, JSON.stringify(scenario.inflationAssumption));
+  formUrlEncoded.append(`afterTaxContributionLimit`, scenario.afterTaxContributionLimit.toString());
+  scenario.spendingStrategy.forEach((value) => formUrlEncoded.append(`spendingStrategy`, value));
+  scenario.expenseWithdrawalStrategy.forEach((value) =>
+    formUrlEncoded.append(`expenseWithdrawalStrategy`, value)
+  );
+  scenario.RMDStrategy.forEach((value) => formUrlEncoded.append(`RMDStrategy`, value));
+  formUrlEncoded.append(`RothConversionOpt`, scenario.RothConversionOpt.toString());
+  if (scenario.RothConversionStart !== undefined) {
+    formUrlEncoded.append(`RothConversionStart`, scenario.RothConversionStart.toString());
+  }
+  if (scenario.RothConversionEnd !== undefined) {
+    formUrlEncoded.append(`RothConversionEnd`, scenario.RothConversionEnd.toString());
+  }
+  scenario.RothConversionStrategy.forEach((value) =>
+    formUrlEncoded.append(`RothConversionStrategy`, value)
+  );
+  formUrlEncoded.append(`financialGoal`, scenario.financialGoal.toString());
+  formUrlEncoded.append(`residenceState`, scenario.residenceState);
+
+  return axios.post(`/api/scenarios/${id}/clone/`, formUrlEncoded, options);
 };
 
 export const getScenariosCloneCreateMutationOptions = <
@@ -634,7 +820,43 @@ export const scenariosSimulateCreate = (
   scenario: NonReadonly<Scenario>,
   options?: AxiosRequestConfig
 ): Promise<AxiosResponse<Scenario>> => {
-  return axios.post(`/api/scenarios/${id}/simulate/`, scenario, options);
+  const formUrlEncoded = new URLSearchParams();
+  formUrlEncoded.append(`name`, scenario.name);
+  formUrlEncoded.append(`maritalStatus`, scenario.maritalStatus);
+  scenario.birthYears.forEach((value) => formUrlEncoded.append(`birthYears`, value.toString()));
+  scenario.lifeExpectancy.forEach((value) =>
+    formUrlEncoded.append(`lifeExpectancy`, JSON.stringify(value))
+  );
+  scenario.investmentTypes.forEach((value) =>
+    formUrlEncoded.append(`investmentTypes`, JSON.stringify(value))
+  );
+  scenario.investments.forEach((value) =>
+    formUrlEncoded.append(`investments`, JSON.stringify(value))
+  );
+  scenario.eventSeries.forEach((value) =>
+    formUrlEncoded.append(`eventSeries`, JSON.stringify(value))
+  );
+  formUrlEncoded.append(`inflationAssumption`, JSON.stringify(scenario.inflationAssumption));
+  formUrlEncoded.append(`afterTaxContributionLimit`, scenario.afterTaxContributionLimit.toString());
+  scenario.spendingStrategy.forEach((value) => formUrlEncoded.append(`spendingStrategy`, value));
+  scenario.expenseWithdrawalStrategy.forEach((value) =>
+    formUrlEncoded.append(`expenseWithdrawalStrategy`, value)
+  );
+  scenario.RMDStrategy.forEach((value) => formUrlEncoded.append(`RMDStrategy`, value));
+  formUrlEncoded.append(`RothConversionOpt`, scenario.RothConversionOpt.toString());
+  if (scenario.RothConversionStart !== undefined) {
+    formUrlEncoded.append(`RothConversionStart`, scenario.RothConversionStart.toString());
+  }
+  if (scenario.RothConversionEnd !== undefined) {
+    formUrlEncoded.append(`RothConversionEnd`, scenario.RothConversionEnd.toString());
+  }
+  scenario.RothConversionStrategy.forEach((value) =>
+    formUrlEncoded.append(`RothConversionStrategy`, value)
+  );
+  formUrlEncoded.append(`financialGoal`, scenario.financialGoal.toString());
+  formUrlEncoded.append(`residenceState`, scenario.residenceState);
+
+  return axios.post(`/api/scenarios/${id}/simulate/`, formUrlEncoded, options);
 };
 
 export const getScenariosSimulateCreateMutationOptions = <
@@ -792,7 +1014,43 @@ export const scenariosImportScenarioCreate = (
   scenario: NonReadonly<Scenario>,
   options?: AxiosRequestConfig
 ): Promise<AxiosResponse<Scenario>> => {
-  return axios.post(`/api/scenarios/import_scenario/`, scenario, options);
+  const formUrlEncoded = new URLSearchParams();
+  formUrlEncoded.append(`name`, scenario.name);
+  formUrlEncoded.append(`maritalStatus`, scenario.maritalStatus);
+  scenario.birthYears.forEach((value) => formUrlEncoded.append(`birthYears`, value.toString()));
+  scenario.lifeExpectancy.forEach((value) =>
+    formUrlEncoded.append(`lifeExpectancy`, JSON.stringify(value))
+  );
+  scenario.investmentTypes.forEach((value) =>
+    formUrlEncoded.append(`investmentTypes`, JSON.stringify(value))
+  );
+  scenario.investments.forEach((value) =>
+    formUrlEncoded.append(`investments`, JSON.stringify(value))
+  );
+  scenario.eventSeries.forEach((value) =>
+    formUrlEncoded.append(`eventSeries`, JSON.stringify(value))
+  );
+  formUrlEncoded.append(`inflationAssumption`, JSON.stringify(scenario.inflationAssumption));
+  formUrlEncoded.append(`afterTaxContributionLimit`, scenario.afterTaxContributionLimit.toString());
+  scenario.spendingStrategy.forEach((value) => formUrlEncoded.append(`spendingStrategy`, value));
+  scenario.expenseWithdrawalStrategy.forEach((value) =>
+    formUrlEncoded.append(`expenseWithdrawalStrategy`, value)
+  );
+  scenario.RMDStrategy.forEach((value) => formUrlEncoded.append(`RMDStrategy`, value));
+  formUrlEncoded.append(`RothConversionOpt`, scenario.RothConversionOpt.toString());
+  if (scenario.RothConversionStart !== undefined) {
+    formUrlEncoded.append(`RothConversionStart`, scenario.RothConversionStart.toString());
+  }
+  if (scenario.RothConversionEnd !== undefined) {
+    formUrlEncoded.append(`RothConversionEnd`, scenario.RothConversionEnd.toString());
+  }
+  scenario.RothConversionStrategy.forEach((value) =>
+    formUrlEncoded.append(`RothConversionStrategy`, value)
+  );
+  formUrlEncoded.append(`financialGoal`, scenario.financialGoal.toString());
+  formUrlEncoded.append(`residenceState`, scenario.residenceState);
+
+  return axios.post(`/api/scenarios/import_scenario/`, formUrlEncoded, options);
 };
 
 export const getScenariosImportScenarioCreateMutationOptions = <

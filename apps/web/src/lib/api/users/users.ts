@@ -110,7 +110,29 @@ export const usersCreate = (
   user: NonReadonly<User>,
   options?: AxiosRequestConfig
 ): Promise<AxiosResponse<User>> => {
-  return axios.post(`/api/users/`, user, options);
+  const formUrlEncoded = new URLSearchParams();
+  formUrlEncoded.append(`id`, user.id.toString());
+  formUrlEncoded.append(`email`, user.email);
+  if (user.firstName !== undefined) {
+    formUrlEncoded.append(`firstName`, user.firstName);
+  }
+  if (user.lastName !== undefined) {
+    formUrlEncoded.append(`lastName`, user.lastName);
+  }
+  formUrlEncoded.append(`password`, user.password);
+  formUrlEncoded.append(`passwordConfirm`, user.passwordConfirm);
+  if (user.isActive !== undefined) {
+    formUrlEncoded.append(`isActive`, user.isActive.toString());
+  }
+  if (user.isStaff !== undefined) {
+    formUrlEncoded.append(`isStaff`, user.isStaff.toString());
+  }
+  formUrlEncoded.append(`dateJoined`, user.dateJoined);
+  if (user.lastLogin !== null) {
+    formUrlEncoded.append(`lastLogin`, user.lastLogin);
+  }
+
+  return axios.post(`/api/users/`, formUrlEncoded, options);
 };
 
 export const getUsersCreateMutationOptions = <
@@ -250,7 +272,29 @@ export const usersUpdate = (
   user: NonReadonly<User>,
   options?: AxiosRequestConfig
 ): Promise<AxiosResponse<User>> => {
-  return axios.put(`/api/users/${id}/`, user, options);
+  const formUrlEncoded = new URLSearchParams();
+  formUrlEncoded.append(`id`, user.id.toString());
+  formUrlEncoded.append(`email`, user.email);
+  if (user.firstName !== undefined) {
+    formUrlEncoded.append(`firstName`, user.firstName);
+  }
+  if (user.lastName !== undefined) {
+    formUrlEncoded.append(`lastName`, user.lastName);
+  }
+  formUrlEncoded.append(`password`, user.password);
+  formUrlEncoded.append(`passwordConfirm`, user.passwordConfirm);
+  if (user.isActive !== undefined) {
+    formUrlEncoded.append(`isActive`, user.isActive.toString());
+  }
+  if (user.isStaff !== undefined) {
+    formUrlEncoded.append(`isStaff`, user.isStaff.toString());
+  }
+  formUrlEncoded.append(`dateJoined`, user.dateJoined);
+  if (user.lastLogin !== null) {
+    formUrlEncoded.append(`lastLogin`, user.lastLogin);
+  }
+
+  return axios.put(`/api/users/${id}/`, formUrlEncoded, options);
 };
 
 export const getUsersUpdateMutationOptions = <
@@ -322,7 +366,39 @@ export const usersPartialUpdate = (
   patchedUser: NonReadonly<PatchedUser>,
   options?: AxiosRequestConfig
 ): Promise<AxiosResponse<User>> => {
-  return axios.patch(`/api/users/${id}/`, patchedUser, options);
+  const formUrlEncoded = new URLSearchParams();
+  if (patchedUser.id !== undefined) {
+    formUrlEncoded.append(`id`, patchedUser.id.toString());
+  }
+  if (patchedUser.email !== undefined) {
+    formUrlEncoded.append(`email`, patchedUser.email);
+  }
+  if (patchedUser.firstName !== undefined) {
+    formUrlEncoded.append(`firstName`, patchedUser.firstName);
+  }
+  if (patchedUser.lastName !== undefined) {
+    formUrlEncoded.append(`lastName`, patchedUser.lastName);
+  }
+  if (patchedUser.password !== undefined) {
+    formUrlEncoded.append(`password`, patchedUser.password);
+  }
+  if (patchedUser.passwordConfirm !== undefined) {
+    formUrlEncoded.append(`passwordConfirm`, patchedUser.passwordConfirm);
+  }
+  if (patchedUser.isActive !== undefined) {
+    formUrlEncoded.append(`isActive`, patchedUser.isActive.toString());
+  }
+  if (patchedUser.isStaff !== undefined) {
+    formUrlEncoded.append(`isStaff`, patchedUser.isStaff.toString());
+  }
+  if (patchedUser.dateJoined !== undefined) {
+    formUrlEncoded.append(`dateJoined`, patchedUser.dateJoined);
+  }
+  if (patchedUser.lastLogin !== undefined && patchedUser.lastLogin !== null) {
+    formUrlEncoded.append(`lastLogin`, patchedUser.lastLogin);
+  }
+
+  return axios.patch(`/api/users/${id}/`, formUrlEncoded, options);
 };
 
 export const getUsersPartialUpdateMutationOptions = <
@@ -525,7 +601,29 @@ export const usersMeUpdate = (
   user: NonReadonly<User>,
   options?: AxiosRequestConfig
 ): Promise<AxiosResponse<User>> => {
-  return axios.put(`/api/users/me/`, user, options);
+  const formUrlEncoded = new URLSearchParams();
+  formUrlEncoded.append(`id`, user.id.toString());
+  formUrlEncoded.append(`email`, user.email);
+  if (user.firstName !== undefined) {
+    formUrlEncoded.append(`firstName`, user.firstName);
+  }
+  if (user.lastName !== undefined) {
+    formUrlEncoded.append(`lastName`, user.lastName);
+  }
+  formUrlEncoded.append(`password`, user.password);
+  formUrlEncoded.append(`passwordConfirm`, user.passwordConfirm);
+  if (user.isActive !== undefined) {
+    formUrlEncoded.append(`isActive`, user.isActive.toString());
+  }
+  if (user.isStaff !== undefined) {
+    formUrlEncoded.append(`isStaff`, user.isStaff.toString());
+  }
+  formUrlEncoded.append(`dateJoined`, user.dateJoined);
+  if (user.lastLogin !== null) {
+    formUrlEncoded.append(`lastLogin`, user.lastLogin);
+  }
+
+  return axios.put(`/api/users/me/`, formUrlEncoded, options);
 };
 
 export const getUsersMeUpdateMutationOptions = <
@@ -596,7 +694,39 @@ export const usersMePartialUpdate = (
   patchedUser: NonReadonly<PatchedUser>,
   options?: AxiosRequestConfig
 ): Promise<AxiosResponse<User>> => {
-  return axios.patch(`/api/users/me/`, patchedUser, options);
+  const formUrlEncoded = new URLSearchParams();
+  if (patchedUser.id !== undefined) {
+    formUrlEncoded.append(`id`, patchedUser.id.toString());
+  }
+  if (patchedUser.email !== undefined) {
+    formUrlEncoded.append(`email`, patchedUser.email);
+  }
+  if (patchedUser.firstName !== undefined) {
+    formUrlEncoded.append(`firstName`, patchedUser.firstName);
+  }
+  if (patchedUser.lastName !== undefined) {
+    formUrlEncoded.append(`lastName`, patchedUser.lastName);
+  }
+  if (patchedUser.password !== undefined) {
+    formUrlEncoded.append(`password`, patchedUser.password);
+  }
+  if (patchedUser.passwordConfirm !== undefined) {
+    formUrlEncoded.append(`passwordConfirm`, patchedUser.passwordConfirm);
+  }
+  if (patchedUser.isActive !== undefined) {
+    formUrlEncoded.append(`isActive`, patchedUser.isActive.toString());
+  }
+  if (patchedUser.isStaff !== undefined) {
+    formUrlEncoded.append(`isStaff`, patchedUser.isStaff.toString());
+  }
+  if (patchedUser.dateJoined !== undefined) {
+    formUrlEncoded.append(`dateJoined`, patchedUser.dateJoined);
+  }
+  if (patchedUser.lastLogin !== undefined && patchedUser.lastLogin !== null) {
+    formUrlEncoded.append(`lastLogin`, patchedUser.lastLogin);
+  }
+
+  return axios.patch(`/api/users/me/`, formUrlEncoded, options);
 };
 
 export const getUsersMePartialUpdateMutationOptions = <

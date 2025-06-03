@@ -21,26 +21,26 @@ export const adminUsersListResponseItem = zod.object({
     .email()
     .max(adminUsersListResponseEmailMax)
     .describe('Required. Enter a valid email address.'),
-  first_name: zod.string().max(adminUsersListResponseFirstNameMax).optional(),
-  last_name: zod.string().max(adminUsersListResponseLastNameMax).optional(),
+  firstName: zod.string().max(adminUsersListResponseFirstNameMax).optional(),
+  lastName: zod.string().max(adminUsersListResponseLastNameMax).optional(),
   password: zod.string().optional(),
-  password_confirm: zod.string().optional(),
-  is_active: zod
+  passwordConfirm: zod.string().optional(),
+  isActive: zod
     .boolean()
     .optional()
     .describe(
       'Designates whether this user should be treated as active. Unselect this instead of deleting accounts.'
     ),
-  is_staff: zod
+  isStaff: zod
     .boolean()
     .optional()
     .describe('Designates whether the user can log into this admin site.'),
-  is_superuser: zod
+  isSuperuser: zod
     .boolean()
     .optional()
     .describe('Designates that this user has all permissions without explicitly assigning them.'),
-  date_joined: zod.string().datetime({}),
-  last_login: zod.string().datetime({}).nullable()
+  dateJoined: zod.string().datetime({}),
+  lastLogin: zod.string().datetime({}).nullable()
 });
 export const adminUsersListResponse = zod.array(adminUsersListResponseItem);
 
@@ -57,21 +57,21 @@ export const adminUsersCreateBody = zod.object({
     .email()
     .max(adminUsersCreateBodyEmailMax)
     .describe('Required. Enter a valid email address.'),
-  first_name: zod.string().max(adminUsersCreateBodyFirstNameMax).optional(),
-  last_name: zod.string().max(adminUsersCreateBodyLastNameMax).optional(),
+  firstName: zod.string().max(adminUsersCreateBodyFirstNameMax).optional(),
+  lastName: zod.string().max(adminUsersCreateBodyLastNameMax).optional(),
   password: zod.string().optional(),
-  password_confirm: zod.string().optional(),
-  is_active: zod
+  passwordConfirm: zod.string().optional(),
+  isActive: zod
     .boolean()
     .optional()
     .describe(
       'Designates whether this user should be treated as active. Unselect this instead of deleting accounts.'
     ),
-  is_staff: zod
+  isStaff: zod
     .boolean()
     .optional()
     .describe('Designates whether the user can log into this admin site.'),
-  is_superuser: zod
+  isSuperuser: zod
     .boolean()
     .optional()
     .describe('Designates that this user has all permissions without explicitly assigning them.')
@@ -95,26 +95,26 @@ export const adminUsersRetrieveResponse = zod.object({
     .email()
     .max(adminUsersRetrieveResponseEmailMax)
     .describe('Required. Enter a valid email address.'),
-  first_name: zod.string().max(adminUsersRetrieveResponseFirstNameMax).optional(),
-  last_name: zod.string().max(adminUsersRetrieveResponseLastNameMax).optional(),
+  firstName: zod.string().max(adminUsersRetrieveResponseFirstNameMax).optional(),
+  lastName: zod.string().max(adminUsersRetrieveResponseLastNameMax).optional(),
   password: zod.string().optional(),
-  password_confirm: zod.string().optional(),
-  is_active: zod
+  passwordConfirm: zod.string().optional(),
+  isActive: zod
     .boolean()
     .optional()
     .describe(
       'Designates whether this user should be treated as active. Unselect this instead of deleting accounts.'
     ),
-  is_staff: zod
+  isStaff: zod
     .boolean()
     .optional()
     .describe('Designates whether the user can log into this admin site.'),
-  is_superuser: zod
+  isSuperuser: zod
     .boolean()
     .optional()
     .describe('Designates that this user has all permissions without explicitly assigning them.'),
-  date_joined: zod.string().datetime({}),
-  last_login: zod.string().datetime({}).nullable()
+  dateJoined: zod.string().datetime({}),
+  lastLogin: zod.string().datetime({}).nullable()
 });
 
 /**
@@ -134,21 +134,21 @@ export const adminUsersUpdateBody = zod.object({
     .email()
     .max(adminUsersUpdateBodyEmailMax)
     .describe('Required. Enter a valid email address.'),
-  first_name: zod.string().max(adminUsersUpdateBodyFirstNameMax).optional(),
-  last_name: zod.string().max(adminUsersUpdateBodyLastNameMax).optional(),
+  firstName: zod.string().max(adminUsersUpdateBodyFirstNameMax).optional(),
+  lastName: zod.string().max(adminUsersUpdateBodyLastNameMax).optional(),
   password: zod.string().optional(),
-  password_confirm: zod.string().optional(),
-  is_active: zod
+  passwordConfirm: zod.string().optional(),
+  isActive: zod
     .boolean()
     .optional()
     .describe(
       'Designates whether this user should be treated as active. Unselect this instead of deleting accounts.'
     ),
-  is_staff: zod
+  isStaff: zod
     .boolean()
     .optional()
     .describe('Designates whether the user can log into this admin site.'),
-  is_superuser: zod
+  isSuperuser: zod
     .boolean()
     .optional()
     .describe('Designates that this user has all permissions without explicitly assigning them.')
@@ -165,26 +165,26 @@ export const adminUsersUpdateResponse = zod.object({
     .email()
     .max(adminUsersUpdateResponseEmailMax)
     .describe('Required. Enter a valid email address.'),
-  first_name: zod.string().max(adminUsersUpdateResponseFirstNameMax).optional(),
-  last_name: zod.string().max(adminUsersUpdateResponseLastNameMax).optional(),
+  firstName: zod.string().max(adminUsersUpdateResponseFirstNameMax).optional(),
+  lastName: zod.string().max(adminUsersUpdateResponseLastNameMax).optional(),
   password: zod.string().optional(),
-  password_confirm: zod.string().optional(),
-  is_active: zod
+  passwordConfirm: zod.string().optional(),
+  isActive: zod
     .boolean()
     .optional()
     .describe(
       'Designates whether this user should be treated as active. Unselect this instead of deleting accounts.'
     ),
-  is_staff: zod
+  isStaff: zod
     .boolean()
     .optional()
     .describe('Designates whether the user can log into this admin site.'),
-  is_superuser: zod
+  isSuperuser: zod
     .boolean()
     .optional()
     .describe('Designates that this user has all permissions without explicitly assigning them.'),
-  date_joined: zod.string().datetime({}),
-  last_login: zod.string().datetime({}).nullable()
+  dateJoined: zod.string().datetime({}),
+  lastLogin: zod.string().datetime({}).nullable()
 });
 
 /**
@@ -205,21 +205,21 @@ export const adminUsersPartialUpdateBody = zod.object({
     .max(adminUsersPartialUpdateBodyEmailMax)
     .optional()
     .describe('Required. Enter a valid email address.'),
-  first_name: zod.string().max(adminUsersPartialUpdateBodyFirstNameMax).optional(),
-  last_name: zod.string().max(adminUsersPartialUpdateBodyLastNameMax).optional(),
+  firstName: zod.string().max(adminUsersPartialUpdateBodyFirstNameMax).optional(),
+  lastName: zod.string().max(adminUsersPartialUpdateBodyLastNameMax).optional(),
   password: zod.string().optional(),
-  password_confirm: zod.string().optional(),
-  is_active: zod
+  passwordConfirm: zod.string().optional(),
+  isActive: zod
     .boolean()
     .optional()
     .describe(
       'Designates whether this user should be treated as active. Unselect this instead of deleting accounts.'
     ),
-  is_staff: zod
+  isStaff: zod
     .boolean()
     .optional()
     .describe('Designates whether the user can log into this admin site.'),
-  is_superuser: zod
+  isSuperuser: zod
     .boolean()
     .optional()
     .describe('Designates that this user has all permissions without explicitly assigning them.')
@@ -236,26 +236,26 @@ export const adminUsersPartialUpdateResponse = zod.object({
     .email()
     .max(adminUsersPartialUpdateResponseEmailMax)
     .describe('Required. Enter a valid email address.'),
-  first_name: zod.string().max(adminUsersPartialUpdateResponseFirstNameMax).optional(),
-  last_name: zod.string().max(adminUsersPartialUpdateResponseLastNameMax).optional(),
+  firstName: zod.string().max(adminUsersPartialUpdateResponseFirstNameMax).optional(),
+  lastName: zod.string().max(adminUsersPartialUpdateResponseLastNameMax).optional(),
   password: zod.string().optional(),
-  password_confirm: zod.string().optional(),
-  is_active: zod
+  passwordConfirm: zod.string().optional(),
+  isActive: zod
     .boolean()
     .optional()
     .describe(
       'Designates whether this user should be treated as active. Unselect this instead of deleting accounts.'
     ),
-  is_staff: zod
+  isStaff: zod
     .boolean()
     .optional()
     .describe('Designates whether the user can log into this admin site.'),
-  is_superuser: zod
+  isSuperuser: zod
     .boolean()
     .optional()
     .describe('Designates that this user has all permissions without explicitly assigning them.'),
-  date_joined: zod.string().datetime({}),
-  last_login: zod.string().datetime({}).nullable()
+  dateJoined: zod.string().datetime({}),
+  lastLogin: zod.string().datetime({}).nullable()
 });
 
 /**
@@ -282,21 +282,21 @@ export const adminUsersActivateCreateBody = zod.object({
     .email()
     .max(adminUsersActivateCreateBodyEmailMax)
     .describe('Required. Enter a valid email address.'),
-  first_name: zod.string().max(adminUsersActivateCreateBodyFirstNameMax).optional(),
-  last_name: zod.string().max(adminUsersActivateCreateBodyLastNameMax).optional(),
+  firstName: zod.string().max(adminUsersActivateCreateBodyFirstNameMax).optional(),
+  lastName: zod.string().max(adminUsersActivateCreateBodyLastNameMax).optional(),
   password: zod.string().optional(),
-  password_confirm: zod.string().optional(),
-  is_active: zod
+  passwordConfirm: zod.string().optional(),
+  isActive: zod
     .boolean()
     .optional()
     .describe(
       'Designates whether this user should be treated as active. Unselect this instead of deleting accounts.'
     ),
-  is_staff: zod
+  isStaff: zod
     .boolean()
     .optional()
     .describe('Designates whether the user can log into this admin site.'),
-  is_superuser: zod
+  isSuperuser: zod
     .boolean()
     .optional()
     .describe('Designates that this user has all permissions without explicitly assigning them.')
@@ -313,26 +313,26 @@ export const adminUsersActivateCreateResponse = zod.object({
     .email()
     .max(adminUsersActivateCreateResponseEmailMax)
     .describe('Required. Enter a valid email address.'),
-  first_name: zod.string().max(adminUsersActivateCreateResponseFirstNameMax).optional(),
-  last_name: zod.string().max(adminUsersActivateCreateResponseLastNameMax).optional(),
+  firstName: zod.string().max(adminUsersActivateCreateResponseFirstNameMax).optional(),
+  lastName: zod.string().max(adminUsersActivateCreateResponseLastNameMax).optional(),
   password: zod.string().optional(),
-  password_confirm: zod.string().optional(),
-  is_active: zod
+  passwordConfirm: zod.string().optional(),
+  isActive: zod
     .boolean()
     .optional()
     .describe(
       'Designates whether this user should be treated as active. Unselect this instead of deleting accounts.'
     ),
-  is_staff: zod
+  isStaff: zod
     .boolean()
     .optional()
     .describe('Designates whether the user can log into this admin site.'),
-  is_superuser: zod
+  isSuperuser: zod
     .boolean()
     .optional()
     .describe('Designates that this user has all permissions without explicitly assigning them.'),
-  date_joined: zod.string().datetime({}),
-  last_login: zod.string().datetime({}).nullable()
+  dateJoined: zod.string().datetime({}),
+  lastLogin: zod.string().datetime({}).nullable()
 });
 
 /**
@@ -352,21 +352,21 @@ export const adminUsersDeactivateCreateBody = zod.object({
     .email()
     .max(adminUsersDeactivateCreateBodyEmailMax)
     .describe('Required. Enter a valid email address.'),
-  first_name: zod.string().max(adminUsersDeactivateCreateBodyFirstNameMax).optional(),
-  last_name: zod.string().max(adminUsersDeactivateCreateBodyLastNameMax).optional(),
+  firstName: zod.string().max(adminUsersDeactivateCreateBodyFirstNameMax).optional(),
+  lastName: zod.string().max(adminUsersDeactivateCreateBodyLastNameMax).optional(),
   password: zod.string().optional(),
-  password_confirm: zod.string().optional(),
-  is_active: zod
+  passwordConfirm: zod.string().optional(),
+  isActive: zod
     .boolean()
     .optional()
     .describe(
       'Designates whether this user should be treated as active. Unselect this instead of deleting accounts.'
     ),
-  is_staff: zod
+  isStaff: zod
     .boolean()
     .optional()
     .describe('Designates whether the user can log into this admin site.'),
-  is_superuser: zod
+  isSuperuser: zod
     .boolean()
     .optional()
     .describe('Designates that this user has all permissions without explicitly assigning them.')
@@ -383,26 +383,26 @@ export const adminUsersDeactivateCreateResponse = zod.object({
     .email()
     .max(adminUsersDeactivateCreateResponseEmailMax)
     .describe('Required. Enter a valid email address.'),
-  first_name: zod.string().max(adminUsersDeactivateCreateResponseFirstNameMax).optional(),
-  last_name: zod.string().max(adminUsersDeactivateCreateResponseLastNameMax).optional(),
+  firstName: zod.string().max(adminUsersDeactivateCreateResponseFirstNameMax).optional(),
+  lastName: zod.string().max(adminUsersDeactivateCreateResponseLastNameMax).optional(),
   password: zod.string().optional(),
-  password_confirm: zod.string().optional(),
-  is_active: zod
+  passwordConfirm: zod.string().optional(),
+  isActive: zod
     .boolean()
     .optional()
     .describe(
       'Designates whether this user should be treated as active. Unselect this instead of deleting accounts.'
     ),
-  is_staff: zod
+  isStaff: zod
     .boolean()
     .optional()
     .describe('Designates whether the user can log into this admin site.'),
-  is_superuser: zod
+  isSuperuser: zod
     .boolean()
     .optional()
     .describe('Designates that this user has all permissions without explicitly assigning them.'),
-  date_joined: zod.string().datetime({}),
-  last_login: zod.string().datetime({}).nullable()
+  dateJoined: zod.string().datetime({}),
+  lastLogin: zod.string().datetime({}).nullable()
 });
 
 /**
@@ -422,21 +422,21 @@ export const adminUsersMakeStaffCreateBody = zod.object({
     .email()
     .max(adminUsersMakeStaffCreateBodyEmailMax)
     .describe('Required. Enter a valid email address.'),
-  first_name: zod.string().max(adminUsersMakeStaffCreateBodyFirstNameMax).optional(),
-  last_name: zod.string().max(adminUsersMakeStaffCreateBodyLastNameMax).optional(),
+  firstName: zod.string().max(adminUsersMakeStaffCreateBodyFirstNameMax).optional(),
+  lastName: zod.string().max(adminUsersMakeStaffCreateBodyLastNameMax).optional(),
   password: zod.string().optional(),
-  password_confirm: zod.string().optional(),
-  is_active: zod
+  passwordConfirm: zod.string().optional(),
+  isActive: zod
     .boolean()
     .optional()
     .describe(
       'Designates whether this user should be treated as active. Unselect this instead of deleting accounts.'
     ),
-  is_staff: zod
+  isStaff: zod
     .boolean()
     .optional()
     .describe('Designates whether the user can log into this admin site.'),
-  is_superuser: zod
+  isSuperuser: zod
     .boolean()
     .optional()
     .describe('Designates that this user has all permissions without explicitly assigning them.')
@@ -453,26 +453,26 @@ export const adminUsersMakeStaffCreateResponse = zod.object({
     .email()
     .max(adminUsersMakeStaffCreateResponseEmailMax)
     .describe('Required. Enter a valid email address.'),
-  first_name: zod.string().max(adminUsersMakeStaffCreateResponseFirstNameMax).optional(),
-  last_name: zod.string().max(adminUsersMakeStaffCreateResponseLastNameMax).optional(),
+  firstName: zod.string().max(adminUsersMakeStaffCreateResponseFirstNameMax).optional(),
+  lastName: zod.string().max(adminUsersMakeStaffCreateResponseLastNameMax).optional(),
   password: zod.string().optional(),
-  password_confirm: zod.string().optional(),
-  is_active: zod
+  passwordConfirm: zod.string().optional(),
+  isActive: zod
     .boolean()
     .optional()
     .describe(
       'Designates whether this user should be treated as active. Unselect this instead of deleting accounts.'
     ),
-  is_staff: zod
+  isStaff: zod
     .boolean()
     .optional()
     .describe('Designates whether the user can log into this admin site.'),
-  is_superuser: zod
+  isSuperuser: zod
     .boolean()
     .optional()
     .describe('Designates that this user has all permissions without explicitly assigning them.'),
-  date_joined: zod.string().datetime({}),
-  last_login: zod.string().datetime({}).nullable()
+  dateJoined: zod.string().datetime({}),
+  lastLogin: zod.string().datetime({}).nullable()
 });
 
 /**
@@ -492,21 +492,21 @@ export const adminUsersRemoveStaffCreateBody = zod.object({
     .email()
     .max(adminUsersRemoveStaffCreateBodyEmailMax)
     .describe('Required. Enter a valid email address.'),
-  first_name: zod.string().max(adminUsersRemoveStaffCreateBodyFirstNameMax).optional(),
-  last_name: zod.string().max(adminUsersRemoveStaffCreateBodyLastNameMax).optional(),
+  firstName: zod.string().max(adminUsersRemoveStaffCreateBodyFirstNameMax).optional(),
+  lastName: zod.string().max(adminUsersRemoveStaffCreateBodyLastNameMax).optional(),
   password: zod.string().optional(),
-  password_confirm: zod.string().optional(),
-  is_active: zod
+  passwordConfirm: zod.string().optional(),
+  isActive: zod
     .boolean()
     .optional()
     .describe(
       'Designates whether this user should be treated as active. Unselect this instead of deleting accounts.'
     ),
-  is_staff: zod
+  isStaff: zod
     .boolean()
     .optional()
     .describe('Designates whether the user can log into this admin site.'),
-  is_superuser: zod
+  isSuperuser: zod
     .boolean()
     .optional()
     .describe('Designates that this user has all permissions without explicitly assigning them.')
@@ -523,24 +523,24 @@ export const adminUsersRemoveStaffCreateResponse = zod.object({
     .email()
     .max(adminUsersRemoveStaffCreateResponseEmailMax)
     .describe('Required. Enter a valid email address.'),
-  first_name: zod.string().max(adminUsersRemoveStaffCreateResponseFirstNameMax).optional(),
-  last_name: zod.string().max(adminUsersRemoveStaffCreateResponseLastNameMax).optional(),
+  firstName: zod.string().max(adminUsersRemoveStaffCreateResponseFirstNameMax).optional(),
+  lastName: zod.string().max(adminUsersRemoveStaffCreateResponseLastNameMax).optional(),
   password: zod.string().optional(),
-  password_confirm: zod.string().optional(),
-  is_active: zod
+  passwordConfirm: zod.string().optional(),
+  isActive: zod
     .boolean()
     .optional()
     .describe(
       'Designates whether this user should be treated as active. Unselect this instead of deleting accounts.'
     ),
-  is_staff: zod
+  isStaff: zod
     .boolean()
     .optional()
     .describe('Designates whether the user can log into this admin site.'),
-  is_superuser: zod
+  isSuperuser: zod
     .boolean()
     .optional()
     .describe('Designates that this user has all permissions without explicitly assigning them.'),
-  date_joined: zod.string().datetime({}),
-  last_login: zod.string().datetime({}).nullable()
+  dateJoined: zod.string().datetime({}),
+  lastLogin: zod.string().datetime({}).nullable()
 });

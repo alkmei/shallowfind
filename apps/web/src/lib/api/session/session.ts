@@ -25,7 +25,11 @@ export const sessionCreate = (
   session: Session,
   options?: AxiosRequestConfig
 ): Promise<AxiosResponse<Session>> => {
-  return axios.post(`/api/session/`, session, options);
+  const formUrlEncoded = new URLSearchParams();
+  formUrlEncoded.append(`email`, session.email);
+  formUrlEncoded.append(`password`, session.password);
+
+  return axios.post(`/api/session/`, formUrlEncoded, options);
 };
 
 export const getSessionCreateMutationOptions = <

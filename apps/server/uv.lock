@@ -148,6 +148,12 @@ wheels = [
 ]
 
 [[package]]
+name = "djangorestframework-camel-case"
+version = "1.4.2"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/f4/87/647ce93053cb5e35e07bded676340774fe43190388b885c54aff47d8557b/djangorestframework-camel-case-1.4.2.tar.gz", hash = "sha256:cdae75846648abb6585c7470639a1d2fb064dc45f8e8b62aaa50be7f1a7a61f4", size = 8839, upload-time = "2023-02-13T15:28:11.941Z" }
+
+[[package]]
 name = "drf-spectacular"
 version = "0.28.0"
 source = { registry = "https://pypi.org/simple" }
@@ -359,6 +365,7 @@ dependencies = [
     { name = "django-filter" },
     { name = "django-money" },
     { name = "djangorestframework" },
+    { name = "djangorestframework-camel-case" },
     { name = "drf-spectacular" },
     { name = "markdown" },
 ]
@@ -377,6 +384,7 @@ requires-dist = [
     { name = "django-filter", specifier = ">=25.1" },
     { name = "django-money", specifier = ">=3.5.4" },
     { name = "djangorestframework", specifier = ">=3.16.0" },
+    { name = "djangorestframework-camel-case", specifier = ">=1.4.2" },
     { name = "drf-spectacular", specifier = ">=0.28.0" },
     { name = "markdown", specifier = ">=3.8" },
 ]

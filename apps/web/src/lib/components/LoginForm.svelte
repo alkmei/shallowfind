@@ -41,12 +41,13 @@
   </Dialog.Trigger>
 
   <Dialog.Content>
-    <Dialog.Header
-      ><Dialog.Title>Log In</Dialog.Title>
+    <Dialog.Header>
+      <Dialog.Title>
+        Log In
+      </Dialog.Title>
 
-      <Dialog.Description>Please enter your email and password to log in.</Dialog.Description
-      ></Dialog.Header
-    >
+      <Dialog.Description>Please enter your email and password to log in.</Dialog.Description>
+    </Dialog.Header>
     <form method="POST" use:enhance>
       <Form.Field {form} name="email">
         <Form.Control>

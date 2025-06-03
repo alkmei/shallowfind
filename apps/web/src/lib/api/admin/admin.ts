@@ -112,7 +112,36 @@ export const adminUsersCreate = (
   adminUser: NonReadonly<AdminUser>,
   options?: AxiosRequestConfig
 ): Promise<AxiosResponse<AdminUser>> => {
-  return axios.post(`/api/admin/users/`, adminUser, options);
+  const formUrlEncoded = new URLSearchParams();
+  formUrlEncoded.append(`id`, adminUser.id.toString());
+  formUrlEncoded.append(`email`, adminUser.email);
+  if (adminUser.firstName !== undefined) {
+    formUrlEncoded.append(`firstName`, adminUser.firstName);
+  }
+  if (adminUser.lastName !== undefined) {
+    formUrlEncoded.append(`lastName`, adminUser.lastName);
+  }
+  if (adminUser.password !== undefined) {
+    formUrlEncoded.append(`password`, adminUser.password);
+  }
+  if (adminUser.passwordConfirm !== undefined) {
+    formUrlEncoded.append(`passwordConfirm`, adminUser.passwordConfirm);
+  }
+  if (adminUser.isActive !== undefined) {
+    formUrlEncoded.append(`isActive`, adminUser.isActive.toString());
+  }
+  if (adminUser.isStaff !== undefined) {
+    formUrlEncoded.append(`isStaff`, adminUser.isStaff.toString());
+  }
+  if (adminUser.isSuperuser !== undefined) {
+    formUrlEncoded.append(`isSuperuser`, adminUser.isSuperuser.toString());
+  }
+  formUrlEncoded.append(`dateJoined`, adminUser.dateJoined);
+  if (adminUser.lastLogin !== null) {
+    formUrlEncoded.append(`lastLogin`, adminUser.lastLogin);
+  }
+
+  return axios.post(`/api/admin/users/`, formUrlEncoded, options);
 };
 
 export const getAdminUsersCreateMutationOptions = <
@@ -260,7 +289,36 @@ export const adminUsersUpdate = (
   adminUser: NonReadonly<AdminUser>,
   options?: AxiosRequestConfig
 ): Promise<AxiosResponse<AdminUser>> => {
-  return axios.put(`/api/admin/users/${id}/`, adminUser, options);
+  const formUrlEncoded = new URLSearchParams();
+  formUrlEncoded.append(`id`, adminUser.id.toString());
+  formUrlEncoded.append(`email`, adminUser.email);
+  if (adminUser.firstName !== undefined) {
+    formUrlEncoded.append(`firstName`, adminUser.firstName);
+  }
+  if (adminUser.lastName !== undefined) {
+    formUrlEncoded.append(`lastName`, adminUser.lastName);
+  }
+  if (adminUser.password !== undefined) {
+    formUrlEncoded.append(`password`, adminUser.password);
+  }
+  if (adminUser.passwordConfirm !== undefined) {
+    formUrlEncoded.append(`passwordConfirm`, adminUser.passwordConfirm);
+  }
+  if (adminUser.isActive !== undefined) {
+    formUrlEncoded.append(`isActive`, adminUser.isActive.toString());
+  }
+  if (adminUser.isStaff !== undefined) {
+    formUrlEncoded.append(`isStaff`, adminUser.isStaff.toString());
+  }
+  if (adminUser.isSuperuser !== undefined) {
+    formUrlEncoded.append(`isSuperuser`, adminUser.isSuperuser.toString());
+  }
+  formUrlEncoded.append(`dateJoined`, adminUser.dateJoined);
+  if (adminUser.lastLogin !== null) {
+    formUrlEncoded.append(`lastLogin`, adminUser.lastLogin);
+  }
+
+  return axios.put(`/api/admin/users/${id}/`, formUrlEncoded, options);
 };
 
 export const getAdminUsersUpdateMutationOptions = <
@@ -334,7 +392,42 @@ export const adminUsersPartialUpdate = (
   patchedAdminUser: NonReadonly<PatchedAdminUser>,
   options?: AxiosRequestConfig
 ): Promise<AxiosResponse<AdminUser>> => {
-  return axios.patch(`/api/admin/users/${id}/`, patchedAdminUser, options);
+  const formUrlEncoded = new URLSearchParams();
+  if (patchedAdminUser.id !== undefined) {
+    formUrlEncoded.append(`id`, patchedAdminUser.id.toString());
+  }
+  if (patchedAdminUser.email !== undefined) {
+    formUrlEncoded.append(`email`, patchedAdminUser.email);
+  }
+  if (patchedAdminUser.firstName !== undefined) {
+    formUrlEncoded.append(`firstName`, patchedAdminUser.firstName);
+  }
+  if (patchedAdminUser.lastName !== undefined) {
+    formUrlEncoded.append(`lastName`, patchedAdminUser.lastName);
+  }
+  if (patchedAdminUser.password !== undefined) {
+    formUrlEncoded.append(`password`, patchedAdminUser.password);
+  }
+  if (patchedAdminUser.passwordConfirm !== undefined) {
+    formUrlEncoded.append(`passwordConfirm`, patchedAdminUser.passwordConfirm);
+  }
+  if (patchedAdminUser.isActive !== undefined) {
+    formUrlEncoded.append(`isActive`, patchedAdminUser.isActive.toString());
+  }
+  if (patchedAdminUser.isStaff !== undefined) {
+    formUrlEncoded.append(`isStaff`, patchedAdminUser.isStaff.toString());
+  }
+  if (patchedAdminUser.isSuperuser !== undefined) {
+    formUrlEncoded.append(`isSuperuser`, patchedAdminUser.isSuperuser.toString());
+  }
+  if (patchedAdminUser.dateJoined !== undefined) {
+    formUrlEncoded.append(`dateJoined`, patchedAdminUser.dateJoined);
+  }
+  if (patchedAdminUser.lastLogin !== undefined && patchedAdminUser.lastLogin !== null) {
+    formUrlEncoded.append(`lastLogin`, patchedAdminUser.lastLogin);
+  }
+
+  return axios.patch(`/api/admin/users/${id}/`, formUrlEncoded, options);
 };
 
 export const getAdminUsersPartialUpdateMutationOptions = <
@@ -481,7 +574,36 @@ export const adminUsersActivateCreate = (
   adminUser: NonReadonly<AdminUser>,
   options?: AxiosRequestConfig
 ): Promise<AxiosResponse<AdminUser>> => {
-  return axios.post(`/api/admin/users/${id}/activate/`, adminUser, options);
+  const formUrlEncoded = new URLSearchParams();
+  formUrlEncoded.append(`id`, adminUser.id.toString());
+  formUrlEncoded.append(`email`, adminUser.email);
+  if (adminUser.firstName !== undefined) {
+    formUrlEncoded.append(`firstName`, adminUser.firstName);
+  }
+  if (adminUser.lastName !== undefined) {
+    formUrlEncoded.append(`lastName`, adminUser.lastName);
+  }
+  if (adminUser.password !== undefined) {
+    formUrlEncoded.append(`password`, adminUser.password);
+  }
+  if (adminUser.passwordConfirm !== undefined) {
+    formUrlEncoded.append(`passwordConfirm`, adminUser.passwordConfirm);
+  }
+  if (adminUser.isActive !== undefined) {
+    formUrlEncoded.append(`isActive`, adminUser.isActive.toString());
+  }
+  if (adminUser.isStaff !== undefined) {
+    formUrlEncoded.append(`isStaff`, adminUser.isStaff.toString());
+  }
+  if (adminUser.isSuperuser !== undefined) {
+    formUrlEncoded.append(`isSuperuser`, adminUser.isSuperuser.toString());
+  }
+  formUrlEncoded.append(`dateJoined`, adminUser.dateJoined);
+  if (adminUser.lastLogin !== null) {
+    formUrlEncoded.append(`lastLogin`, adminUser.lastLogin);
+  }
+
+  return axios.post(`/api/admin/users/${id}/activate/`, formUrlEncoded, options);
 };
 
 export const getAdminUsersActivateCreateMutationOptions = <
@@ -555,7 +677,36 @@ export const adminUsersDeactivateCreate = (
   adminUser: NonReadonly<AdminUser>,
   options?: AxiosRequestConfig
 ): Promise<AxiosResponse<AdminUser>> => {
-  return axios.post(`/api/admin/users/${id}/deactivate/`, adminUser, options);
+  const formUrlEncoded = new URLSearchParams();
+  formUrlEncoded.append(`id`, adminUser.id.toString());
+  formUrlEncoded.append(`email`, adminUser.email);
+  if (adminUser.firstName !== undefined) {
+    formUrlEncoded.append(`firstName`, adminUser.firstName);
+  }
+  if (adminUser.lastName !== undefined) {
+    formUrlEncoded.append(`lastName`, adminUser.lastName);
+  }
+  if (adminUser.password !== undefined) {
+    formUrlEncoded.append(`password`, adminUser.password);
+  }
+  if (adminUser.passwordConfirm !== undefined) {
+    formUrlEncoded.append(`passwordConfirm`, adminUser.passwordConfirm);
+  }
+  if (adminUser.isActive !== undefined) {
+    formUrlEncoded.append(`isActive`, adminUser.isActive.toString());
+  }
+  if (adminUser.isStaff !== undefined) {
+    formUrlEncoded.append(`isStaff`, adminUser.isStaff.toString());
+  }
+  if (adminUser.isSuperuser !== undefined) {
+    formUrlEncoded.append(`isSuperuser`, adminUser.isSuperuser.toString());
+  }
+  formUrlEncoded.append(`dateJoined`, adminUser.dateJoined);
+  if (adminUser.lastLogin !== null) {
+    formUrlEncoded.append(`lastLogin`, adminUser.lastLogin);
+  }
+
+  return axios.post(`/api/admin/users/${id}/deactivate/`, formUrlEncoded, options);
 };
 
 export const getAdminUsersDeactivateCreateMutationOptions = <
@@ -629,7 +780,36 @@ export const adminUsersMakeStaffCreate = (
   adminUser: NonReadonly<AdminUser>,
   options?: AxiosRequestConfig
 ): Promise<AxiosResponse<AdminUser>> => {
-  return axios.post(`/api/admin/users/${id}/make_staff/`, adminUser, options);
+  const formUrlEncoded = new URLSearchParams();
+  formUrlEncoded.append(`id`, adminUser.id.toString());
+  formUrlEncoded.append(`email`, adminUser.email);
+  if (adminUser.firstName !== undefined) {
+    formUrlEncoded.append(`firstName`, adminUser.firstName);
+  }
+  if (adminUser.lastName !== undefined) {
+    formUrlEncoded.append(`lastName`, adminUser.lastName);
+  }
+  if (adminUser.password !== undefined) {
+    formUrlEncoded.append(`password`, adminUser.password);
+  }
+  if (adminUser.passwordConfirm !== undefined) {
+    formUrlEncoded.append(`passwordConfirm`, adminUser.passwordConfirm);
+  }
+  if (adminUser.isActive !== undefined) {
+    formUrlEncoded.append(`isActive`, adminUser.isActive.toString());
+  }
+  if (adminUser.isStaff !== undefined) {
+    formUrlEncoded.append(`isStaff`, adminUser.isStaff.toString());
+  }
+  if (adminUser.isSuperuser !== undefined) {
+    formUrlEncoded.append(`isSuperuser`, adminUser.isSuperuser.toString());
+  }
+  formUrlEncoded.append(`dateJoined`, adminUser.dateJoined);
+  if (adminUser.lastLogin !== null) {
+    formUrlEncoded.append(`lastLogin`, adminUser.lastLogin);
+  }
+
+  return axios.post(`/api/admin/users/${id}/make_staff/`, formUrlEncoded, options);
 };
 
 export const getAdminUsersMakeStaffCreateMutationOptions = <
@@ -703,7 +883,36 @@ export const adminUsersRemoveStaffCreate = (
   adminUser: NonReadonly<AdminUser>,
   options?: AxiosRequestConfig
 ): Promise<AxiosResponse<AdminUser>> => {
-  return axios.post(`/api/admin/users/${id}/remove_staff/`, adminUser, options);
+  const formUrlEncoded = new URLSearchParams();
+  formUrlEncoded.append(`id`, adminUser.id.toString());
+  formUrlEncoded.append(`email`, adminUser.email);
+  if (adminUser.firstName !== undefined) {
+    formUrlEncoded.append(`firstName`, adminUser.firstName);
+  }
+  if (adminUser.lastName !== undefined) {
+    formUrlEncoded.append(`lastName`, adminUser.lastName);
+  }
+  if (adminUser.password !== undefined) {
+    formUrlEncoded.append(`password`, adminUser.password);
+  }
+  if (adminUser.passwordConfirm !== undefined) {
+    formUrlEncoded.append(`passwordConfirm`, adminUser.passwordConfirm);
+  }
+  if (adminUser.isActive !== undefined) {
+    formUrlEncoded.append(`isActive`, adminUser.isActive.toString());
+  }
+  if (adminUser.isStaff !== undefined) {
+    formUrlEncoded.append(`isStaff`, adminUser.isStaff.toString());
+  }
+  if (adminUser.isSuperuser !== undefined) {
+    formUrlEncoded.append(`isSuperuser`, adminUser.isSuperuser.toString());
+  }
+  formUrlEncoded.append(`dateJoined`, adminUser.dateJoined);
+  if (adminUser.lastLogin !== null) {
+    formUrlEncoded.append(`lastLogin`, adminUser.lastLogin);
+  }
+
+  return axios.post(`/api/admin/users/${id}/remove_staff/`, formUrlEncoded, options);
 };
 
 export const getAdminUsersRemoveStaffCreateMutationOptions = <
