@@ -5,6 +5,11 @@ from django.utils import timezone
 
 User = get_user_model()
 
+AMOUNT_OR_PERCENT_CHOICES = [
+    ("amount", "Amount"),
+    ("percent", "Percent"),
+]
+
 
 class Distribution(models.Model):
     """Base model for representing probability distributions"""
@@ -103,7 +108,7 @@ class InvestmentType(models.Model):
 
     # Return configuration
     return_amt_or_pct = models.CharField(
-        max_length=10, choices=[("amount", "Amount"), ("percent", "Percent")]
+        max_length=10, choices=AMOUNT_OR_PERCENT_CHOICES
     )
     return_distribution = models.ForeignKey(
         Distribution, on_delete=models.CASCADE, related_name="return_investment_types"
@@ -113,7 +118,7 @@ class InvestmentType(models.Model):
 
     # Income configuration
     income_amt_or_pct = models.CharField(
-        max_length=10, choices=[("amount", "Amount"), ("percent", "Percent")]
+        max_length=10, choices=AMOUNT_OR_PERCENT_CHOICES
     )
     income_distribution = models.ForeignKey(
         Distribution, on_delete=models.CASCADE, related_name="income_investment_types"
@@ -195,11 +200,6 @@ class EventSeries(models.Model):
         ("rebalance", "Rebalance"),
     ]
 
-    CHANGE_AMT_OR_PCT_CHOICES = [
-        ("amount", "Amount"),
-        ("percent", "Percent"),
-    ]
-
     START_TYPES = [
         ("distribution", "Distribution"),
         ("start_with", "Start With Event"),
@@ -246,7 +246,7 @@ class EventSeries(models.Model):
     # Income/Expense fields
     initial_amount = models.FloatField(null=True, blank=True)
     change_amt_or_pct = models.CharField(
-        max_length=10, choices=CHANGE_AMT_OR_PCT_CHOICES, null=True, blank=True
+        max_length=10, choices=AMOUNT_OR_PERCENT_CHOICES, null=True, blank=True
     )
     change_distribution = models.ForeignKey(
         Distribution,

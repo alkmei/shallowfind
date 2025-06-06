@@ -117,6 +117,9 @@ SPECTACULAR_SETTINGS = {
         "drf_spectacular.contrib.djangorestframework_camel_case.camelize_serializer_fields",
         "drf_spectacular.hooks.postprocess_schema_enums",
     ],
+    "ENUM_NAME_OVERRIDES": {
+        "AmountOrPercentEnum": "scenarios.models.AMOUNT_OR_PERCENT_CHOICES",
+    },
 }
 
 

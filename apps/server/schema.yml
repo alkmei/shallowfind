@@ -9,9 +9,9 @@ paths:
       operationId: admin_users_list
       description: ViewSet for admin users to manage all user accounts.
       tags:
-        - admin
+      - admin
       security:
-        - cookieAuth: []
+      - cookieAuth: []
       responses:
         '200':
           content:
@@ -25,7 +25,7 @@ paths:
       operationId: admin_users_create
       description: ViewSet for admin users to manage all user accounts.
       tags:
-        - admin
+      - admin
       requestBody:
         content:
           application/x-www-form-urlencoded:
@@ -39,7 +39,7 @@ paths:
               $ref: '#/components/schemas/AdminUser'
         required: true
       security:
-        - cookieAuth: []
+      - cookieAuth: []
       responses:
         '201':
           content:
@@ -52,16 +52,16 @@ paths:
       operationId: admin_users_retrieve
       description: ViewSet for admin users to manage all user accounts.
       parameters:
-        - in: path
-          name: id
-          schema:
-            type: integer
-          description: A unique integer value identifying this user.
-          required: true
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this user.
+        required: true
       tags:
-        - admin
+      - admin
       security:
-        - cookieAuth: []
+      - cookieAuth: []
       responses:
         '200':
           content:
@@ -73,14 +73,14 @@ paths:
       operationId: admin_users_update
       description: ViewSet for admin users to manage all user accounts.
       parameters:
-        - in: path
-          name: id
-          schema:
-            type: integer
-          description: A unique integer value identifying this user.
-          required: true
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this user.
+        required: true
       tags:
-        - admin
+      - admin
       requestBody:
         content:
           application/x-www-form-urlencoded:
@@ -94,7 +94,7 @@ paths:
               $ref: '#/components/schemas/AdminUser'
         required: true
       security:
-        - cookieAuth: []
+      - cookieAuth: []
       responses:
         '200':
           content:
@@ -106,14 +106,14 @@ paths:
       operationId: admin_users_partial_update
       description: ViewSet for admin users to manage all user accounts.
       parameters:
-        - in: path
-          name: id
-          schema:
-            type: integer
-          description: A unique integer value identifying this user.
-          required: true
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this user.
+        required: true
       tags:
-        - admin
+      - admin
       requestBody:
         content:
           application/x-www-form-urlencoded:
@@ -126,7 +126,7 @@ paths:
             schema:
               $ref: '#/components/schemas/PatchedAdminUser'
       security:
-        - cookieAuth: []
+      - cookieAuth: []
       responses:
         '200':
           content:
@@ -138,16 +138,16 @@ paths:
       operationId: admin_users_destroy
       description: ViewSet for admin users to manage all user accounts.
       parameters:
-        - in: path
-          name: id
-          schema:
-            type: integer
-          description: A unique integer value identifying this user.
-          required: true
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this user.
+        required: true
       tags:
-        - admin
+      - admin
       security:
-        - cookieAuth: []
+      - cookieAuth: []
       responses:
         '204':
           description: No response body
@@ -156,14 +156,14 @@ paths:
       operationId: admin_users_activate_create
       description: Activate a user account.
       parameters:
-        - in: path
-          name: id
-          schema:
-            type: integer
-          description: A unique integer value identifying this user.
-          required: true
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this user.
+        required: true
       tags:
-        - admin
+      - admin
       requestBody:
         content:
           application/x-www-form-urlencoded:
@@ -177,7 +177,7 @@ paths:
               $ref: '#/components/schemas/AdminUser'
         required: true
       security:
-        - cookieAuth: []
+      - cookieAuth: []
       responses:
         '200':
           content:
@@ -190,14 +190,14 @@ paths:
       operationId: admin_users_deactivate_create
       description: Deactivate a user account.
       parameters:
-        - in: path
-          name: id
-          schema:
-            type: integer
-          description: A unique integer value identifying this user.
-          required: true
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this user.
+        required: true
       tags:
-        - admin
+      - admin
       requestBody:
         content:
           application/x-www-form-urlencoded:
@@ -211,7 +211,7 @@ paths:
               $ref: '#/components/schemas/AdminUser'
         required: true
       security:
-        - cookieAuth: []
+      - cookieAuth: []
       responses:
         '200':
           content:
@@ -224,14 +224,14 @@ paths:
       operationId: admin_users_make_staff_create
       description: Grant staff privileges to a user.
       parameters:
-        - in: path
-          name: id
-          schema:
-            type: integer
-          description: A unique integer value identifying this user.
-          required: true
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this user.
+        required: true
       tags:
-        - admin
+      - admin
       requestBody:
         content:
           application/x-www-form-urlencoded:
@@ -245,7 +245,7 @@ paths:
               $ref: '#/components/schemas/AdminUser'
         required: true
       security:
-        - cookieAuth: []
+      - cookieAuth: []
       responses:
         '200':
           content:
@@ -258,14 +258,14 @@ paths:
       operationId: admin_users_remove_staff_create
       description: Remove staff privileges from a user.
       parameters:
-        - in: path
-          name: id
-          schema:
-            type: integer
-          description: A unique integer value identifying this user.
-          required: true
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this user.
+        required: true
       tags:
-        - admin
+      - admin
       requestBody:
         content:
           application/x-www-form-urlencoded:
@@ -279,7 +279,7 @@ paths:
               $ref: '#/components/schemas/AdminUser'
         required: true
       security:
-        - cookieAuth: []
+      - cookieAuth: []
       responses:
         '200':
           content:
@@ -294,10 +294,10 @@ paths:
         ViewSet for managing scenarios with full CRUD operations.
         Provides list, create, retrieve, update, destroy actions.
       tags:
-        - scenarios
+      - scenarios
       security:
-        - cookieAuth: []
-        - {}
+      - cookieAuth: []
+      - {}
       responses:
         '200':
           content:
@@ -313,7 +313,7 @@ paths:
         ViewSet for managing scenarios with full CRUD operations.
         Provides list, create, retrieve, update, destroy actions.
       tags:
-        - scenarios
+      - scenarios
       requestBody:
         content:
           application/x-www-form-urlencoded:
@@ -327,8 +327,8 @@ paths:
               $ref: '#/components/schemas/Scenario'
         required: true
       security:
-        - cookieAuth: []
-        - {}
+      - cookieAuth: []
+      - {}
       responses:
         '201':
           content:
@@ -343,17 +343,17 @@ paths:
         ViewSet for managing scenarios with full CRUD operations.
         Provides list, create, retrieve, update, destroy actions.
       parameters:
-        - in: path
-          name: id
-          schema:
-            type: integer
-          description: A unique integer value identifying this scenario.
-          required: true
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this scenario.
+        required: true
       tags:
-        - scenarios
+      - scenarios
       security:
-        - cookieAuth: []
-        - {}
+      - cookieAuth: []
+      - {}
       responses:
         '200':
           content:
@@ -367,14 +367,14 @@ paths:
         ViewSet for managing scenarios with full CRUD operations.
         Provides list, create, retrieve, update, destroy actions.
       parameters:
-        - in: path
-          name: id
-          schema:
-            type: integer
-          description: A unique integer value identifying this scenario.
-          required: true
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this scenario.
+        required: true
       tags:
-        - scenarios
+      - scenarios
       requestBody:
         content:
           application/x-www-form-urlencoded:
@@ -388,8 +388,8 @@ paths:
               $ref: '#/components/schemas/Scenario'
         required: true
       security:
-        - cookieAuth: []
-        - {}
+      - cookieAuth: []
+      - {}
       responses:
         '200':
           content:
@@ -403,14 +403,14 @@ paths:
         ViewSet for managing scenarios with full CRUD operations.
         Provides list, create, retrieve, update, destroy actions.
       parameters:
-        - in: path
-          name: id
-          schema:
-            type: integer
-          description: A unique integer value identifying this scenario.
-          required: true
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this scenario.
+        required: true
       tags:
-        - scenarios
+      - scenarios
       requestBody:
         content:
           application/x-www-form-urlencoded:
@@ -423,8 +423,8 @@ paths:
             schema:
               $ref: '#/components/schemas/PatchedScenario'
       security:
-        - cookieAuth: []
-        - {}
+      - cookieAuth: []
+      - {}
       responses:
         '200':
           content:
@@ -438,17 +438,17 @@ paths:
         ViewSet for managing scenarios with full CRUD operations.
         Provides list, create, retrieve, update, destroy actions.
       parameters:
-        - in: path
-          name: id
-          schema:
-            type: integer
-          description: A unique integer value identifying this scenario.
-          required: true
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this scenario.
+        required: true
       tags:
-        - scenarios
+      - scenarios
       security:
-        - cookieAuth: []
-        - {}
+      - cookieAuth: []
+      - {}
       responses:
         '204':
           description: No response body
@@ -457,14 +457,14 @@ paths:
       operationId: scenarios_clone_create
       description: Clone an existing scenario
       parameters:
-        - in: path
-          name: id
-          schema:
-            type: integer
-          description: A unique integer value identifying this scenario.
-          required: true
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this scenario.
+        required: true
       tags:
-        - scenarios
+      - scenarios
       requestBody:
         content:
           application/x-www-form-urlencoded:
@@ -478,8 +478,8 @@ paths:
               $ref: '#/components/schemas/Scenario'
         required: true
       security:
-        - cookieAuth: []
-        - {}
+      - cookieAuth: []
+      - {}
       responses:
         '200':
           content:
@@ -492,17 +492,17 @@ paths:
       operationId: scenarios_export_retrieve
       description: Export scenario as YAML
       parameters:
-        - in: path
-          name: id
-          schema:
-            type: integer
-          description: A unique integer value identifying this scenario.
-          required: true
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this scenario.
+        required: true
       tags:
-        - scenarios
+      - scenarios
       security:
-        - cookieAuth: []
-        - {}
+      - cookieAuth: []
+      - {}
       responses:
         '200':
           content:
@@ -515,14 +515,14 @@ paths:
       operationId: scenarios_simulate_create
       description: Run Monte Carlo simulations for this scenario
       parameters:
-        - in: path
-          name: id
-          schema:
-            type: integer
-          description: A unique integer value identifying this scenario.
-          required: true
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this scenario.
+        required: true
       tags:
-        - scenarios
+      - scenarios
       requestBody:
         content:
           application/x-www-form-urlencoded:
@@ -536,8 +536,8 @@ paths:
               $ref: '#/components/schemas/Scenario'
         required: true
       security:
-        - cookieAuth: []
-        - {}
+      - cookieAuth: []
+      - {}
       responses:
         '200':
           content:
@@ -550,17 +550,17 @@ paths:
       operationId: scenarios_validate_scenario_retrieve
       description: Validate scenario for simulation readiness
       parameters:
-        - in: path
-          name: id
-          schema:
-            type: integer
-          description: A unique integer value identifying this scenario.
-          required: true
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this scenario.
+        required: true
       tags:
-        - scenarios
+      - scenarios
       security:
-        - cookieAuth: []
-        - {}
+      - cookieAuth: []
+      - {}
       responses:
         '200':
           content:
@@ -573,7 +573,7 @@ paths:
       operationId: scenarios_import_scenario_create
       description: Import scenario from YAML file
       tags:
-        - scenarios
+      - scenarios
       requestBody:
         content:
           application/x-www-form-urlencoded:
@@ -587,8 +587,8 @@ paths:
               $ref: '#/components/schemas/Scenario'
         required: true
       security:
-        - cookieAuth: []
-        - {}
+      - cookieAuth: []
+      - {}
       responses:
         '200':
           content:
@@ -601,7 +601,7 @@ paths:
       operationId: session_create
       description: Handle user login with email.
       tags:
-        - session
+      - session
       requestBody:
         content:
           application/x-www-form-urlencoded:
@@ -615,8 +615,8 @@ paths:
               $ref: '#/components/schemas/Session'
         required: true
       security:
-        - cookieAuth: []
-        - {}
+      - cookieAuth: []
+      - {}
       responses:
         '200':
           content:
@@ -628,10 +628,10 @@ paths:
       operationId: session_destroy
       description: Handle user logout.
       tags:
-        - session
+      - session
       security:
-        - cookieAuth: []
-        - {}
+      - cookieAuth: []
+      - {}
       responses:
         '204':
           description: No response body
@@ -640,9 +640,9 @@ paths:
       operationId: users_list
       description: Get current user's information.
       tags:
-        - users
+      - users
       security:
-        - cookieAuth: []
+      - cookieAuth: []
       responses:
         '200':
           content:
@@ -657,7 +657,7 @@ paths:
       description: Create a new user account. This endpoint allows unauthenticated
         access for registration.
       tags:
-        - users
+      - users
       requestBody:
         content:
           application/x-www-form-urlencoded:
@@ -671,7 +671,7 @@ paths:
               $ref: '#/components/schemas/User'
         required: true
       security:
-        - cookieAuth: []
+      - cookieAuth: []
       responses:
         '201':
           content:
@@ -684,16 +684,16 @@ paths:
       operationId: users_retrieve
       description: Get current user's information by ID.
       parameters:
-        - in: path
-          name: id
-          schema:
-            type: integer
-          description: A unique integer value identifying this user.
-          required: true
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this user.
+        required: true
       tags:
-        - users
+      - users
       security:
-        - cookieAuth: []
+      - cookieAuth: []
       responses:
         '200':
           content:
@@ -705,14 +705,14 @@ paths:
       operationId: users_update
       description: Update user account (PUT).
       parameters:
-        - in: path
-          name: id
-          schema:
-            type: integer
-          description: A unique integer value identifying this user.
-          required: true
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this user.
+        required: true
       tags:
-        - users
+      - users
       requestBody:
         content:
           application/x-www-form-urlencoded:
@@ -726,7 +726,7 @@ paths:
               $ref: '#/components/schemas/User'
         required: true
       security:
-        - cookieAuth: []
+      - cookieAuth: []
       responses:
         '200':
           content:
@@ -738,14 +738,14 @@ paths:
       operationId: users_partial_update
       description: Partially update user account (PATCH).
       parameters:
-        - in: path
-          name: id
-          schema:
-            type: integer
-          description: A unique integer value identifying this user.
-          required: true
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this user.
+        required: true
       tags:
-        - users
+      - users
       requestBody:
         content:
           application/x-www-form-urlencoded:
@@ -758,7 +758,7 @@ paths:
             schema:
               $ref: '#/components/schemas/PatchedUser'
       security:
-        - cookieAuth: []
+      - cookieAuth: []
       responses:
         '200':
           content:
@@ -770,16 +770,16 @@ paths:
       operationId: users_destroy
       description: Delete user account.
       parameters:
-        - in: path
-          name: id
-          schema:
-            type: integer
-          description: A unique integer value identifying this user.
-          required: true
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this user.
+        required: true
       tags:
-        - users
+      - users
       security:
-        - cookieAuth: []
+      - cookieAuth: []
       responses:
         '204':
           description: No response body
@@ -788,9 +788,9 @@ paths:
       operationId: users_me_retrieve
       description: Endpoint for users to manage their own profile at /users/me/
       tags:
-        - users
+      - users
       security:
-        - cookieAuth: []
+      - cookieAuth: []
       responses:
         '200':
           content:
@@ -802,7 +802,7 @@ paths:
       operationId: users_me_update
       description: Endpoint for users to manage their own profile at /users/me/
       tags:
-        - users
+      - users
       requestBody:
         content:
           application/x-www-form-urlencoded:
@@ -816,7 +816,7 @@ paths:
               $ref: '#/components/schemas/User'
         required: true
       security:
-        - cookieAuth: []
+      - cookieAuth: []
       responses:
         '200':
           content:
@@ -828,7 +828,7 @@ paths:
       operationId: users_me_partial_update
       description: Endpoint for users to manage their own profile at /users/me/
       tags:
-        - users
+      - users
       requestBody:
         content:
           application/x-www-form-urlencoded:
@@ -841,7 +841,7 @@ paths:
             schema:
               $ref: '#/components/schemas/PatchedUser'
       security:
-        - cookieAuth: []
+      - cookieAuth: []
       responses:
         '200':
           content:
@@ -853,9 +853,9 @@ paths:
       operationId: users_me_destroy
       description: Endpoint for users to manage their own profile at /users/me/
       tags:
-        - users
+      - users
       security:
-        - cookieAuth: []
+      - cookieAuth: []
       responses:
         '204':
           description: No response body
@@ -909,13 +909,37 @@ components:
           readOnly: true
           nullable: true
       required:
-        - dateJoined
-        - email
-        - id
-        - lastLogin
+      - dateJoined
+      - email
+      - id
+      - lastLogin
+    AmountOrPercentEnum:
+      enum:
+      - amount
+      - percent
+      type: string
+      description: |-
+        * `amount` - Amount
+        * `percent` - Percent
+    AssetAllocation:
+      type: object
+      properties:
+        investmentId:
+          type: string
+          readOnly: true
+        percentage:
+          type: number
+          format: double
+        isFinalAllocation:
+          type: boolean
+      required:
+      - investmentId
+      - percentage
+    BlankEnum:
+      enum:
+      - ''
     Distribution:
       type: object
-      description: Serializer for probability distributions
       properties:
         type:
           $ref: '#/components/schemas/DistributionTypeEnum'
@@ -940,12 +964,12 @@ components:
           format: double
           nullable: true
       required:
-        - type
+      - type
     DistributionTypeEnum:
       enum:
-        - fixed
-        - normal
-        - uniform
+      - fixed
+      - normal
+      - uniform
       type: string
       description: |-
         * `fixed` - Fixed
@@ -953,87 +977,131 @@ components:
         * `uniform` - Uniform
     EventSeries:
       type: object
-      description: Serializer for event series with complex nested data
       properties:
         name:
           type: string
           maxLength: 100
-        start:
-          $ref: '#/components/schemas/Distribution'
-        duration:
+        description:
+          type: string
+        startType:
+          $ref: '#/components/schemas/StartTypeEnum'
+        startDistribution:
+          allOf:
+          - $ref: '#/components/schemas/Distribution'
+          nullable: true
+        startWithEventName:
+          type: string
+          readOnly: true
+        startAfterEventName:
+          type: string
+          readOnly: true
+        durationDistribution:
           $ref: '#/components/schemas/Distribution'
         type:
           $ref: '#/components/schemas/EventSeriesTypeEnum'
         initialAmount:
           type: number
           format: double
+          nullable: true
         changeAmtOrPct:
-          type: string
+          nullable: true
+          oneOf:
+          - $ref: '#/components/schemas/AmountOrPercentEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+          - $ref: '#/components/schemas/NullEnum'
         changeDistribution:
-          $ref: '#/components/schemas/Distribution'
+          allOf:
+          - $ref: '#/components/schemas/Distribution'
+          nullable: true
         inflationAdjusted:
           type: boolean
         userFraction:
           type: number
           format: double
+          nullable: true
         socialSecurity:
           type: boolean
         discretionary:
           type: boolean
-        assetAllocation:
-          type: object
-          additionalProperties: {}
-          description: Get initial asset allocation as dict
-          readOnly: true
-        glidePath:
-          type: boolean
-        assetAllocation2:
-          type: object
-          additionalProperties: {}
-          description: Get final asset allocation for glide path
-          readOnly: true
         maxCash:
           type: number
           format: double
+          nullable: true
+        glidePath:
+          type: boolean
+        assetAllocations:
+          type: array
+          items:
+            $ref: '#/components/schemas/AssetAllocation'
+          readOnly: true
+        startWithEventNameInput:
+          type: string
+          writeOnly: true
+        startAfterEventNameInput:
+          type: string
+          writeOnly: true
+        assetAllocationInput:
+          type: object
+          additionalProperties: {}
+          writeOnly: true
+        assetAllocation2Input:
+          type: object
+          additionalProperties: {}
+          writeOnly: true
       required:
-        - assetAllocation
-        - assetAllocation2
-        - duration
-        - name
-        - type
+      - assetAllocations
+      - durationDistribution
+      - name
+      - startAfterEventName
+      - startType
+      - startWithEventName
+      - type
     EventSeriesTypeEnum:
       enum:
-        - income
-        - expense
-        - invest
-        - rebalance
+      - income
+      - expense
+      - invest
+      - rebalance
       type: string
       description: |-
         * `income` - Income
         * `expense` - Expense
         * `invest` - Invest
         * `rebalance` - Rebalance
+    ExpenseWithdrawalStrategyItem:
+      type: object
+      properties:
+        investmentId:
+          type: string
+          readOnly: true
+        order:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+      required:
+      - investmentId
+      - order
     Investment:
       type: object
-      description: Serializer for individual investments
       properties:
         investmentType:
-          type: string
+          $ref: '#/components/schemas/InvestmentType'
         value:
           type: number
           format: double
         taxStatus:
+          $ref: '#/components/schemas/TaxStatusEnum'
+        investmentId:
           type: string
-        id:
-          type: string
+          maxLength: 100
       required:
-        - id
-        - investmentType
-        - taxStatus
-        - value
+      - investmentId
+      - investmentType
+      - taxStatus
+      - value
     InvestmentType:
       type: object
-      description: Serializer for investment types
       properties:
         name:
           type: string
@@ -1041,27 +1109,38 @@ components:
         description:
           type: string
         returnAmtOrPct:
-          type: string
+          $ref: '#/components/schemas/AmountOrPercentEnum'
         returnDistribution:
           $ref: '#/components/schemas/Distribution'
         expenseRatio:
           type: number
           format: double
         incomeAmtOrPct:
-          type: string
+          $ref: '#/components/schemas/AmountOrPercentEnum'
         incomeDistribution:
           $ref: '#/components/schemas/Distribution'
         taxability:
           type: boolean
       required:
-        - description
-        - expenseRatio
-        - incomeAmtOrPct
-        - incomeDistribution
-        - name
-        - returnAmtOrPct
-        - returnDistribution
-        - taxability
+      - description
+      - expenseRatio
+      - incomeAmtOrPct
+      - incomeDistribution
+      - name
+      - returnAmtOrPct
+      - returnDistribution
+      - taxability
+    MaritalStatusEnum:
+      enum:
+      - individual
+      - couple
+      type: string
+      description: |-
+        * `individual` - Individual
+        * `couple` - Couple
+    NullEnum:
+      enum:
+      - null
     PatchedAdminUser:
       type: object
       properties:
@@ -1111,27 +1190,57 @@ components:
           nullable: true
     PatchedScenario:
       type: object
-      description: Main serializer for complete scenarios matching YAML format
       properties:
+        id:
+          type: integer
+          readOnly: true
         name:
           type: string
           maxLength: 200
         maritalStatus:
+          $ref: '#/components/schemas/MaritalStatusEnum'
+        userBirthYear:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: -9223372036854775808
+          format: int64
+        spouseBirthYear:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: -9223372036854775808
+          format: int64
+          nullable: true
+        userLifeExpectancy:
+          $ref: '#/components/schemas/Distribution'
+        spouseLifeExpectancy:
+          allOf:
+          - $ref: '#/components/schemas/Distribution'
+          nullable: true
+        inflationAssumption:
+          $ref: '#/components/schemas/Distribution'
+        afterTaxContributionLimit:
+          type: number
+          format: double
+        financialGoal:
+          type: number
+          format: double
+        residenceState:
           type: string
-        birthYears:
-          type: array
-          items:
-            type: integer
-          readOnly: true
-        lifeExpectancy:
-          type: array
-          items:
-            $ref: '#/components/schemas/Distribution'
-          readOnly: true
-        investmentTypes:
-          type: array
-          items:
-            $ref: '#/components/schemas/InvestmentType'
+          maxLength: 2
+        rothConversionOpt:
+          type: boolean
+        rothConversionStart:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: -9223372036854775808
+          format: int64
+          nullable: true
+        rothConversionEnd:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: -9223372036854775808
+          format: int64
+          nullable: true
         investments:
           type: array
           items:
@@ -1140,42 +1249,54 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/EventSeries'
-        inflationAssumption:
-          $ref: '#/components/schemas/Distribution'
-        afterTaxContributionLimit:
-          type: number
-          format: double
-        spendingStrategy:
+        spendingStrategyItems:
           type: array
           items:
-            type: string
+            $ref: '#/components/schemas/SpendingStrategyItem'
           readOnly: true
-        expenseWithdrawalStrategy:
+        expenseWithdrawalStrategyItems:
           type: array
           items:
-            type: string
+            $ref: '#/components/schemas/ExpenseWithdrawalStrategyItem'
           readOnly: true
-        RMDStrategy:
+        rmdStrategyItems:
           type: array
           items:
-            type: string
+            $ref: '#/components/schemas/RMDStrategyItem'
           readOnly: true
-        RothConversionOpt:
-          type: boolean
-        RothConversionStart:
-          type: integer
-        RothConversionEnd:
-          type: integer
-        RothConversionStrategy:
+        rothConversionStrategyItems:
           type: array
           items:
-            type: string
+            $ref: '#/components/schemas/RothConversionStrategyItem'
           readOnly: true
-        financialGoal:
-          type: number
-          format: double
-        residenceState:
+        createdAt:
           type: string
+          format: date-time
+          readOnly: true
+        updatedAt:
+          type: string
+          format: date-time
+          readOnly: true
+        spendingStrategyInput:
+          type: array
+          items:
+            type: string
+          writeOnly: true
+        expenseWithdrawalStrategyInput:
+          type: array
+          items:
+            type: string
+          writeOnly: true
+        rmdStrategyInput:
+          type: array
+          items:
+            type: string
+          writeOnly: true
+        rothConversionStrategyInput:
+          type: array
+          items:
+            type: string
+          writeOnly: true
     PatchedUser:
       type: object
       properties:
@@ -1218,29 +1339,87 @@ components:
           format: date-time
           readOnly: true
           nullable: true
+    RMDStrategyItem:
+      type: object
+      properties:
+        investmentId:
+          type: string
+          readOnly: true
+        order:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+      required:
+      - investmentId
+      - order
+    RothConversionStrategyItem:
+      type: object
+      properties:
+        investmentId:
+          type: string
+          readOnly: true
+        order:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+      required:
+      - investmentId
+      - order
     Scenario:
       type: object
-      description: Main serializer for complete scenarios matching YAML format
       properties:
+        id:
+          type: integer
+          readOnly: true
         name:
           type: string
           maxLength: 200
         maritalStatus:
+          $ref: '#/components/schemas/MaritalStatusEnum'
+        userBirthYear:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: -9223372036854775808
+          format: int64
+        spouseBirthYear:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: -9223372036854775808
+          format: int64
+          nullable: true
+        userLifeExpectancy:
+          $ref: '#/components/schemas/Distribution'
+        spouseLifeExpectancy:
+          allOf:
+          - $ref: '#/components/schemas/Distribution'
+          nullable: true
+        inflationAssumption:
+          $ref: '#/components/schemas/Distribution'
+        afterTaxContributionLimit:
+          type: number
+          format: double
+        financialGoal:
+          type: number
+          format: double
+        residenceState:
           type: string
-        birthYears:
-          type: array
-          items:
-            type: integer
-          readOnly: true
-        lifeExpectancy:
-          type: array
-          items:
-            $ref: '#/components/schemas/Distribution'
-          readOnly: true
-        investmentTypes:
-          type: array
-          items:
-            $ref: '#/components/schemas/InvestmentType'
+          maxLength: 2
+        rothConversionOpt:
+          type: boolean
+        rothConversionStart:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: -9223372036854775808
+          format: int64
+          nullable: true
+        rothConversionEnd:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: -9223372036854775808
+          format: int64
+          nullable: true
         investments:
           type: array
           items:
@@ -1249,59 +1428,72 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/EventSeries'
-        inflationAssumption:
-          $ref: '#/components/schemas/Distribution'
-        afterTaxContributionLimit:
-          type: number
-          format: double
-        spendingStrategy:
+        spendingStrategyItems:
           type: array
           items:
-            type: string
+            $ref: '#/components/schemas/SpendingStrategyItem'
           readOnly: true
-        expenseWithdrawalStrategy:
+        expenseWithdrawalStrategyItems:
           type: array
           items:
-            type: string
+            $ref: '#/components/schemas/ExpenseWithdrawalStrategyItem'
           readOnly: true
-        RMDStrategy:
+        rmdStrategyItems:
           type: array
           items:
-            type: string
+            $ref: '#/components/schemas/RMDStrategyItem'
           readOnly: true
-        RothConversionOpt:
-          type: boolean
-        RothConversionStart:
-          type: integer
-        RothConversionEnd:
-          type: integer
-        RothConversionStrategy:
+        rothConversionStrategyItems:
           type: array
           items:
-            type: string
+            $ref: '#/components/schemas/RothConversionStrategyItem'
           readOnly: true
-        financialGoal:
-          type: number
-          format: double
-        residenceState:
+        createdAt:
           type: string
+          format: date-time
+          readOnly: true
+        updatedAt:
+          type: string
+          format: date-time
+          readOnly: true
+        spendingStrategyInput:
+          type: array
+          items:
+            type: string
+          writeOnly: true
+        expenseWithdrawalStrategyInput:
+          type: array
+          items:
+            type: string
+          writeOnly: true
+        rmdStrategyInput:
+          type: array
+          items:
+            type: string
+          writeOnly: true
+        rothConversionStrategyInput:
+          type: array
+          items:
+            type: string
+          writeOnly: true
       required:
-        - RMDStrategy
-        - RothConversionOpt
-        - RothConversionStrategy
-        - afterTaxContributionLimit
-        - birthYears
-        - eventSeries
-        - expenseWithdrawalStrategy
-        - financialGoal
-        - inflationAssumption
-        - investmentTypes
-        - investments
-        - lifeExpectancy
-        - maritalStatus
-        - name
-        - residenceState
-        - spendingStrategy
+      - afterTaxContributionLimit
+      - createdAt
+      - eventSeries
+      - expenseWithdrawalStrategyItems
+      - financialGoal
+      - id
+      - inflationAssumption
+      - investments
+      - maritalStatus
+      - name
+      - residenceState
+      - rmdStrategyItems
+      - rothConversionStrategyItems
+      - spendingStrategyItems
+      - updatedAt
+      - userBirthYear
+      - userLifeExpectancy
     Session:
       type: object
       description: Serializer for handling user login data.
@@ -1314,8 +1506,42 @@ components:
           type: string
           writeOnly: true
       required:
-        - email
-        - password
+      - email
+      - password
+    SpendingStrategyItem:
+      type: object
+      properties:
+        eventSeriesName:
+          type: string
+          readOnly: true
+        order:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+      required:
+      - eventSeriesName
+      - order
+    StartTypeEnum:
+      enum:
+      - distribution
+      - start_with
+      - start_after
+      type: string
+      description: |-
+        * `distribution` - Distribution
+        * `start_with` - Start With Event
+        * `start_after` - Start After Event
+    TaxStatusEnum:
+      enum:
+      - non-retirement
+      - pre-tax
+      - after-tax
+      type: string
+      description: |-
+        * `non-retirement` - Non-retirement
+        * `pre-tax` - Pre-tax Retirement
+        * `after-tax` - After-tax Retirement
     User:
       type: object
       properties:
@@ -1359,12 +1585,12 @@ components:
           readOnly: true
           nullable: true
       required:
-        - dateJoined
-        - email
-        - id
-        - lastLogin
-        - password
-        - passwordConfirm
+      - dateJoined
+      - email
+      - id
+      - lastLogin
+      - password
+      - passwordConfirm
   securitySchemes:
     cookieAuth:
       type: apiKey

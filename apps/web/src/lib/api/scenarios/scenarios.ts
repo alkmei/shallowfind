@@ -113,40 +113,68 @@ export const scenariosCreate = (
   options?: AxiosRequestConfig
 ): Promise<AxiosResponse<Scenario>> => {
   const formUrlEncoded = new URLSearchParams();
+  formUrlEncoded.append(`id`, scenario.id.toString());
   formUrlEncoded.append(`name`, scenario.name);
   formUrlEncoded.append(`maritalStatus`, scenario.maritalStatus);
-  scenario.birthYears.forEach((value) => formUrlEncoded.append(`birthYears`, value.toString()));
-  scenario.lifeExpectancy.forEach((value) =>
-    formUrlEncoded.append(`lifeExpectancy`, JSON.stringify(value))
-  );
-  scenario.investmentTypes.forEach((value) =>
-    formUrlEncoded.append(`investmentTypes`, JSON.stringify(value))
-  );
+  formUrlEncoded.append(`userBirthYear`, scenario.userBirthYear.toString());
+  if (scenario.spouseBirthYear !== undefined && scenario.spouseBirthYear !== null) {
+    formUrlEncoded.append(`spouseBirthYear`, scenario.spouseBirthYear.toString());
+  }
+  formUrlEncoded.append(`userLifeExpectancy`, JSON.stringify(scenario.userLifeExpectancy));
+  if (scenario.spouseLifeExpectancy !== undefined && scenario.spouseLifeExpectancy !== null) {
+    formUrlEncoded.append(`spouseLifeExpectancy`, scenario.spouseLifeExpectancy);
+  }
+  formUrlEncoded.append(`inflationAssumption`, JSON.stringify(scenario.inflationAssumption));
+  formUrlEncoded.append(`afterTaxContributionLimit`, scenario.afterTaxContributionLimit.toString());
+  formUrlEncoded.append(`financialGoal`, scenario.financialGoal.toString());
+  formUrlEncoded.append(`residenceState`, scenario.residenceState);
+  if (scenario.rothConversionOpt !== undefined) {
+    formUrlEncoded.append(`rothConversionOpt`, scenario.rothConversionOpt.toString());
+  }
+  if (scenario.rothConversionStart !== undefined && scenario.rothConversionStart !== null) {
+    formUrlEncoded.append(`rothConversionStart`, scenario.rothConversionStart.toString());
+  }
+  if (scenario.rothConversionEnd !== undefined && scenario.rothConversionEnd !== null) {
+    formUrlEncoded.append(`rothConversionEnd`, scenario.rothConversionEnd.toString());
+  }
   scenario.investments.forEach((value) =>
     formUrlEncoded.append(`investments`, JSON.stringify(value))
   );
   scenario.eventSeries.forEach((value) =>
     formUrlEncoded.append(`eventSeries`, JSON.stringify(value))
   );
-  formUrlEncoded.append(`inflationAssumption`, JSON.stringify(scenario.inflationAssumption));
-  formUrlEncoded.append(`afterTaxContributionLimit`, scenario.afterTaxContributionLimit.toString());
-  scenario.spendingStrategy.forEach((value) => formUrlEncoded.append(`spendingStrategy`, value));
-  scenario.expenseWithdrawalStrategy.forEach((value) =>
-    formUrlEncoded.append(`expenseWithdrawalStrategy`, value)
+  scenario.spendingStrategyItems.forEach((value) =>
+    formUrlEncoded.append(`spendingStrategyItems`, JSON.stringify(value))
   );
-  scenario.RMDStrategy.forEach((value) => formUrlEncoded.append(`RMDStrategy`, value));
-  formUrlEncoded.append(`RothConversionOpt`, scenario.RothConversionOpt.toString());
-  if (scenario.RothConversionStart !== undefined) {
-    formUrlEncoded.append(`RothConversionStart`, scenario.RothConversionStart.toString());
-  }
-  if (scenario.RothConversionEnd !== undefined) {
-    formUrlEncoded.append(`RothConversionEnd`, scenario.RothConversionEnd.toString());
-  }
-  scenario.RothConversionStrategy.forEach((value) =>
-    formUrlEncoded.append(`RothConversionStrategy`, value)
+  scenario.expenseWithdrawalStrategyItems.forEach((value) =>
+    formUrlEncoded.append(`expenseWithdrawalStrategyItems`, JSON.stringify(value))
   );
-  formUrlEncoded.append(`financialGoal`, scenario.financialGoal.toString());
-  formUrlEncoded.append(`residenceState`, scenario.residenceState);
+  scenario.rmdStrategyItems.forEach((value) =>
+    formUrlEncoded.append(`rmdStrategyItems`, JSON.stringify(value))
+  );
+  scenario.rothConversionStrategyItems.forEach((value) =>
+    formUrlEncoded.append(`rothConversionStrategyItems`, JSON.stringify(value))
+  );
+  formUrlEncoded.append(`createdAt`, scenario.createdAt);
+  formUrlEncoded.append(`updatedAt`, scenario.updatedAt);
+  if (scenario.spendingStrategyInput !== undefined) {
+    scenario.spendingStrategyInput.forEach((value) =>
+      formUrlEncoded.append(`spendingStrategyInput`, value)
+    );
+  }
+  if (scenario.expenseWithdrawalStrategyInput !== undefined) {
+    scenario.expenseWithdrawalStrategyInput.forEach((value) =>
+      formUrlEncoded.append(`expenseWithdrawalStrategyInput`, value)
+    );
+  }
+  if (scenario.rmdStrategyInput !== undefined) {
+    scenario.rmdStrategyInput.forEach((value) => formUrlEncoded.append(`rmdStrategyInput`, value));
+  }
+  if (scenario.rothConversionStrategyInput !== undefined) {
+    scenario.rothConversionStrategyInput.forEach((value) =>
+      formUrlEncoded.append(`rothConversionStrategyInput`, value)
+    );
+  }
 
   return axios.post(`/api/scenarios/`, formUrlEncoded, options);
 };
@@ -299,40 +327,68 @@ export const scenariosUpdate = (
   options?: AxiosRequestConfig
 ): Promise<AxiosResponse<Scenario>> => {
   const formUrlEncoded = new URLSearchParams();
+  formUrlEncoded.append(`id`, scenario.id.toString());
   formUrlEncoded.append(`name`, scenario.name);
   formUrlEncoded.append(`maritalStatus`, scenario.maritalStatus);
-  scenario.birthYears.forEach((value) => formUrlEncoded.append(`birthYears`, value.toString()));
-  scenario.lifeExpectancy.forEach((value) =>
-    formUrlEncoded.append(`lifeExpectancy`, JSON.stringify(value))
-  );
-  scenario.investmentTypes.forEach((value) =>
-    formUrlEncoded.append(`investmentTypes`, JSON.stringify(value))
-  );
+  formUrlEncoded.append(`userBirthYear`, scenario.userBirthYear.toString());
+  if (scenario.spouseBirthYear !== undefined && scenario.spouseBirthYear !== null) {
+    formUrlEncoded.append(`spouseBirthYear`, scenario.spouseBirthYear.toString());
+  }
+  formUrlEncoded.append(`userLifeExpectancy`, JSON.stringify(scenario.userLifeExpectancy));
+  if (scenario.spouseLifeExpectancy !== undefined && scenario.spouseLifeExpectancy !== null) {
+    formUrlEncoded.append(`spouseLifeExpectancy`, scenario.spouseLifeExpectancy);
+  }
+  formUrlEncoded.append(`inflationAssumption`, JSON.stringify(scenario.inflationAssumption));
+  formUrlEncoded.append(`afterTaxContributionLimit`, scenario.afterTaxContributionLimit.toString());
+  formUrlEncoded.append(`financialGoal`, scenario.financialGoal.toString());
+  formUrlEncoded.append(`residenceState`, scenario.residenceState);
+  if (scenario.rothConversionOpt !== undefined) {
+    formUrlEncoded.append(`rothConversionOpt`, scenario.rothConversionOpt.toString());
+  }
+  if (scenario.rothConversionStart !== undefined && scenario.rothConversionStart !== null) {
+    formUrlEncoded.append(`rothConversionStart`, scenario.rothConversionStart.toString());
+  }
+  if (scenario.rothConversionEnd !== undefined && scenario.rothConversionEnd !== null) {
+    formUrlEncoded.append(`rothConversionEnd`, scenario.rothConversionEnd.toString());
+  }
   scenario.investments.forEach((value) =>
     formUrlEncoded.append(`investments`, JSON.stringify(value))
   );
   scenario.eventSeries.forEach((value) =>
     formUrlEncoded.append(`eventSeries`, JSON.stringify(value))
   );
-  formUrlEncoded.append(`inflationAssumption`, JSON.stringify(scenario.inflationAssumption));
-  formUrlEncoded.append(`afterTaxContributionLimit`, scenario.afterTaxContributionLimit.toString());
-  scenario.spendingStrategy.forEach((value) => formUrlEncoded.append(`spendingStrategy`, value));
-  scenario.expenseWithdrawalStrategy.forEach((value) =>
-    formUrlEncoded.append(`expenseWithdrawalStrategy`, value)
+  scenario.spendingStrategyItems.forEach((value) =>
+    formUrlEncoded.append(`spendingStrategyItems`, JSON.stringify(value))
   );
-  scenario.RMDStrategy.forEach((value) => formUrlEncoded.append(`RMDStrategy`, value));
-  formUrlEncoded.append(`RothConversionOpt`, scenario.RothConversionOpt.toString());
-  if (scenario.RothConversionStart !== undefined) {
-    formUrlEncoded.append(`RothConversionStart`, scenario.RothConversionStart.toString());
-  }
-  if (scenario.RothConversionEnd !== undefined) {
-    formUrlEncoded.append(`RothConversionEnd`, scenario.RothConversionEnd.toString());
-  }
-  scenario.RothConversionStrategy.forEach((value) =>
-    formUrlEncoded.append(`RothConversionStrategy`, value)
+  scenario.expenseWithdrawalStrategyItems.forEach((value) =>
+    formUrlEncoded.append(`expenseWithdrawalStrategyItems`, JSON.stringify(value))
   );
-  formUrlEncoded.append(`financialGoal`, scenario.financialGoal.toString());
-  formUrlEncoded.append(`residenceState`, scenario.residenceState);
+  scenario.rmdStrategyItems.forEach((value) =>
+    formUrlEncoded.append(`rmdStrategyItems`, JSON.stringify(value))
+  );
+  scenario.rothConversionStrategyItems.forEach((value) =>
+    formUrlEncoded.append(`rothConversionStrategyItems`, JSON.stringify(value))
+  );
+  formUrlEncoded.append(`createdAt`, scenario.createdAt);
+  formUrlEncoded.append(`updatedAt`, scenario.updatedAt);
+  if (scenario.spendingStrategyInput !== undefined) {
+    scenario.spendingStrategyInput.forEach((value) =>
+      formUrlEncoded.append(`spendingStrategyInput`, value)
+    );
+  }
+  if (scenario.expenseWithdrawalStrategyInput !== undefined) {
+    scenario.expenseWithdrawalStrategyInput.forEach((value) =>
+      formUrlEncoded.append(`expenseWithdrawalStrategyInput`, value)
+    );
+  }
+  if (scenario.rmdStrategyInput !== undefined) {
+    scenario.rmdStrategyInput.forEach((value) => formUrlEncoded.append(`rmdStrategyInput`, value));
+  }
+  if (scenario.rothConversionStrategyInput !== undefined) {
+    scenario.rothConversionStrategyInput.forEach((value) =>
+      formUrlEncoded.append(`rothConversionStrategyInput`, value)
+    );
+  }
 
   return axios.put(`/api/scenarios/${id}/`, formUrlEncoded, options);
 };
@@ -410,36 +466,29 @@ export const scenariosPartialUpdate = (
   options?: AxiosRequestConfig
 ): Promise<AxiosResponse<Scenario>> => {
   const formUrlEncoded = new URLSearchParams();
+  if (patchedScenario.id !== undefined) {
+    formUrlEncoded.append(`id`, patchedScenario.id.toString());
+  }
   if (patchedScenario.name !== undefined) {
     formUrlEncoded.append(`name`, patchedScenario.name);
   }
   if (patchedScenario.maritalStatus !== undefined) {
     formUrlEncoded.append(`maritalStatus`, patchedScenario.maritalStatus);
   }
-  if (patchedScenario.birthYears !== undefined) {
-    patchedScenario.birthYears.forEach((value) =>
-      formUrlEncoded.append(`birthYears`, value.toString())
-    );
+  if (patchedScenario.userBirthYear !== undefined) {
+    formUrlEncoded.append(`userBirthYear`, patchedScenario.userBirthYear.toString());
   }
-  if (patchedScenario.lifeExpectancy !== undefined) {
-    patchedScenario.lifeExpectancy.forEach((value) =>
-      formUrlEncoded.append(`lifeExpectancy`, JSON.stringify(value))
-    );
+  if (patchedScenario.spouseBirthYear !== undefined && patchedScenario.spouseBirthYear !== null) {
+    formUrlEncoded.append(`spouseBirthYear`, patchedScenario.spouseBirthYear.toString());
   }
-  if (patchedScenario.investmentTypes !== undefined) {
-    patchedScenario.investmentTypes.forEach((value) =>
-      formUrlEncoded.append(`investmentTypes`, JSON.stringify(value))
-    );
+  if (patchedScenario.userLifeExpectancy !== undefined) {
+    formUrlEncoded.append(`userLifeExpectancy`, JSON.stringify(patchedScenario.userLifeExpectancy));
   }
-  if (patchedScenario.investments !== undefined) {
-    patchedScenario.investments.forEach((value) =>
-      formUrlEncoded.append(`investments`, JSON.stringify(value))
-    );
-  }
-  if (patchedScenario.eventSeries !== undefined) {
-    patchedScenario.eventSeries.forEach((value) =>
-      formUrlEncoded.append(`eventSeries`, JSON.stringify(value))
-    );
+  if (
+    patchedScenario.spouseLifeExpectancy !== undefined &&
+    patchedScenario.spouseLifeExpectancy !== null
+  ) {
+    formUrlEncoded.append(`spouseLifeExpectancy`, patchedScenario.spouseLifeExpectancy);
   }
   if (patchedScenario.inflationAssumption !== undefined) {
     formUrlEncoded.append(
@@ -453,38 +502,82 @@ export const scenariosPartialUpdate = (
       patchedScenario.afterTaxContributionLimit.toString()
     );
   }
-  if (patchedScenario.spendingStrategy !== undefined) {
-    patchedScenario.spendingStrategy.forEach((value) =>
-      formUrlEncoded.append(`spendingStrategy`, value)
-    );
-  }
-  if (patchedScenario.expenseWithdrawalStrategy !== undefined) {
-    patchedScenario.expenseWithdrawalStrategy.forEach((value) =>
-      formUrlEncoded.append(`expenseWithdrawalStrategy`, value)
-    );
-  }
-  if (patchedScenario.RMDStrategy !== undefined) {
-    patchedScenario.RMDStrategy.forEach((value) => formUrlEncoded.append(`RMDStrategy`, value));
-  }
-  if (patchedScenario.RothConversionOpt !== undefined) {
-    formUrlEncoded.append(`RothConversionOpt`, patchedScenario.RothConversionOpt.toString());
-  }
-  if (patchedScenario.RothConversionStart !== undefined) {
-    formUrlEncoded.append(`RothConversionStart`, patchedScenario.RothConversionStart.toString());
-  }
-  if (patchedScenario.RothConversionEnd !== undefined) {
-    formUrlEncoded.append(`RothConversionEnd`, patchedScenario.RothConversionEnd.toString());
-  }
-  if (patchedScenario.RothConversionStrategy !== undefined) {
-    patchedScenario.RothConversionStrategy.forEach((value) =>
-      formUrlEncoded.append(`RothConversionStrategy`, value)
-    );
-  }
   if (patchedScenario.financialGoal !== undefined) {
     formUrlEncoded.append(`financialGoal`, patchedScenario.financialGoal.toString());
   }
   if (patchedScenario.residenceState !== undefined) {
     formUrlEncoded.append(`residenceState`, patchedScenario.residenceState);
+  }
+  if (patchedScenario.rothConversionOpt !== undefined) {
+    formUrlEncoded.append(`rothConversionOpt`, patchedScenario.rothConversionOpt.toString());
+  }
+  if (
+    patchedScenario.rothConversionStart !== undefined &&
+    patchedScenario.rothConversionStart !== null
+  ) {
+    formUrlEncoded.append(`rothConversionStart`, patchedScenario.rothConversionStart.toString());
+  }
+  if (
+    patchedScenario.rothConversionEnd !== undefined &&
+    patchedScenario.rothConversionEnd !== null
+  ) {
+    formUrlEncoded.append(`rothConversionEnd`, patchedScenario.rothConversionEnd.toString());
+  }
+  if (patchedScenario.investments !== undefined) {
+    patchedScenario.investments.forEach((value) =>
+      formUrlEncoded.append(`investments`, JSON.stringify(value))
+    );
+  }
+  if (patchedScenario.eventSeries !== undefined) {
+    patchedScenario.eventSeries.forEach((value) =>
+      formUrlEncoded.append(`eventSeries`, JSON.stringify(value))
+    );
+  }
+  if (patchedScenario.spendingStrategyItems !== undefined) {
+    patchedScenario.spendingStrategyItems.forEach((value) =>
+      formUrlEncoded.append(`spendingStrategyItems`, JSON.stringify(value))
+    );
+  }
+  if (patchedScenario.expenseWithdrawalStrategyItems !== undefined) {
+    patchedScenario.expenseWithdrawalStrategyItems.forEach((value) =>
+      formUrlEncoded.append(`expenseWithdrawalStrategyItems`, JSON.stringify(value))
+    );
+  }
+  if (patchedScenario.rmdStrategyItems !== undefined) {
+    patchedScenario.rmdStrategyItems.forEach((value) =>
+      formUrlEncoded.append(`rmdStrategyItems`, JSON.stringify(value))
+    );
+  }
+  if (patchedScenario.rothConversionStrategyItems !== undefined) {
+    patchedScenario.rothConversionStrategyItems.forEach((value) =>
+      formUrlEncoded.append(`rothConversionStrategyItems`, JSON.stringify(value))
+    );
+  }
+  if (patchedScenario.createdAt !== undefined) {
+    formUrlEncoded.append(`createdAt`, patchedScenario.createdAt);
+  }
+  if (patchedScenario.updatedAt !== undefined) {
+    formUrlEncoded.append(`updatedAt`, patchedScenario.updatedAt);
+  }
+  if (patchedScenario.spendingStrategyInput !== undefined) {
+    patchedScenario.spendingStrategyInput.forEach((value) =>
+      formUrlEncoded.append(`spendingStrategyInput`, value)
+    );
+  }
+  if (patchedScenario.expenseWithdrawalStrategyInput !== undefined) {
+    patchedScenario.expenseWithdrawalStrategyInput.forEach((value) =>
+      formUrlEncoded.append(`expenseWithdrawalStrategyInput`, value)
+    );
+  }
+  if (patchedScenario.rmdStrategyInput !== undefined) {
+    patchedScenario.rmdStrategyInput.forEach((value) =>
+      formUrlEncoded.append(`rmdStrategyInput`, value)
+    );
+  }
+  if (patchedScenario.rothConversionStrategyInput !== undefined) {
+    patchedScenario.rothConversionStrategyInput.forEach((value) =>
+      formUrlEncoded.append(`rothConversionStrategyInput`, value)
+    );
   }
 
   return axios.patch(`/api/scenarios/${id}/`, formUrlEncoded, options);
@@ -636,40 +729,68 @@ export const scenariosCloneCreate = (
   options?: AxiosRequestConfig
 ): Promise<AxiosResponse<Scenario>> => {
   const formUrlEncoded = new URLSearchParams();
+  formUrlEncoded.append(`id`, scenario.id.toString());
   formUrlEncoded.append(`name`, scenario.name);
   formUrlEncoded.append(`maritalStatus`, scenario.maritalStatus);
-  scenario.birthYears.forEach((value) => formUrlEncoded.append(`birthYears`, value.toString()));
-  scenario.lifeExpectancy.forEach((value) =>
-    formUrlEncoded.append(`lifeExpectancy`, JSON.stringify(value))
-  );
-  scenario.investmentTypes.forEach((value) =>
-    formUrlEncoded.append(`investmentTypes`, JSON.stringify(value))
-  );
+  formUrlEncoded.append(`userBirthYear`, scenario.userBirthYear.toString());
+  if (scenario.spouseBirthYear !== undefined && scenario.spouseBirthYear !== null) {
+    formUrlEncoded.append(`spouseBirthYear`, scenario.spouseBirthYear.toString());
+  }
+  formUrlEncoded.append(`userLifeExpectancy`, JSON.stringify(scenario.userLifeExpectancy));
+  if (scenario.spouseLifeExpectancy !== undefined && scenario.spouseLifeExpectancy !== null) {
+    formUrlEncoded.append(`spouseLifeExpectancy`, scenario.spouseLifeExpectancy);
+  }
+  formUrlEncoded.append(`inflationAssumption`, JSON.stringify(scenario.inflationAssumption));
+  formUrlEncoded.append(`afterTaxContributionLimit`, scenario.afterTaxContributionLimit.toString());
+  formUrlEncoded.append(`financialGoal`, scenario.financialGoal.toString());
+  formUrlEncoded.append(`residenceState`, scenario.residenceState);
+  if (scenario.rothConversionOpt !== undefined) {
+    formUrlEncoded.append(`rothConversionOpt`, scenario.rothConversionOpt.toString());
+  }
+  if (scenario.rothConversionStart !== undefined && scenario.rothConversionStart !== null) {
+    formUrlEncoded.append(`rothConversionStart`, scenario.rothConversionStart.toString());
+  }
+  if (scenario.rothConversionEnd !== undefined && scenario.rothConversionEnd !== null) {
+    formUrlEncoded.append(`rothConversionEnd`, scenario.rothConversionEnd.toString());
+  }
   scenario.investments.forEach((value) =>
     formUrlEncoded.append(`investments`, JSON.stringify(value))
   );
   scenario.eventSeries.forEach((value) =>
     formUrlEncoded.append(`eventSeries`, JSON.stringify(value))
   );
-  formUrlEncoded.append(`inflationAssumption`, JSON.stringify(scenario.inflationAssumption));
-  formUrlEncoded.append(`afterTaxContributionLimit`, scenario.afterTaxContributionLimit.toString());
-  scenario.spendingStrategy.forEach((value) => formUrlEncoded.append(`spendingStrategy`, value));
-  scenario.expenseWithdrawalStrategy.forEach((value) =>
-    formUrlEncoded.append(`expenseWithdrawalStrategy`, value)
+  scenario.spendingStrategyItems.forEach((value) =>
+    formUrlEncoded.append(`spendingStrategyItems`, JSON.stringify(value))
   );
-  scenario.RMDStrategy.forEach((value) => formUrlEncoded.append(`RMDStrategy`, value));
-  formUrlEncoded.append(`RothConversionOpt`, scenario.RothConversionOpt.toString());
-  if (scenario.RothConversionStart !== undefined) {
-    formUrlEncoded.append(`RothConversionStart`, scenario.RothConversionStart.toString());
-  }
-  if (scenario.RothConversionEnd !== undefined) {
-    formUrlEncoded.append(`RothConversionEnd`, scenario.RothConversionEnd.toString());
-  }
-  scenario.RothConversionStrategy.forEach((value) =>
-    formUrlEncoded.append(`RothConversionStrategy`, value)
+  scenario.expenseWithdrawalStrategyItems.forEach((value) =>
+    formUrlEncoded.append(`expenseWithdrawalStrategyItems`, JSON.stringify(value))
   );
-  formUrlEncoded.append(`financialGoal`, scenario.financialGoal.toString());
-  formUrlEncoded.append(`residenceState`, scenario.residenceState);
+  scenario.rmdStrategyItems.forEach((value) =>
+    formUrlEncoded.append(`rmdStrategyItems`, JSON.stringify(value))
+  );
+  scenario.rothConversionStrategyItems.forEach((value) =>
+    formUrlEncoded.append(`rothConversionStrategyItems`, JSON.stringify(value))
+  );
+  formUrlEncoded.append(`createdAt`, scenario.createdAt);
+  formUrlEncoded.append(`updatedAt`, scenario.updatedAt);
+  if (scenario.spendingStrategyInput !== undefined) {
+    scenario.spendingStrategyInput.forEach((value) =>
+      formUrlEncoded.append(`spendingStrategyInput`, value)
+    );
+  }
+  if (scenario.expenseWithdrawalStrategyInput !== undefined) {
+    scenario.expenseWithdrawalStrategyInput.forEach((value) =>
+      formUrlEncoded.append(`expenseWithdrawalStrategyInput`, value)
+    );
+  }
+  if (scenario.rmdStrategyInput !== undefined) {
+    scenario.rmdStrategyInput.forEach((value) => formUrlEncoded.append(`rmdStrategyInput`, value));
+  }
+  if (scenario.rothConversionStrategyInput !== undefined) {
+    scenario.rothConversionStrategyInput.forEach((value) =>
+      formUrlEncoded.append(`rothConversionStrategyInput`, value)
+    );
+  }
 
   return axios.post(`/api/scenarios/${id}/clone/`, formUrlEncoded, options);
 };
@@ -821,40 +942,68 @@ export const scenariosSimulateCreate = (
   options?: AxiosRequestConfig
 ): Promise<AxiosResponse<Scenario>> => {
   const formUrlEncoded = new URLSearchParams();
+  formUrlEncoded.append(`id`, scenario.id.toString());
   formUrlEncoded.append(`name`, scenario.name);
   formUrlEncoded.append(`maritalStatus`, scenario.maritalStatus);
-  scenario.birthYears.forEach((value) => formUrlEncoded.append(`birthYears`, value.toString()));
-  scenario.lifeExpectancy.forEach((value) =>
-    formUrlEncoded.append(`lifeExpectancy`, JSON.stringify(value))
-  );
-  scenario.investmentTypes.forEach((value) =>
-    formUrlEncoded.append(`investmentTypes`, JSON.stringify(value))
-  );
+  formUrlEncoded.append(`userBirthYear`, scenario.userBirthYear.toString());
+  if (scenario.spouseBirthYear !== undefined && scenario.spouseBirthYear !== null) {
+    formUrlEncoded.append(`spouseBirthYear`, scenario.spouseBirthYear.toString());
+  }
+  formUrlEncoded.append(`userLifeExpectancy`, JSON.stringify(scenario.userLifeExpectancy));
+  if (scenario.spouseLifeExpectancy !== undefined && scenario.spouseLifeExpectancy !== null) {
+    formUrlEncoded.append(`spouseLifeExpectancy`, scenario.spouseLifeExpectancy);
+  }
+  formUrlEncoded.append(`inflationAssumption`, JSON.stringify(scenario.inflationAssumption));
+  formUrlEncoded.append(`afterTaxContributionLimit`, scenario.afterTaxContributionLimit.toString());
+  formUrlEncoded.append(`financialGoal`, scenario.financialGoal.toString());
+  formUrlEncoded.append(`residenceState`, scenario.residenceState);
+  if (scenario.rothConversionOpt !== undefined) {
+    formUrlEncoded.append(`rothConversionOpt`, scenario.rothConversionOpt.toString());
+  }
+  if (scenario.rothConversionStart !== undefined && scenario.rothConversionStart !== null) {
+    formUrlEncoded.append(`rothConversionStart`, scenario.rothConversionStart.toString());
+  }
+  if (scenario.rothConversionEnd !== undefined && scenario.rothConversionEnd !== null) {
+    formUrlEncoded.append(`rothConversionEnd`, scenario.rothConversionEnd.toString());
+  }
   scenario.investments.forEach((value) =>
     formUrlEncoded.append(`investments`, JSON.stringify(value))
   );
   scenario.eventSeries.forEach((value) =>
     formUrlEncoded.append(`eventSeries`, JSON.stringify(value))
   );
-  formUrlEncoded.append(`inflationAssumption`, JSON.stringify(scenario.inflationAssumption));
-  formUrlEncoded.append(`afterTaxContributionLimit`, scenario.afterTaxContributionLimit.toString());
-  scenario.spendingStrategy.forEach((value) => formUrlEncoded.append(`spendingStrategy`, value));
-  scenario.expenseWithdrawalStrategy.forEach((value) =>
-    formUrlEncoded.append(`expenseWithdrawalStrategy`, value)
+  scenario.spendingStrategyItems.forEach((value) =>
+    formUrlEncoded.append(`spendingStrategyItems`, JSON.stringify(value))
   );
-  scenario.RMDStrategy.forEach((value) => formUrlEncoded.append(`RMDStrategy`, value));
-  formUrlEncoded.append(`RothConversionOpt`, scenario.RothConversionOpt.toString());
-  if (scenario.RothConversionStart !== undefined) {
-    formUrlEncoded.append(`RothConversionStart`, scenario.RothConversionStart.toString());
-  }
-  if (scenario.RothConversionEnd !== undefined) {
-    formUrlEncoded.append(`RothConversionEnd`, scenario.RothConversionEnd.toString());
-  }
-  scenario.RothConversionStrategy.forEach((value) =>
-    formUrlEncoded.append(`RothConversionStrategy`, value)
+  scenario.expenseWithdrawalStrategyItems.forEach((value) =>
+    formUrlEncoded.append(`expenseWithdrawalStrategyItems`, JSON.stringify(value))
   );
-  formUrlEncoded.append(`financialGoal`, scenario.financialGoal.toString());
-  formUrlEncoded.append(`residenceState`, scenario.residenceState);
+  scenario.rmdStrategyItems.forEach((value) =>
+    formUrlEncoded.append(`rmdStrategyItems`, JSON.stringify(value))
+  );
+  scenario.rothConversionStrategyItems.forEach((value) =>
+    formUrlEncoded.append(`rothConversionStrategyItems`, JSON.stringify(value))
+  );
+  formUrlEncoded.append(`createdAt`, scenario.createdAt);
+  formUrlEncoded.append(`updatedAt`, scenario.updatedAt);
+  if (scenario.spendingStrategyInput !== undefined) {
+    scenario.spendingStrategyInput.forEach((value) =>
+      formUrlEncoded.append(`spendingStrategyInput`, value)
+    );
+  }
+  if (scenario.expenseWithdrawalStrategyInput !== undefined) {
+    scenario.expenseWithdrawalStrategyInput.forEach((value) =>
+      formUrlEncoded.append(`expenseWithdrawalStrategyInput`, value)
+    );
+  }
+  if (scenario.rmdStrategyInput !== undefined) {
+    scenario.rmdStrategyInput.forEach((value) => formUrlEncoded.append(`rmdStrategyInput`, value));
+  }
+  if (scenario.rothConversionStrategyInput !== undefined) {
+    scenario.rothConversionStrategyInput.forEach((value) =>
+      formUrlEncoded.append(`rothConversionStrategyInput`, value)
+    );
+  }
 
   return axios.post(`/api/scenarios/${id}/simulate/`, formUrlEncoded, options);
 };
@@ -1015,40 +1164,68 @@ export const scenariosImportScenarioCreate = (
   options?: AxiosRequestConfig
 ): Promise<AxiosResponse<Scenario>> => {
   const formUrlEncoded = new URLSearchParams();
+  formUrlEncoded.append(`id`, scenario.id.toString());
   formUrlEncoded.append(`name`, scenario.name);
   formUrlEncoded.append(`maritalStatus`, scenario.maritalStatus);
-  scenario.birthYears.forEach((value) => formUrlEncoded.append(`birthYears`, value.toString()));
-  scenario.lifeExpectancy.forEach((value) =>
-    formUrlEncoded.append(`lifeExpectancy`, JSON.stringify(value))
-  );
-  scenario.investmentTypes.forEach((value) =>
-    formUrlEncoded.append(`investmentTypes`, JSON.stringify(value))
-  );
+  formUrlEncoded.append(`userBirthYear`, scenario.userBirthYear.toString());
+  if (scenario.spouseBirthYear !== undefined && scenario.spouseBirthYear !== null) {
+    formUrlEncoded.append(`spouseBirthYear`, scenario.spouseBirthYear.toString());
+  }
+  formUrlEncoded.append(`userLifeExpectancy`, JSON.stringify(scenario.userLifeExpectancy));
+  if (scenario.spouseLifeExpectancy !== undefined && scenario.spouseLifeExpectancy !== null) {
+    formUrlEncoded.append(`spouseLifeExpectancy`, scenario.spouseLifeExpectancy);
+  }
+  formUrlEncoded.append(`inflationAssumption`, JSON.stringify(scenario.inflationAssumption));
+  formUrlEncoded.append(`afterTaxContributionLimit`, scenario.afterTaxContributionLimit.toString());
+  formUrlEncoded.append(`financialGoal`, scenario.financialGoal.toString());
+  formUrlEncoded.append(`residenceState`, scenario.residenceState);
+  if (scenario.rothConversionOpt !== undefined) {
+    formUrlEncoded.append(`rothConversionOpt`, scenario.rothConversionOpt.toString());
+  }
+  if (scenario.rothConversionStart !== undefined && scenario.rothConversionStart !== null) {
+    formUrlEncoded.append(`rothConversionStart`, scenario.rothConversionStart.toString());
+  }
+  if (scenario.rothConversionEnd !== undefined && scenario.rothConversionEnd !== null) {
+    formUrlEncoded.append(`rothConversionEnd`, scenario.rothConversionEnd.toString());
+  }
   scenario.investments.forEach((value) =>
     formUrlEncoded.append(`investments`, JSON.stringify(value))
   );
   scenario.eventSeries.forEach((value) =>
     formUrlEncoded.append(`eventSeries`, JSON.stringify(value))
   );
-  formUrlEncoded.append(`inflationAssumption`, JSON.stringify(scenario.inflationAssumption));
-  formUrlEncoded.append(`afterTaxContributionLimit`, scenario.afterTaxContributionLimit.toString());
-  scenario.spendingStrategy.forEach((value) => formUrlEncoded.append(`spendingStrategy`, value));
-  scenario.expenseWithdrawalStrategy.forEach((value) =>
-    formUrlEncoded.append(`expenseWithdrawalStrategy`, value)
+  scenario.spendingStrategyItems.forEach((value) =>
+    formUrlEncoded.append(`spendingStrategyItems`, JSON.stringify(value))
   );
-  scenario.RMDStrategy.forEach((value) => formUrlEncoded.append(`RMDStrategy`, value));
-  formUrlEncoded.append(`RothConversionOpt`, scenario.RothConversionOpt.toString());
-  if (scenario.RothConversionStart !== undefined) {
-    formUrlEncoded.append(`RothConversionStart`, scenario.RothConversionStart.toString());
-  }
-  if (scenario.RothConversionEnd !== undefined) {
-    formUrlEncoded.append(`RothConversionEnd`, scenario.RothConversionEnd.toString());
-  }
-  scenario.RothConversionStrategy.forEach((value) =>
-    formUrlEncoded.append(`RothConversionStrategy`, value)
+  scenario.expenseWithdrawalStrategyItems.forEach((value) =>
+    formUrlEncoded.append(`expenseWithdrawalStrategyItems`, JSON.stringify(value))
   );
-  formUrlEncoded.append(`financialGoal`, scenario.financialGoal.toString());
-  formUrlEncoded.append(`residenceState`, scenario.residenceState);
+  scenario.rmdStrategyItems.forEach((value) =>
+    formUrlEncoded.append(`rmdStrategyItems`, JSON.stringify(value))
+  );
+  scenario.rothConversionStrategyItems.forEach((value) =>
+    formUrlEncoded.append(`rothConversionStrategyItems`, JSON.stringify(value))
+  );
+  formUrlEncoded.append(`createdAt`, scenario.createdAt);
+  formUrlEncoded.append(`updatedAt`, scenario.updatedAt);
+  if (scenario.spendingStrategyInput !== undefined) {
+    scenario.spendingStrategyInput.forEach((value) =>
+      formUrlEncoded.append(`spendingStrategyInput`, value)
+    );
+  }
+  if (scenario.expenseWithdrawalStrategyInput !== undefined) {
+    scenario.expenseWithdrawalStrategyInput.forEach((value) =>
+      formUrlEncoded.append(`expenseWithdrawalStrategyInput`, value)
+    );
+  }
+  if (scenario.rmdStrategyInput !== undefined) {
+    scenario.rmdStrategyInput.forEach((value) => formUrlEncoded.append(`rmdStrategyInput`, value));
+  }
+  if (scenario.rothConversionStrategyInput !== undefined) {
+    scenario.rothConversionStrategyInput.forEach((value) =>
+      formUrlEncoded.append(`rothConversionStrategyInput`, value)
+    );
+  }
 
   return axios.post(`/api/scenarios/import_scenario/`, formUrlEncoded, options);
 };

@@ -3,8 +3,6 @@ from django.core.exceptions import ValidationError
 from django.contrib.auth import get_user_model
 from django.utils import timezone
 
-User = get_user_model()
-
 from .models import (
     Distribution,
     InvestmentType,
@@ -17,8 +15,10 @@ from .models import (
 )
 
 
-class DistributionModelTest(TestCase):
+User = get_user_model()
 
+
+class DistributionModelTest(TestCase):
     def test_fixed_distribution_creation(self):
         """Test creating a valid fixed distribution"""
         dist = Distribution.objects.create(type="fixed", value=100.0)
@@ -85,7 +85,6 @@ class DistributionModelTest(TestCase):
 
 
 class InvestmentTypeModelTest(TestCase):
-
     @classmethod
     def setUpTestData(cls):
         cls.return_dist = Distribution.objects.create(type="fixed", value=0.06)
@@ -140,7 +139,6 @@ class InvestmentTypeModelTest(TestCase):
 
 
 class InvestmentModelTest(TestCase):
-
     @classmethod
     def setUpTestData(cls):
         cls.user = User.objects.create_user(email="testuser@test.com")
@@ -266,7 +264,6 @@ class InvestmentModelTest(TestCase):
 
 
 class EventSeriesModelTest(TestCase):
-
     @classmethod
     def setUpTestData(cls):
         cls.user = User.objects.create_user(email="testuser@test.com")
@@ -386,7 +383,6 @@ class EventSeriesModelTest(TestCase):
 
 
 class AssetAllocationModelTest(TestCase):
-
     @classmethod
     def setUpTestData(cls):
         cls.user = User.objects.create_user(email="testuser@test.com")
@@ -486,7 +482,6 @@ class AssetAllocationModelTest(TestCase):
 
 
 class SpendingStrategyItemModelTest(TestCase):
-
     @classmethod
     def setUpTestData(cls):
         cls.user = User.objects.create_user(email="testuser@test.com")
@@ -556,7 +551,6 @@ class SpendingStrategyItemModelTest(TestCase):
 
 
 class RMDStrategyItemModelTest(TestCase):
-
     @classmethod
     def setUpTestData(cls):
         cls.user = User.objects.create_user(email="testuser@test.com")
@@ -620,7 +614,6 @@ class RMDStrategyItemModelTest(TestCase):
 
 
 class ScenarioModelTest(TestCase):
-
     @classmethod
     def setUpTestData(cls):
         cls.user = User.objects.create_user(email="testuser@test.com")

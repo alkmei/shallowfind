@@ -29,9 +29,19 @@ export interface AdminUser {
   readonly lastLogin: string | null;
 }
 
-/**
- * Serializer for probability distributions
- */
+export interface AssetAllocation {
+  readonly investmentId: string;
+  percentage: number;
+  isFinalAllocation?: boolean;
+}
+
+export type BlankEnum = (typeof BlankEnum)[keyof typeof BlankEnum];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const BlankEnum = {
+  '': ''
+} as const;
+
 export interface Distribution {
   type: DistributionTypeEnum;
   /** @nullable */
@@ -61,37 +71,62 @@ export const DistributionTypeEnum = {
 } as const;
 
 /**
- * Get initial asset allocation as dict
+ * @nullable
  */
-export type EventSeriesAssetAllocation = { [key: string]: unknown };
+export type EventSeriesStartDistribution = Distribution | null;
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const EventSeriesChangeAmtOrPct = {
+  ...IncomeAmtOrPctEnum,
+  ...BlankEnum,
+  ...NullEnum
+} as const;
+/**
+ * @nullable
+ */
+export type EventSeriesChangeAmtOrPct =
+  | (typeof EventSeriesChangeAmtOrPct)[keyof typeof EventSeriesChangeAmtOrPct]
+  | null;
 
 /**
- * Get final asset allocation for glide path
+ * @nullable
  */
-export type EventSeriesAssetAllocation2 = { [key: string]: unknown };
+export type EventSeriesChangeDistribution = Distribution | null;
 
-/**
- * Serializer for event series with complex nested data
- */
+export type EventSeriesAssetAllocationInput = { [key: string]: unknown };
+
+export type EventSeriesAssetAllocation2Input = { [key: string]: unknown };
+
 export interface EventSeries {
   /** @maxLength 100 */
   name: string;
-  start?: Distribution;
-  duration: Distribution;
+  description?: string;
+  startType: StartTypeEnum;
+  /** @nullable */
+  startDistribution?: EventSeriesStartDistribution;
+  readonly startWithEventName: string;
+  readonly startAfterEventName: string;
+  durationDistribution: Distribution;
   type: EventSeriesTypeEnum;
-  initialAmount?: number;
-  changeAmtOrPct?: string;
-  changeDistribution?: Distribution;
+  /** @nullable */
+  initialAmount?: number | null;
+  /** @nullable */
+  changeAmtOrPct?: EventSeriesChangeAmtOrPct;
+  /** @nullable */
+  changeDistribution?: EventSeriesChangeDistribution;
   inflationAdjusted?: boolean;
-  userFraction?: number;
+  /** @nullable */
+  userFraction?: number | null;
   socialSecurity?: boolean;
   discretionary?: boolean;
-  /** Get initial asset allocation as dict */
-  readonly assetAllocation: EventSeriesAssetAllocation;
+  /** @nullable */
+  maxCash?: number | null;
   glidePath?: boolean;
-  /** Get final asset allocation for glide path */
-  readonly assetAllocation2: EventSeriesAssetAllocation2;
-  maxCash?: number;
+  readonly assetAllocations: readonly AssetAllocation[];
+  startWithEventNameInput?: string;
+  startAfterEventNameInput?: string;
+  assetAllocationInput?: EventSeriesAssetAllocationInput;
+  assetAllocation2Input?: EventSeriesAssetAllocation2Input;
 }
 
 /**
@@ -110,30 +145,63 @@ export const EventSeriesTypeEnum = {
   rebalance: 'rebalance'
 } as const;
 
-/**
- * Serializer for individual investments
- */
-export interface Investment {
-  investmentType: string;
-  value: number;
-  taxStatus: string;
-  id: string;
+export interface ExpenseWithdrawalStrategyItem {
+  readonly investmentId: string;
+  /**
+   * @minimum 0
+   * @maximum 9223372036854776000
+   */
+  order: number;
 }
 
 /**
- * Serializer for investment types
+ * * `amount` - Amount
+ * `percent` - Percent
  */
+export type IncomeAmtOrPctEnum = (typeof IncomeAmtOrPctEnum)[keyof typeof IncomeAmtOrPctEnum];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const IncomeAmtOrPctEnum = {
+  amount: 'amount',
+  percent: 'percent'
+} as const;
+
+export interface Investment {
+  investmentType: InvestmentType;
+  value: number;
+  taxStatus: TaxStatusEnum;
+  /** @maxLength 100 */
+  investmentId: string;
+}
+
 export interface InvestmentType {
   /** @maxLength 100 */
   name: string;
   description: string;
-  returnAmtOrPct: string;
+  returnAmtOrPct: IncomeAmtOrPctEnum;
   returnDistribution: Distribution;
   expenseRatio: number;
-  incomeAmtOrPct: string;
+  incomeAmtOrPct: IncomeAmtOrPctEnum;
   incomeDistribution: Distribution;
   taxability: boolean;
 }
+
+/**
+ * * `individual` - Individual
+ * `couple` - Couple
+ */
+export type MaritalStatusEnum = (typeof MaritalStatusEnum)[keyof typeof MaritalStatusEnum];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const MaritalStatusEnum = {
+  individual: 'individual',
+  couple: 'couple'
+} as const;
+
+export type NullEnum = (typeof NullEnum)[keyof typeof NullEnum];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const NullEnum = {} as const;
 
 export interface PatchedAdminUser {
   readonly id?: number;
@@ -160,28 +228,59 @@ export interface PatchedAdminUser {
 }
 
 /**
- * Main serializer for complete scenarios matching YAML format
+ * @nullable
  */
+export type PatchedScenarioSpouseLifeExpectancy = Distribution | null;
+
 export interface PatchedScenario {
+  readonly id?: number;
   /** @maxLength 200 */
   name?: string;
-  maritalStatus?: string;
-  readonly birthYears?: readonly number[];
-  readonly lifeExpectancy?: readonly Distribution[];
-  investmentTypes?: InvestmentType[];
-  investments?: Investment[];
-  eventSeries?: EventSeries[];
+  maritalStatus?: MaritalStatusEnum;
+  /**
+   * @minimum -9223372036854776000
+   * @maximum 9223372036854776000
+   */
+  userBirthYear?: number;
+  /**
+   * @minimum -9223372036854776000
+   * @maximum 9223372036854776000
+   * @nullable
+   */
+  spouseBirthYear?: number | null;
+  userLifeExpectancy?: Distribution;
+  /** @nullable */
+  spouseLifeExpectancy?: PatchedScenarioSpouseLifeExpectancy;
   inflationAssumption?: Distribution;
   afterTaxContributionLimit?: number;
-  readonly spendingStrategy?: readonly string[];
-  readonly expenseWithdrawalStrategy?: readonly string[];
-  readonly RMDStrategy?: readonly string[];
-  RothConversionOpt?: boolean;
-  RothConversionStart?: number;
-  RothConversionEnd?: number;
-  readonly RothConversionStrategy?: readonly string[];
   financialGoal?: number;
+  /** @maxLength 2 */
   residenceState?: string;
+  rothConversionOpt?: boolean;
+  /**
+   * @minimum -9223372036854776000
+   * @maximum 9223372036854776000
+   * @nullable
+   */
+  rothConversionStart?: number | null;
+  /**
+   * @minimum -9223372036854776000
+   * @maximum 9223372036854776000
+   * @nullable
+   */
+  rothConversionEnd?: number | null;
+  investments?: Investment[];
+  eventSeries?: EventSeries[];
+  readonly spendingStrategyItems?: readonly SpendingStrategyItem[];
+  readonly expenseWithdrawalStrategyItems?: readonly ExpenseWithdrawalStrategyItem[];
+  readonly rmdStrategyItems?: readonly RMDStrategyItem[];
+  readonly rothConversionStrategyItems?: readonly RothConversionStrategyItem[];
+  readonly createdAt?: string;
+  readonly updatedAt?: string;
+  spendingStrategyInput?: string[];
+  expenseWithdrawalStrategyInput?: string[];
+  rmdStrategyInput?: string[];
+  rothConversionStrategyInput?: string[];
 }
 
 export interface PatchedUser {
@@ -206,29 +305,78 @@ export interface PatchedUser {
   readonly lastLogin?: string | null;
 }
 
+export interface RMDStrategyItem {
+  readonly investmentId: string;
+  /**
+   * @minimum 0
+   * @maximum 9223372036854776000
+   */
+  order: number;
+}
+
+export interface RothConversionStrategyItem {
+  readonly investmentId: string;
+  /**
+   * @minimum 0
+   * @maximum 9223372036854776000
+   */
+  order: number;
+}
+
 /**
- * Main serializer for complete scenarios matching YAML format
+ * @nullable
  */
+export type ScenarioSpouseLifeExpectancy = Distribution | null;
+
 export interface Scenario {
+  readonly id: number;
   /** @maxLength 200 */
   name: string;
-  maritalStatus: string;
-  readonly birthYears: readonly number[];
-  readonly lifeExpectancy: readonly Distribution[];
-  investmentTypes: InvestmentType[];
-  investments: Investment[];
-  eventSeries: EventSeries[];
+  maritalStatus: MaritalStatusEnum;
+  /**
+   * @minimum -9223372036854776000
+   * @maximum 9223372036854776000
+   */
+  userBirthYear: number;
+  /**
+   * @minimum -9223372036854776000
+   * @maximum 9223372036854776000
+   * @nullable
+   */
+  spouseBirthYear?: number | null;
+  userLifeExpectancy: Distribution;
+  /** @nullable */
+  spouseLifeExpectancy?: ScenarioSpouseLifeExpectancy;
   inflationAssumption: Distribution;
   afterTaxContributionLimit: number;
-  readonly spendingStrategy: readonly string[];
-  readonly expenseWithdrawalStrategy: readonly string[];
-  readonly RMDStrategy: readonly string[];
-  RothConversionOpt: boolean;
-  RothConversionStart?: number;
-  RothConversionEnd?: number;
-  readonly RothConversionStrategy: readonly string[];
   financialGoal: number;
+  /** @maxLength 2 */
   residenceState: string;
+  rothConversionOpt?: boolean;
+  /**
+   * @minimum -9223372036854776000
+   * @maximum 9223372036854776000
+   * @nullable
+   */
+  rothConversionStart?: number | null;
+  /**
+   * @minimum -9223372036854776000
+   * @maximum 9223372036854776000
+   * @nullable
+   */
+  rothConversionEnd?: number | null;
+  investments: Investment[];
+  eventSeries: EventSeries[];
+  readonly spendingStrategyItems: readonly SpendingStrategyItem[];
+  readonly expenseWithdrawalStrategyItems: readonly ExpenseWithdrawalStrategyItem[];
+  readonly rmdStrategyItems: readonly RMDStrategyItem[];
+  readonly rothConversionStrategyItems: readonly RothConversionStrategyItem[];
+  readonly createdAt: string;
+  readonly updatedAt: string;
+  spendingStrategyInput?: string[];
+  expenseWithdrawalStrategyInput?: string[];
+  rmdStrategyInput?: string[];
+  rothConversionStrategyInput?: string[];
 }
 
 /**
@@ -239,6 +387,43 @@ export interface Session {
   email: string;
   password: string;
 }
+
+export interface SpendingStrategyItem {
+  readonly eventSeriesName: string;
+  /**
+   * @minimum 0
+   * @maximum 9223372036854776000
+   */
+  order: number;
+}
+
+/**
+ * * `distribution` - Distribution
+ * `start_with` - Start With Event
+ * `start_after` - Start After Event
+ */
+export type StartTypeEnum = (typeof StartTypeEnum)[keyof typeof StartTypeEnum];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const StartTypeEnum = {
+  distribution: 'distribution',
+  start_with: 'start_with',
+  start_after: 'start_after'
+} as const;
+
+/**
+ * * `non-retirement` - Non-retirement
+ * `pre-tax` - Pre-tax Retirement
+ * `after-tax` - After-tax Retirement
+ */
+export type TaxStatusEnum = (typeof TaxStatusEnum)[keyof typeof TaxStatusEnum];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const TaxStatusEnum = {
+  'non-retirement': 'non-retirement',
+  'pre-tax': 'pre-tax',
+  'after-tax': 'after-tax'
+} as const;
 
 export interface User {
   readonly id: number;

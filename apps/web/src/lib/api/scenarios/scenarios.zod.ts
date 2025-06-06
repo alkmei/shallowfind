@@ -12,16 +12,149 @@ import { z as zod } from 'zod';
 Provides list, create, retrieve, update, destroy actions.
  */
 export const scenariosListResponseNameMax = 200;
-export const scenariosListResponseInvestmentTypesItemNameMax = 100;
-export const scenariosListResponseEventSeriesItemNameMax = 100;
+export const scenariosListResponseUserBirthYearMin = -9223372036854776000;
 
-export const scenariosListResponseItem = zod
-  .object({
-    name: zod.string().max(scenariosListResponseNameMax),
-    maritalStatus: zod.string(),
-    birthYears: zod.array(zod.number()),
-    lifeExpectancy: zod.array(
-      zod
+export const scenariosListResponseUserBirthYearMax = 9223372036854776000;
+export const scenariosListResponseSpouseBirthYearMin = -9223372036854776000;
+
+export const scenariosListResponseSpouseBirthYearMax = 9223372036854776000;
+export const scenariosListResponseResidenceStateMax = 2;
+export const scenariosListResponseRothConversionStartMin = -9223372036854776000;
+
+export const scenariosListResponseRothConversionStartMax = 9223372036854776000;
+export const scenariosListResponseRothConversionEndMin = -9223372036854776000;
+
+export const scenariosListResponseRothConversionEndMax = 9223372036854776000;
+export const scenariosListResponseInvestmentsItemInvestmentTypeNameMax = 100;
+export const scenariosListResponseInvestmentsItemInvestmentIdMax = 100;
+export const scenariosListResponseEventSeriesItemNameMax = 100;
+export const scenariosListResponseSpendingStrategyItemsItemOrderMin = 0;
+
+export const scenariosListResponseSpendingStrategyItemsItemOrderMax = 9223372036854776000;
+export const scenariosListResponseExpenseWithdrawalStrategyItemsItemOrderMin = 0;
+
+export const scenariosListResponseExpenseWithdrawalStrategyItemsItemOrderMax = 9223372036854776000;
+export const scenariosListResponseRmdStrategyItemsItemOrderMin = 0;
+
+export const scenariosListResponseRmdStrategyItemsItemOrderMax = 9223372036854776000;
+export const scenariosListResponseRothConversionStrategyItemsItemOrderMin = 0;
+
+export const scenariosListResponseRothConversionStrategyItemsItemOrderMax = 9223372036854776000;
+
+export const scenariosListResponseItem = zod.object({
+  id: zod.number(),
+  name: zod.string().max(scenariosListResponseNameMax),
+  maritalStatus: zod
+    .enum(['individual', 'couple'])
+    .describe('* `individual` - Individual\n* `couple` - Couple'),
+  userBirthYear: zod
+    .number()
+    .min(scenariosListResponseUserBirthYearMin)
+    .max(scenariosListResponseUserBirthYearMax),
+  spouseBirthYear: zod
+    .number()
+    .min(scenariosListResponseSpouseBirthYearMin)
+    .max(scenariosListResponseSpouseBirthYearMax)
+    .nullish(),
+  userLifeExpectancy: zod.object({
+    type: zod
+      .enum(['fixed', 'normal', 'uniform'])
+      .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
+    value: zod.number().nullish(),
+    mean: zod.number().nullish(),
+    stdev: zod.number().nullish(),
+    lower: zod.number().nullish(),
+    upper: zod.number().nullish()
+  }),
+  spouseLifeExpectancy: zod
+    .object({
+      type: zod
+        .enum(['fixed', 'normal', 'uniform'])
+        .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
+      value: zod.number().nullish(),
+      mean: zod.number().nullish(),
+      stdev: zod.number().nullish(),
+      lower: zod.number().nullish(),
+      upper: zod.number().nullish()
+    })
+    .nullish(),
+  inflationAssumption: zod.object({
+    type: zod
+      .enum(['fixed', 'normal', 'uniform'])
+      .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
+    value: zod.number().nullish(),
+    mean: zod.number().nullish(),
+    stdev: zod.number().nullish(),
+    lower: zod.number().nullish(),
+    upper: zod.number().nullish()
+  }),
+  afterTaxContributionLimit: zod.number(),
+  financialGoal: zod.number(),
+  residenceState: zod.string().max(scenariosListResponseResidenceStateMax),
+  rothConversionOpt: zod.boolean().optional(),
+  rothConversionStart: zod
+    .number()
+    .min(scenariosListResponseRothConversionStartMin)
+    .max(scenariosListResponseRothConversionStartMax)
+    .nullish(),
+  rothConversionEnd: zod
+    .number()
+    .min(scenariosListResponseRothConversionEndMin)
+    .max(scenariosListResponseRothConversionEndMax)
+    .nullish(),
+  investments: zod.array(
+    zod.object({
+      investmentType: zod.object({
+        name: zod.string().max(scenariosListResponseInvestmentsItemInvestmentTypeNameMax),
+        description: zod.string(),
+        returnAmtOrPct: zod
+          .enum(['amount', 'percent'])
+          .describe('* `amount` - Amount\n* `percent` - Percent'),
+        returnDistribution: zod.object({
+          type: zod
+            .enum(['fixed', 'normal', 'uniform'])
+            .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
+          value: zod.number().nullish(),
+          mean: zod.number().nullish(),
+          stdev: zod.number().nullish(),
+          lower: zod.number().nullish(),
+          upper: zod.number().nullish()
+        }),
+        expenseRatio: zod.number(),
+        incomeAmtOrPct: zod
+          .enum(['amount', 'percent'])
+          .describe('* `amount` - Amount\n* `percent` - Percent'),
+        incomeDistribution: zod.object({
+          type: zod
+            .enum(['fixed', 'normal', 'uniform'])
+            .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
+          value: zod.number().nullish(),
+          mean: zod.number().nullish(),
+          stdev: zod.number().nullish(),
+          lower: zod.number().nullish(),
+          upper: zod.number().nullish()
+        }),
+        taxability: zod.boolean()
+      }),
+      value: zod.number(),
+      taxStatus: zod
+        .enum(['non-retirement', 'pre-tax', 'after-tax'])
+        .describe(
+          '* `non-retirement` - Non-retirement\n* `pre-tax` - Pre-tax Retirement\n* `after-tax` - After-tax Retirement'
+        ),
+      investmentId: zod.string().max(scenariosListResponseInvestmentsItemInvestmentIdMax)
+    })
+  ),
+  eventSeries: zod.array(
+    zod.object({
+      name: zod.string().max(scenariosListResponseEventSeriesItemNameMax),
+      description: zod.string().optional(),
+      startType: zod
+        .enum(['distribution', 'start_with', 'start_after'])
+        .describe(
+          '* `distribution` - Distribution\n* `start_with` - Start With Event\n* `start_after` - Start After Event'
+        ),
+      startDistribution: zod
         .object({
           type: zod
             .enum(['fixed', 'normal', 'uniform'])
@@ -32,120 +165,10 @@ export const scenariosListResponseItem = zod
           lower: zod.number().nullish(),
           upper: zod.number().nullish()
         })
-        .describe('Serializer for probability distributions')
-    ),
-    investmentTypes: zod.array(
-      zod
-        .object({
-          name: zod.string().max(scenariosListResponseInvestmentTypesItemNameMax),
-          description: zod.string(),
-          returnAmtOrPct: zod.string(),
-          returnDistribution: zod
-            .object({
-              type: zod
-                .enum(['fixed', 'normal', 'uniform'])
-                .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
-              value: zod.number().nullish(),
-              mean: zod.number().nullish(),
-              stdev: zod.number().nullish(),
-              lower: zod.number().nullish(),
-              upper: zod.number().nullish()
-            })
-            .describe('Serializer for probability distributions'),
-          expenseRatio: zod.number(),
-          incomeAmtOrPct: zod.string(),
-          incomeDistribution: zod
-            .object({
-              type: zod
-                .enum(['fixed', 'normal', 'uniform'])
-                .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
-              value: zod.number().nullish(),
-              mean: zod.number().nullish(),
-              stdev: zod.number().nullish(),
-              lower: zod.number().nullish(),
-              upper: zod.number().nullish()
-            })
-            .describe('Serializer for probability distributions'),
-          taxability: zod.boolean()
-        })
-        .describe('Serializer for investment types')
-    ),
-    investments: zod.array(
-      zod
-        .object({
-          investmentType: zod.string(),
-          value: zod.number(),
-          taxStatus: zod.string(),
-          id: zod.string()
-        })
-        .describe('Serializer for individual investments')
-    ),
-    eventSeries: zod.array(
-      zod
-        .object({
-          name: zod.string().max(scenariosListResponseEventSeriesItemNameMax),
-          start: zod
-            .object({
-              type: zod
-                .enum(['fixed', 'normal', 'uniform'])
-                .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
-              value: zod.number().nullish(),
-              mean: zod.number().nullish(),
-              stdev: zod.number().nullish(),
-              lower: zod.number().nullish(),
-              upper: zod.number().nullish()
-            })
-            .optional()
-            .describe('Serializer for probability distributions'),
-          duration: zod
-            .object({
-              type: zod
-                .enum(['fixed', 'normal', 'uniform'])
-                .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
-              value: zod.number().nullish(),
-              mean: zod.number().nullish(),
-              stdev: zod.number().nullish(),
-              lower: zod.number().nullish(),
-              upper: zod.number().nullish()
-            })
-            .describe('Serializer for probability distributions'),
-          type: zod
-            .enum(['income', 'expense', 'invest', 'rebalance'])
-            .describe(
-              '* `income` - Income\n* `expense` - Expense\n* `invest` - Invest\n* `rebalance` - Rebalance'
-            ),
-          initialAmount: zod.number().optional(),
-          changeAmtOrPct: zod.string().optional(),
-          changeDistribution: zod
-            .object({
-              type: zod
-                .enum(['fixed', 'normal', 'uniform'])
-                .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
-              value: zod.number().nullish(),
-              mean: zod.number().nullish(),
-              stdev: zod.number().nullish(),
-              lower: zod.number().nullish(),
-              upper: zod.number().nullish()
-            })
-            .optional()
-            .describe('Serializer for probability distributions'),
-          inflationAdjusted: zod.boolean().optional(),
-          userFraction: zod.number().optional(),
-          socialSecurity: zod.boolean().optional(),
-          discretionary: zod.boolean().optional(),
-          assetAllocation: zod
-            .record(zod.string(), zod.any())
-            .describe('Get initial asset allocation as dict'),
-          glidePath: zod.boolean().optional(),
-          assetAllocation2: zod
-            .record(zod.string(), zod.any())
-            .describe('Get final asset allocation for glide path'),
-          maxCash: zod.number().optional()
-        })
-        .describe('Serializer for event series with complex nested data')
-    ),
-    inflationAssumption: zod
-      .object({
+        .nullish(),
+      startWithEventName: zod.string(),
+      startAfterEventName: zod.string(),
+      durationDistribution: zod.object({
         type: zod
           .enum(['fixed', 'normal', 'uniform'])
           .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
@@ -154,20 +177,93 @@ export const scenariosListResponseItem = zod
         stdev: zod.number().nullish(),
         lower: zod.number().nullish(),
         upper: zod.number().nullish()
-      })
-      .describe('Serializer for probability distributions'),
-    afterTaxContributionLimit: zod.number(),
-    spendingStrategy: zod.array(zod.string()),
-    expenseWithdrawalStrategy: zod.array(zod.string()),
-    RMDStrategy: zod.array(zod.string()),
-    RothConversionOpt: zod.boolean(),
-    RothConversionStart: zod.number().optional(),
-    RothConversionEnd: zod.number().optional(),
-    RothConversionStrategy: zod.array(zod.string()),
-    financialGoal: zod.number(),
-    residenceState: zod.string()
-  })
-  .describe('Main serializer for complete scenarios matching YAML format');
+      }),
+      type: zod
+        .enum(['income', 'expense', 'invest', 'rebalance'])
+        .describe(
+          '* `income` - Income\n* `expense` - Expense\n* `invest` - Invest\n* `rebalance` - Rebalance'
+        ),
+      initialAmount: zod.number().nullish(),
+      changeAmtOrPct: zod
+        .enum(['amount', 'percent'])
+        .describe('* `amount` - Amount\n* `percent` - Percent')
+        .or(zod.enum(['']))
+        .or(zod.literal(null))
+        .nullish(),
+      changeDistribution: zod
+        .object({
+          type: zod
+            .enum(['fixed', 'normal', 'uniform'])
+            .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
+          value: zod.number().nullish(),
+          mean: zod.number().nullish(),
+          stdev: zod.number().nullish(),
+          lower: zod.number().nullish(),
+          upper: zod.number().nullish()
+        })
+        .nullish(),
+      inflationAdjusted: zod.boolean().optional(),
+      userFraction: zod.number().nullish(),
+      socialSecurity: zod.boolean().optional(),
+      discretionary: zod.boolean().optional(),
+      maxCash: zod.number().nullish(),
+      glidePath: zod.boolean().optional(),
+      assetAllocations: zod.array(
+        zod.object({
+          investmentId: zod.string(),
+          percentage: zod.number(),
+          isFinalAllocation: zod.boolean().optional()
+        })
+      ),
+      startWithEventNameInput: zod.string().optional(),
+      startAfterEventNameInput: zod.string().optional(),
+      assetAllocationInput: zod.record(zod.string(), zod.any()).optional(),
+      assetAllocation2Input: zod.record(zod.string(), zod.any()).optional()
+    })
+  ),
+  spendingStrategyItems: zod.array(
+    zod.object({
+      eventSeriesName: zod.string(),
+      order: zod
+        .number()
+        .min(scenariosListResponseSpendingStrategyItemsItemOrderMin)
+        .max(scenariosListResponseSpendingStrategyItemsItemOrderMax)
+    })
+  ),
+  expenseWithdrawalStrategyItems: zod.array(
+    zod.object({
+      investmentId: zod.string(),
+      order: zod
+        .number()
+        .min(scenariosListResponseExpenseWithdrawalStrategyItemsItemOrderMin)
+        .max(scenariosListResponseExpenseWithdrawalStrategyItemsItemOrderMax)
+    })
+  ),
+  rmdStrategyItems: zod.array(
+    zod.object({
+      investmentId: zod.string(),
+      order: zod
+        .number()
+        .min(scenariosListResponseRmdStrategyItemsItemOrderMin)
+        .max(scenariosListResponseRmdStrategyItemsItemOrderMax)
+    })
+  ),
+  rothConversionStrategyItems: zod.array(
+    zod.object({
+      investmentId: zod.string(),
+      order: zod
+        .number()
+        .min(scenariosListResponseRothConversionStrategyItemsItemOrderMin)
+        .max(scenariosListResponseRothConversionStrategyItemsItemOrderMax)
+    })
+  ),
+  createdAt: zod.string().datetime({}),
+  updatedAt: zod.string().datetime({}),
+  spendingStrategyInput: zod.array(zod.string()).optional(),
+  expenseWithdrawalStrategyInput: zod.array(zod.string()).optional(),
+  rmdStrategyInput: zod.array(zod.string()).optional(),
+  rothConversionStrategyInput: zod.array(zod.string()).optional()
+});
 export const scenariosListResponse = zod.array(scenariosListResponseItem);
 
 /**
@@ -175,125 +271,150 @@ export const scenariosListResponse = zod.array(scenariosListResponseItem);
 Provides list, create, retrieve, update, destroy actions.
  */
 export const scenariosCreateBodyNameMax = 200;
-export const scenariosCreateBodyInvestmentTypesItemNameMax = 100;
+export const scenariosCreateBodyUserBirthYearMin = -9223372036854776000;
+
+export const scenariosCreateBodyUserBirthYearMax = 9223372036854776000;
+export const scenariosCreateBodySpouseBirthYearMin = -9223372036854776000;
+
+export const scenariosCreateBodySpouseBirthYearMax = 9223372036854776000;
+export const scenariosCreateBodyResidenceStateMax = 2;
+export const scenariosCreateBodyRothConversionStartMin = -9223372036854776000;
+
+export const scenariosCreateBodyRothConversionStartMax = 9223372036854776000;
+export const scenariosCreateBodyRothConversionEndMin = -9223372036854776000;
+
+export const scenariosCreateBodyRothConversionEndMax = 9223372036854776000;
+export const scenariosCreateBodyInvestmentsItemInvestmentTypeNameMax = 100;
+export const scenariosCreateBodyInvestmentsItemInvestmentIdMax = 100;
 export const scenariosCreateBodyEventSeriesItemNameMax = 100;
 
-export const scenariosCreateBody = zod
-  .object({
-    name: zod.string().max(scenariosCreateBodyNameMax),
-    maritalStatus: zod.string(),
-    investmentTypes: zod.array(
-      zod
-        .object({
-          name: zod.string().max(scenariosCreateBodyInvestmentTypesItemNameMax),
-          description: zod.string(),
-          returnAmtOrPct: zod.string(),
-          returnDistribution: zod
-            .object({
-              type: zod
-                .enum(['fixed', 'normal', 'uniform'])
-                .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
-              value: zod.number().nullish(),
-              mean: zod.number().nullish(),
-              stdev: zod.number().nullish(),
-              lower: zod.number().nullish(),
-              upper: zod.number().nullish()
-            })
-            .describe('Serializer for probability distributions'),
-          expenseRatio: zod.number(),
-          incomeAmtOrPct: zod.string(),
-          incomeDistribution: zod
-            .object({
-              type: zod
-                .enum(['fixed', 'normal', 'uniform'])
-                .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
-              value: zod.number().nullish(),
-              mean: zod.number().nullish(),
-              stdev: zod.number().nullish(),
-              lower: zod.number().nullish(),
-              upper: zod.number().nullish()
-            })
-            .describe('Serializer for probability distributions'),
-          taxability: zod.boolean()
-        })
-        .describe('Serializer for investment types')
-    ),
-    investments: zod.array(
-      zod
-        .object({
-          investmentType: zod.string(),
-          value: zod.number(),
-          taxStatus: zod.string(),
-          id: zod.string()
-        })
-        .describe('Serializer for individual investments')
-    ),
-    eventSeries: zod.array(
-      zod
-        .object({
-          name: zod.string().max(scenariosCreateBodyEventSeriesItemNameMax),
-          start: zod
-            .object({
-              type: zod
-                .enum(['fixed', 'normal', 'uniform'])
-                .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
-              value: zod.number().nullish(),
-              mean: zod.number().nullish(),
-              stdev: zod.number().nullish(),
-              lower: zod.number().nullish(),
-              upper: zod.number().nullish()
-            })
-            .optional()
-            .describe('Serializer for probability distributions'),
-          duration: zod
-            .object({
-              type: zod
-                .enum(['fixed', 'normal', 'uniform'])
-                .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
-              value: zod.number().nullish(),
-              mean: zod.number().nullish(),
-              stdev: zod.number().nullish(),
-              lower: zod.number().nullish(),
-              upper: zod.number().nullish()
-            })
-            .describe('Serializer for probability distributions'),
+export const scenariosCreateBody = zod.object({
+  name: zod.string().max(scenariosCreateBodyNameMax),
+  maritalStatus: zod
+    .enum(['individual', 'couple'])
+    .describe('* `individual` - Individual\n* `couple` - Couple'),
+  userBirthYear: zod
+    .number()
+    .min(scenariosCreateBodyUserBirthYearMin)
+    .max(scenariosCreateBodyUserBirthYearMax),
+  spouseBirthYear: zod
+    .number()
+    .min(scenariosCreateBodySpouseBirthYearMin)
+    .max(scenariosCreateBodySpouseBirthYearMax)
+    .nullish(),
+  userLifeExpectancy: zod.object({
+    type: zod
+      .enum(['fixed', 'normal', 'uniform'])
+      .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
+    value: zod.number().nullish(),
+    mean: zod.number().nullish(),
+    stdev: zod.number().nullish(),
+    lower: zod.number().nullish(),
+    upper: zod.number().nullish()
+  }),
+  spouseLifeExpectancy: zod
+    .object({
+      type: zod
+        .enum(['fixed', 'normal', 'uniform'])
+        .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
+      value: zod.number().nullish(),
+      mean: zod.number().nullish(),
+      stdev: zod.number().nullish(),
+      lower: zod.number().nullish(),
+      upper: zod.number().nullish()
+    })
+    .nullish(),
+  inflationAssumption: zod.object({
+    type: zod
+      .enum(['fixed', 'normal', 'uniform'])
+      .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
+    value: zod.number().nullish(),
+    mean: zod.number().nullish(),
+    stdev: zod.number().nullish(),
+    lower: zod.number().nullish(),
+    upper: zod.number().nullish()
+  }),
+  afterTaxContributionLimit: zod.number(),
+  financialGoal: zod.number(),
+  residenceState: zod.string().max(scenariosCreateBodyResidenceStateMax),
+  rothConversionOpt: zod.boolean().optional(),
+  rothConversionStart: zod
+    .number()
+    .min(scenariosCreateBodyRothConversionStartMin)
+    .max(scenariosCreateBodyRothConversionStartMax)
+    .nullish(),
+  rothConversionEnd: zod
+    .number()
+    .min(scenariosCreateBodyRothConversionEndMin)
+    .max(scenariosCreateBodyRothConversionEndMax)
+    .nullish(),
+  investments: zod.array(
+    zod.object({
+      investmentType: zod.object({
+        name: zod.string().max(scenariosCreateBodyInvestmentsItemInvestmentTypeNameMax),
+        description: zod.string(),
+        returnAmtOrPct: zod
+          .enum(['amount', 'percent'])
+          .describe('* `amount` - Amount\n* `percent` - Percent'),
+        returnDistribution: zod.object({
           type: zod
-            .enum(['income', 'expense', 'invest', 'rebalance'])
-            .describe(
-              '* `income` - Income\n* `expense` - Expense\n* `invest` - Invest\n* `rebalance` - Rebalance'
-            ),
-          initialAmount: zod.number().optional(),
-          changeAmtOrPct: zod.string().optional(),
-          changeDistribution: zod
-            .object({
-              type: zod
-                .enum(['fixed', 'normal', 'uniform'])
-                .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
-              value: zod.number().nullish(),
-              mean: zod.number().nullish(),
-              stdev: zod.number().nullish(),
-              lower: zod.number().nullish(),
-              upper: zod.number().nullish()
-            })
-            .optional()
-            .describe('Serializer for probability distributions'),
-          inflationAdjusted: zod.boolean().optional(),
-          userFraction: zod.number().optional(),
-          socialSecurity: zod.boolean().optional(),
-          discretionary: zod.boolean().optional(),
-          assetAllocation: zod
-            .record(zod.string(), zod.any())
-            .describe('Get initial asset allocation as dict'),
-          glidePath: zod.boolean().optional(),
-          assetAllocation2: zod
-            .record(zod.string(), zod.any())
-            .describe('Get final asset allocation for glide path'),
-          maxCash: zod.number().optional()
+            .enum(['fixed', 'normal', 'uniform'])
+            .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
+          value: zod.number().nullish(),
+          mean: zod.number().nullish(),
+          stdev: zod.number().nullish(),
+          lower: zod.number().nullish(),
+          upper: zod.number().nullish()
+        }),
+        expenseRatio: zod.number(),
+        incomeAmtOrPct: zod
+          .enum(['amount', 'percent'])
+          .describe('* `amount` - Amount\n* `percent` - Percent'),
+        incomeDistribution: zod.object({
+          type: zod
+            .enum(['fixed', 'normal', 'uniform'])
+            .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
+          value: zod.number().nullish(),
+          mean: zod.number().nullish(),
+          stdev: zod.number().nullish(),
+          lower: zod.number().nullish(),
+          upper: zod.number().nullish()
+        }),
+        taxability: zod.boolean()
+      }),
+      value: zod.number(),
+      taxStatus: zod
+        .enum(['non-retirement', 'pre-tax', 'after-tax'])
+        .describe(
+          '* `non-retirement` - Non-retirement\n* `pre-tax` - Pre-tax Retirement\n* `after-tax` - After-tax Retirement'
+        ),
+      investmentId: zod.string().max(scenariosCreateBodyInvestmentsItemInvestmentIdMax)
+    })
+  ),
+  eventSeries: zod.array(
+    zod.object({
+      name: zod.string().max(scenariosCreateBodyEventSeriesItemNameMax),
+      description: zod.string().optional(),
+      startType: zod
+        .enum(['distribution', 'start_with', 'start_after'])
+        .describe(
+          '* `distribution` - Distribution\n* `start_with` - Start With Event\n* `start_after` - Start After Event'
+        ),
+      startDistribution: zod
+        .object({
+          type: zod
+            .enum(['fixed', 'normal', 'uniform'])
+            .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
+          value: zod.number().nullish(),
+          mean: zod.number().nullish(),
+          stdev: zod.number().nullish(),
+          lower: zod.number().nullish(),
+          upper: zod.number().nullish()
         })
-        .describe('Serializer for event series with complex nested data')
-    ),
-    inflationAssumption: zod
-      .object({
+        .nullish(),
+      startWithEventName: zod.string(),
+      startAfterEventName: zod.string(),
+      durationDistribution: zod.object({
         type: zod
           .enum(['fixed', 'normal', 'uniform'])
           .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
@@ -302,16 +423,55 @@ export const scenariosCreateBody = zod
         stdev: zod.number().nullish(),
         lower: zod.number().nullish(),
         upper: zod.number().nullish()
-      })
-      .describe('Serializer for probability distributions'),
-    afterTaxContributionLimit: zod.number(),
-    RothConversionOpt: zod.boolean(),
-    RothConversionStart: zod.number().optional(),
-    RothConversionEnd: zod.number().optional(),
-    financialGoal: zod.number(),
-    residenceState: zod.string()
-  })
-  .describe('Main serializer for complete scenarios matching YAML format');
+      }),
+      type: zod
+        .enum(['income', 'expense', 'invest', 'rebalance'])
+        .describe(
+          '* `income` - Income\n* `expense` - Expense\n* `invest` - Invest\n* `rebalance` - Rebalance'
+        ),
+      initialAmount: zod.number().nullish(),
+      changeAmtOrPct: zod
+        .enum(['amount', 'percent'])
+        .describe('* `amount` - Amount\n* `percent` - Percent')
+        .or(zod.enum(['']))
+        .or(zod.literal(null))
+        .nullish(),
+      changeDistribution: zod
+        .object({
+          type: zod
+            .enum(['fixed', 'normal', 'uniform'])
+            .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
+          value: zod.number().nullish(),
+          mean: zod.number().nullish(),
+          stdev: zod.number().nullish(),
+          lower: zod.number().nullish(),
+          upper: zod.number().nullish()
+        })
+        .nullish(),
+      inflationAdjusted: zod.boolean().optional(),
+      userFraction: zod.number().nullish(),
+      socialSecurity: zod.boolean().optional(),
+      discretionary: zod.boolean().optional(),
+      maxCash: zod.number().nullish(),
+      glidePath: zod.boolean().optional(),
+      assetAllocations: zod.array(
+        zod.object({
+          investmentId: zod.string(),
+          percentage: zod.number(),
+          isFinalAllocation: zod.boolean().optional()
+        })
+      ),
+      startWithEventNameInput: zod.string().optional(),
+      startAfterEventNameInput: zod.string().optional(),
+      assetAllocationInput: zod.record(zod.string(), zod.any()).optional(),
+      assetAllocation2Input: zod.record(zod.string(), zod.any()).optional()
+    })
+  ),
+  spendingStrategyInput: zod.array(zod.string()).optional(),
+  expenseWithdrawalStrategyInput: zod.array(zod.string()).optional(),
+  rmdStrategyInput: zod.array(zod.string()).optional(),
+  rothConversionStrategyInput: zod.array(zod.string()).optional()
+});
 
 /**
  * ViewSet for managing scenarios with full CRUD operations.
@@ -322,16 +482,149 @@ export const scenariosRetrieveParams = zod.object({
 });
 
 export const scenariosRetrieveResponseNameMax = 200;
-export const scenariosRetrieveResponseInvestmentTypesItemNameMax = 100;
-export const scenariosRetrieveResponseEventSeriesItemNameMax = 100;
+export const scenariosRetrieveResponseUserBirthYearMin = -9223372036854776000;
 
-export const scenariosRetrieveResponse = zod
-  .object({
-    name: zod.string().max(scenariosRetrieveResponseNameMax),
-    maritalStatus: zod.string(),
-    birthYears: zod.array(zod.number()),
-    lifeExpectancy: zod.array(
-      zod
+export const scenariosRetrieveResponseUserBirthYearMax = 9223372036854776000;
+export const scenariosRetrieveResponseSpouseBirthYearMin = -9223372036854776000;
+
+export const scenariosRetrieveResponseSpouseBirthYearMax = 9223372036854776000;
+export const scenariosRetrieveResponseResidenceStateMax = 2;
+export const scenariosRetrieveResponseRothConversionStartMin = -9223372036854776000;
+
+export const scenariosRetrieveResponseRothConversionStartMax = 9223372036854776000;
+export const scenariosRetrieveResponseRothConversionEndMin = -9223372036854776000;
+
+export const scenariosRetrieveResponseRothConversionEndMax = 9223372036854776000;
+export const scenariosRetrieveResponseInvestmentsItemInvestmentTypeNameMax = 100;
+export const scenariosRetrieveResponseInvestmentsItemInvestmentIdMax = 100;
+export const scenariosRetrieveResponseEventSeriesItemNameMax = 100;
+export const scenariosRetrieveResponseSpendingStrategyItemsItemOrderMin = 0;
+
+export const scenariosRetrieveResponseSpendingStrategyItemsItemOrderMax = 9223372036854776000;
+export const scenariosRetrieveResponseExpenseWithdrawalStrategyItemsItemOrderMin = 0;
+
+export const scenariosRetrieveResponseExpenseWithdrawalStrategyItemsItemOrderMax = 9223372036854776000;
+export const scenariosRetrieveResponseRmdStrategyItemsItemOrderMin = 0;
+
+export const scenariosRetrieveResponseRmdStrategyItemsItemOrderMax = 9223372036854776000;
+export const scenariosRetrieveResponseRothConversionStrategyItemsItemOrderMin = 0;
+
+export const scenariosRetrieveResponseRothConversionStrategyItemsItemOrderMax = 9223372036854776000;
+
+export const scenariosRetrieveResponse = zod.object({
+  id: zod.number(),
+  name: zod.string().max(scenariosRetrieveResponseNameMax),
+  maritalStatus: zod
+    .enum(['individual', 'couple'])
+    .describe('* `individual` - Individual\n* `couple` - Couple'),
+  userBirthYear: zod
+    .number()
+    .min(scenariosRetrieveResponseUserBirthYearMin)
+    .max(scenariosRetrieveResponseUserBirthYearMax),
+  spouseBirthYear: zod
+    .number()
+    .min(scenariosRetrieveResponseSpouseBirthYearMin)
+    .max(scenariosRetrieveResponseSpouseBirthYearMax)
+    .nullish(),
+  userLifeExpectancy: zod.object({
+    type: zod
+      .enum(['fixed', 'normal', 'uniform'])
+      .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
+    value: zod.number().nullish(),
+    mean: zod.number().nullish(),
+    stdev: zod.number().nullish(),
+    lower: zod.number().nullish(),
+    upper: zod.number().nullish()
+  }),
+  spouseLifeExpectancy: zod
+    .object({
+      type: zod
+        .enum(['fixed', 'normal', 'uniform'])
+        .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
+      value: zod.number().nullish(),
+      mean: zod.number().nullish(),
+      stdev: zod.number().nullish(),
+      lower: zod.number().nullish(),
+      upper: zod.number().nullish()
+    })
+    .nullish(),
+  inflationAssumption: zod.object({
+    type: zod
+      .enum(['fixed', 'normal', 'uniform'])
+      .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
+    value: zod.number().nullish(),
+    mean: zod.number().nullish(),
+    stdev: zod.number().nullish(),
+    lower: zod.number().nullish(),
+    upper: zod.number().nullish()
+  }),
+  afterTaxContributionLimit: zod.number(),
+  financialGoal: zod.number(),
+  residenceState: zod.string().max(scenariosRetrieveResponseResidenceStateMax),
+  rothConversionOpt: zod.boolean().optional(),
+  rothConversionStart: zod
+    .number()
+    .min(scenariosRetrieveResponseRothConversionStartMin)
+    .max(scenariosRetrieveResponseRothConversionStartMax)
+    .nullish(),
+  rothConversionEnd: zod
+    .number()
+    .min(scenariosRetrieveResponseRothConversionEndMin)
+    .max(scenariosRetrieveResponseRothConversionEndMax)
+    .nullish(),
+  investments: zod.array(
+    zod.object({
+      investmentType: zod.object({
+        name: zod.string().max(scenariosRetrieveResponseInvestmentsItemInvestmentTypeNameMax),
+        description: zod.string(),
+        returnAmtOrPct: zod
+          .enum(['amount', 'percent'])
+          .describe('* `amount` - Amount\n* `percent` - Percent'),
+        returnDistribution: zod.object({
+          type: zod
+            .enum(['fixed', 'normal', 'uniform'])
+            .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
+          value: zod.number().nullish(),
+          mean: zod.number().nullish(),
+          stdev: zod.number().nullish(),
+          lower: zod.number().nullish(),
+          upper: zod.number().nullish()
+        }),
+        expenseRatio: zod.number(),
+        incomeAmtOrPct: zod
+          .enum(['amount', 'percent'])
+          .describe('* `amount` - Amount\n* `percent` - Percent'),
+        incomeDistribution: zod.object({
+          type: zod
+            .enum(['fixed', 'normal', 'uniform'])
+            .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
+          value: zod.number().nullish(),
+          mean: zod.number().nullish(),
+          stdev: zod.number().nullish(),
+          lower: zod.number().nullish(),
+          upper: zod.number().nullish()
+        }),
+        taxability: zod.boolean()
+      }),
+      value: zod.number(),
+      taxStatus: zod
+        .enum(['non-retirement', 'pre-tax', 'after-tax'])
+        .describe(
+          '* `non-retirement` - Non-retirement\n* `pre-tax` - Pre-tax Retirement\n* `after-tax` - After-tax Retirement'
+        ),
+      investmentId: zod.string().max(scenariosRetrieveResponseInvestmentsItemInvestmentIdMax)
+    })
+  ),
+  eventSeries: zod.array(
+    zod.object({
+      name: zod.string().max(scenariosRetrieveResponseEventSeriesItemNameMax),
+      description: zod.string().optional(),
+      startType: zod
+        .enum(['distribution', 'start_with', 'start_after'])
+        .describe(
+          '* `distribution` - Distribution\n* `start_with` - Start With Event\n* `start_after` - Start After Event'
+        ),
+      startDistribution: zod
         .object({
           type: zod
             .enum(['fixed', 'normal', 'uniform'])
@@ -342,120 +635,10 @@ export const scenariosRetrieveResponse = zod
           lower: zod.number().nullish(),
           upper: zod.number().nullish()
         })
-        .describe('Serializer for probability distributions')
-    ),
-    investmentTypes: zod.array(
-      zod
-        .object({
-          name: zod.string().max(scenariosRetrieveResponseInvestmentTypesItemNameMax),
-          description: zod.string(),
-          returnAmtOrPct: zod.string(),
-          returnDistribution: zod
-            .object({
-              type: zod
-                .enum(['fixed', 'normal', 'uniform'])
-                .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
-              value: zod.number().nullish(),
-              mean: zod.number().nullish(),
-              stdev: zod.number().nullish(),
-              lower: zod.number().nullish(),
-              upper: zod.number().nullish()
-            })
-            .describe('Serializer for probability distributions'),
-          expenseRatio: zod.number(),
-          incomeAmtOrPct: zod.string(),
-          incomeDistribution: zod
-            .object({
-              type: zod
-                .enum(['fixed', 'normal', 'uniform'])
-                .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
-              value: zod.number().nullish(),
-              mean: zod.number().nullish(),
-              stdev: zod.number().nullish(),
-              lower: zod.number().nullish(),
-              upper: zod.number().nullish()
-            })
-            .describe('Serializer for probability distributions'),
-          taxability: zod.boolean()
-        })
-        .describe('Serializer for investment types')
-    ),
-    investments: zod.array(
-      zod
-        .object({
-          investmentType: zod.string(),
-          value: zod.number(),
-          taxStatus: zod.string(),
-          id: zod.string()
-        })
-        .describe('Serializer for individual investments')
-    ),
-    eventSeries: zod.array(
-      zod
-        .object({
-          name: zod.string().max(scenariosRetrieveResponseEventSeriesItemNameMax),
-          start: zod
-            .object({
-              type: zod
-                .enum(['fixed', 'normal', 'uniform'])
-                .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
-              value: zod.number().nullish(),
-              mean: zod.number().nullish(),
-              stdev: zod.number().nullish(),
-              lower: zod.number().nullish(),
-              upper: zod.number().nullish()
-            })
-            .optional()
-            .describe('Serializer for probability distributions'),
-          duration: zod
-            .object({
-              type: zod
-                .enum(['fixed', 'normal', 'uniform'])
-                .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
-              value: zod.number().nullish(),
-              mean: zod.number().nullish(),
-              stdev: zod.number().nullish(),
-              lower: zod.number().nullish(),
-              upper: zod.number().nullish()
-            })
-            .describe('Serializer for probability distributions'),
-          type: zod
-            .enum(['income', 'expense', 'invest', 'rebalance'])
-            .describe(
-              '* `income` - Income\n* `expense` - Expense\n* `invest` - Invest\n* `rebalance` - Rebalance'
-            ),
-          initialAmount: zod.number().optional(),
-          changeAmtOrPct: zod.string().optional(),
-          changeDistribution: zod
-            .object({
-              type: zod
-                .enum(['fixed', 'normal', 'uniform'])
-                .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
-              value: zod.number().nullish(),
-              mean: zod.number().nullish(),
-              stdev: zod.number().nullish(),
-              lower: zod.number().nullish(),
-              upper: zod.number().nullish()
-            })
-            .optional()
-            .describe('Serializer for probability distributions'),
-          inflationAdjusted: zod.boolean().optional(),
-          userFraction: zod.number().optional(),
-          socialSecurity: zod.boolean().optional(),
-          discretionary: zod.boolean().optional(),
-          assetAllocation: zod
-            .record(zod.string(), zod.any())
-            .describe('Get initial asset allocation as dict'),
-          glidePath: zod.boolean().optional(),
-          assetAllocation2: zod
-            .record(zod.string(), zod.any())
-            .describe('Get final asset allocation for glide path'),
-          maxCash: zod.number().optional()
-        })
-        .describe('Serializer for event series with complex nested data')
-    ),
-    inflationAssumption: zod
-      .object({
+        .nullish(),
+      startWithEventName: zod.string(),
+      startAfterEventName: zod.string(),
+      durationDistribution: zod.object({
         type: zod
           .enum(['fixed', 'normal', 'uniform'])
           .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
@@ -464,20 +647,93 @@ export const scenariosRetrieveResponse = zod
         stdev: zod.number().nullish(),
         lower: zod.number().nullish(),
         upper: zod.number().nullish()
-      })
-      .describe('Serializer for probability distributions'),
-    afterTaxContributionLimit: zod.number(),
-    spendingStrategy: zod.array(zod.string()),
-    expenseWithdrawalStrategy: zod.array(zod.string()),
-    RMDStrategy: zod.array(zod.string()),
-    RothConversionOpt: zod.boolean(),
-    RothConversionStart: zod.number().optional(),
-    RothConversionEnd: zod.number().optional(),
-    RothConversionStrategy: zod.array(zod.string()),
-    financialGoal: zod.number(),
-    residenceState: zod.string()
-  })
-  .describe('Main serializer for complete scenarios matching YAML format');
+      }),
+      type: zod
+        .enum(['income', 'expense', 'invest', 'rebalance'])
+        .describe(
+          '* `income` - Income\n* `expense` - Expense\n* `invest` - Invest\n* `rebalance` - Rebalance'
+        ),
+      initialAmount: zod.number().nullish(),
+      changeAmtOrPct: zod
+        .enum(['amount', 'percent'])
+        .describe('* `amount` - Amount\n* `percent` - Percent')
+        .or(zod.enum(['']))
+        .or(zod.literal(null))
+        .nullish(),
+      changeDistribution: zod
+        .object({
+          type: zod
+            .enum(['fixed', 'normal', 'uniform'])
+            .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
+          value: zod.number().nullish(),
+          mean: zod.number().nullish(),
+          stdev: zod.number().nullish(),
+          lower: zod.number().nullish(),
+          upper: zod.number().nullish()
+        })
+        .nullish(),
+      inflationAdjusted: zod.boolean().optional(),
+      userFraction: zod.number().nullish(),
+      socialSecurity: zod.boolean().optional(),
+      discretionary: zod.boolean().optional(),
+      maxCash: zod.number().nullish(),
+      glidePath: zod.boolean().optional(),
+      assetAllocations: zod.array(
+        zod.object({
+          investmentId: zod.string(),
+          percentage: zod.number(),
+          isFinalAllocation: zod.boolean().optional()
+        })
+      ),
+      startWithEventNameInput: zod.string().optional(),
+      startAfterEventNameInput: zod.string().optional(),
+      assetAllocationInput: zod.record(zod.string(), zod.any()).optional(),
+      assetAllocation2Input: zod.record(zod.string(), zod.any()).optional()
+    })
+  ),
+  spendingStrategyItems: zod.array(
+    zod.object({
+      eventSeriesName: zod.string(),
+      order: zod
+        .number()
+        .min(scenariosRetrieveResponseSpendingStrategyItemsItemOrderMin)
+        .max(scenariosRetrieveResponseSpendingStrategyItemsItemOrderMax)
+    })
+  ),
+  expenseWithdrawalStrategyItems: zod.array(
+    zod.object({
+      investmentId: zod.string(),
+      order: zod
+        .number()
+        .min(scenariosRetrieveResponseExpenseWithdrawalStrategyItemsItemOrderMin)
+        .max(scenariosRetrieveResponseExpenseWithdrawalStrategyItemsItemOrderMax)
+    })
+  ),
+  rmdStrategyItems: zod.array(
+    zod.object({
+      investmentId: zod.string(),
+      order: zod
+        .number()
+        .min(scenariosRetrieveResponseRmdStrategyItemsItemOrderMin)
+        .max(scenariosRetrieveResponseRmdStrategyItemsItemOrderMax)
+    })
+  ),
+  rothConversionStrategyItems: zod.array(
+    zod.object({
+      investmentId: zod.string(),
+      order: zod
+        .number()
+        .min(scenariosRetrieveResponseRothConversionStrategyItemsItemOrderMin)
+        .max(scenariosRetrieveResponseRothConversionStrategyItemsItemOrderMax)
+    })
+  ),
+  createdAt: zod.string().datetime({}),
+  updatedAt: zod.string().datetime({}),
+  spendingStrategyInput: zod.array(zod.string()).optional(),
+  expenseWithdrawalStrategyInput: zod.array(zod.string()).optional(),
+  rmdStrategyInput: zod.array(zod.string()).optional(),
+  rothConversionStrategyInput: zod.array(zod.string()).optional()
+});
 
 /**
  * ViewSet for managing scenarios with full CRUD operations.
@@ -488,155 +744,136 @@ export const scenariosUpdateParams = zod.object({
 });
 
 export const scenariosUpdateBodyNameMax = 200;
-export const scenariosUpdateBodyInvestmentTypesItemNameMax = 100;
+export const scenariosUpdateBodyUserBirthYearMin = -9223372036854776000;
+
+export const scenariosUpdateBodyUserBirthYearMax = 9223372036854776000;
+export const scenariosUpdateBodySpouseBirthYearMin = -9223372036854776000;
+
+export const scenariosUpdateBodySpouseBirthYearMax = 9223372036854776000;
+export const scenariosUpdateBodyResidenceStateMax = 2;
+export const scenariosUpdateBodyRothConversionStartMin = -9223372036854776000;
+
+export const scenariosUpdateBodyRothConversionStartMax = 9223372036854776000;
+export const scenariosUpdateBodyRothConversionEndMin = -9223372036854776000;
+
+export const scenariosUpdateBodyRothConversionEndMax = 9223372036854776000;
+export const scenariosUpdateBodyInvestmentsItemInvestmentTypeNameMax = 100;
+export const scenariosUpdateBodyInvestmentsItemInvestmentIdMax = 100;
 export const scenariosUpdateBodyEventSeriesItemNameMax = 100;
 
-export const scenariosUpdateBody = zod
-  .object({
-    name: zod.string().max(scenariosUpdateBodyNameMax),
-    maritalStatus: zod.string(),
-    investmentTypes: zod.array(
-      zod
-        .object({
-          name: zod.string().max(scenariosUpdateBodyInvestmentTypesItemNameMax),
-          description: zod.string(),
-          returnAmtOrPct: zod.string(),
-          returnDistribution: zod
-            .object({
-              type: zod
-                .enum(['fixed', 'normal', 'uniform'])
-                .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
-              value: zod.number().nullish(),
-              mean: zod.number().nullish(),
-              stdev: zod.number().nullish(),
-              lower: zod.number().nullish(),
-              upper: zod.number().nullish()
-            })
-            .describe('Serializer for probability distributions'),
-          expenseRatio: zod.number(),
-          incomeAmtOrPct: zod.string(),
-          incomeDistribution: zod
-            .object({
-              type: zod
-                .enum(['fixed', 'normal', 'uniform'])
-                .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
-              value: zod.number().nullish(),
-              mean: zod.number().nullish(),
-              stdev: zod.number().nullish(),
-              lower: zod.number().nullish(),
-              upper: zod.number().nullish()
-            })
-            .describe('Serializer for probability distributions'),
-          taxability: zod.boolean()
-        })
-        .describe('Serializer for investment types')
-    ),
-    investments: zod.array(
-      zod
-        .object({
-          investmentType: zod.string(),
-          value: zod.number(),
-          taxStatus: zod.string(),
-          id: zod.string()
-        })
-        .describe('Serializer for individual investments')
-    ),
-    eventSeries: zod.array(
-      zod
-        .object({
-          name: zod.string().max(scenariosUpdateBodyEventSeriesItemNameMax),
-          start: zod
-            .object({
-              type: zod
-                .enum(['fixed', 'normal', 'uniform'])
-                .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
-              value: zod.number().nullish(),
-              mean: zod.number().nullish(),
-              stdev: zod.number().nullish(),
-              lower: zod.number().nullish(),
-              upper: zod.number().nullish()
-            })
-            .optional()
-            .describe('Serializer for probability distributions'),
-          duration: zod
-            .object({
-              type: zod
-                .enum(['fixed', 'normal', 'uniform'])
-                .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
-              value: zod.number().nullish(),
-              mean: zod.number().nullish(),
-              stdev: zod.number().nullish(),
-              lower: zod.number().nullish(),
-              upper: zod.number().nullish()
-            })
-            .describe('Serializer for probability distributions'),
+export const scenariosUpdateBody = zod.object({
+  name: zod.string().max(scenariosUpdateBodyNameMax),
+  maritalStatus: zod
+    .enum(['individual', 'couple'])
+    .describe('* `individual` - Individual\n* `couple` - Couple'),
+  userBirthYear: zod
+    .number()
+    .min(scenariosUpdateBodyUserBirthYearMin)
+    .max(scenariosUpdateBodyUserBirthYearMax),
+  spouseBirthYear: zod
+    .number()
+    .min(scenariosUpdateBodySpouseBirthYearMin)
+    .max(scenariosUpdateBodySpouseBirthYearMax)
+    .nullish(),
+  userLifeExpectancy: zod.object({
+    type: zod
+      .enum(['fixed', 'normal', 'uniform'])
+      .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
+    value: zod.number().nullish(),
+    mean: zod.number().nullish(),
+    stdev: zod.number().nullish(),
+    lower: zod.number().nullish(),
+    upper: zod.number().nullish()
+  }),
+  spouseLifeExpectancy: zod
+    .object({
+      type: zod
+        .enum(['fixed', 'normal', 'uniform'])
+        .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
+      value: zod.number().nullish(),
+      mean: zod.number().nullish(),
+      stdev: zod.number().nullish(),
+      lower: zod.number().nullish(),
+      upper: zod.number().nullish()
+    })
+    .nullish(),
+  inflationAssumption: zod.object({
+    type: zod
+      .enum(['fixed', 'normal', 'uniform'])
+      .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
+    value: zod.number().nullish(),
+    mean: zod.number().nullish(),
+    stdev: zod.number().nullish(),
+    lower: zod.number().nullish(),
+    upper: zod.number().nullish()
+  }),
+  afterTaxContributionLimit: zod.number(),
+  financialGoal: zod.number(),
+  residenceState: zod.string().max(scenariosUpdateBodyResidenceStateMax),
+  rothConversionOpt: zod.boolean().optional(),
+  rothConversionStart: zod
+    .number()
+    .min(scenariosUpdateBodyRothConversionStartMin)
+    .max(scenariosUpdateBodyRothConversionStartMax)
+    .nullish(),
+  rothConversionEnd: zod
+    .number()
+    .min(scenariosUpdateBodyRothConversionEndMin)
+    .max(scenariosUpdateBodyRothConversionEndMax)
+    .nullish(),
+  investments: zod.array(
+    zod.object({
+      investmentType: zod.object({
+        name: zod.string().max(scenariosUpdateBodyInvestmentsItemInvestmentTypeNameMax),
+        description: zod.string(),
+        returnAmtOrPct: zod
+          .enum(['amount', 'percent'])
+          .describe('* `amount` - Amount\n* `percent` - Percent'),
+        returnDistribution: zod.object({
           type: zod
-            .enum(['income', 'expense', 'invest', 'rebalance'])
-            .describe(
-              '* `income` - Income\n* `expense` - Expense\n* `invest` - Invest\n* `rebalance` - Rebalance'
-            ),
-          initialAmount: zod.number().optional(),
-          changeAmtOrPct: zod.string().optional(),
-          changeDistribution: zod
-            .object({
-              type: zod
-                .enum(['fixed', 'normal', 'uniform'])
-                .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
-              value: zod.number().nullish(),
-              mean: zod.number().nullish(),
-              stdev: zod.number().nullish(),
-              lower: zod.number().nullish(),
-              upper: zod.number().nullish()
-            })
-            .optional()
-            .describe('Serializer for probability distributions'),
-          inflationAdjusted: zod.boolean().optional(),
-          userFraction: zod.number().optional(),
-          socialSecurity: zod.boolean().optional(),
-          discretionary: zod.boolean().optional(),
-          assetAllocation: zod
-            .record(zod.string(), zod.any())
-            .describe('Get initial asset allocation as dict'),
-          glidePath: zod.boolean().optional(),
-          assetAllocation2: zod
-            .record(zod.string(), zod.any())
-            .describe('Get final asset allocation for glide path'),
-          maxCash: zod.number().optional()
-        })
-        .describe('Serializer for event series with complex nested data')
-    ),
-    inflationAssumption: zod
-      .object({
-        type: zod
-          .enum(['fixed', 'normal', 'uniform'])
-          .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
-        value: zod.number().nullish(),
-        mean: zod.number().nullish(),
-        stdev: zod.number().nullish(),
-        lower: zod.number().nullish(),
-        upper: zod.number().nullish()
-      })
-      .describe('Serializer for probability distributions'),
-    afterTaxContributionLimit: zod.number(),
-    RothConversionOpt: zod.boolean(),
-    RothConversionStart: zod.number().optional(),
-    RothConversionEnd: zod.number().optional(),
-    financialGoal: zod.number(),
-    residenceState: zod.string()
-  })
-  .describe('Main serializer for complete scenarios matching YAML format');
-
-export const scenariosUpdateResponseNameMax = 200;
-export const scenariosUpdateResponseInvestmentTypesItemNameMax = 100;
-export const scenariosUpdateResponseEventSeriesItemNameMax = 100;
-
-export const scenariosUpdateResponse = zod
-  .object({
-    name: zod.string().max(scenariosUpdateResponseNameMax),
-    maritalStatus: zod.string(),
-    birthYears: zod.array(zod.number()),
-    lifeExpectancy: zod.array(
-      zod
+            .enum(['fixed', 'normal', 'uniform'])
+            .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
+          value: zod.number().nullish(),
+          mean: zod.number().nullish(),
+          stdev: zod.number().nullish(),
+          lower: zod.number().nullish(),
+          upper: zod.number().nullish()
+        }),
+        expenseRatio: zod.number(),
+        incomeAmtOrPct: zod
+          .enum(['amount', 'percent'])
+          .describe('* `amount` - Amount\n* `percent` - Percent'),
+        incomeDistribution: zod.object({
+          type: zod
+            .enum(['fixed', 'normal', 'uniform'])
+            .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
+          value: zod.number().nullish(),
+          mean: zod.number().nullish(),
+          stdev: zod.number().nullish(),
+          lower: zod.number().nullish(),
+          upper: zod.number().nullish()
+        }),
+        taxability: zod.boolean()
+      }),
+      value: zod.number(),
+      taxStatus: zod
+        .enum(['non-retirement', 'pre-tax', 'after-tax'])
+        .describe(
+          '* `non-retirement` - Non-retirement\n* `pre-tax` - Pre-tax Retirement\n* `after-tax` - After-tax Retirement'
+        ),
+      investmentId: zod.string().max(scenariosUpdateBodyInvestmentsItemInvestmentIdMax)
+    })
+  ),
+  eventSeries: zod.array(
+    zod.object({
+      name: zod.string().max(scenariosUpdateBodyEventSeriesItemNameMax),
+      description: zod.string().optional(),
+      startType: zod
+        .enum(['distribution', 'start_with', 'start_after'])
+        .describe(
+          '* `distribution` - Distribution\n* `start_with` - Start With Event\n* `start_after` - Start After Event'
+        ),
+      startDistribution: zod
         .object({
           type: zod
             .enum(['fixed', 'normal', 'uniform'])
@@ -647,120 +884,10 @@ export const scenariosUpdateResponse = zod
           lower: zod.number().nullish(),
           upper: zod.number().nullish()
         })
-        .describe('Serializer for probability distributions')
-    ),
-    investmentTypes: zod.array(
-      zod
-        .object({
-          name: zod.string().max(scenariosUpdateResponseInvestmentTypesItemNameMax),
-          description: zod.string(),
-          returnAmtOrPct: zod.string(),
-          returnDistribution: zod
-            .object({
-              type: zod
-                .enum(['fixed', 'normal', 'uniform'])
-                .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
-              value: zod.number().nullish(),
-              mean: zod.number().nullish(),
-              stdev: zod.number().nullish(),
-              lower: zod.number().nullish(),
-              upper: zod.number().nullish()
-            })
-            .describe('Serializer for probability distributions'),
-          expenseRatio: zod.number(),
-          incomeAmtOrPct: zod.string(),
-          incomeDistribution: zod
-            .object({
-              type: zod
-                .enum(['fixed', 'normal', 'uniform'])
-                .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
-              value: zod.number().nullish(),
-              mean: zod.number().nullish(),
-              stdev: zod.number().nullish(),
-              lower: zod.number().nullish(),
-              upper: zod.number().nullish()
-            })
-            .describe('Serializer for probability distributions'),
-          taxability: zod.boolean()
-        })
-        .describe('Serializer for investment types')
-    ),
-    investments: zod.array(
-      zod
-        .object({
-          investmentType: zod.string(),
-          value: zod.number(),
-          taxStatus: zod.string(),
-          id: zod.string()
-        })
-        .describe('Serializer for individual investments')
-    ),
-    eventSeries: zod.array(
-      zod
-        .object({
-          name: zod.string().max(scenariosUpdateResponseEventSeriesItemNameMax),
-          start: zod
-            .object({
-              type: zod
-                .enum(['fixed', 'normal', 'uniform'])
-                .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
-              value: zod.number().nullish(),
-              mean: zod.number().nullish(),
-              stdev: zod.number().nullish(),
-              lower: zod.number().nullish(),
-              upper: zod.number().nullish()
-            })
-            .optional()
-            .describe('Serializer for probability distributions'),
-          duration: zod
-            .object({
-              type: zod
-                .enum(['fixed', 'normal', 'uniform'])
-                .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
-              value: zod.number().nullish(),
-              mean: zod.number().nullish(),
-              stdev: zod.number().nullish(),
-              lower: zod.number().nullish(),
-              upper: zod.number().nullish()
-            })
-            .describe('Serializer for probability distributions'),
-          type: zod
-            .enum(['income', 'expense', 'invest', 'rebalance'])
-            .describe(
-              '* `income` - Income\n* `expense` - Expense\n* `invest` - Invest\n* `rebalance` - Rebalance'
-            ),
-          initialAmount: zod.number().optional(),
-          changeAmtOrPct: zod.string().optional(),
-          changeDistribution: zod
-            .object({
-              type: zod
-                .enum(['fixed', 'normal', 'uniform'])
-                .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
-              value: zod.number().nullish(),
-              mean: zod.number().nullish(),
-              stdev: zod.number().nullish(),
-              lower: zod.number().nullish(),
-              upper: zod.number().nullish()
-            })
-            .optional()
-            .describe('Serializer for probability distributions'),
-          inflationAdjusted: zod.boolean().optional(),
-          userFraction: zod.number().optional(),
-          socialSecurity: zod.boolean().optional(),
-          discretionary: zod.boolean().optional(),
-          assetAllocation: zod
-            .record(zod.string(), zod.any())
-            .describe('Get initial asset allocation as dict'),
-          glidePath: zod.boolean().optional(),
-          assetAllocation2: zod
-            .record(zod.string(), zod.any())
-            .describe('Get final asset allocation for glide path'),
-          maxCash: zod.number().optional()
-        })
-        .describe('Serializer for event series with complex nested data')
-    ),
-    inflationAssumption: zod
-      .object({
+        .nullish(),
+      startWithEventName: zod.string(),
+      startAfterEventName: zod.string(),
+      durationDistribution: zod.object({
         type: zod
           .enum(['fixed', 'normal', 'uniform'])
           .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
@@ -769,20 +896,309 @@ export const scenariosUpdateResponse = zod
         stdev: zod.number().nullish(),
         lower: zod.number().nullish(),
         upper: zod.number().nullish()
-      })
-      .describe('Serializer for probability distributions'),
-    afterTaxContributionLimit: zod.number(),
-    spendingStrategy: zod.array(zod.string()),
-    expenseWithdrawalStrategy: zod.array(zod.string()),
-    RMDStrategy: zod.array(zod.string()),
-    RothConversionOpt: zod.boolean(),
-    RothConversionStart: zod.number().optional(),
-    RothConversionEnd: zod.number().optional(),
-    RothConversionStrategy: zod.array(zod.string()),
-    financialGoal: zod.number(),
-    residenceState: zod.string()
-  })
-  .describe('Main serializer for complete scenarios matching YAML format');
+      }),
+      type: zod
+        .enum(['income', 'expense', 'invest', 'rebalance'])
+        .describe(
+          '* `income` - Income\n* `expense` - Expense\n* `invest` - Invest\n* `rebalance` - Rebalance'
+        ),
+      initialAmount: zod.number().nullish(),
+      changeAmtOrPct: zod
+        .enum(['amount', 'percent'])
+        .describe('* `amount` - Amount\n* `percent` - Percent')
+        .or(zod.enum(['']))
+        .or(zod.literal(null))
+        .nullish(),
+      changeDistribution: zod
+        .object({
+          type: zod
+            .enum(['fixed', 'normal', 'uniform'])
+            .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
+          value: zod.number().nullish(),
+          mean: zod.number().nullish(),
+          stdev: zod.number().nullish(),
+          lower: zod.number().nullish(),
+          upper: zod.number().nullish()
+        })
+        .nullish(),
+      inflationAdjusted: zod.boolean().optional(),
+      userFraction: zod.number().nullish(),
+      socialSecurity: zod.boolean().optional(),
+      discretionary: zod.boolean().optional(),
+      maxCash: zod.number().nullish(),
+      glidePath: zod.boolean().optional(),
+      assetAllocations: zod.array(
+        zod.object({
+          investmentId: zod.string(),
+          percentage: zod.number(),
+          isFinalAllocation: zod.boolean().optional()
+        })
+      ),
+      startWithEventNameInput: zod.string().optional(),
+      startAfterEventNameInput: zod.string().optional(),
+      assetAllocationInput: zod.record(zod.string(), zod.any()).optional(),
+      assetAllocation2Input: zod.record(zod.string(), zod.any()).optional()
+    })
+  ),
+  spendingStrategyInput: zod.array(zod.string()).optional(),
+  expenseWithdrawalStrategyInput: zod.array(zod.string()).optional(),
+  rmdStrategyInput: zod.array(zod.string()).optional(),
+  rothConversionStrategyInput: zod.array(zod.string()).optional()
+});
+
+export const scenariosUpdateResponseNameMax = 200;
+export const scenariosUpdateResponseUserBirthYearMin = -9223372036854776000;
+
+export const scenariosUpdateResponseUserBirthYearMax = 9223372036854776000;
+export const scenariosUpdateResponseSpouseBirthYearMin = -9223372036854776000;
+
+export const scenariosUpdateResponseSpouseBirthYearMax = 9223372036854776000;
+export const scenariosUpdateResponseResidenceStateMax = 2;
+export const scenariosUpdateResponseRothConversionStartMin = -9223372036854776000;
+
+export const scenariosUpdateResponseRothConversionStartMax = 9223372036854776000;
+export const scenariosUpdateResponseRothConversionEndMin = -9223372036854776000;
+
+export const scenariosUpdateResponseRothConversionEndMax = 9223372036854776000;
+export const scenariosUpdateResponseInvestmentsItemInvestmentTypeNameMax = 100;
+export const scenariosUpdateResponseInvestmentsItemInvestmentIdMax = 100;
+export const scenariosUpdateResponseEventSeriesItemNameMax = 100;
+export const scenariosUpdateResponseSpendingStrategyItemsItemOrderMin = 0;
+
+export const scenariosUpdateResponseSpendingStrategyItemsItemOrderMax = 9223372036854776000;
+export const scenariosUpdateResponseExpenseWithdrawalStrategyItemsItemOrderMin = 0;
+
+export const scenariosUpdateResponseExpenseWithdrawalStrategyItemsItemOrderMax = 9223372036854776000;
+export const scenariosUpdateResponseRmdStrategyItemsItemOrderMin = 0;
+
+export const scenariosUpdateResponseRmdStrategyItemsItemOrderMax = 9223372036854776000;
+export const scenariosUpdateResponseRothConversionStrategyItemsItemOrderMin = 0;
+
+export const scenariosUpdateResponseRothConversionStrategyItemsItemOrderMax = 9223372036854776000;
+
+export const scenariosUpdateResponse = zod.object({
+  id: zod.number(),
+  name: zod.string().max(scenariosUpdateResponseNameMax),
+  maritalStatus: zod
+    .enum(['individual', 'couple'])
+    .describe('* `individual` - Individual\n* `couple` - Couple'),
+  userBirthYear: zod
+    .number()
+    .min(scenariosUpdateResponseUserBirthYearMin)
+    .max(scenariosUpdateResponseUserBirthYearMax),
+  spouseBirthYear: zod
+    .number()
+    .min(scenariosUpdateResponseSpouseBirthYearMin)
+    .max(scenariosUpdateResponseSpouseBirthYearMax)
+    .nullish(),
+  userLifeExpectancy: zod.object({
+    type: zod
+      .enum(['fixed', 'normal', 'uniform'])
+      .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
+    value: zod.number().nullish(),
+    mean: zod.number().nullish(),
+    stdev: zod.number().nullish(),
+    lower: zod.number().nullish(),
+    upper: zod.number().nullish()
+  }),
+  spouseLifeExpectancy: zod
+    .object({
+      type: zod
+        .enum(['fixed', 'normal', 'uniform'])
+        .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
+      value: zod.number().nullish(),
+      mean: zod.number().nullish(),
+      stdev: zod.number().nullish(),
+      lower: zod.number().nullish(),
+      upper: zod.number().nullish()
+    })
+    .nullish(),
+  inflationAssumption: zod.object({
+    type: zod
+      .enum(['fixed', 'normal', 'uniform'])
+      .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
+    value: zod.number().nullish(),
+    mean: zod.number().nullish(),
+    stdev: zod.number().nullish(),
+    lower: zod.number().nullish(),
+    upper: zod.number().nullish()
+  }),
+  afterTaxContributionLimit: zod.number(),
+  financialGoal: zod.number(),
+  residenceState: zod.string().max(scenariosUpdateResponseResidenceStateMax),
+  rothConversionOpt: zod.boolean().optional(),
+  rothConversionStart: zod
+    .number()
+    .min(scenariosUpdateResponseRothConversionStartMin)
+    .max(scenariosUpdateResponseRothConversionStartMax)
+    .nullish(),
+  rothConversionEnd: zod
+    .number()
+    .min(scenariosUpdateResponseRothConversionEndMin)
+    .max(scenariosUpdateResponseRothConversionEndMax)
+    .nullish(),
+  investments: zod.array(
+    zod.object({
+      investmentType: zod.object({
+        name: zod.string().max(scenariosUpdateResponseInvestmentsItemInvestmentTypeNameMax),
+        description: zod.string(),
+        returnAmtOrPct: zod
+          .enum(['amount', 'percent'])
+          .describe('* `amount` - Amount\n* `percent` - Percent'),
+        returnDistribution: zod.object({
+          type: zod
+            .enum(['fixed', 'normal', 'uniform'])
+            .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
+          value: zod.number().nullish(),
+          mean: zod.number().nullish(),
+          stdev: zod.number().nullish(),
+          lower: zod.number().nullish(),
+          upper: zod.number().nullish()
+        }),
+        expenseRatio: zod.number(),
+        incomeAmtOrPct: zod
+          .enum(['amount', 'percent'])
+          .describe('* `amount` - Amount\n* `percent` - Percent'),
+        incomeDistribution: zod.object({
+          type: zod
+            .enum(['fixed', 'normal', 'uniform'])
+            .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
+          value: zod.number().nullish(),
+          mean: zod.number().nullish(),
+          stdev: zod.number().nullish(),
+          lower: zod.number().nullish(),
+          upper: zod.number().nullish()
+        }),
+        taxability: zod.boolean()
+      }),
+      value: zod.number(),
+      taxStatus: zod
+        .enum(['non-retirement', 'pre-tax', 'after-tax'])
+        .describe(
+          '* `non-retirement` - Non-retirement\n* `pre-tax` - Pre-tax Retirement\n* `after-tax` - After-tax Retirement'
+        ),
+      investmentId: zod.string().max(scenariosUpdateResponseInvestmentsItemInvestmentIdMax)
+    })
+  ),
+  eventSeries: zod.array(
+    zod.object({
+      name: zod.string().max(scenariosUpdateResponseEventSeriesItemNameMax),
+      description: zod.string().optional(),
+      startType: zod
+        .enum(['distribution', 'start_with', 'start_after'])
+        .describe(
+          '* `distribution` - Distribution\n* `start_with` - Start With Event\n* `start_after` - Start After Event'
+        ),
+      startDistribution: zod
+        .object({
+          type: zod
+            .enum(['fixed', 'normal', 'uniform'])
+            .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
+          value: zod.number().nullish(),
+          mean: zod.number().nullish(),
+          stdev: zod.number().nullish(),
+          lower: zod.number().nullish(),
+          upper: zod.number().nullish()
+        })
+        .nullish(),
+      startWithEventName: zod.string(),
+      startAfterEventName: zod.string(),
+      durationDistribution: zod.object({
+        type: zod
+          .enum(['fixed', 'normal', 'uniform'])
+          .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
+        value: zod.number().nullish(),
+        mean: zod.number().nullish(),
+        stdev: zod.number().nullish(),
+        lower: zod.number().nullish(),
+        upper: zod.number().nullish()
+      }),
+      type: zod
+        .enum(['income', 'expense', 'invest', 'rebalance'])
+        .describe(
+          '* `income` - Income\n* `expense` - Expense\n* `invest` - Invest\n* `rebalance` - Rebalance'
+        ),
+      initialAmount: zod.number().nullish(),
+      changeAmtOrPct: zod
+        .enum(['amount', 'percent'])
+        .describe('* `amount` - Amount\n* `percent` - Percent')
+        .or(zod.enum(['']))
+        .or(zod.literal(null))
+        .nullish(),
+      changeDistribution: zod
+        .object({
+          type: zod
+            .enum(['fixed', 'normal', 'uniform'])
+            .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
+          value: zod.number().nullish(),
+          mean: zod.number().nullish(),
+          stdev: zod.number().nullish(),
+          lower: zod.number().nullish(),
+          upper: zod.number().nullish()
+        })
+        .nullish(),
+      inflationAdjusted: zod.boolean().optional(),
+      userFraction: zod.number().nullish(),
+      socialSecurity: zod.boolean().optional(),
+      discretionary: zod.boolean().optional(),
+      maxCash: zod.number().nullish(),
+      glidePath: zod.boolean().optional(),
+      assetAllocations: zod.array(
+        zod.object({
+          investmentId: zod.string(),
+          percentage: zod.number(),
+          isFinalAllocation: zod.boolean().optional()
+        })
+      ),
+      startWithEventNameInput: zod.string().optional(),
+      startAfterEventNameInput: zod.string().optional(),
+      assetAllocationInput: zod.record(zod.string(), zod.any()).optional(),
+      assetAllocation2Input: zod.record(zod.string(), zod.any()).optional()
+    })
+  ),
+  spendingStrategyItems: zod.array(
+    zod.object({
+      eventSeriesName: zod.string(),
+      order: zod
+        .number()
+        .min(scenariosUpdateResponseSpendingStrategyItemsItemOrderMin)
+        .max(scenariosUpdateResponseSpendingStrategyItemsItemOrderMax)
+    })
+  ),
+  expenseWithdrawalStrategyItems: zod.array(
+    zod.object({
+      investmentId: zod.string(),
+      order: zod
+        .number()
+        .min(scenariosUpdateResponseExpenseWithdrawalStrategyItemsItemOrderMin)
+        .max(scenariosUpdateResponseExpenseWithdrawalStrategyItemsItemOrderMax)
+    })
+  ),
+  rmdStrategyItems: zod.array(
+    zod.object({
+      investmentId: zod.string(),
+      order: zod
+        .number()
+        .min(scenariosUpdateResponseRmdStrategyItemsItemOrderMin)
+        .max(scenariosUpdateResponseRmdStrategyItemsItemOrderMax)
+    })
+  ),
+  rothConversionStrategyItems: zod.array(
+    zod.object({
+      investmentId: zod.string(),
+      order: zod
+        .number()
+        .min(scenariosUpdateResponseRothConversionStrategyItemsItemOrderMin)
+        .max(scenariosUpdateResponseRothConversionStrategyItemsItemOrderMax)
+    })
+  ),
+  createdAt: zod.string().datetime({}),
+  updatedAt: zod.string().datetime({}),
+  spendingStrategyInput: zod.array(zod.string()).optional(),
+  expenseWithdrawalStrategyInput: zod.array(zod.string()).optional(),
+  rmdStrategyInput: zod.array(zod.string()).optional(),
+  rothConversionStrategyInput: zod.array(zod.string()).optional()
+});
 
 /**
  * ViewSet for managing scenarios with full CRUD operations.
@@ -793,162 +1209,362 @@ export const scenariosPartialUpdateParams = zod.object({
 });
 
 export const scenariosPartialUpdateBodyNameMax = 200;
-export const scenariosPartialUpdateBodyInvestmentTypesItemNameMax = 100;
+export const scenariosPartialUpdateBodyUserBirthYearMin = -9223372036854776000;
+
+export const scenariosPartialUpdateBodyUserBirthYearMax = 9223372036854776000;
+export const scenariosPartialUpdateBodySpouseBirthYearMin = -9223372036854776000;
+
+export const scenariosPartialUpdateBodySpouseBirthYearMax = 9223372036854776000;
+export const scenariosPartialUpdateBodyResidenceStateMax = 2;
+export const scenariosPartialUpdateBodyRothConversionStartMin = -9223372036854776000;
+
+export const scenariosPartialUpdateBodyRothConversionStartMax = 9223372036854776000;
+export const scenariosPartialUpdateBodyRothConversionEndMin = -9223372036854776000;
+
+export const scenariosPartialUpdateBodyRothConversionEndMax = 9223372036854776000;
+export const scenariosPartialUpdateBodyInvestmentsItemInvestmentTypeNameMax = 100;
+export const scenariosPartialUpdateBodyInvestmentsItemInvestmentIdMax = 100;
 export const scenariosPartialUpdateBodyEventSeriesItemNameMax = 100;
 
-export const scenariosPartialUpdateBody = zod
-  .object({
-    name: zod.string().max(scenariosPartialUpdateBodyNameMax).optional(),
-    maritalStatus: zod.string().optional(),
-    investmentTypes: zod
-      .array(
-        zod
-          .object({
-            name: zod.string().max(scenariosPartialUpdateBodyInvestmentTypesItemNameMax),
-            description: zod.string(),
-            returnAmtOrPct: zod.string(),
-            returnDistribution: zod
-              .object({
-                type: zod
-                  .enum(['fixed', 'normal', 'uniform'])
-                  .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
-                value: zod.number().nullish(),
-                mean: zod.number().nullish(),
-                stdev: zod.number().nullish(),
-                lower: zod.number().nullish(),
-                upper: zod.number().nullish()
-              })
-              .describe('Serializer for probability distributions'),
-            expenseRatio: zod.number(),
-            incomeAmtOrPct: zod.string(),
-            incomeDistribution: zod
-              .object({
-                type: zod
-                  .enum(['fixed', 'normal', 'uniform'])
-                  .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
-                value: zod.number().nullish(),
-                mean: zod.number().nullish(),
-                stdev: zod.number().nullish(),
-                lower: zod.number().nullish(),
-                upper: zod.number().nullish()
-              })
-              .describe('Serializer for probability distributions'),
-            taxability: zod.boolean()
-          })
-          .describe('Serializer for investment types')
-      )
-      .optional(),
-    investments: zod
-      .array(
-        zod
-          .object({
-            investmentType: zod.string(),
-            value: zod.number(),
-            taxStatus: zod.string(),
-            id: zod.string()
-          })
-          .describe('Serializer for individual investments')
-      )
-      .optional(),
-    eventSeries: zod
-      .array(
-        zod
-          .object({
-            name: zod.string().max(scenariosPartialUpdateBodyEventSeriesItemNameMax),
-            start: zod
-              .object({
-                type: zod
-                  .enum(['fixed', 'normal', 'uniform'])
-                  .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
-                value: zod.number().nullish(),
-                mean: zod.number().nullish(),
-                stdev: zod.number().nullish(),
-                lower: zod.number().nullish(),
-                upper: zod.number().nullish()
-              })
-              .optional()
-              .describe('Serializer for probability distributions'),
-            duration: zod
-              .object({
-                type: zod
-                  .enum(['fixed', 'normal', 'uniform'])
-                  .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
-                value: zod.number().nullish(),
-                mean: zod.number().nullish(),
-                stdev: zod.number().nullish(),
-                lower: zod.number().nullish(),
-                upper: zod.number().nullish()
-              })
-              .describe('Serializer for probability distributions'),
+export const scenariosPartialUpdateBody = zod.object({
+  name: zod.string().max(scenariosPartialUpdateBodyNameMax).optional(),
+  maritalStatus: zod
+    .enum(['individual', 'couple'])
+    .optional()
+    .describe('* `individual` - Individual\n* `couple` - Couple'),
+  userBirthYear: zod
+    .number()
+    .min(scenariosPartialUpdateBodyUserBirthYearMin)
+    .max(scenariosPartialUpdateBodyUserBirthYearMax)
+    .optional(),
+  spouseBirthYear: zod
+    .number()
+    .min(scenariosPartialUpdateBodySpouseBirthYearMin)
+    .max(scenariosPartialUpdateBodySpouseBirthYearMax)
+    .nullish(),
+  userLifeExpectancy: zod
+    .object({
+      type: zod
+        .enum(['fixed', 'normal', 'uniform'])
+        .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
+      value: zod.number().nullish(),
+      mean: zod.number().nullish(),
+      stdev: zod.number().nullish(),
+      lower: zod.number().nullish(),
+      upper: zod.number().nullish()
+    })
+    .optional(),
+  spouseLifeExpectancy: zod
+    .object({
+      type: zod
+        .enum(['fixed', 'normal', 'uniform'])
+        .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
+      value: zod.number().nullish(),
+      mean: zod.number().nullish(),
+      stdev: zod.number().nullish(),
+      lower: zod.number().nullish(),
+      upper: zod.number().nullish()
+    })
+    .nullish(),
+  inflationAssumption: zod
+    .object({
+      type: zod
+        .enum(['fixed', 'normal', 'uniform'])
+        .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
+      value: zod.number().nullish(),
+      mean: zod.number().nullish(),
+      stdev: zod.number().nullish(),
+      lower: zod.number().nullish(),
+      upper: zod.number().nullish()
+    })
+    .optional(),
+  afterTaxContributionLimit: zod.number().optional(),
+  financialGoal: zod.number().optional(),
+  residenceState: zod.string().max(scenariosPartialUpdateBodyResidenceStateMax).optional(),
+  rothConversionOpt: zod.boolean().optional(),
+  rothConversionStart: zod
+    .number()
+    .min(scenariosPartialUpdateBodyRothConversionStartMin)
+    .max(scenariosPartialUpdateBodyRothConversionStartMax)
+    .nullish(),
+  rothConversionEnd: zod
+    .number()
+    .min(scenariosPartialUpdateBodyRothConversionEndMin)
+    .max(scenariosPartialUpdateBodyRothConversionEndMax)
+    .nullish(),
+  investments: zod
+    .array(
+      zod.object({
+        investmentType: zod.object({
+          name: zod.string().max(scenariosPartialUpdateBodyInvestmentsItemInvestmentTypeNameMax),
+          description: zod.string(),
+          returnAmtOrPct: zod
+            .enum(['amount', 'percent'])
+            .describe('* `amount` - Amount\n* `percent` - Percent'),
+          returnDistribution: zod.object({
             type: zod
-              .enum(['income', 'expense', 'invest', 'rebalance'])
-              .describe(
-                '* `income` - Income\n* `expense` - Expense\n* `invest` - Invest\n* `rebalance` - Rebalance'
-              ),
-            initialAmount: zod.number().optional(),
-            changeAmtOrPct: zod.string().optional(),
-            changeDistribution: zod
-              .object({
-                type: zod
-                  .enum(['fixed', 'normal', 'uniform'])
-                  .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
-                value: zod.number().nullish(),
-                mean: zod.number().nullish(),
-                stdev: zod.number().nullish(),
-                lower: zod.number().nullish(),
-                upper: zod.number().nullish()
-              })
-              .optional()
-              .describe('Serializer for probability distributions'),
-            inflationAdjusted: zod.boolean().optional(),
-            userFraction: zod.number().optional(),
-            socialSecurity: zod.boolean().optional(),
-            discretionary: zod.boolean().optional(),
-            assetAllocation: zod
-              .record(zod.string(), zod.any())
-              .describe('Get initial asset allocation as dict'),
-            glidePath: zod.boolean().optional(),
-            assetAllocation2: zod
-              .record(zod.string(), zod.any())
-              .describe('Get final asset allocation for glide path'),
-            maxCash: zod.number().optional()
-          })
-          .describe('Serializer for event series with complex nested data')
-      )
-      .optional(),
-    inflationAssumption: zod
-      .object({
-        type: zod
-          .enum(['fixed', 'normal', 'uniform'])
-          .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
-        value: zod.number().nullish(),
-        mean: zod.number().nullish(),
-        stdev: zod.number().nullish(),
-        lower: zod.number().nullish(),
-        upper: zod.number().nullish()
+              .enum(['fixed', 'normal', 'uniform'])
+              .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
+            value: zod.number().nullish(),
+            mean: zod.number().nullish(),
+            stdev: zod.number().nullish(),
+            lower: zod.number().nullish(),
+            upper: zod.number().nullish()
+          }),
+          expenseRatio: zod.number(),
+          incomeAmtOrPct: zod
+            .enum(['amount', 'percent'])
+            .describe('* `amount` - Amount\n* `percent` - Percent'),
+          incomeDistribution: zod.object({
+            type: zod
+              .enum(['fixed', 'normal', 'uniform'])
+              .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
+            value: zod.number().nullish(),
+            mean: zod.number().nullish(),
+            stdev: zod.number().nullish(),
+            lower: zod.number().nullish(),
+            upper: zod.number().nullish()
+          }),
+          taxability: zod.boolean()
+        }),
+        value: zod.number(),
+        taxStatus: zod
+          .enum(['non-retirement', 'pre-tax', 'after-tax'])
+          .describe(
+            '* `non-retirement` - Non-retirement\n* `pre-tax` - Pre-tax Retirement\n* `after-tax` - After-tax Retirement'
+          ),
+        investmentId: zod.string().max(scenariosPartialUpdateBodyInvestmentsItemInvestmentIdMax)
       })
-      .optional()
-      .describe('Serializer for probability distributions'),
-    afterTaxContributionLimit: zod.number().optional(),
-    RothConversionOpt: zod.boolean().optional(),
-    RothConversionStart: zod.number().optional(),
-    RothConversionEnd: zod.number().optional(),
-    financialGoal: zod.number().optional(),
-    residenceState: zod.string().optional()
-  })
-  .describe('Main serializer for complete scenarios matching YAML format');
+    )
+    .optional(),
+  eventSeries: zod
+    .array(
+      zod.object({
+        name: zod.string().max(scenariosPartialUpdateBodyEventSeriesItemNameMax),
+        description: zod.string().optional(),
+        startType: zod
+          .enum(['distribution', 'start_with', 'start_after'])
+          .describe(
+            '* `distribution` - Distribution\n* `start_with` - Start With Event\n* `start_after` - Start After Event'
+          ),
+        startDistribution: zod
+          .object({
+            type: zod
+              .enum(['fixed', 'normal', 'uniform'])
+              .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
+            value: zod.number().nullish(),
+            mean: zod.number().nullish(),
+            stdev: zod.number().nullish(),
+            lower: zod.number().nullish(),
+            upper: zod.number().nullish()
+          })
+          .nullish(),
+        startWithEventName: zod.string(),
+        startAfterEventName: zod.string(),
+        durationDistribution: zod.object({
+          type: zod
+            .enum(['fixed', 'normal', 'uniform'])
+            .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
+          value: zod.number().nullish(),
+          mean: zod.number().nullish(),
+          stdev: zod.number().nullish(),
+          lower: zod.number().nullish(),
+          upper: zod.number().nullish()
+        }),
+        type: zod
+          .enum(['income', 'expense', 'invest', 'rebalance'])
+          .describe(
+            '* `income` - Income\n* `expense` - Expense\n* `invest` - Invest\n* `rebalance` - Rebalance'
+          ),
+        initialAmount: zod.number().nullish(),
+        changeAmtOrPct: zod
+          .enum(['amount', 'percent'])
+          .describe('* `amount` - Amount\n* `percent` - Percent')
+          .or(zod.enum(['']))
+          .or(zod.literal(null))
+          .nullish(),
+        changeDistribution: zod
+          .object({
+            type: zod
+              .enum(['fixed', 'normal', 'uniform'])
+              .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
+            value: zod.number().nullish(),
+            mean: zod.number().nullish(),
+            stdev: zod.number().nullish(),
+            lower: zod.number().nullish(),
+            upper: zod.number().nullish()
+          })
+          .nullish(),
+        inflationAdjusted: zod.boolean().optional(),
+        userFraction: zod.number().nullish(),
+        socialSecurity: zod.boolean().optional(),
+        discretionary: zod.boolean().optional(),
+        maxCash: zod.number().nullish(),
+        glidePath: zod.boolean().optional(),
+        assetAllocations: zod.array(
+          zod.object({
+            investmentId: zod.string(),
+            percentage: zod.number(),
+            isFinalAllocation: zod.boolean().optional()
+          })
+        ),
+        startWithEventNameInput: zod.string().optional(),
+        startAfterEventNameInput: zod.string().optional(),
+        assetAllocationInput: zod.record(zod.string(), zod.any()).optional(),
+        assetAllocation2Input: zod.record(zod.string(), zod.any()).optional()
+      })
+    )
+    .optional(),
+  spendingStrategyInput: zod.array(zod.string()).optional(),
+  expenseWithdrawalStrategyInput: zod.array(zod.string()).optional(),
+  rmdStrategyInput: zod.array(zod.string()).optional(),
+  rothConversionStrategyInput: zod.array(zod.string()).optional()
+});
 
 export const scenariosPartialUpdateResponseNameMax = 200;
-export const scenariosPartialUpdateResponseInvestmentTypesItemNameMax = 100;
-export const scenariosPartialUpdateResponseEventSeriesItemNameMax = 100;
+export const scenariosPartialUpdateResponseUserBirthYearMin = -9223372036854776000;
 
-export const scenariosPartialUpdateResponse = zod
-  .object({
-    name: zod.string().max(scenariosPartialUpdateResponseNameMax),
-    maritalStatus: zod.string(),
-    birthYears: zod.array(zod.number()),
-    lifeExpectancy: zod.array(
-      zod
+export const scenariosPartialUpdateResponseUserBirthYearMax = 9223372036854776000;
+export const scenariosPartialUpdateResponseSpouseBirthYearMin = -9223372036854776000;
+
+export const scenariosPartialUpdateResponseSpouseBirthYearMax = 9223372036854776000;
+export const scenariosPartialUpdateResponseResidenceStateMax = 2;
+export const scenariosPartialUpdateResponseRothConversionStartMin = -9223372036854776000;
+
+export const scenariosPartialUpdateResponseRothConversionStartMax = 9223372036854776000;
+export const scenariosPartialUpdateResponseRothConversionEndMin = -9223372036854776000;
+
+export const scenariosPartialUpdateResponseRothConversionEndMax = 9223372036854776000;
+export const scenariosPartialUpdateResponseInvestmentsItemInvestmentTypeNameMax = 100;
+export const scenariosPartialUpdateResponseInvestmentsItemInvestmentIdMax = 100;
+export const scenariosPartialUpdateResponseEventSeriesItemNameMax = 100;
+export const scenariosPartialUpdateResponseSpendingStrategyItemsItemOrderMin = 0;
+
+export const scenariosPartialUpdateResponseSpendingStrategyItemsItemOrderMax = 9223372036854776000;
+export const scenariosPartialUpdateResponseExpenseWithdrawalStrategyItemsItemOrderMin = 0;
+
+export const scenariosPartialUpdateResponseExpenseWithdrawalStrategyItemsItemOrderMax = 9223372036854776000;
+export const scenariosPartialUpdateResponseRmdStrategyItemsItemOrderMin = 0;
+
+export const scenariosPartialUpdateResponseRmdStrategyItemsItemOrderMax = 9223372036854776000;
+export const scenariosPartialUpdateResponseRothConversionStrategyItemsItemOrderMin = 0;
+
+export const scenariosPartialUpdateResponseRothConversionStrategyItemsItemOrderMax = 9223372036854776000;
+
+export const scenariosPartialUpdateResponse = zod.object({
+  id: zod.number(),
+  name: zod.string().max(scenariosPartialUpdateResponseNameMax),
+  maritalStatus: zod
+    .enum(['individual', 'couple'])
+    .describe('* `individual` - Individual\n* `couple` - Couple'),
+  userBirthYear: zod
+    .number()
+    .min(scenariosPartialUpdateResponseUserBirthYearMin)
+    .max(scenariosPartialUpdateResponseUserBirthYearMax),
+  spouseBirthYear: zod
+    .number()
+    .min(scenariosPartialUpdateResponseSpouseBirthYearMin)
+    .max(scenariosPartialUpdateResponseSpouseBirthYearMax)
+    .nullish(),
+  userLifeExpectancy: zod.object({
+    type: zod
+      .enum(['fixed', 'normal', 'uniform'])
+      .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
+    value: zod.number().nullish(),
+    mean: zod.number().nullish(),
+    stdev: zod.number().nullish(),
+    lower: zod.number().nullish(),
+    upper: zod.number().nullish()
+  }),
+  spouseLifeExpectancy: zod
+    .object({
+      type: zod
+        .enum(['fixed', 'normal', 'uniform'])
+        .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
+      value: zod.number().nullish(),
+      mean: zod.number().nullish(),
+      stdev: zod.number().nullish(),
+      lower: zod.number().nullish(),
+      upper: zod.number().nullish()
+    })
+    .nullish(),
+  inflationAssumption: zod.object({
+    type: zod
+      .enum(['fixed', 'normal', 'uniform'])
+      .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
+    value: zod.number().nullish(),
+    mean: zod.number().nullish(),
+    stdev: zod.number().nullish(),
+    lower: zod.number().nullish(),
+    upper: zod.number().nullish()
+  }),
+  afterTaxContributionLimit: zod.number(),
+  financialGoal: zod.number(),
+  residenceState: zod.string().max(scenariosPartialUpdateResponseResidenceStateMax),
+  rothConversionOpt: zod.boolean().optional(),
+  rothConversionStart: zod
+    .number()
+    .min(scenariosPartialUpdateResponseRothConversionStartMin)
+    .max(scenariosPartialUpdateResponseRothConversionStartMax)
+    .nullish(),
+  rothConversionEnd: zod
+    .number()
+    .min(scenariosPartialUpdateResponseRothConversionEndMin)
+    .max(scenariosPartialUpdateResponseRothConversionEndMax)
+    .nullish(),
+  investments: zod.array(
+    zod.object({
+      investmentType: zod.object({
+        name: zod.string().max(scenariosPartialUpdateResponseInvestmentsItemInvestmentTypeNameMax),
+        description: zod.string(),
+        returnAmtOrPct: zod
+          .enum(['amount', 'percent'])
+          .describe('* `amount` - Amount\n* `percent` - Percent'),
+        returnDistribution: zod.object({
+          type: zod
+            .enum(['fixed', 'normal', 'uniform'])
+            .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
+          value: zod.number().nullish(),
+          mean: zod.number().nullish(),
+          stdev: zod.number().nullish(),
+          lower: zod.number().nullish(),
+          upper: zod.number().nullish()
+        }),
+        expenseRatio: zod.number(),
+        incomeAmtOrPct: zod
+          .enum(['amount', 'percent'])
+          .describe('* `amount` - Amount\n* `percent` - Percent'),
+        incomeDistribution: zod.object({
+          type: zod
+            .enum(['fixed', 'normal', 'uniform'])
+            .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
+          value: zod.number().nullish(),
+          mean: zod.number().nullish(),
+          stdev: zod.number().nullish(),
+          lower: zod.number().nullish(),
+          upper: zod.number().nullish()
+        }),
+        taxability: zod.boolean()
+      }),
+      value: zod.number(),
+      taxStatus: zod
+        .enum(['non-retirement', 'pre-tax', 'after-tax'])
+        .describe(
+          '* `non-retirement` - Non-retirement\n* `pre-tax` - Pre-tax Retirement\n* `after-tax` - After-tax Retirement'
+        ),
+      investmentId: zod.string().max(scenariosPartialUpdateResponseInvestmentsItemInvestmentIdMax)
+    })
+  ),
+  eventSeries: zod.array(
+    zod.object({
+      name: zod.string().max(scenariosPartialUpdateResponseEventSeriesItemNameMax),
+      description: zod.string().optional(),
+      startType: zod
+        .enum(['distribution', 'start_with', 'start_after'])
+        .describe(
+          '* `distribution` - Distribution\n* `start_with` - Start With Event\n* `start_after` - Start After Event'
+        ),
+      startDistribution: zod
         .object({
           type: zod
             .enum(['fixed', 'normal', 'uniform'])
@@ -959,120 +1575,10 @@ export const scenariosPartialUpdateResponse = zod
           lower: zod.number().nullish(),
           upper: zod.number().nullish()
         })
-        .describe('Serializer for probability distributions')
-    ),
-    investmentTypes: zod.array(
-      zod
-        .object({
-          name: zod.string().max(scenariosPartialUpdateResponseInvestmentTypesItemNameMax),
-          description: zod.string(),
-          returnAmtOrPct: zod.string(),
-          returnDistribution: zod
-            .object({
-              type: zod
-                .enum(['fixed', 'normal', 'uniform'])
-                .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
-              value: zod.number().nullish(),
-              mean: zod.number().nullish(),
-              stdev: zod.number().nullish(),
-              lower: zod.number().nullish(),
-              upper: zod.number().nullish()
-            })
-            .describe('Serializer for probability distributions'),
-          expenseRatio: zod.number(),
-          incomeAmtOrPct: zod.string(),
-          incomeDistribution: zod
-            .object({
-              type: zod
-                .enum(['fixed', 'normal', 'uniform'])
-                .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
-              value: zod.number().nullish(),
-              mean: zod.number().nullish(),
-              stdev: zod.number().nullish(),
-              lower: zod.number().nullish(),
-              upper: zod.number().nullish()
-            })
-            .describe('Serializer for probability distributions'),
-          taxability: zod.boolean()
-        })
-        .describe('Serializer for investment types')
-    ),
-    investments: zod.array(
-      zod
-        .object({
-          investmentType: zod.string(),
-          value: zod.number(),
-          taxStatus: zod.string(),
-          id: zod.string()
-        })
-        .describe('Serializer for individual investments')
-    ),
-    eventSeries: zod.array(
-      zod
-        .object({
-          name: zod.string().max(scenariosPartialUpdateResponseEventSeriesItemNameMax),
-          start: zod
-            .object({
-              type: zod
-                .enum(['fixed', 'normal', 'uniform'])
-                .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
-              value: zod.number().nullish(),
-              mean: zod.number().nullish(),
-              stdev: zod.number().nullish(),
-              lower: zod.number().nullish(),
-              upper: zod.number().nullish()
-            })
-            .optional()
-            .describe('Serializer for probability distributions'),
-          duration: zod
-            .object({
-              type: zod
-                .enum(['fixed', 'normal', 'uniform'])
-                .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
-              value: zod.number().nullish(),
-              mean: zod.number().nullish(),
-              stdev: zod.number().nullish(),
-              lower: zod.number().nullish(),
-              upper: zod.number().nullish()
-            })
-            .describe('Serializer for probability distributions'),
-          type: zod
-            .enum(['income', 'expense', 'invest', 'rebalance'])
-            .describe(
-              '* `income` - Income\n* `expense` - Expense\n* `invest` - Invest\n* `rebalance` - Rebalance'
-            ),
-          initialAmount: zod.number().optional(),
-          changeAmtOrPct: zod.string().optional(),
-          changeDistribution: zod
-            .object({
-              type: zod
-                .enum(['fixed', 'normal', 'uniform'])
-                .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
-              value: zod.number().nullish(),
-              mean: zod.number().nullish(),
-              stdev: zod.number().nullish(),
-              lower: zod.number().nullish(),
-              upper: zod.number().nullish()
-            })
-            .optional()
-            .describe('Serializer for probability distributions'),
-          inflationAdjusted: zod.boolean().optional(),
-          userFraction: zod.number().optional(),
-          socialSecurity: zod.boolean().optional(),
-          discretionary: zod.boolean().optional(),
-          assetAllocation: zod
-            .record(zod.string(), zod.any())
-            .describe('Get initial asset allocation as dict'),
-          glidePath: zod.boolean().optional(),
-          assetAllocation2: zod
-            .record(zod.string(), zod.any())
-            .describe('Get final asset allocation for glide path'),
-          maxCash: zod.number().optional()
-        })
-        .describe('Serializer for event series with complex nested data')
-    ),
-    inflationAssumption: zod
-      .object({
+        .nullish(),
+      startWithEventName: zod.string(),
+      startAfterEventName: zod.string(),
+      durationDistribution: zod.object({
         type: zod
           .enum(['fixed', 'normal', 'uniform'])
           .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
@@ -1081,20 +1587,93 @@ export const scenariosPartialUpdateResponse = zod
         stdev: zod.number().nullish(),
         lower: zod.number().nullish(),
         upper: zod.number().nullish()
-      })
-      .describe('Serializer for probability distributions'),
-    afterTaxContributionLimit: zod.number(),
-    spendingStrategy: zod.array(zod.string()),
-    expenseWithdrawalStrategy: zod.array(zod.string()),
-    RMDStrategy: zod.array(zod.string()),
-    RothConversionOpt: zod.boolean(),
-    RothConversionStart: zod.number().optional(),
-    RothConversionEnd: zod.number().optional(),
-    RothConversionStrategy: zod.array(zod.string()),
-    financialGoal: zod.number(),
-    residenceState: zod.string()
-  })
-  .describe('Main serializer for complete scenarios matching YAML format');
+      }),
+      type: zod
+        .enum(['income', 'expense', 'invest', 'rebalance'])
+        .describe(
+          '* `income` - Income\n* `expense` - Expense\n* `invest` - Invest\n* `rebalance` - Rebalance'
+        ),
+      initialAmount: zod.number().nullish(),
+      changeAmtOrPct: zod
+        .enum(['amount', 'percent'])
+        .describe('* `amount` - Amount\n* `percent` - Percent')
+        .or(zod.enum(['']))
+        .or(zod.literal(null))
+        .nullish(),
+      changeDistribution: zod
+        .object({
+          type: zod
+            .enum(['fixed', 'normal', 'uniform'])
+            .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
+          value: zod.number().nullish(),
+          mean: zod.number().nullish(),
+          stdev: zod.number().nullish(),
+          lower: zod.number().nullish(),
+          upper: zod.number().nullish()
+        })
+        .nullish(),
+      inflationAdjusted: zod.boolean().optional(),
+      userFraction: zod.number().nullish(),
+      socialSecurity: zod.boolean().optional(),
+      discretionary: zod.boolean().optional(),
+      maxCash: zod.number().nullish(),
+      glidePath: zod.boolean().optional(),
+      assetAllocations: zod.array(
+        zod.object({
+          investmentId: zod.string(),
+          percentage: zod.number(),
+          isFinalAllocation: zod.boolean().optional()
+        })
+      ),
+      startWithEventNameInput: zod.string().optional(),
+      startAfterEventNameInput: zod.string().optional(),
+      assetAllocationInput: zod.record(zod.string(), zod.any()).optional(),
+      assetAllocation2Input: zod.record(zod.string(), zod.any()).optional()
+    })
+  ),
+  spendingStrategyItems: zod.array(
+    zod.object({
+      eventSeriesName: zod.string(),
+      order: zod
+        .number()
+        .min(scenariosPartialUpdateResponseSpendingStrategyItemsItemOrderMin)
+        .max(scenariosPartialUpdateResponseSpendingStrategyItemsItemOrderMax)
+    })
+  ),
+  expenseWithdrawalStrategyItems: zod.array(
+    zod.object({
+      investmentId: zod.string(),
+      order: zod
+        .number()
+        .min(scenariosPartialUpdateResponseExpenseWithdrawalStrategyItemsItemOrderMin)
+        .max(scenariosPartialUpdateResponseExpenseWithdrawalStrategyItemsItemOrderMax)
+    })
+  ),
+  rmdStrategyItems: zod.array(
+    zod.object({
+      investmentId: zod.string(),
+      order: zod
+        .number()
+        .min(scenariosPartialUpdateResponseRmdStrategyItemsItemOrderMin)
+        .max(scenariosPartialUpdateResponseRmdStrategyItemsItemOrderMax)
+    })
+  ),
+  rothConversionStrategyItems: zod.array(
+    zod.object({
+      investmentId: zod.string(),
+      order: zod
+        .number()
+        .min(scenariosPartialUpdateResponseRothConversionStrategyItemsItemOrderMin)
+        .max(scenariosPartialUpdateResponseRothConversionStrategyItemsItemOrderMax)
+    })
+  ),
+  createdAt: zod.string().datetime({}),
+  updatedAt: zod.string().datetime({}),
+  spendingStrategyInput: zod.array(zod.string()).optional(),
+  expenseWithdrawalStrategyInput: zod.array(zod.string()).optional(),
+  rmdStrategyInput: zod.array(zod.string()).optional(),
+  rothConversionStrategyInput: zod.array(zod.string()).optional()
+});
 
 /**
  * ViewSet for managing scenarios with full CRUD operations.
@@ -1112,155 +1691,136 @@ export const scenariosCloneCreateParams = zod.object({
 });
 
 export const scenariosCloneCreateBodyNameMax = 200;
-export const scenariosCloneCreateBodyInvestmentTypesItemNameMax = 100;
+export const scenariosCloneCreateBodyUserBirthYearMin = -9223372036854776000;
+
+export const scenariosCloneCreateBodyUserBirthYearMax = 9223372036854776000;
+export const scenariosCloneCreateBodySpouseBirthYearMin = -9223372036854776000;
+
+export const scenariosCloneCreateBodySpouseBirthYearMax = 9223372036854776000;
+export const scenariosCloneCreateBodyResidenceStateMax = 2;
+export const scenariosCloneCreateBodyRothConversionStartMin = -9223372036854776000;
+
+export const scenariosCloneCreateBodyRothConversionStartMax = 9223372036854776000;
+export const scenariosCloneCreateBodyRothConversionEndMin = -9223372036854776000;
+
+export const scenariosCloneCreateBodyRothConversionEndMax = 9223372036854776000;
+export const scenariosCloneCreateBodyInvestmentsItemInvestmentTypeNameMax = 100;
+export const scenariosCloneCreateBodyInvestmentsItemInvestmentIdMax = 100;
 export const scenariosCloneCreateBodyEventSeriesItemNameMax = 100;
 
-export const scenariosCloneCreateBody = zod
-  .object({
-    name: zod.string().max(scenariosCloneCreateBodyNameMax),
-    maritalStatus: zod.string(),
-    investmentTypes: zod.array(
-      zod
-        .object({
-          name: zod.string().max(scenariosCloneCreateBodyInvestmentTypesItemNameMax),
-          description: zod.string(),
-          returnAmtOrPct: zod.string(),
-          returnDistribution: zod
-            .object({
-              type: zod
-                .enum(['fixed', 'normal', 'uniform'])
-                .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
-              value: zod.number().nullish(),
-              mean: zod.number().nullish(),
-              stdev: zod.number().nullish(),
-              lower: zod.number().nullish(),
-              upper: zod.number().nullish()
-            })
-            .describe('Serializer for probability distributions'),
-          expenseRatio: zod.number(),
-          incomeAmtOrPct: zod.string(),
-          incomeDistribution: zod
-            .object({
-              type: zod
-                .enum(['fixed', 'normal', 'uniform'])
-                .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
-              value: zod.number().nullish(),
-              mean: zod.number().nullish(),
-              stdev: zod.number().nullish(),
-              lower: zod.number().nullish(),
-              upper: zod.number().nullish()
-            })
-            .describe('Serializer for probability distributions'),
-          taxability: zod.boolean()
-        })
-        .describe('Serializer for investment types')
-    ),
-    investments: zod.array(
-      zod
-        .object({
-          investmentType: zod.string(),
-          value: zod.number(),
-          taxStatus: zod.string(),
-          id: zod.string()
-        })
-        .describe('Serializer for individual investments')
-    ),
-    eventSeries: zod.array(
-      zod
-        .object({
-          name: zod.string().max(scenariosCloneCreateBodyEventSeriesItemNameMax),
-          start: zod
-            .object({
-              type: zod
-                .enum(['fixed', 'normal', 'uniform'])
-                .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
-              value: zod.number().nullish(),
-              mean: zod.number().nullish(),
-              stdev: zod.number().nullish(),
-              lower: zod.number().nullish(),
-              upper: zod.number().nullish()
-            })
-            .optional()
-            .describe('Serializer for probability distributions'),
-          duration: zod
-            .object({
-              type: zod
-                .enum(['fixed', 'normal', 'uniform'])
-                .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
-              value: zod.number().nullish(),
-              mean: zod.number().nullish(),
-              stdev: zod.number().nullish(),
-              lower: zod.number().nullish(),
-              upper: zod.number().nullish()
-            })
-            .describe('Serializer for probability distributions'),
+export const scenariosCloneCreateBody = zod.object({
+  name: zod.string().max(scenariosCloneCreateBodyNameMax),
+  maritalStatus: zod
+    .enum(['individual', 'couple'])
+    .describe('* `individual` - Individual\n* `couple` - Couple'),
+  userBirthYear: zod
+    .number()
+    .min(scenariosCloneCreateBodyUserBirthYearMin)
+    .max(scenariosCloneCreateBodyUserBirthYearMax),
+  spouseBirthYear: zod
+    .number()
+    .min(scenariosCloneCreateBodySpouseBirthYearMin)
+    .max(scenariosCloneCreateBodySpouseBirthYearMax)
+    .nullish(),
+  userLifeExpectancy: zod.object({
+    type: zod
+      .enum(['fixed', 'normal', 'uniform'])
+      .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
+    value: zod.number().nullish(),
+    mean: zod.number().nullish(),
+    stdev: zod.number().nullish(),
+    lower: zod.number().nullish(),
+    upper: zod.number().nullish()
+  }),
+  spouseLifeExpectancy: zod
+    .object({
+      type: zod
+        .enum(['fixed', 'normal', 'uniform'])
+        .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
+      value: zod.number().nullish(),
+      mean: zod.number().nullish(),
+      stdev: zod.number().nullish(),
+      lower: zod.number().nullish(),
+      upper: zod.number().nullish()
+    })
+    .nullish(),
+  inflationAssumption: zod.object({
+    type: zod
+      .enum(['fixed', 'normal', 'uniform'])
+      .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
+    value: zod.number().nullish(),
+    mean: zod.number().nullish(),
+    stdev: zod.number().nullish(),
+    lower: zod.number().nullish(),
+    upper: zod.number().nullish()
+  }),
+  afterTaxContributionLimit: zod.number(),
+  financialGoal: zod.number(),
+  residenceState: zod.string().max(scenariosCloneCreateBodyResidenceStateMax),
+  rothConversionOpt: zod.boolean().optional(),
+  rothConversionStart: zod
+    .number()
+    .min(scenariosCloneCreateBodyRothConversionStartMin)
+    .max(scenariosCloneCreateBodyRothConversionStartMax)
+    .nullish(),
+  rothConversionEnd: zod
+    .number()
+    .min(scenariosCloneCreateBodyRothConversionEndMin)
+    .max(scenariosCloneCreateBodyRothConversionEndMax)
+    .nullish(),
+  investments: zod.array(
+    zod.object({
+      investmentType: zod.object({
+        name: zod.string().max(scenariosCloneCreateBodyInvestmentsItemInvestmentTypeNameMax),
+        description: zod.string(),
+        returnAmtOrPct: zod
+          .enum(['amount', 'percent'])
+          .describe('* `amount` - Amount\n* `percent` - Percent'),
+        returnDistribution: zod.object({
           type: zod
-            .enum(['income', 'expense', 'invest', 'rebalance'])
-            .describe(
-              '* `income` - Income\n* `expense` - Expense\n* `invest` - Invest\n* `rebalance` - Rebalance'
-            ),
-          initialAmount: zod.number().optional(),
-          changeAmtOrPct: zod.string().optional(),
-          changeDistribution: zod
-            .object({
-              type: zod
-                .enum(['fixed', 'normal', 'uniform'])
-                .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
-              value: zod.number().nullish(),
-              mean: zod.number().nullish(),
-              stdev: zod.number().nullish(),
-              lower: zod.number().nullish(),
-              upper: zod.number().nullish()
-            })
-            .optional()
-            .describe('Serializer for probability distributions'),
-          inflationAdjusted: zod.boolean().optional(),
-          userFraction: zod.number().optional(),
-          socialSecurity: zod.boolean().optional(),
-          discretionary: zod.boolean().optional(),
-          assetAllocation: zod
-            .record(zod.string(), zod.any())
-            .describe('Get initial asset allocation as dict'),
-          glidePath: zod.boolean().optional(),
-          assetAllocation2: zod
-            .record(zod.string(), zod.any())
-            .describe('Get final asset allocation for glide path'),
-          maxCash: zod.number().optional()
-        })
-        .describe('Serializer for event series with complex nested data')
-    ),
-    inflationAssumption: zod
-      .object({
-        type: zod
-          .enum(['fixed', 'normal', 'uniform'])
-          .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
-        value: zod.number().nullish(),
-        mean: zod.number().nullish(),
-        stdev: zod.number().nullish(),
-        lower: zod.number().nullish(),
-        upper: zod.number().nullish()
-      })
-      .describe('Serializer for probability distributions'),
-    afterTaxContributionLimit: zod.number(),
-    RothConversionOpt: zod.boolean(),
-    RothConversionStart: zod.number().optional(),
-    RothConversionEnd: zod.number().optional(),
-    financialGoal: zod.number(),
-    residenceState: zod.string()
-  })
-  .describe('Main serializer for complete scenarios matching YAML format');
-
-export const scenariosCloneCreateResponseNameMax = 200;
-export const scenariosCloneCreateResponseInvestmentTypesItemNameMax = 100;
-export const scenariosCloneCreateResponseEventSeriesItemNameMax = 100;
-
-export const scenariosCloneCreateResponse = zod
-  .object({
-    name: zod.string().max(scenariosCloneCreateResponseNameMax),
-    maritalStatus: zod.string(),
-    birthYears: zod.array(zod.number()),
-    lifeExpectancy: zod.array(
-      zod
+            .enum(['fixed', 'normal', 'uniform'])
+            .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
+          value: zod.number().nullish(),
+          mean: zod.number().nullish(),
+          stdev: zod.number().nullish(),
+          lower: zod.number().nullish(),
+          upper: zod.number().nullish()
+        }),
+        expenseRatio: zod.number(),
+        incomeAmtOrPct: zod
+          .enum(['amount', 'percent'])
+          .describe('* `amount` - Amount\n* `percent` - Percent'),
+        incomeDistribution: zod.object({
+          type: zod
+            .enum(['fixed', 'normal', 'uniform'])
+            .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
+          value: zod.number().nullish(),
+          mean: zod.number().nullish(),
+          stdev: zod.number().nullish(),
+          lower: zod.number().nullish(),
+          upper: zod.number().nullish()
+        }),
+        taxability: zod.boolean()
+      }),
+      value: zod.number(),
+      taxStatus: zod
+        .enum(['non-retirement', 'pre-tax', 'after-tax'])
+        .describe(
+          '* `non-retirement` - Non-retirement\n* `pre-tax` - Pre-tax Retirement\n* `after-tax` - After-tax Retirement'
+        ),
+      investmentId: zod.string().max(scenariosCloneCreateBodyInvestmentsItemInvestmentIdMax)
+    })
+  ),
+  eventSeries: zod.array(
+    zod.object({
+      name: zod.string().max(scenariosCloneCreateBodyEventSeriesItemNameMax),
+      description: zod.string().optional(),
+      startType: zod
+        .enum(['distribution', 'start_with', 'start_after'])
+        .describe(
+          '* `distribution` - Distribution\n* `start_with` - Start With Event\n* `start_after` - Start After Event'
+        ),
+      startDistribution: zod
         .object({
           type: zod
             .enum(['fixed', 'normal', 'uniform'])
@@ -1271,120 +1831,10 @@ export const scenariosCloneCreateResponse = zod
           lower: zod.number().nullish(),
           upper: zod.number().nullish()
         })
-        .describe('Serializer for probability distributions')
-    ),
-    investmentTypes: zod.array(
-      zod
-        .object({
-          name: zod.string().max(scenariosCloneCreateResponseInvestmentTypesItemNameMax),
-          description: zod.string(),
-          returnAmtOrPct: zod.string(),
-          returnDistribution: zod
-            .object({
-              type: zod
-                .enum(['fixed', 'normal', 'uniform'])
-                .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
-              value: zod.number().nullish(),
-              mean: zod.number().nullish(),
-              stdev: zod.number().nullish(),
-              lower: zod.number().nullish(),
-              upper: zod.number().nullish()
-            })
-            .describe('Serializer for probability distributions'),
-          expenseRatio: zod.number(),
-          incomeAmtOrPct: zod.string(),
-          incomeDistribution: zod
-            .object({
-              type: zod
-                .enum(['fixed', 'normal', 'uniform'])
-                .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
-              value: zod.number().nullish(),
-              mean: zod.number().nullish(),
-              stdev: zod.number().nullish(),
-              lower: zod.number().nullish(),
-              upper: zod.number().nullish()
-            })
-            .describe('Serializer for probability distributions'),
-          taxability: zod.boolean()
-        })
-        .describe('Serializer for investment types')
-    ),
-    investments: zod.array(
-      zod
-        .object({
-          investmentType: zod.string(),
-          value: zod.number(),
-          taxStatus: zod.string(),
-          id: zod.string()
-        })
-        .describe('Serializer for individual investments')
-    ),
-    eventSeries: zod.array(
-      zod
-        .object({
-          name: zod.string().max(scenariosCloneCreateResponseEventSeriesItemNameMax),
-          start: zod
-            .object({
-              type: zod
-                .enum(['fixed', 'normal', 'uniform'])
-                .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
-              value: zod.number().nullish(),
-              mean: zod.number().nullish(),
-              stdev: zod.number().nullish(),
-              lower: zod.number().nullish(),
-              upper: zod.number().nullish()
-            })
-            .optional()
-            .describe('Serializer for probability distributions'),
-          duration: zod
-            .object({
-              type: zod
-                .enum(['fixed', 'normal', 'uniform'])
-                .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
-              value: zod.number().nullish(),
-              mean: zod.number().nullish(),
-              stdev: zod.number().nullish(),
-              lower: zod.number().nullish(),
-              upper: zod.number().nullish()
-            })
-            .describe('Serializer for probability distributions'),
-          type: zod
-            .enum(['income', 'expense', 'invest', 'rebalance'])
-            .describe(
-              '* `income` - Income\n* `expense` - Expense\n* `invest` - Invest\n* `rebalance` - Rebalance'
-            ),
-          initialAmount: zod.number().optional(),
-          changeAmtOrPct: zod.string().optional(),
-          changeDistribution: zod
-            .object({
-              type: zod
-                .enum(['fixed', 'normal', 'uniform'])
-                .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
-              value: zod.number().nullish(),
-              mean: zod.number().nullish(),
-              stdev: zod.number().nullish(),
-              lower: zod.number().nullish(),
-              upper: zod.number().nullish()
-            })
-            .optional()
-            .describe('Serializer for probability distributions'),
-          inflationAdjusted: zod.boolean().optional(),
-          userFraction: zod.number().optional(),
-          socialSecurity: zod.boolean().optional(),
-          discretionary: zod.boolean().optional(),
-          assetAllocation: zod
-            .record(zod.string(), zod.any())
-            .describe('Get initial asset allocation as dict'),
-          glidePath: zod.boolean().optional(),
-          assetAllocation2: zod
-            .record(zod.string(), zod.any())
-            .describe('Get final asset allocation for glide path'),
-          maxCash: zod.number().optional()
-        })
-        .describe('Serializer for event series with complex nested data')
-    ),
-    inflationAssumption: zod
-      .object({
+        .nullish(),
+      startWithEventName: zod.string(),
+      startAfterEventName: zod.string(),
+      durationDistribution: zod.object({
         type: zod
           .enum(['fixed', 'normal', 'uniform'])
           .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
@@ -1393,20 +1843,309 @@ export const scenariosCloneCreateResponse = zod
         stdev: zod.number().nullish(),
         lower: zod.number().nullish(),
         upper: zod.number().nullish()
-      })
-      .describe('Serializer for probability distributions'),
-    afterTaxContributionLimit: zod.number(),
-    spendingStrategy: zod.array(zod.string()),
-    expenseWithdrawalStrategy: zod.array(zod.string()),
-    RMDStrategy: zod.array(zod.string()),
-    RothConversionOpt: zod.boolean(),
-    RothConversionStart: zod.number().optional(),
-    RothConversionEnd: zod.number().optional(),
-    RothConversionStrategy: zod.array(zod.string()),
-    financialGoal: zod.number(),
-    residenceState: zod.string()
-  })
-  .describe('Main serializer for complete scenarios matching YAML format');
+      }),
+      type: zod
+        .enum(['income', 'expense', 'invest', 'rebalance'])
+        .describe(
+          '* `income` - Income\n* `expense` - Expense\n* `invest` - Invest\n* `rebalance` - Rebalance'
+        ),
+      initialAmount: zod.number().nullish(),
+      changeAmtOrPct: zod
+        .enum(['amount', 'percent'])
+        .describe('* `amount` - Amount\n* `percent` - Percent')
+        .or(zod.enum(['']))
+        .or(zod.literal(null))
+        .nullish(),
+      changeDistribution: zod
+        .object({
+          type: zod
+            .enum(['fixed', 'normal', 'uniform'])
+            .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
+          value: zod.number().nullish(),
+          mean: zod.number().nullish(),
+          stdev: zod.number().nullish(),
+          lower: zod.number().nullish(),
+          upper: zod.number().nullish()
+        })
+        .nullish(),
+      inflationAdjusted: zod.boolean().optional(),
+      userFraction: zod.number().nullish(),
+      socialSecurity: zod.boolean().optional(),
+      discretionary: zod.boolean().optional(),
+      maxCash: zod.number().nullish(),
+      glidePath: zod.boolean().optional(),
+      assetAllocations: zod.array(
+        zod.object({
+          investmentId: zod.string(),
+          percentage: zod.number(),
+          isFinalAllocation: zod.boolean().optional()
+        })
+      ),
+      startWithEventNameInput: zod.string().optional(),
+      startAfterEventNameInput: zod.string().optional(),
+      assetAllocationInput: zod.record(zod.string(), zod.any()).optional(),
+      assetAllocation2Input: zod.record(zod.string(), zod.any()).optional()
+    })
+  ),
+  spendingStrategyInput: zod.array(zod.string()).optional(),
+  expenseWithdrawalStrategyInput: zod.array(zod.string()).optional(),
+  rmdStrategyInput: zod.array(zod.string()).optional(),
+  rothConversionStrategyInput: zod.array(zod.string()).optional()
+});
+
+export const scenariosCloneCreateResponseNameMax = 200;
+export const scenariosCloneCreateResponseUserBirthYearMin = -9223372036854776000;
+
+export const scenariosCloneCreateResponseUserBirthYearMax = 9223372036854776000;
+export const scenariosCloneCreateResponseSpouseBirthYearMin = -9223372036854776000;
+
+export const scenariosCloneCreateResponseSpouseBirthYearMax = 9223372036854776000;
+export const scenariosCloneCreateResponseResidenceStateMax = 2;
+export const scenariosCloneCreateResponseRothConversionStartMin = -9223372036854776000;
+
+export const scenariosCloneCreateResponseRothConversionStartMax = 9223372036854776000;
+export const scenariosCloneCreateResponseRothConversionEndMin = -9223372036854776000;
+
+export const scenariosCloneCreateResponseRothConversionEndMax = 9223372036854776000;
+export const scenariosCloneCreateResponseInvestmentsItemInvestmentTypeNameMax = 100;
+export const scenariosCloneCreateResponseInvestmentsItemInvestmentIdMax = 100;
+export const scenariosCloneCreateResponseEventSeriesItemNameMax = 100;
+export const scenariosCloneCreateResponseSpendingStrategyItemsItemOrderMin = 0;
+
+export const scenariosCloneCreateResponseSpendingStrategyItemsItemOrderMax = 9223372036854776000;
+export const scenariosCloneCreateResponseExpenseWithdrawalStrategyItemsItemOrderMin = 0;
+
+export const scenariosCloneCreateResponseExpenseWithdrawalStrategyItemsItemOrderMax = 9223372036854776000;
+export const scenariosCloneCreateResponseRmdStrategyItemsItemOrderMin = 0;
+
+export const scenariosCloneCreateResponseRmdStrategyItemsItemOrderMax = 9223372036854776000;
+export const scenariosCloneCreateResponseRothConversionStrategyItemsItemOrderMin = 0;
+
+export const scenariosCloneCreateResponseRothConversionStrategyItemsItemOrderMax = 9223372036854776000;
+
+export const scenariosCloneCreateResponse = zod.object({
+  id: zod.number(),
+  name: zod.string().max(scenariosCloneCreateResponseNameMax),
+  maritalStatus: zod
+    .enum(['individual', 'couple'])
+    .describe('* `individual` - Individual\n* `couple` - Couple'),
+  userBirthYear: zod
+    .number()
+    .min(scenariosCloneCreateResponseUserBirthYearMin)
+    .max(scenariosCloneCreateResponseUserBirthYearMax),
+  spouseBirthYear: zod
+    .number()
+    .min(scenariosCloneCreateResponseSpouseBirthYearMin)
+    .max(scenariosCloneCreateResponseSpouseBirthYearMax)
+    .nullish(),
+  userLifeExpectancy: zod.object({
+    type: zod
+      .enum(['fixed', 'normal', 'uniform'])
+      .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
+    value: zod.number().nullish(),
+    mean: zod.number().nullish(),
+    stdev: zod.number().nullish(),
+    lower: zod.number().nullish(),
+    upper: zod.number().nullish()
+  }),
+  spouseLifeExpectancy: zod
+    .object({
+      type: zod
+        .enum(['fixed', 'normal', 'uniform'])
+        .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
+      value: zod.number().nullish(),
+      mean: zod.number().nullish(),
+      stdev: zod.number().nullish(),
+      lower: zod.number().nullish(),
+      upper: zod.number().nullish()
+    })
+    .nullish(),
+  inflationAssumption: zod.object({
+    type: zod
+      .enum(['fixed', 'normal', 'uniform'])
+      .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
+    value: zod.number().nullish(),
+    mean: zod.number().nullish(),
+    stdev: zod.number().nullish(),
+    lower: zod.number().nullish(),
+    upper: zod.number().nullish()
+  }),
+  afterTaxContributionLimit: zod.number(),
+  financialGoal: zod.number(),
+  residenceState: zod.string().max(scenariosCloneCreateResponseResidenceStateMax),
+  rothConversionOpt: zod.boolean().optional(),
+  rothConversionStart: zod
+    .number()
+    .min(scenariosCloneCreateResponseRothConversionStartMin)
+    .max(scenariosCloneCreateResponseRothConversionStartMax)
+    .nullish(),
+  rothConversionEnd: zod
+    .number()
+    .min(scenariosCloneCreateResponseRothConversionEndMin)
+    .max(scenariosCloneCreateResponseRothConversionEndMax)
+    .nullish(),
+  investments: zod.array(
+    zod.object({
+      investmentType: zod.object({
+        name: zod.string().max(scenariosCloneCreateResponseInvestmentsItemInvestmentTypeNameMax),
+        description: zod.string(),
+        returnAmtOrPct: zod
+          .enum(['amount', 'percent'])
+          .describe('* `amount` - Amount\n* `percent` - Percent'),
+        returnDistribution: zod.object({
+          type: zod
+            .enum(['fixed', 'normal', 'uniform'])
+            .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
+          value: zod.number().nullish(),
+          mean: zod.number().nullish(),
+          stdev: zod.number().nullish(),
+          lower: zod.number().nullish(),
+          upper: zod.number().nullish()
+        }),
+        expenseRatio: zod.number(),
+        incomeAmtOrPct: zod
+          .enum(['amount', 'percent'])
+          .describe('* `amount` - Amount\n* `percent` - Percent'),
+        incomeDistribution: zod.object({
+          type: zod
+            .enum(['fixed', 'normal', 'uniform'])
+            .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
+          value: zod.number().nullish(),
+          mean: zod.number().nullish(),
+          stdev: zod.number().nullish(),
+          lower: zod.number().nullish(),
+          upper: zod.number().nullish()
+        }),
+        taxability: zod.boolean()
+      }),
+      value: zod.number(),
+      taxStatus: zod
+        .enum(['non-retirement', 'pre-tax', 'after-tax'])
+        .describe(
+          '* `non-retirement` - Non-retirement\n* `pre-tax` - Pre-tax Retirement\n* `after-tax` - After-tax Retirement'
+        ),
+      investmentId: zod.string().max(scenariosCloneCreateResponseInvestmentsItemInvestmentIdMax)
+    })
+  ),
+  eventSeries: zod.array(
+    zod.object({
+      name: zod.string().max(scenariosCloneCreateResponseEventSeriesItemNameMax),
+      description: zod.string().optional(),
+      startType: zod
+        .enum(['distribution', 'start_with', 'start_after'])
+        .describe(
+          '* `distribution` - Distribution\n* `start_with` - Start With Event\n* `start_after` - Start After Event'
+        ),
+      startDistribution: zod
+        .object({
+          type: zod
+            .enum(['fixed', 'normal', 'uniform'])
+            .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
+          value: zod.number().nullish(),
+          mean: zod.number().nullish(),
+          stdev: zod.number().nullish(),
+          lower: zod.number().nullish(),
+          upper: zod.number().nullish()
+        })
+        .nullish(),
+      startWithEventName: zod.string(),
+      startAfterEventName: zod.string(),
+      durationDistribution: zod.object({
+        type: zod
+          .enum(['fixed', 'normal', 'uniform'])
+          .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
+        value: zod.number().nullish(),
+        mean: zod.number().nullish(),
+        stdev: zod.number().nullish(),
+        lower: zod.number().nullish(),
+        upper: zod.number().nullish()
+      }),
+      type: zod
+        .enum(['income', 'expense', 'invest', 'rebalance'])
+        .describe(
+          '* `income` - Income\n* `expense` - Expense\n* `invest` - Invest\n* `rebalance` - Rebalance'
+        ),
+      initialAmount: zod.number().nullish(),
+      changeAmtOrPct: zod
+        .enum(['amount', 'percent'])
+        .describe('* `amount` - Amount\n* `percent` - Percent')
+        .or(zod.enum(['']))
+        .or(zod.literal(null))
+        .nullish(),
+      changeDistribution: zod
+        .object({
+          type: zod
+            .enum(['fixed', 'normal', 'uniform'])
+            .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
+          value: zod.number().nullish(),
+          mean: zod.number().nullish(),
+          stdev: zod.number().nullish(),
+          lower: zod.number().nullish(),
+          upper: zod.number().nullish()
+        })
+        .nullish(),
+      inflationAdjusted: zod.boolean().optional(),
+      userFraction: zod.number().nullish(),
+      socialSecurity: zod.boolean().optional(),
+      discretionary: zod.boolean().optional(),
+      maxCash: zod.number().nullish(),
+      glidePath: zod.boolean().optional(),
+      assetAllocations: zod.array(
+        zod.object({
+          investmentId: zod.string(),
+          percentage: zod.number(),
+          isFinalAllocation: zod.boolean().optional()
+        })
+      ),
+      startWithEventNameInput: zod.string().optional(),
+      startAfterEventNameInput: zod.string().optional(),
+      assetAllocationInput: zod.record(zod.string(), zod.any()).optional(),
+      assetAllocation2Input: zod.record(zod.string(), zod.any()).optional()
+    })
+  ),
+  spendingStrategyItems: zod.array(
+    zod.object({
+      eventSeriesName: zod.string(),
+      order: zod
+        .number()
+        .min(scenariosCloneCreateResponseSpendingStrategyItemsItemOrderMin)
+        .max(scenariosCloneCreateResponseSpendingStrategyItemsItemOrderMax)
+    })
+  ),
+  expenseWithdrawalStrategyItems: zod.array(
+    zod.object({
+      investmentId: zod.string(),
+      order: zod
+        .number()
+        .min(scenariosCloneCreateResponseExpenseWithdrawalStrategyItemsItemOrderMin)
+        .max(scenariosCloneCreateResponseExpenseWithdrawalStrategyItemsItemOrderMax)
+    })
+  ),
+  rmdStrategyItems: zod.array(
+    zod.object({
+      investmentId: zod.string(),
+      order: zod
+        .number()
+        .min(scenariosCloneCreateResponseRmdStrategyItemsItemOrderMin)
+        .max(scenariosCloneCreateResponseRmdStrategyItemsItemOrderMax)
+    })
+  ),
+  rothConversionStrategyItems: zod.array(
+    zod.object({
+      investmentId: zod.string(),
+      order: zod
+        .number()
+        .min(scenariosCloneCreateResponseRothConversionStrategyItemsItemOrderMin)
+        .max(scenariosCloneCreateResponseRothConversionStrategyItemsItemOrderMax)
+    })
+  ),
+  createdAt: zod.string().datetime({}),
+  updatedAt: zod.string().datetime({}),
+  spendingStrategyInput: zod.array(zod.string()).optional(),
+  expenseWithdrawalStrategyInput: zod.array(zod.string()).optional(),
+  rmdStrategyInput: zod.array(zod.string()).optional(),
+  rothConversionStrategyInput: zod.array(zod.string()).optional()
+});
 
 /**
  * Export scenario as YAML
@@ -1416,16 +2155,149 @@ export const scenariosExportRetrieveParams = zod.object({
 });
 
 export const scenariosExportRetrieveResponseNameMax = 200;
-export const scenariosExportRetrieveResponseInvestmentTypesItemNameMax = 100;
-export const scenariosExportRetrieveResponseEventSeriesItemNameMax = 100;
+export const scenariosExportRetrieveResponseUserBirthYearMin = -9223372036854776000;
 
-export const scenariosExportRetrieveResponse = zod
-  .object({
-    name: zod.string().max(scenariosExportRetrieveResponseNameMax),
-    maritalStatus: zod.string(),
-    birthYears: zod.array(zod.number()),
-    lifeExpectancy: zod.array(
-      zod
+export const scenariosExportRetrieveResponseUserBirthYearMax = 9223372036854776000;
+export const scenariosExportRetrieveResponseSpouseBirthYearMin = -9223372036854776000;
+
+export const scenariosExportRetrieveResponseSpouseBirthYearMax = 9223372036854776000;
+export const scenariosExportRetrieveResponseResidenceStateMax = 2;
+export const scenariosExportRetrieveResponseRothConversionStartMin = -9223372036854776000;
+
+export const scenariosExportRetrieveResponseRothConversionStartMax = 9223372036854776000;
+export const scenariosExportRetrieveResponseRothConversionEndMin = -9223372036854776000;
+
+export const scenariosExportRetrieveResponseRothConversionEndMax = 9223372036854776000;
+export const scenariosExportRetrieveResponseInvestmentsItemInvestmentTypeNameMax = 100;
+export const scenariosExportRetrieveResponseInvestmentsItemInvestmentIdMax = 100;
+export const scenariosExportRetrieveResponseEventSeriesItemNameMax = 100;
+export const scenariosExportRetrieveResponseSpendingStrategyItemsItemOrderMin = 0;
+
+export const scenariosExportRetrieveResponseSpendingStrategyItemsItemOrderMax = 9223372036854776000;
+export const scenariosExportRetrieveResponseExpenseWithdrawalStrategyItemsItemOrderMin = 0;
+
+export const scenariosExportRetrieveResponseExpenseWithdrawalStrategyItemsItemOrderMax = 9223372036854776000;
+export const scenariosExportRetrieveResponseRmdStrategyItemsItemOrderMin = 0;
+
+export const scenariosExportRetrieveResponseRmdStrategyItemsItemOrderMax = 9223372036854776000;
+export const scenariosExportRetrieveResponseRothConversionStrategyItemsItemOrderMin = 0;
+
+export const scenariosExportRetrieveResponseRothConversionStrategyItemsItemOrderMax = 9223372036854776000;
+
+export const scenariosExportRetrieveResponse = zod.object({
+  id: zod.number(),
+  name: zod.string().max(scenariosExportRetrieveResponseNameMax),
+  maritalStatus: zod
+    .enum(['individual', 'couple'])
+    .describe('* `individual` - Individual\n* `couple` - Couple'),
+  userBirthYear: zod
+    .number()
+    .min(scenariosExportRetrieveResponseUserBirthYearMin)
+    .max(scenariosExportRetrieveResponseUserBirthYearMax),
+  spouseBirthYear: zod
+    .number()
+    .min(scenariosExportRetrieveResponseSpouseBirthYearMin)
+    .max(scenariosExportRetrieveResponseSpouseBirthYearMax)
+    .nullish(),
+  userLifeExpectancy: zod.object({
+    type: zod
+      .enum(['fixed', 'normal', 'uniform'])
+      .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
+    value: zod.number().nullish(),
+    mean: zod.number().nullish(),
+    stdev: zod.number().nullish(),
+    lower: zod.number().nullish(),
+    upper: zod.number().nullish()
+  }),
+  spouseLifeExpectancy: zod
+    .object({
+      type: zod
+        .enum(['fixed', 'normal', 'uniform'])
+        .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
+      value: zod.number().nullish(),
+      mean: zod.number().nullish(),
+      stdev: zod.number().nullish(),
+      lower: zod.number().nullish(),
+      upper: zod.number().nullish()
+    })
+    .nullish(),
+  inflationAssumption: zod.object({
+    type: zod
+      .enum(['fixed', 'normal', 'uniform'])
+      .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
+    value: zod.number().nullish(),
+    mean: zod.number().nullish(),
+    stdev: zod.number().nullish(),
+    lower: zod.number().nullish(),
+    upper: zod.number().nullish()
+  }),
+  afterTaxContributionLimit: zod.number(),
+  financialGoal: zod.number(),
+  residenceState: zod.string().max(scenariosExportRetrieveResponseResidenceStateMax),
+  rothConversionOpt: zod.boolean().optional(),
+  rothConversionStart: zod
+    .number()
+    .min(scenariosExportRetrieveResponseRothConversionStartMin)
+    .max(scenariosExportRetrieveResponseRothConversionStartMax)
+    .nullish(),
+  rothConversionEnd: zod
+    .number()
+    .min(scenariosExportRetrieveResponseRothConversionEndMin)
+    .max(scenariosExportRetrieveResponseRothConversionEndMax)
+    .nullish(),
+  investments: zod.array(
+    zod.object({
+      investmentType: zod.object({
+        name: zod.string().max(scenariosExportRetrieveResponseInvestmentsItemInvestmentTypeNameMax),
+        description: zod.string(),
+        returnAmtOrPct: zod
+          .enum(['amount', 'percent'])
+          .describe('* `amount` - Amount\n* `percent` - Percent'),
+        returnDistribution: zod.object({
+          type: zod
+            .enum(['fixed', 'normal', 'uniform'])
+            .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
+          value: zod.number().nullish(),
+          mean: zod.number().nullish(),
+          stdev: zod.number().nullish(),
+          lower: zod.number().nullish(),
+          upper: zod.number().nullish()
+        }),
+        expenseRatio: zod.number(),
+        incomeAmtOrPct: zod
+          .enum(['amount', 'percent'])
+          .describe('* `amount` - Amount\n* `percent` - Percent'),
+        incomeDistribution: zod.object({
+          type: zod
+            .enum(['fixed', 'normal', 'uniform'])
+            .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
+          value: zod.number().nullish(),
+          mean: zod.number().nullish(),
+          stdev: zod.number().nullish(),
+          lower: zod.number().nullish(),
+          upper: zod.number().nullish()
+        }),
+        taxability: zod.boolean()
+      }),
+      value: zod.number(),
+      taxStatus: zod
+        .enum(['non-retirement', 'pre-tax', 'after-tax'])
+        .describe(
+          '* `non-retirement` - Non-retirement\n* `pre-tax` - Pre-tax Retirement\n* `after-tax` - After-tax Retirement'
+        ),
+      investmentId: zod.string().max(scenariosExportRetrieveResponseInvestmentsItemInvestmentIdMax)
+    })
+  ),
+  eventSeries: zod.array(
+    zod.object({
+      name: zod.string().max(scenariosExportRetrieveResponseEventSeriesItemNameMax),
+      description: zod.string().optional(),
+      startType: zod
+        .enum(['distribution', 'start_with', 'start_after'])
+        .describe(
+          '* `distribution` - Distribution\n* `start_with` - Start With Event\n* `start_after` - Start After Event'
+        ),
+      startDistribution: zod
         .object({
           type: zod
             .enum(['fixed', 'normal', 'uniform'])
@@ -1436,120 +2308,10 @@ export const scenariosExportRetrieveResponse = zod
           lower: zod.number().nullish(),
           upper: zod.number().nullish()
         })
-        .describe('Serializer for probability distributions')
-    ),
-    investmentTypes: zod.array(
-      zod
-        .object({
-          name: zod.string().max(scenariosExportRetrieveResponseInvestmentTypesItemNameMax),
-          description: zod.string(),
-          returnAmtOrPct: zod.string(),
-          returnDistribution: zod
-            .object({
-              type: zod
-                .enum(['fixed', 'normal', 'uniform'])
-                .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
-              value: zod.number().nullish(),
-              mean: zod.number().nullish(),
-              stdev: zod.number().nullish(),
-              lower: zod.number().nullish(),
-              upper: zod.number().nullish()
-            })
-            .describe('Serializer for probability distributions'),
-          expenseRatio: zod.number(),
-          incomeAmtOrPct: zod.string(),
-          incomeDistribution: zod
-            .object({
-              type: zod
-                .enum(['fixed', 'normal', 'uniform'])
-                .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
-              value: zod.number().nullish(),
-              mean: zod.number().nullish(),
-              stdev: zod.number().nullish(),
-              lower: zod.number().nullish(),
-              upper: zod.number().nullish()
-            })
-            .describe('Serializer for probability distributions'),
-          taxability: zod.boolean()
-        })
-        .describe('Serializer for investment types')
-    ),
-    investments: zod.array(
-      zod
-        .object({
-          investmentType: zod.string(),
-          value: zod.number(),
-          taxStatus: zod.string(),
-          id: zod.string()
-        })
-        .describe('Serializer for individual investments')
-    ),
-    eventSeries: zod.array(
-      zod
-        .object({
-          name: zod.string().max(scenariosExportRetrieveResponseEventSeriesItemNameMax),
-          start: zod
-            .object({
-              type: zod
-                .enum(['fixed', 'normal', 'uniform'])
-                .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
-              value: zod.number().nullish(),
-              mean: zod.number().nullish(),
-              stdev: zod.number().nullish(),
-              lower: zod.number().nullish(),
-              upper: zod.number().nullish()
-            })
-            .optional()
-            .describe('Serializer for probability distributions'),
-          duration: zod
-            .object({
-              type: zod
-                .enum(['fixed', 'normal', 'uniform'])
-                .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
-              value: zod.number().nullish(),
-              mean: zod.number().nullish(),
-              stdev: zod.number().nullish(),
-              lower: zod.number().nullish(),
-              upper: zod.number().nullish()
-            })
-            .describe('Serializer for probability distributions'),
-          type: zod
-            .enum(['income', 'expense', 'invest', 'rebalance'])
-            .describe(
-              '* `income` - Income\n* `expense` - Expense\n* `invest` - Invest\n* `rebalance` - Rebalance'
-            ),
-          initialAmount: zod.number().optional(),
-          changeAmtOrPct: zod.string().optional(),
-          changeDistribution: zod
-            .object({
-              type: zod
-                .enum(['fixed', 'normal', 'uniform'])
-                .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
-              value: zod.number().nullish(),
-              mean: zod.number().nullish(),
-              stdev: zod.number().nullish(),
-              lower: zod.number().nullish(),
-              upper: zod.number().nullish()
-            })
-            .optional()
-            .describe('Serializer for probability distributions'),
-          inflationAdjusted: zod.boolean().optional(),
-          userFraction: zod.number().optional(),
-          socialSecurity: zod.boolean().optional(),
-          discretionary: zod.boolean().optional(),
-          assetAllocation: zod
-            .record(zod.string(), zod.any())
-            .describe('Get initial asset allocation as dict'),
-          glidePath: zod.boolean().optional(),
-          assetAllocation2: zod
-            .record(zod.string(), zod.any())
-            .describe('Get final asset allocation for glide path'),
-          maxCash: zod.number().optional()
-        })
-        .describe('Serializer for event series with complex nested data')
-    ),
-    inflationAssumption: zod
-      .object({
+        .nullish(),
+      startWithEventName: zod.string(),
+      startAfterEventName: zod.string(),
+      durationDistribution: zod.object({
         type: zod
           .enum(['fixed', 'normal', 'uniform'])
           .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
@@ -1558,20 +2320,93 @@ export const scenariosExportRetrieveResponse = zod
         stdev: zod.number().nullish(),
         lower: zod.number().nullish(),
         upper: zod.number().nullish()
-      })
-      .describe('Serializer for probability distributions'),
-    afterTaxContributionLimit: zod.number(),
-    spendingStrategy: zod.array(zod.string()),
-    expenseWithdrawalStrategy: zod.array(zod.string()),
-    RMDStrategy: zod.array(zod.string()),
-    RothConversionOpt: zod.boolean(),
-    RothConversionStart: zod.number().optional(),
-    RothConversionEnd: zod.number().optional(),
-    RothConversionStrategy: zod.array(zod.string()),
-    financialGoal: zod.number(),
-    residenceState: zod.string()
-  })
-  .describe('Main serializer for complete scenarios matching YAML format');
+      }),
+      type: zod
+        .enum(['income', 'expense', 'invest', 'rebalance'])
+        .describe(
+          '* `income` - Income\n* `expense` - Expense\n* `invest` - Invest\n* `rebalance` - Rebalance'
+        ),
+      initialAmount: zod.number().nullish(),
+      changeAmtOrPct: zod
+        .enum(['amount', 'percent'])
+        .describe('* `amount` - Amount\n* `percent` - Percent')
+        .or(zod.enum(['']))
+        .or(zod.literal(null))
+        .nullish(),
+      changeDistribution: zod
+        .object({
+          type: zod
+            .enum(['fixed', 'normal', 'uniform'])
+            .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
+          value: zod.number().nullish(),
+          mean: zod.number().nullish(),
+          stdev: zod.number().nullish(),
+          lower: zod.number().nullish(),
+          upper: zod.number().nullish()
+        })
+        .nullish(),
+      inflationAdjusted: zod.boolean().optional(),
+      userFraction: zod.number().nullish(),
+      socialSecurity: zod.boolean().optional(),
+      discretionary: zod.boolean().optional(),
+      maxCash: zod.number().nullish(),
+      glidePath: zod.boolean().optional(),
+      assetAllocations: zod.array(
+        zod.object({
+          investmentId: zod.string(),
+          percentage: zod.number(),
+          isFinalAllocation: zod.boolean().optional()
+        })
+      ),
+      startWithEventNameInput: zod.string().optional(),
+      startAfterEventNameInput: zod.string().optional(),
+      assetAllocationInput: zod.record(zod.string(), zod.any()).optional(),
+      assetAllocation2Input: zod.record(zod.string(), zod.any()).optional()
+    })
+  ),
+  spendingStrategyItems: zod.array(
+    zod.object({
+      eventSeriesName: zod.string(),
+      order: zod
+        .number()
+        .min(scenariosExportRetrieveResponseSpendingStrategyItemsItemOrderMin)
+        .max(scenariosExportRetrieveResponseSpendingStrategyItemsItemOrderMax)
+    })
+  ),
+  expenseWithdrawalStrategyItems: zod.array(
+    zod.object({
+      investmentId: zod.string(),
+      order: zod
+        .number()
+        .min(scenariosExportRetrieveResponseExpenseWithdrawalStrategyItemsItemOrderMin)
+        .max(scenariosExportRetrieveResponseExpenseWithdrawalStrategyItemsItemOrderMax)
+    })
+  ),
+  rmdStrategyItems: zod.array(
+    zod.object({
+      investmentId: zod.string(),
+      order: zod
+        .number()
+        .min(scenariosExportRetrieveResponseRmdStrategyItemsItemOrderMin)
+        .max(scenariosExportRetrieveResponseRmdStrategyItemsItemOrderMax)
+    })
+  ),
+  rothConversionStrategyItems: zod.array(
+    zod.object({
+      investmentId: zod.string(),
+      order: zod
+        .number()
+        .min(scenariosExportRetrieveResponseRothConversionStrategyItemsItemOrderMin)
+        .max(scenariosExportRetrieveResponseRothConversionStrategyItemsItemOrderMax)
+    })
+  ),
+  createdAt: zod.string().datetime({}),
+  updatedAt: zod.string().datetime({}),
+  spendingStrategyInput: zod.array(zod.string()).optional(),
+  expenseWithdrawalStrategyInput: zod.array(zod.string()).optional(),
+  rmdStrategyInput: zod.array(zod.string()).optional(),
+  rothConversionStrategyInput: zod.array(zod.string()).optional()
+});
 
 /**
  * Run Monte Carlo simulations for this scenario
@@ -1581,155 +2416,136 @@ export const scenariosSimulateCreateParams = zod.object({
 });
 
 export const scenariosSimulateCreateBodyNameMax = 200;
-export const scenariosSimulateCreateBodyInvestmentTypesItemNameMax = 100;
+export const scenariosSimulateCreateBodyUserBirthYearMin = -9223372036854776000;
+
+export const scenariosSimulateCreateBodyUserBirthYearMax = 9223372036854776000;
+export const scenariosSimulateCreateBodySpouseBirthYearMin = -9223372036854776000;
+
+export const scenariosSimulateCreateBodySpouseBirthYearMax = 9223372036854776000;
+export const scenariosSimulateCreateBodyResidenceStateMax = 2;
+export const scenariosSimulateCreateBodyRothConversionStartMin = -9223372036854776000;
+
+export const scenariosSimulateCreateBodyRothConversionStartMax = 9223372036854776000;
+export const scenariosSimulateCreateBodyRothConversionEndMin = -9223372036854776000;
+
+export const scenariosSimulateCreateBodyRothConversionEndMax = 9223372036854776000;
+export const scenariosSimulateCreateBodyInvestmentsItemInvestmentTypeNameMax = 100;
+export const scenariosSimulateCreateBodyInvestmentsItemInvestmentIdMax = 100;
 export const scenariosSimulateCreateBodyEventSeriesItemNameMax = 100;
 
-export const scenariosSimulateCreateBody = zod
-  .object({
-    name: zod.string().max(scenariosSimulateCreateBodyNameMax),
-    maritalStatus: zod.string(),
-    investmentTypes: zod.array(
-      zod
-        .object({
-          name: zod.string().max(scenariosSimulateCreateBodyInvestmentTypesItemNameMax),
-          description: zod.string(),
-          returnAmtOrPct: zod.string(),
-          returnDistribution: zod
-            .object({
-              type: zod
-                .enum(['fixed', 'normal', 'uniform'])
-                .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
-              value: zod.number().nullish(),
-              mean: zod.number().nullish(),
-              stdev: zod.number().nullish(),
-              lower: zod.number().nullish(),
-              upper: zod.number().nullish()
-            })
-            .describe('Serializer for probability distributions'),
-          expenseRatio: zod.number(),
-          incomeAmtOrPct: zod.string(),
-          incomeDistribution: zod
-            .object({
-              type: zod
-                .enum(['fixed', 'normal', 'uniform'])
-                .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
-              value: zod.number().nullish(),
-              mean: zod.number().nullish(),
-              stdev: zod.number().nullish(),
-              lower: zod.number().nullish(),
-              upper: zod.number().nullish()
-            })
-            .describe('Serializer for probability distributions'),
-          taxability: zod.boolean()
-        })
-        .describe('Serializer for investment types')
-    ),
-    investments: zod.array(
-      zod
-        .object({
-          investmentType: zod.string(),
-          value: zod.number(),
-          taxStatus: zod.string(),
-          id: zod.string()
-        })
-        .describe('Serializer for individual investments')
-    ),
-    eventSeries: zod.array(
-      zod
-        .object({
-          name: zod.string().max(scenariosSimulateCreateBodyEventSeriesItemNameMax),
-          start: zod
-            .object({
-              type: zod
-                .enum(['fixed', 'normal', 'uniform'])
-                .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
-              value: zod.number().nullish(),
-              mean: zod.number().nullish(),
-              stdev: zod.number().nullish(),
-              lower: zod.number().nullish(),
-              upper: zod.number().nullish()
-            })
-            .optional()
-            .describe('Serializer for probability distributions'),
-          duration: zod
-            .object({
-              type: zod
-                .enum(['fixed', 'normal', 'uniform'])
-                .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
-              value: zod.number().nullish(),
-              mean: zod.number().nullish(),
-              stdev: zod.number().nullish(),
-              lower: zod.number().nullish(),
-              upper: zod.number().nullish()
-            })
-            .describe('Serializer for probability distributions'),
+export const scenariosSimulateCreateBody = zod.object({
+  name: zod.string().max(scenariosSimulateCreateBodyNameMax),
+  maritalStatus: zod
+    .enum(['individual', 'couple'])
+    .describe('* `individual` - Individual\n* `couple` - Couple'),
+  userBirthYear: zod
+    .number()
+    .min(scenariosSimulateCreateBodyUserBirthYearMin)
+    .max(scenariosSimulateCreateBodyUserBirthYearMax),
+  spouseBirthYear: zod
+    .number()
+    .min(scenariosSimulateCreateBodySpouseBirthYearMin)
+    .max(scenariosSimulateCreateBodySpouseBirthYearMax)
+    .nullish(),
+  userLifeExpectancy: zod.object({
+    type: zod
+      .enum(['fixed', 'normal', 'uniform'])
+      .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
+    value: zod.number().nullish(),
+    mean: zod.number().nullish(),
+    stdev: zod.number().nullish(),
+    lower: zod.number().nullish(),
+    upper: zod.number().nullish()
+  }),
+  spouseLifeExpectancy: zod
+    .object({
+      type: zod
+        .enum(['fixed', 'normal', 'uniform'])
+        .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
+      value: zod.number().nullish(),
+      mean: zod.number().nullish(),
+      stdev: zod.number().nullish(),
+      lower: zod.number().nullish(),
+      upper: zod.number().nullish()
+    })
+    .nullish(),
+  inflationAssumption: zod.object({
+    type: zod
+      .enum(['fixed', 'normal', 'uniform'])
+      .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
+    value: zod.number().nullish(),
+    mean: zod.number().nullish(),
+    stdev: zod.number().nullish(),
+    lower: zod.number().nullish(),
+    upper: zod.number().nullish()
+  }),
+  afterTaxContributionLimit: zod.number(),
+  financialGoal: zod.number(),
+  residenceState: zod.string().max(scenariosSimulateCreateBodyResidenceStateMax),
+  rothConversionOpt: zod.boolean().optional(),
+  rothConversionStart: zod
+    .number()
+    .min(scenariosSimulateCreateBodyRothConversionStartMin)
+    .max(scenariosSimulateCreateBodyRothConversionStartMax)
+    .nullish(),
+  rothConversionEnd: zod
+    .number()
+    .min(scenariosSimulateCreateBodyRothConversionEndMin)
+    .max(scenariosSimulateCreateBodyRothConversionEndMax)
+    .nullish(),
+  investments: zod.array(
+    zod.object({
+      investmentType: zod.object({
+        name: zod.string().max(scenariosSimulateCreateBodyInvestmentsItemInvestmentTypeNameMax),
+        description: zod.string(),
+        returnAmtOrPct: zod
+          .enum(['amount', 'percent'])
+          .describe('* `amount` - Amount\n* `percent` - Percent'),
+        returnDistribution: zod.object({
           type: zod
-            .enum(['income', 'expense', 'invest', 'rebalance'])
-            .describe(
-              '* `income` - Income\n* `expense` - Expense\n* `invest` - Invest\n* `rebalance` - Rebalance'
-            ),
-          initialAmount: zod.number().optional(),
-          changeAmtOrPct: zod.string().optional(),
-          changeDistribution: zod
-            .object({
-              type: zod
-                .enum(['fixed', 'normal', 'uniform'])
-                .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
-              value: zod.number().nullish(),
-              mean: zod.number().nullish(),
-              stdev: zod.number().nullish(),
-              lower: zod.number().nullish(),
-              upper: zod.number().nullish()
-            })
-            .optional()
-            .describe('Serializer for probability distributions'),
-          inflationAdjusted: zod.boolean().optional(),
-          userFraction: zod.number().optional(),
-          socialSecurity: zod.boolean().optional(),
-          discretionary: zod.boolean().optional(),
-          assetAllocation: zod
-            .record(zod.string(), zod.any())
-            .describe('Get initial asset allocation as dict'),
-          glidePath: zod.boolean().optional(),
-          assetAllocation2: zod
-            .record(zod.string(), zod.any())
-            .describe('Get final asset allocation for glide path'),
-          maxCash: zod.number().optional()
-        })
-        .describe('Serializer for event series with complex nested data')
-    ),
-    inflationAssumption: zod
-      .object({
-        type: zod
-          .enum(['fixed', 'normal', 'uniform'])
-          .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
-        value: zod.number().nullish(),
-        mean: zod.number().nullish(),
-        stdev: zod.number().nullish(),
-        lower: zod.number().nullish(),
-        upper: zod.number().nullish()
-      })
-      .describe('Serializer for probability distributions'),
-    afterTaxContributionLimit: zod.number(),
-    RothConversionOpt: zod.boolean(),
-    RothConversionStart: zod.number().optional(),
-    RothConversionEnd: zod.number().optional(),
-    financialGoal: zod.number(),
-    residenceState: zod.string()
-  })
-  .describe('Main serializer for complete scenarios matching YAML format');
-
-export const scenariosSimulateCreateResponseNameMax = 200;
-export const scenariosSimulateCreateResponseInvestmentTypesItemNameMax = 100;
-export const scenariosSimulateCreateResponseEventSeriesItemNameMax = 100;
-
-export const scenariosSimulateCreateResponse = zod
-  .object({
-    name: zod.string().max(scenariosSimulateCreateResponseNameMax),
-    maritalStatus: zod.string(),
-    birthYears: zod.array(zod.number()),
-    lifeExpectancy: zod.array(
-      zod
+            .enum(['fixed', 'normal', 'uniform'])
+            .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
+          value: zod.number().nullish(),
+          mean: zod.number().nullish(),
+          stdev: zod.number().nullish(),
+          lower: zod.number().nullish(),
+          upper: zod.number().nullish()
+        }),
+        expenseRatio: zod.number(),
+        incomeAmtOrPct: zod
+          .enum(['amount', 'percent'])
+          .describe('* `amount` - Amount\n* `percent` - Percent'),
+        incomeDistribution: zod.object({
+          type: zod
+            .enum(['fixed', 'normal', 'uniform'])
+            .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
+          value: zod.number().nullish(),
+          mean: zod.number().nullish(),
+          stdev: zod.number().nullish(),
+          lower: zod.number().nullish(),
+          upper: zod.number().nullish()
+        }),
+        taxability: zod.boolean()
+      }),
+      value: zod.number(),
+      taxStatus: zod
+        .enum(['non-retirement', 'pre-tax', 'after-tax'])
+        .describe(
+          '* `non-retirement` - Non-retirement\n* `pre-tax` - Pre-tax Retirement\n* `after-tax` - After-tax Retirement'
+        ),
+      investmentId: zod.string().max(scenariosSimulateCreateBodyInvestmentsItemInvestmentIdMax)
+    })
+  ),
+  eventSeries: zod.array(
+    zod.object({
+      name: zod.string().max(scenariosSimulateCreateBodyEventSeriesItemNameMax),
+      description: zod.string().optional(),
+      startType: zod
+        .enum(['distribution', 'start_with', 'start_after'])
+        .describe(
+          '* `distribution` - Distribution\n* `start_with` - Start With Event\n* `start_after` - Start After Event'
+        ),
+      startDistribution: zod
         .object({
           type: zod
             .enum(['fixed', 'normal', 'uniform'])
@@ -1740,120 +2556,10 @@ export const scenariosSimulateCreateResponse = zod
           lower: zod.number().nullish(),
           upper: zod.number().nullish()
         })
-        .describe('Serializer for probability distributions')
-    ),
-    investmentTypes: zod.array(
-      zod
-        .object({
-          name: zod.string().max(scenariosSimulateCreateResponseInvestmentTypesItemNameMax),
-          description: zod.string(),
-          returnAmtOrPct: zod.string(),
-          returnDistribution: zod
-            .object({
-              type: zod
-                .enum(['fixed', 'normal', 'uniform'])
-                .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
-              value: zod.number().nullish(),
-              mean: zod.number().nullish(),
-              stdev: zod.number().nullish(),
-              lower: zod.number().nullish(),
-              upper: zod.number().nullish()
-            })
-            .describe('Serializer for probability distributions'),
-          expenseRatio: zod.number(),
-          incomeAmtOrPct: zod.string(),
-          incomeDistribution: zod
-            .object({
-              type: zod
-                .enum(['fixed', 'normal', 'uniform'])
-                .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
-              value: zod.number().nullish(),
-              mean: zod.number().nullish(),
-              stdev: zod.number().nullish(),
-              lower: zod.number().nullish(),
-              upper: zod.number().nullish()
-            })
-            .describe('Serializer for probability distributions'),
-          taxability: zod.boolean()
-        })
-        .describe('Serializer for investment types')
-    ),
-    investments: zod.array(
-      zod
-        .object({
-          investmentType: zod.string(),
-          value: zod.number(),
-          taxStatus: zod.string(),
-          id: zod.string()
-        })
-        .describe('Serializer for individual investments')
-    ),
-    eventSeries: zod.array(
-      zod
-        .object({
-          name: zod.string().max(scenariosSimulateCreateResponseEventSeriesItemNameMax),
-          start: zod
-            .object({
-              type: zod
-                .enum(['fixed', 'normal', 'uniform'])
-                .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
-              value: zod.number().nullish(),
-              mean: zod.number().nullish(),
-              stdev: zod.number().nullish(),
-              lower: zod.number().nullish(),
-              upper: zod.number().nullish()
-            })
-            .optional()
-            .describe('Serializer for probability distributions'),
-          duration: zod
-            .object({
-              type: zod
-                .enum(['fixed', 'normal', 'uniform'])
-                .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
-              value: zod.number().nullish(),
-              mean: zod.number().nullish(),
-              stdev: zod.number().nullish(),
-              lower: zod.number().nullish(),
-              upper: zod.number().nullish()
-            })
-            .describe('Serializer for probability distributions'),
-          type: zod
-            .enum(['income', 'expense', 'invest', 'rebalance'])
-            .describe(
-              '* `income` - Income\n* `expense` - Expense\n* `invest` - Invest\n* `rebalance` - Rebalance'
-            ),
-          initialAmount: zod.number().optional(),
-          changeAmtOrPct: zod.string().optional(),
-          changeDistribution: zod
-            .object({
-              type: zod
-                .enum(['fixed', 'normal', 'uniform'])
-                .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
-              value: zod.number().nullish(),
-              mean: zod.number().nullish(),
-              stdev: zod.number().nullish(),
-              lower: zod.number().nullish(),
-              upper: zod.number().nullish()
-            })
-            .optional()
-            .describe('Serializer for probability distributions'),
-          inflationAdjusted: zod.boolean().optional(),
-          userFraction: zod.number().optional(),
-          socialSecurity: zod.boolean().optional(),
-          discretionary: zod.boolean().optional(),
-          assetAllocation: zod
-            .record(zod.string(), zod.any())
-            .describe('Get initial asset allocation as dict'),
-          glidePath: zod.boolean().optional(),
-          assetAllocation2: zod
-            .record(zod.string(), zod.any())
-            .describe('Get final asset allocation for glide path'),
-          maxCash: zod.number().optional()
-        })
-        .describe('Serializer for event series with complex nested data')
-    ),
-    inflationAssumption: zod
-      .object({
+        .nullish(),
+      startWithEventName: zod.string(),
+      startAfterEventName: zod.string(),
+      durationDistribution: zod.object({
         type: zod
           .enum(['fixed', 'normal', 'uniform'])
           .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
@@ -1862,20 +2568,309 @@ export const scenariosSimulateCreateResponse = zod
         stdev: zod.number().nullish(),
         lower: zod.number().nullish(),
         upper: zod.number().nullish()
-      })
-      .describe('Serializer for probability distributions'),
-    afterTaxContributionLimit: zod.number(),
-    spendingStrategy: zod.array(zod.string()),
-    expenseWithdrawalStrategy: zod.array(zod.string()),
-    RMDStrategy: zod.array(zod.string()),
-    RothConversionOpt: zod.boolean(),
-    RothConversionStart: zod.number().optional(),
-    RothConversionEnd: zod.number().optional(),
-    RothConversionStrategy: zod.array(zod.string()),
-    financialGoal: zod.number(),
-    residenceState: zod.string()
-  })
-  .describe('Main serializer for complete scenarios matching YAML format');
+      }),
+      type: zod
+        .enum(['income', 'expense', 'invest', 'rebalance'])
+        .describe(
+          '* `income` - Income\n* `expense` - Expense\n* `invest` - Invest\n* `rebalance` - Rebalance'
+        ),
+      initialAmount: zod.number().nullish(),
+      changeAmtOrPct: zod
+        .enum(['amount', 'percent'])
+        .describe('* `amount` - Amount\n* `percent` - Percent')
+        .or(zod.enum(['']))
+        .or(zod.literal(null))
+        .nullish(),
+      changeDistribution: zod
+        .object({
+          type: zod
+            .enum(['fixed', 'normal', 'uniform'])
+            .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
+          value: zod.number().nullish(),
+          mean: zod.number().nullish(),
+          stdev: zod.number().nullish(),
+          lower: zod.number().nullish(),
+          upper: zod.number().nullish()
+        })
+        .nullish(),
+      inflationAdjusted: zod.boolean().optional(),
+      userFraction: zod.number().nullish(),
+      socialSecurity: zod.boolean().optional(),
+      discretionary: zod.boolean().optional(),
+      maxCash: zod.number().nullish(),
+      glidePath: zod.boolean().optional(),
+      assetAllocations: zod.array(
+        zod.object({
+          investmentId: zod.string(),
+          percentage: zod.number(),
+          isFinalAllocation: zod.boolean().optional()
+        })
+      ),
+      startWithEventNameInput: zod.string().optional(),
+      startAfterEventNameInput: zod.string().optional(),
+      assetAllocationInput: zod.record(zod.string(), zod.any()).optional(),
+      assetAllocation2Input: zod.record(zod.string(), zod.any()).optional()
+    })
+  ),
+  spendingStrategyInput: zod.array(zod.string()).optional(),
+  expenseWithdrawalStrategyInput: zod.array(zod.string()).optional(),
+  rmdStrategyInput: zod.array(zod.string()).optional(),
+  rothConversionStrategyInput: zod.array(zod.string()).optional()
+});
+
+export const scenariosSimulateCreateResponseNameMax = 200;
+export const scenariosSimulateCreateResponseUserBirthYearMin = -9223372036854776000;
+
+export const scenariosSimulateCreateResponseUserBirthYearMax = 9223372036854776000;
+export const scenariosSimulateCreateResponseSpouseBirthYearMin = -9223372036854776000;
+
+export const scenariosSimulateCreateResponseSpouseBirthYearMax = 9223372036854776000;
+export const scenariosSimulateCreateResponseResidenceStateMax = 2;
+export const scenariosSimulateCreateResponseRothConversionStartMin = -9223372036854776000;
+
+export const scenariosSimulateCreateResponseRothConversionStartMax = 9223372036854776000;
+export const scenariosSimulateCreateResponseRothConversionEndMin = -9223372036854776000;
+
+export const scenariosSimulateCreateResponseRothConversionEndMax = 9223372036854776000;
+export const scenariosSimulateCreateResponseInvestmentsItemInvestmentTypeNameMax = 100;
+export const scenariosSimulateCreateResponseInvestmentsItemInvestmentIdMax = 100;
+export const scenariosSimulateCreateResponseEventSeriesItemNameMax = 100;
+export const scenariosSimulateCreateResponseSpendingStrategyItemsItemOrderMin = 0;
+
+export const scenariosSimulateCreateResponseSpendingStrategyItemsItemOrderMax = 9223372036854776000;
+export const scenariosSimulateCreateResponseExpenseWithdrawalStrategyItemsItemOrderMin = 0;
+
+export const scenariosSimulateCreateResponseExpenseWithdrawalStrategyItemsItemOrderMax = 9223372036854776000;
+export const scenariosSimulateCreateResponseRmdStrategyItemsItemOrderMin = 0;
+
+export const scenariosSimulateCreateResponseRmdStrategyItemsItemOrderMax = 9223372036854776000;
+export const scenariosSimulateCreateResponseRothConversionStrategyItemsItemOrderMin = 0;
+
+export const scenariosSimulateCreateResponseRothConversionStrategyItemsItemOrderMax = 9223372036854776000;
+
+export const scenariosSimulateCreateResponse = zod.object({
+  id: zod.number(),
+  name: zod.string().max(scenariosSimulateCreateResponseNameMax),
+  maritalStatus: zod
+    .enum(['individual', 'couple'])
+    .describe('* `individual` - Individual\n* `couple` - Couple'),
+  userBirthYear: zod
+    .number()
+    .min(scenariosSimulateCreateResponseUserBirthYearMin)
+    .max(scenariosSimulateCreateResponseUserBirthYearMax),
+  spouseBirthYear: zod
+    .number()
+    .min(scenariosSimulateCreateResponseSpouseBirthYearMin)
+    .max(scenariosSimulateCreateResponseSpouseBirthYearMax)
+    .nullish(),
+  userLifeExpectancy: zod.object({
+    type: zod
+      .enum(['fixed', 'normal', 'uniform'])
+      .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
+    value: zod.number().nullish(),
+    mean: zod.number().nullish(),
+    stdev: zod.number().nullish(),
+    lower: zod.number().nullish(),
+    upper: zod.number().nullish()
+  }),
+  spouseLifeExpectancy: zod
+    .object({
+      type: zod
+        .enum(['fixed', 'normal', 'uniform'])
+        .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
+      value: zod.number().nullish(),
+      mean: zod.number().nullish(),
+      stdev: zod.number().nullish(),
+      lower: zod.number().nullish(),
+      upper: zod.number().nullish()
+    })
+    .nullish(),
+  inflationAssumption: zod.object({
+    type: zod
+      .enum(['fixed', 'normal', 'uniform'])
+      .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
+    value: zod.number().nullish(),
+    mean: zod.number().nullish(),
+    stdev: zod.number().nullish(),
+    lower: zod.number().nullish(),
+    upper: zod.number().nullish()
+  }),
+  afterTaxContributionLimit: zod.number(),
+  financialGoal: zod.number(),
+  residenceState: zod.string().max(scenariosSimulateCreateResponseResidenceStateMax),
+  rothConversionOpt: zod.boolean().optional(),
+  rothConversionStart: zod
+    .number()
+    .min(scenariosSimulateCreateResponseRothConversionStartMin)
+    .max(scenariosSimulateCreateResponseRothConversionStartMax)
+    .nullish(),
+  rothConversionEnd: zod
+    .number()
+    .min(scenariosSimulateCreateResponseRothConversionEndMin)
+    .max(scenariosSimulateCreateResponseRothConversionEndMax)
+    .nullish(),
+  investments: zod.array(
+    zod.object({
+      investmentType: zod.object({
+        name: zod.string().max(scenariosSimulateCreateResponseInvestmentsItemInvestmentTypeNameMax),
+        description: zod.string(),
+        returnAmtOrPct: zod
+          .enum(['amount', 'percent'])
+          .describe('* `amount` - Amount\n* `percent` - Percent'),
+        returnDistribution: zod.object({
+          type: zod
+            .enum(['fixed', 'normal', 'uniform'])
+            .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
+          value: zod.number().nullish(),
+          mean: zod.number().nullish(),
+          stdev: zod.number().nullish(),
+          lower: zod.number().nullish(),
+          upper: zod.number().nullish()
+        }),
+        expenseRatio: zod.number(),
+        incomeAmtOrPct: zod
+          .enum(['amount', 'percent'])
+          .describe('* `amount` - Amount\n* `percent` - Percent'),
+        incomeDistribution: zod.object({
+          type: zod
+            .enum(['fixed', 'normal', 'uniform'])
+            .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
+          value: zod.number().nullish(),
+          mean: zod.number().nullish(),
+          stdev: zod.number().nullish(),
+          lower: zod.number().nullish(),
+          upper: zod.number().nullish()
+        }),
+        taxability: zod.boolean()
+      }),
+      value: zod.number(),
+      taxStatus: zod
+        .enum(['non-retirement', 'pre-tax', 'after-tax'])
+        .describe(
+          '* `non-retirement` - Non-retirement\n* `pre-tax` - Pre-tax Retirement\n* `after-tax` - After-tax Retirement'
+        ),
+      investmentId: zod.string().max(scenariosSimulateCreateResponseInvestmentsItemInvestmentIdMax)
+    })
+  ),
+  eventSeries: zod.array(
+    zod.object({
+      name: zod.string().max(scenariosSimulateCreateResponseEventSeriesItemNameMax),
+      description: zod.string().optional(),
+      startType: zod
+        .enum(['distribution', 'start_with', 'start_after'])
+        .describe(
+          '* `distribution` - Distribution\n* `start_with` - Start With Event\n* `start_after` - Start After Event'
+        ),
+      startDistribution: zod
+        .object({
+          type: zod
+            .enum(['fixed', 'normal', 'uniform'])
+            .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
+          value: zod.number().nullish(),
+          mean: zod.number().nullish(),
+          stdev: zod.number().nullish(),
+          lower: zod.number().nullish(),
+          upper: zod.number().nullish()
+        })
+        .nullish(),
+      startWithEventName: zod.string(),
+      startAfterEventName: zod.string(),
+      durationDistribution: zod.object({
+        type: zod
+          .enum(['fixed', 'normal', 'uniform'])
+          .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
+        value: zod.number().nullish(),
+        mean: zod.number().nullish(),
+        stdev: zod.number().nullish(),
+        lower: zod.number().nullish(),
+        upper: zod.number().nullish()
+      }),
+      type: zod
+        .enum(['income', 'expense', 'invest', 'rebalance'])
+        .describe(
+          '* `income` - Income\n* `expense` - Expense\n* `invest` - Invest\n* `rebalance` - Rebalance'
+        ),
+      initialAmount: zod.number().nullish(),
+      changeAmtOrPct: zod
+        .enum(['amount', 'percent'])
+        .describe('* `amount` - Amount\n* `percent` - Percent')
+        .or(zod.enum(['']))
+        .or(zod.literal(null))
+        .nullish(),
+      changeDistribution: zod
+        .object({
+          type: zod
+            .enum(['fixed', 'normal', 'uniform'])
+            .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
+          value: zod.number().nullish(),
+          mean: zod.number().nullish(),
+          stdev: zod.number().nullish(),
+          lower: zod.number().nullish(),
+          upper: zod.number().nullish()
+        })
+        .nullish(),
+      inflationAdjusted: zod.boolean().optional(),
+      userFraction: zod.number().nullish(),
+      socialSecurity: zod.boolean().optional(),
+      discretionary: zod.boolean().optional(),
+      maxCash: zod.number().nullish(),
+      glidePath: zod.boolean().optional(),
+      assetAllocations: zod.array(
+        zod.object({
+          investmentId: zod.string(),
+          percentage: zod.number(),
+          isFinalAllocation: zod.boolean().optional()
+        })
+      ),
+      startWithEventNameInput: zod.string().optional(),
+      startAfterEventNameInput: zod.string().optional(),
+      assetAllocationInput: zod.record(zod.string(), zod.any()).optional(),
+      assetAllocation2Input: zod.record(zod.string(), zod.any()).optional()
+    })
+  ),
+  spendingStrategyItems: zod.array(
+    zod.object({
+      eventSeriesName: zod.string(),
+      order: zod
+        .number()
+        .min(scenariosSimulateCreateResponseSpendingStrategyItemsItemOrderMin)
+        .max(scenariosSimulateCreateResponseSpendingStrategyItemsItemOrderMax)
+    })
+  ),
+  expenseWithdrawalStrategyItems: zod.array(
+    zod.object({
+      investmentId: zod.string(),
+      order: zod
+        .number()
+        .min(scenariosSimulateCreateResponseExpenseWithdrawalStrategyItemsItemOrderMin)
+        .max(scenariosSimulateCreateResponseExpenseWithdrawalStrategyItemsItemOrderMax)
+    })
+  ),
+  rmdStrategyItems: zod.array(
+    zod.object({
+      investmentId: zod.string(),
+      order: zod
+        .number()
+        .min(scenariosSimulateCreateResponseRmdStrategyItemsItemOrderMin)
+        .max(scenariosSimulateCreateResponseRmdStrategyItemsItemOrderMax)
+    })
+  ),
+  rothConversionStrategyItems: zod.array(
+    zod.object({
+      investmentId: zod.string(),
+      order: zod
+        .number()
+        .min(scenariosSimulateCreateResponseRothConversionStrategyItemsItemOrderMin)
+        .max(scenariosSimulateCreateResponseRothConversionStrategyItemsItemOrderMax)
+    })
+  ),
+  createdAt: zod.string().datetime({}),
+  updatedAt: zod.string().datetime({}),
+  spendingStrategyInput: zod.array(zod.string()).optional(),
+  expenseWithdrawalStrategyInput: zod.array(zod.string()).optional(),
+  rmdStrategyInput: zod.array(zod.string()).optional(),
+  rothConversionStrategyInput: zod.array(zod.string()).optional()
+});
 
 /**
  * Validate scenario for simulation readiness
@@ -1885,16 +2880,153 @@ export const scenariosValidateScenarioRetrieveParams = zod.object({
 });
 
 export const scenariosValidateScenarioRetrieveResponseNameMax = 200;
-export const scenariosValidateScenarioRetrieveResponseInvestmentTypesItemNameMax = 100;
-export const scenariosValidateScenarioRetrieveResponseEventSeriesItemNameMax = 100;
+export const scenariosValidateScenarioRetrieveResponseUserBirthYearMin = -9223372036854776000;
 
-export const scenariosValidateScenarioRetrieveResponse = zod
-  .object({
-    name: zod.string().max(scenariosValidateScenarioRetrieveResponseNameMax),
-    maritalStatus: zod.string(),
-    birthYears: zod.array(zod.number()),
-    lifeExpectancy: zod.array(
-      zod
+export const scenariosValidateScenarioRetrieveResponseUserBirthYearMax = 9223372036854776000;
+export const scenariosValidateScenarioRetrieveResponseSpouseBirthYearMin = -9223372036854776000;
+
+export const scenariosValidateScenarioRetrieveResponseSpouseBirthYearMax = 9223372036854776000;
+export const scenariosValidateScenarioRetrieveResponseResidenceStateMax = 2;
+export const scenariosValidateScenarioRetrieveResponseRothConversionStartMin = -9223372036854776000;
+
+export const scenariosValidateScenarioRetrieveResponseRothConversionStartMax = 9223372036854776000;
+export const scenariosValidateScenarioRetrieveResponseRothConversionEndMin = -9223372036854776000;
+
+export const scenariosValidateScenarioRetrieveResponseRothConversionEndMax = 9223372036854776000;
+export const scenariosValidateScenarioRetrieveResponseInvestmentsItemInvestmentTypeNameMax = 100;
+export const scenariosValidateScenarioRetrieveResponseInvestmentsItemInvestmentIdMax = 100;
+export const scenariosValidateScenarioRetrieveResponseEventSeriesItemNameMax = 100;
+export const scenariosValidateScenarioRetrieveResponseSpendingStrategyItemsItemOrderMin = 0;
+
+export const scenariosValidateScenarioRetrieveResponseSpendingStrategyItemsItemOrderMax = 9223372036854776000;
+export const scenariosValidateScenarioRetrieveResponseExpenseWithdrawalStrategyItemsItemOrderMin = 0;
+
+export const scenariosValidateScenarioRetrieveResponseExpenseWithdrawalStrategyItemsItemOrderMax = 9223372036854776000;
+export const scenariosValidateScenarioRetrieveResponseRmdStrategyItemsItemOrderMin = 0;
+
+export const scenariosValidateScenarioRetrieveResponseRmdStrategyItemsItemOrderMax = 9223372036854776000;
+export const scenariosValidateScenarioRetrieveResponseRothConversionStrategyItemsItemOrderMin = 0;
+
+export const scenariosValidateScenarioRetrieveResponseRothConversionStrategyItemsItemOrderMax = 9223372036854776000;
+
+export const scenariosValidateScenarioRetrieveResponse = zod.object({
+  id: zod.number(),
+  name: zod.string().max(scenariosValidateScenarioRetrieveResponseNameMax),
+  maritalStatus: zod
+    .enum(['individual', 'couple'])
+    .describe('* `individual` - Individual\n* `couple` - Couple'),
+  userBirthYear: zod
+    .number()
+    .min(scenariosValidateScenarioRetrieveResponseUserBirthYearMin)
+    .max(scenariosValidateScenarioRetrieveResponseUserBirthYearMax),
+  spouseBirthYear: zod
+    .number()
+    .min(scenariosValidateScenarioRetrieveResponseSpouseBirthYearMin)
+    .max(scenariosValidateScenarioRetrieveResponseSpouseBirthYearMax)
+    .nullish(),
+  userLifeExpectancy: zod.object({
+    type: zod
+      .enum(['fixed', 'normal', 'uniform'])
+      .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
+    value: zod.number().nullish(),
+    mean: zod.number().nullish(),
+    stdev: zod.number().nullish(),
+    lower: zod.number().nullish(),
+    upper: zod.number().nullish()
+  }),
+  spouseLifeExpectancy: zod
+    .object({
+      type: zod
+        .enum(['fixed', 'normal', 'uniform'])
+        .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
+      value: zod.number().nullish(),
+      mean: zod.number().nullish(),
+      stdev: zod.number().nullish(),
+      lower: zod.number().nullish(),
+      upper: zod.number().nullish()
+    })
+    .nullish(),
+  inflationAssumption: zod.object({
+    type: zod
+      .enum(['fixed', 'normal', 'uniform'])
+      .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
+    value: zod.number().nullish(),
+    mean: zod.number().nullish(),
+    stdev: zod.number().nullish(),
+    lower: zod.number().nullish(),
+    upper: zod.number().nullish()
+  }),
+  afterTaxContributionLimit: zod.number(),
+  financialGoal: zod.number(),
+  residenceState: zod.string().max(scenariosValidateScenarioRetrieveResponseResidenceStateMax),
+  rothConversionOpt: zod.boolean().optional(),
+  rothConversionStart: zod
+    .number()
+    .min(scenariosValidateScenarioRetrieveResponseRothConversionStartMin)
+    .max(scenariosValidateScenarioRetrieveResponseRothConversionStartMax)
+    .nullish(),
+  rothConversionEnd: zod
+    .number()
+    .min(scenariosValidateScenarioRetrieveResponseRothConversionEndMin)
+    .max(scenariosValidateScenarioRetrieveResponseRothConversionEndMax)
+    .nullish(),
+  investments: zod.array(
+    zod.object({
+      investmentType: zod.object({
+        name: zod
+          .string()
+          .max(scenariosValidateScenarioRetrieveResponseInvestmentsItemInvestmentTypeNameMax),
+        description: zod.string(),
+        returnAmtOrPct: zod
+          .enum(['amount', 'percent'])
+          .describe('* `amount` - Amount\n* `percent` - Percent'),
+        returnDistribution: zod.object({
+          type: zod
+            .enum(['fixed', 'normal', 'uniform'])
+            .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
+          value: zod.number().nullish(),
+          mean: zod.number().nullish(),
+          stdev: zod.number().nullish(),
+          lower: zod.number().nullish(),
+          upper: zod.number().nullish()
+        }),
+        expenseRatio: zod.number(),
+        incomeAmtOrPct: zod
+          .enum(['amount', 'percent'])
+          .describe('* `amount` - Amount\n* `percent` - Percent'),
+        incomeDistribution: zod.object({
+          type: zod
+            .enum(['fixed', 'normal', 'uniform'])
+            .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
+          value: zod.number().nullish(),
+          mean: zod.number().nullish(),
+          stdev: zod.number().nullish(),
+          lower: zod.number().nullish(),
+          upper: zod.number().nullish()
+        }),
+        taxability: zod.boolean()
+      }),
+      value: zod.number(),
+      taxStatus: zod
+        .enum(['non-retirement', 'pre-tax', 'after-tax'])
+        .describe(
+          '* `non-retirement` - Non-retirement\n* `pre-tax` - Pre-tax Retirement\n* `after-tax` - After-tax Retirement'
+        ),
+      investmentId: zod
+        .string()
+        .max(scenariosValidateScenarioRetrieveResponseInvestmentsItemInvestmentIdMax)
+    })
+  ),
+  eventSeries: zod.array(
+    zod.object({
+      name: zod.string().max(scenariosValidateScenarioRetrieveResponseEventSeriesItemNameMax),
+      description: zod.string().optional(),
+      startType: zod
+        .enum(['distribution', 'start_with', 'start_after'])
+        .describe(
+          '* `distribution` - Distribution\n* `start_with` - Start With Event\n* `start_after` - Start After Event'
+        ),
+      startDistribution: zod
         .object({
           type: zod
             .enum(['fixed', 'normal', 'uniform'])
@@ -1905,122 +3037,10 @@ export const scenariosValidateScenarioRetrieveResponse = zod
           lower: zod.number().nullish(),
           upper: zod.number().nullish()
         })
-        .describe('Serializer for probability distributions')
-    ),
-    investmentTypes: zod.array(
-      zod
-        .object({
-          name: zod
-            .string()
-            .max(scenariosValidateScenarioRetrieveResponseInvestmentTypesItemNameMax),
-          description: zod.string(),
-          returnAmtOrPct: zod.string(),
-          returnDistribution: zod
-            .object({
-              type: zod
-                .enum(['fixed', 'normal', 'uniform'])
-                .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
-              value: zod.number().nullish(),
-              mean: zod.number().nullish(),
-              stdev: zod.number().nullish(),
-              lower: zod.number().nullish(),
-              upper: zod.number().nullish()
-            })
-            .describe('Serializer for probability distributions'),
-          expenseRatio: zod.number(),
-          incomeAmtOrPct: zod.string(),
-          incomeDistribution: zod
-            .object({
-              type: zod
-                .enum(['fixed', 'normal', 'uniform'])
-                .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
-              value: zod.number().nullish(),
-              mean: zod.number().nullish(),
-              stdev: zod.number().nullish(),
-              lower: zod.number().nullish(),
-              upper: zod.number().nullish()
-            })
-            .describe('Serializer for probability distributions'),
-          taxability: zod.boolean()
-        })
-        .describe('Serializer for investment types')
-    ),
-    investments: zod.array(
-      zod
-        .object({
-          investmentType: zod.string(),
-          value: zod.number(),
-          taxStatus: zod.string(),
-          id: zod.string()
-        })
-        .describe('Serializer for individual investments')
-    ),
-    eventSeries: zod.array(
-      zod
-        .object({
-          name: zod.string().max(scenariosValidateScenarioRetrieveResponseEventSeriesItemNameMax),
-          start: zod
-            .object({
-              type: zod
-                .enum(['fixed', 'normal', 'uniform'])
-                .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
-              value: zod.number().nullish(),
-              mean: zod.number().nullish(),
-              stdev: zod.number().nullish(),
-              lower: zod.number().nullish(),
-              upper: zod.number().nullish()
-            })
-            .optional()
-            .describe('Serializer for probability distributions'),
-          duration: zod
-            .object({
-              type: zod
-                .enum(['fixed', 'normal', 'uniform'])
-                .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
-              value: zod.number().nullish(),
-              mean: zod.number().nullish(),
-              stdev: zod.number().nullish(),
-              lower: zod.number().nullish(),
-              upper: zod.number().nullish()
-            })
-            .describe('Serializer for probability distributions'),
-          type: zod
-            .enum(['income', 'expense', 'invest', 'rebalance'])
-            .describe(
-              '* `income` - Income\n* `expense` - Expense\n* `invest` - Invest\n* `rebalance` - Rebalance'
-            ),
-          initialAmount: zod.number().optional(),
-          changeAmtOrPct: zod.string().optional(),
-          changeDistribution: zod
-            .object({
-              type: zod
-                .enum(['fixed', 'normal', 'uniform'])
-                .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
-              value: zod.number().nullish(),
-              mean: zod.number().nullish(),
-              stdev: zod.number().nullish(),
-              lower: zod.number().nullish(),
-              upper: zod.number().nullish()
-            })
-            .optional()
-            .describe('Serializer for probability distributions'),
-          inflationAdjusted: zod.boolean().optional(),
-          userFraction: zod.number().optional(),
-          socialSecurity: zod.boolean().optional(),
-          discretionary: zod.boolean().optional(),
-          assetAllocation: zod
-            .record(zod.string(), zod.any())
-            .describe('Get initial asset allocation as dict'),
-          glidePath: zod.boolean().optional(),
-          assetAllocation2: zod
-            .record(zod.string(), zod.any())
-            .describe('Get final asset allocation for glide path'),
-          maxCash: zod.number().optional()
-        })
-        .describe('Serializer for event series with complex nested data')
-    ),
-    inflationAssumption: zod
-      .object({
+        .nullish(),
+      startWithEventName: zod.string(),
+      startAfterEventName: zod.string(),
+      durationDistribution: zod.object({
         type: zod
           .enum(['fixed', 'normal', 'uniform'])
           .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
@@ -2029,174 +3049,232 @@ export const scenariosValidateScenarioRetrieveResponse = zod
         stdev: zod.number().nullish(),
         lower: zod.number().nullish(),
         upper: zod.number().nullish()
-      })
-      .describe('Serializer for probability distributions'),
-    afterTaxContributionLimit: zod.number(),
-    spendingStrategy: zod.array(zod.string()),
-    expenseWithdrawalStrategy: zod.array(zod.string()),
-    RMDStrategy: zod.array(zod.string()),
-    RothConversionOpt: zod.boolean(),
-    RothConversionStart: zod.number().optional(),
-    RothConversionEnd: zod.number().optional(),
-    RothConversionStrategy: zod.array(zod.string()),
-    financialGoal: zod.number(),
-    residenceState: zod.string()
-  })
-  .describe('Main serializer for complete scenarios matching YAML format');
+      }),
+      type: zod
+        .enum(['income', 'expense', 'invest', 'rebalance'])
+        .describe(
+          '* `income` - Income\n* `expense` - Expense\n* `invest` - Invest\n* `rebalance` - Rebalance'
+        ),
+      initialAmount: zod.number().nullish(),
+      changeAmtOrPct: zod
+        .enum(['amount', 'percent'])
+        .describe('* `amount` - Amount\n* `percent` - Percent')
+        .or(zod.enum(['']))
+        .or(zod.literal(null))
+        .nullish(),
+      changeDistribution: zod
+        .object({
+          type: zod
+            .enum(['fixed', 'normal', 'uniform'])
+            .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
+          value: zod.number().nullish(),
+          mean: zod.number().nullish(),
+          stdev: zod.number().nullish(),
+          lower: zod.number().nullish(),
+          upper: zod.number().nullish()
+        })
+        .nullish(),
+      inflationAdjusted: zod.boolean().optional(),
+      userFraction: zod.number().nullish(),
+      socialSecurity: zod.boolean().optional(),
+      discretionary: zod.boolean().optional(),
+      maxCash: zod.number().nullish(),
+      glidePath: zod.boolean().optional(),
+      assetAllocations: zod.array(
+        zod.object({
+          investmentId: zod.string(),
+          percentage: zod.number(),
+          isFinalAllocation: zod.boolean().optional()
+        })
+      ),
+      startWithEventNameInput: zod.string().optional(),
+      startAfterEventNameInput: zod.string().optional(),
+      assetAllocationInput: zod.record(zod.string(), zod.any()).optional(),
+      assetAllocation2Input: zod.record(zod.string(), zod.any()).optional()
+    })
+  ),
+  spendingStrategyItems: zod.array(
+    zod.object({
+      eventSeriesName: zod.string(),
+      order: zod
+        .number()
+        .min(scenariosValidateScenarioRetrieveResponseSpendingStrategyItemsItemOrderMin)
+        .max(scenariosValidateScenarioRetrieveResponseSpendingStrategyItemsItemOrderMax)
+    })
+  ),
+  expenseWithdrawalStrategyItems: zod.array(
+    zod.object({
+      investmentId: zod.string(),
+      order: zod
+        .number()
+        .min(scenariosValidateScenarioRetrieveResponseExpenseWithdrawalStrategyItemsItemOrderMin)
+        .max(scenariosValidateScenarioRetrieveResponseExpenseWithdrawalStrategyItemsItemOrderMax)
+    })
+  ),
+  rmdStrategyItems: zod.array(
+    zod.object({
+      investmentId: zod.string(),
+      order: zod
+        .number()
+        .min(scenariosValidateScenarioRetrieveResponseRmdStrategyItemsItemOrderMin)
+        .max(scenariosValidateScenarioRetrieveResponseRmdStrategyItemsItemOrderMax)
+    })
+  ),
+  rothConversionStrategyItems: zod.array(
+    zod.object({
+      investmentId: zod.string(),
+      order: zod
+        .number()
+        .min(scenariosValidateScenarioRetrieveResponseRothConversionStrategyItemsItemOrderMin)
+        .max(scenariosValidateScenarioRetrieveResponseRothConversionStrategyItemsItemOrderMax)
+    })
+  ),
+  createdAt: zod.string().datetime({}),
+  updatedAt: zod.string().datetime({}),
+  spendingStrategyInput: zod.array(zod.string()).optional(),
+  expenseWithdrawalStrategyInput: zod.array(zod.string()).optional(),
+  rmdStrategyInput: zod.array(zod.string()).optional(),
+  rothConversionStrategyInput: zod.array(zod.string()).optional()
+});
 
 /**
  * Import scenario from YAML file
  */
 export const scenariosImportScenarioCreateBodyNameMax = 200;
-export const scenariosImportScenarioCreateBodyInvestmentTypesItemNameMax = 100;
+export const scenariosImportScenarioCreateBodyUserBirthYearMin = -9223372036854776000;
+
+export const scenariosImportScenarioCreateBodyUserBirthYearMax = 9223372036854776000;
+export const scenariosImportScenarioCreateBodySpouseBirthYearMin = -9223372036854776000;
+
+export const scenariosImportScenarioCreateBodySpouseBirthYearMax = 9223372036854776000;
+export const scenariosImportScenarioCreateBodyResidenceStateMax = 2;
+export const scenariosImportScenarioCreateBodyRothConversionStartMin = -9223372036854776000;
+
+export const scenariosImportScenarioCreateBodyRothConversionStartMax = 9223372036854776000;
+export const scenariosImportScenarioCreateBodyRothConversionEndMin = -9223372036854776000;
+
+export const scenariosImportScenarioCreateBodyRothConversionEndMax = 9223372036854776000;
+export const scenariosImportScenarioCreateBodyInvestmentsItemInvestmentTypeNameMax = 100;
+export const scenariosImportScenarioCreateBodyInvestmentsItemInvestmentIdMax = 100;
 export const scenariosImportScenarioCreateBodyEventSeriesItemNameMax = 100;
 
-export const scenariosImportScenarioCreateBody = zod
-  .object({
-    name: zod.string().max(scenariosImportScenarioCreateBodyNameMax),
-    maritalStatus: zod.string(),
-    investmentTypes: zod.array(
-      zod
-        .object({
-          name: zod.string().max(scenariosImportScenarioCreateBodyInvestmentTypesItemNameMax),
-          description: zod.string(),
-          returnAmtOrPct: zod.string(),
-          returnDistribution: zod
-            .object({
-              type: zod
-                .enum(['fixed', 'normal', 'uniform'])
-                .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
-              value: zod.number().nullish(),
-              mean: zod.number().nullish(),
-              stdev: zod.number().nullish(),
-              lower: zod.number().nullish(),
-              upper: zod.number().nullish()
-            })
-            .describe('Serializer for probability distributions'),
-          expenseRatio: zod.number(),
-          incomeAmtOrPct: zod.string(),
-          incomeDistribution: zod
-            .object({
-              type: zod
-                .enum(['fixed', 'normal', 'uniform'])
-                .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
-              value: zod.number().nullish(),
-              mean: zod.number().nullish(),
-              stdev: zod.number().nullish(),
-              lower: zod.number().nullish(),
-              upper: zod.number().nullish()
-            })
-            .describe('Serializer for probability distributions'),
-          taxability: zod.boolean()
-        })
-        .describe('Serializer for investment types')
-    ),
-    investments: zod.array(
-      zod
-        .object({
-          investmentType: zod.string(),
-          value: zod.number(),
-          taxStatus: zod.string(),
-          id: zod.string()
-        })
-        .describe('Serializer for individual investments')
-    ),
-    eventSeries: zod.array(
-      zod
-        .object({
-          name: zod.string().max(scenariosImportScenarioCreateBodyEventSeriesItemNameMax),
-          start: zod
-            .object({
-              type: zod
-                .enum(['fixed', 'normal', 'uniform'])
-                .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
-              value: zod.number().nullish(),
-              mean: zod.number().nullish(),
-              stdev: zod.number().nullish(),
-              lower: zod.number().nullish(),
-              upper: zod.number().nullish()
-            })
-            .optional()
-            .describe('Serializer for probability distributions'),
-          duration: zod
-            .object({
-              type: zod
-                .enum(['fixed', 'normal', 'uniform'])
-                .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
-              value: zod.number().nullish(),
-              mean: zod.number().nullish(),
-              stdev: zod.number().nullish(),
-              lower: zod.number().nullish(),
-              upper: zod.number().nullish()
-            })
-            .describe('Serializer for probability distributions'),
+export const scenariosImportScenarioCreateBody = zod.object({
+  name: zod.string().max(scenariosImportScenarioCreateBodyNameMax),
+  maritalStatus: zod
+    .enum(['individual', 'couple'])
+    .describe('* `individual` - Individual\n* `couple` - Couple'),
+  userBirthYear: zod
+    .number()
+    .min(scenariosImportScenarioCreateBodyUserBirthYearMin)
+    .max(scenariosImportScenarioCreateBodyUserBirthYearMax),
+  spouseBirthYear: zod
+    .number()
+    .min(scenariosImportScenarioCreateBodySpouseBirthYearMin)
+    .max(scenariosImportScenarioCreateBodySpouseBirthYearMax)
+    .nullish(),
+  userLifeExpectancy: zod.object({
+    type: zod
+      .enum(['fixed', 'normal', 'uniform'])
+      .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
+    value: zod.number().nullish(),
+    mean: zod.number().nullish(),
+    stdev: zod.number().nullish(),
+    lower: zod.number().nullish(),
+    upper: zod.number().nullish()
+  }),
+  spouseLifeExpectancy: zod
+    .object({
+      type: zod
+        .enum(['fixed', 'normal', 'uniform'])
+        .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
+      value: zod.number().nullish(),
+      mean: zod.number().nullish(),
+      stdev: zod.number().nullish(),
+      lower: zod.number().nullish(),
+      upper: zod.number().nullish()
+    })
+    .nullish(),
+  inflationAssumption: zod.object({
+    type: zod
+      .enum(['fixed', 'normal', 'uniform'])
+      .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
+    value: zod.number().nullish(),
+    mean: zod.number().nullish(),
+    stdev: zod.number().nullish(),
+    lower: zod.number().nullish(),
+    upper: zod.number().nullish()
+  }),
+  afterTaxContributionLimit: zod.number(),
+  financialGoal: zod.number(),
+  residenceState: zod.string().max(scenariosImportScenarioCreateBodyResidenceStateMax),
+  rothConversionOpt: zod.boolean().optional(),
+  rothConversionStart: zod
+    .number()
+    .min(scenariosImportScenarioCreateBodyRothConversionStartMin)
+    .max(scenariosImportScenarioCreateBodyRothConversionStartMax)
+    .nullish(),
+  rothConversionEnd: zod
+    .number()
+    .min(scenariosImportScenarioCreateBodyRothConversionEndMin)
+    .max(scenariosImportScenarioCreateBodyRothConversionEndMax)
+    .nullish(),
+  investments: zod.array(
+    zod.object({
+      investmentType: zod.object({
+        name: zod
+          .string()
+          .max(scenariosImportScenarioCreateBodyInvestmentsItemInvestmentTypeNameMax),
+        description: zod.string(),
+        returnAmtOrPct: zod
+          .enum(['amount', 'percent'])
+          .describe('* `amount` - Amount\n* `percent` - Percent'),
+        returnDistribution: zod.object({
           type: zod
-            .enum(['income', 'expense', 'invest', 'rebalance'])
-            .describe(
-              '* `income` - Income\n* `expense` - Expense\n* `invest` - Invest\n* `rebalance` - Rebalance'
-            ),
-          initialAmount: zod.number().optional(),
-          changeAmtOrPct: zod.string().optional(),
-          changeDistribution: zod
-            .object({
-              type: zod
-                .enum(['fixed', 'normal', 'uniform'])
-                .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
-              value: zod.number().nullish(),
-              mean: zod.number().nullish(),
-              stdev: zod.number().nullish(),
-              lower: zod.number().nullish(),
-              upper: zod.number().nullish()
-            })
-            .optional()
-            .describe('Serializer for probability distributions'),
-          inflationAdjusted: zod.boolean().optional(),
-          userFraction: zod.number().optional(),
-          socialSecurity: zod.boolean().optional(),
-          discretionary: zod.boolean().optional(),
-          assetAllocation: zod
-            .record(zod.string(), zod.any())
-            .describe('Get initial asset allocation as dict'),
-          glidePath: zod.boolean().optional(),
-          assetAllocation2: zod
-            .record(zod.string(), zod.any())
-            .describe('Get final asset allocation for glide path'),
-          maxCash: zod.number().optional()
-        })
-        .describe('Serializer for event series with complex nested data')
-    ),
-    inflationAssumption: zod
-      .object({
-        type: zod
-          .enum(['fixed', 'normal', 'uniform'])
-          .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
-        value: zod.number().nullish(),
-        mean: zod.number().nullish(),
-        stdev: zod.number().nullish(),
-        lower: zod.number().nullish(),
-        upper: zod.number().nullish()
-      })
-      .describe('Serializer for probability distributions'),
-    afterTaxContributionLimit: zod.number(),
-    RothConversionOpt: zod.boolean(),
-    RothConversionStart: zod.number().optional(),
-    RothConversionEnd: zod.number().optional(),
-    financialGoal: zod.number(),
-    residenceState: zod.string()
-  })
-  .describe('Main serializer for complete scenarios matching YAML format');
-
-export const scenariosImportScenarioCreateResponseNameMax = 200;
-export const scenariosImportScenarioCreateResponseInvestmentTypesItemNameMax = 100;
-export const scenariosImportScenarioCreateResponseEventSeriesItemNameMax = 100;
-
-export const scenariosImportScenarioCreateResponse = zod
-  .object({
-    name: zod.string().max(scenariosImportScenarioCreateResponseNameMax),
-    maritalStatus: zod.string(),
-    birthYears: zod.array(zod.number()),
-    lifeExpectancy: zod.array(
-      zod
+            .enum(['fixed', 'normal', 'uniform'])
+            .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
+          value: zod.number().nullish(),
+          mean: zod.number().nullish(),
+          stdev: zod.number().nullish(),
+          lower: zod.number().nullish(),
+          upper: zod.number().nullish()
+        }),
+        expenseRatio: zod.number(),
+        incomeAmtOrPct: zod
+          .enum(['amount', 'percent'])
+          .describe('* `amount` - Amount\n* `percent` - Percent'),
+        incomeDistribution: zod.object({
+          type: zod
+            .enum(['fixed', 'normal', 'uniform'])
+            .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
+          value: zod.number().nullish(),
+          mean: zod.number().nullish(),
+          stdev: zod.number().nullish(),
+          lower: zod.number().nullish(),
+          upper: zod.number().nullish()
+        }),
+        taxability: zod.boolean()
+      }),
+      value: zod.number(),
+      taxStatus: zod
+        .enum(['non-retirement', 'pre-tax', 'after-tax'])
+        .describe(
+          '* `non-retirement` - Non-retirement\n* `pre-tax` - Pre-tax Retirement\n* `after-tax` - After-tax Retirement'
+        ),
+      investmentId: zod
+        .string()
+        .max(scenariosImportScenarioCreateBodyInvestmentsItemInvestmentIdMax)
+    })
+  ),
+  eventSeries: zod.array(
+    zod.object({
+      name: zod.string().max(scenariosImportScenarioCreateBodyEventSeriesItemNameMax),
+      description: zod.string().optional(),
+      startType: zod
+        .enum(['distribution', 'start_with', 'start_after'])
+        .describe(
+          '* `distribution` - Distribution\n* `start_with` - Start With Event\n* `start_after` - Start After Event'
+        ),
+      startDistribution: zod
         .object({
           type: zod
             .enum(['fixed', 'normal', 'uniform'])
@@ -2207,120 +3285,10 @@ export const scenariosImportScenarioCreateResponse = zod
           lower: zod.number().nullish(),
           upper: zod.number().nullish()
         })
-        .describe('Serializer for probability distributions')
-    ),
-    investmentTypes: zod.array(
-      zod
-        .object({
-          name: zod.string().max(scenariosImportScenarioCreateResponseInvestmentTypesItemNameMax),
-          description: zod.string(),
-          returnAmtOrPct: zod.string(),
-          returnDistribution: zod
-            .object({
-              type: zod
-                .enum(['fixed', 'normal', 'uniform'])
-                .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
-              value: zod.number().nullish(),
-              mean: zod.number().nullish(),
-              stdev: zod.number().nullish(),
-              lower: zod.number().nullish(),
-              upper: zod.number().nullish()
-            })
-            .describe('Serializer for probability distributions'),
-          expenseRatio: zod.number(),
-          incomeAmtOrPct: zod.string(),
-          incomeDistribution: zod
-            .object({
-              type: zod
-                .enum(['fixed', 'normal', 'uniform'])
-                .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
-              value: zod.number().nullish(),
-              mean: zod.number().nullish(),
-              stdev: zod.number().nullish(),
-              lower: zod.number().nullish(),
-              upper: zod.number().nullish()
-            })
-            .describe('Serializer for probability distributions'),
-          taxability: zod.boolean()
-        })
-        .describe('Serializer for investment types')
-    ),
-    investments: zod.array(
-      zod
-        .object({
-          investmentType: zod.string(),
-          value: zod.number(),
-          taxStatus: zod.string(),
-          id: zod.string()
-        })
-        .describe('Serializer for individual investments')
-    ),
-    eventSeries: zod.array(
-      zod
-        .object({
-          name: zod.string().max(scenariosImportScenarioCreateResponseEventSeriesItemNameMax),
-          start: zod
-            .object({
-              type: zod
-                .enum(['fixed', 'normal', 'uniform'])
-                .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
-              value: zod.number().nullish(),
-              mean: zod.number().nullish(),
-              stdev: zod.number().nullish(),
-              lower: zod.number().nullish(),
-              upper: zod.number().nullish()
-            })
-            .optional()
-            .describe('Serializer for probability distributions'),
-          duration: zod
-            .object({
-              type: zod
-                .enum(['fixed', 'normal', 'uniform'])
-                .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
-              value: zod.number().nullish(),
-              mean: zod.number().nullish(),
-              stdev: zod.number().nullish(),
-              lower: zod.number().nullish(),
-              upper: zod.number().nullish()
-            })
-            .describe('Serializer for probability distributions'),
-          type: zod
-            .enum(['income', 'expense', 'invest', 'rebalance'])
-            .describe(
-              '* `income` - Income\n* `expense` - Expense\n* `invest` - Invest\n* `rebalance` - Rebalance'
-            ),
-          initialAmount: zod.number().optional(),
-          changeAmtOrPct: zod.string().optional(),
-          changeDistribution: zod
-            .object({
-              type: zod
-                .enum(['fixed', 'normal', 'uniform'])
-                .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
-              value: zod.number().nullish(),
-              mean: zod.number().nullish(),
-              stdev: zod.number().nullish(),
-              lower: zod.number().nullish(),
-              upper: zod.number().nullish()
-            })
-            .optional()
-            .describe('Serializer for probability distributions'),
-          inflationAdjusted: zod.boolean().optional(),
-          userFraction: zod.number().optional(),
-          socialSecurity: zod.boolean().optional(),
-          discretionary: zod.boolean().optional(),
-          assetAllocation: zod
-            .record(zod.string(), zod.any())
-            .describe('Get initial asset allocation as dict'),
-          glidePath: zod.boolean().optional(),
-          assetAllocation2: zod
-            .record(zod.string(), zod.any())
-            .describe('Get final asset allocation for glide path'),
-          maxCash: zod.number().optional()
-        })
-        .describe('Serializer for event series with complex nested data')
-    ),
-    inflationAssumption: zod
-      .object({
+        .nullish(),
+      startWithEventName: zod.string(),
+      startAfterEventName: zod.string(),
+      durationDistribution: zod.object({
         type: zod
           .enum(['fixed', 'normal', 'uniform'])
           .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
@@ -2329,17 +3297,310 @@ export const scenariosImportScenarioCreateResponse = zod
         stdev: zod.number().nullish(),
         lower: zod.number().nullish(),
         upper: zod.number().nullish()
-      })
-      .describe('Serializer for probability distributions'),
-    afterTaxContributionLimit: zod.number(),
-    spendingStrategy: zod.array(zod.string()),
-    expenseWithdrawalStrategy: zod.array(zod.string()),
-    RMDStrategy: zod.array(zod.string()),
-    RothConversionOpt: zod.boolean(),
-    RothConversionStart: zod.number().optional(),
-    RothConversionEnd: zod.number().optional(),
-    RothConversionStrategy: zod.array(zod.string()),
-    financialGoal: zod.number(),
-    residenceState: zod.string()
-  })
-  .describe('Main serializer for complete scenarios matching YAML format');
+      }),
+      type: zod
+        .enum(['income', 'expense', 'invest', 'rebalance'])
+        .describe(
+          '* `income` - Income\n* `expense` - Expense\n* `invest` - Invest\n* `rebalance` - Rebalance'
+        ),
+      initialAmount: zod.number().nullish(),
+      changeAmtOrPct: zod
+        .enum(['amount', 'percent'])
+        .describe('* `amount` - Amount\n* `percent` - Percent')
+        .or(zod.enum(['']))
+        .or(zod.literal(null))
+        .nullish(),
+      changeDistribution: zod
+        .object({
+          type: zod
+            .enum(['fixed', 'normal', 'uniform'])
+            .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
+          value: zod.number().nullish(),
+          mean: zod.number().nullish(),
+          stdev: zod.number().nullish(),
+          lower: zod.number().nullish(),
+          upper: zod.number().nullish()
+        })
+        .nullish(),
+      inflationAdjusted: zod.boolean().optional(),
+      userFraction: zod.number().nullish(),
+      socialSecurity: zod.boolean().optional(),
+      discretionary: zod.boolean().optional(),
+      maxCash: zod.number().nullish(),
+      glidePath: zod.boolean().optional(),
+      assetAllocations: zod.array(
+        zod.object({
+          investmentId: zod.string(),
+          percentage: zod.number(),
+          isFinalAllocation: zod.boolean().optional()
+        })
+      ),
+      startWithEventNameInput: zod.string().optional(),
+      startAfterEventNameInput: zod.string().optional(),
+      assetAllocationInput: zod.record(zod.string(), zod.any()).optional(),
+      assetAllocation2Input: zod.record(zod.string(), zod.any()).optional()
+    })
+  ),
+  spendingStrategyInput: zod.array(zod.string()).optional(),
+  expenseWithdrawalStrategyInput: zod.array(zod.string()).optional(),
+  rmdStrategyInput: zod.array(zod.string()).optional(),
+  rothConversionStrategyInput: zod.array(zod.string()).optional()
+});
+
+export const scenariosImportScenarioCreateResponseNameMax = 200;
+export const scenariosImportScenarioCreateResponseUserBirthYearMin = -9223372036854776000;
+
+export const scenariosImportScenarioCreateResponseUserBirthYearMax = 9223372036854776000;
+export const scenariosImportScenarioCreateResponseSpouseBirthYearMin = -9223372036854776000;
+
+export const scenariosImportScenarioCreateResponseSpouseBirthYearMax = 9223372036854776000;
+export const scenariosImportScenarioCreateResponseResidenceStateMax = 2;
+export const scenariosImportScenarioCreateResponseRothConversionStartMin = -9223372036854776000;
+
+export const scenariosImportScenarioCreateResponseRothConversionStartMax = 9223372036854776000;
+export const scenariosImportScenarioCreateResponseRothConversionEndMin = -9223372036854776000;
+
+export const scenariosImportScenarioCreateResponseRothConversionEndMax = 9223372036854776000;
+export const scenariosImportScenarioCreateResponseInvestmentsItemInvestmentTypeNameMax = 100;
+export const scenariosImportScenarioCreateResponseInvestmentsItemInvestmentIdMax = 100;
+export const scenariosImportScenarioCreateResponseEventSeriesItemNameMax = 100;
+export const scenariosImportScenarioCreateResponseSpendingStrategyItemsItemOrderMin = 0;
+
+export const scenariosImportScenarioCreateResponseSpendingStrategyItemsItemOrderMax = 9223372036854776000;
+export const scenariosImportScenarioCreateResponseExpenseWithdrawalStrategyItemsItemOrderMin = 0;
+
+export const scenariosImportScenarioCreateResponseExpenseWithdrawalStrategyItemsItemOrderMax = 9223372036854776000;
+export const scenariosImportScenarioCreateResponseRmdStrategyItemsItemOrderMin = 0;
+
+export const scenariosImportScenarioCreateResponseRmdStrategyItemsItemOrderMax = 9223372036854776000;
+export const scenariosImportScenarioCreateResponseRothConversionStrategyItemsItemOrderMin = 0;
+
+export const scenariosImportScenarioCreateResponseRothConversionStrategyItemsItemOrderMax = 9223372036854776000;
+
+export const scenariosImportScenarioCreateResponse = zod.object({
+  id: zod.number(),
+  name: zod.string().max(scenariosImportScenarioCreateResponseNameMax),
+  maritalStatus: zod
+    .enum(['individual', 'couple'])
+    .describe('* `individual` - Individual\n* `couple` - Couple'),
+  userBirthYear: zod
+    .number()
+    .min(scenariosImportScenarioCreateResponseUserBirthYearMin)
+    .max(scenariosImportScenarioCreateResponseUserBirthYearMax),
+  spouseBirthYear: zod
+    .number()
+    .min(scenariosImportScenarioCreateResponseSpouseBirthYearMin)
+    .max(scenariosImportScenarioCreateResponseSpouseBirthYearMax)
+    .nullish(),
+  userLifeExpectancy: zod.object({
+    type: zod
+      .enum(['fixed', 'normal', 'uniform'])
+      .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
+    value: zod.number().nullish(),
+    mean: zod.number().nullish(),
+    stdev: zod.number().nullish(),
+    lower: zod.number().nullish(),
+    upper: zod.number().nullish()
+  }),
+  spouseLifeExpectancy: zod
+    .object({
+      type: zod
+        .enum(['fixed', 'normal', 'uniform'])
+        .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
+      value: zod.number().nullish(),
+      mean: zod.number().nullish(),
+      stdev: zod.number().nullish(),
+      lower: zod.number().nullish(),
+      upper: zod.number().nullish()
+    })
+    .nullish(),
+  inflationAssumption: zod.object({
+    type: zod
+      .enum(['fixed', 'normal', 'uniform'])
+      .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
+    value: zod.number().nullish(),
+    mean: zod.number().nullish(),
+    stdev: zod.number().nullish(),
+    lower: zod.number().nullish(),
+    upper: zod.number().nullish()
+  }),
+  afterTaxContributionLimit: zod.number(),
+  financialGoal: zod.number(),
+  residenceState: zod.string().max(scenariosImportScenarioCreateResponseResidenceStateMax),
+  rothConversionOpt: zod.boolean().optional(),
+  rothConversionStart: zod
+    .number()
+    .min(scenariosImportScenarioCreateResponseRothConversionStartMin)
+    .max(scenariosImportScenarioCreateResponseRothConversionStartMax)
+    .nullish(),
+  rothConversionEnd: zod
+    .number()
+    .min(scenariosImportScenarioCreateResponseRothConversionEndMin)
+    .max(scenariosImportScenarioCreateResponseRothConversionEndMax)
+    .nullish(),
+  investments: zod.array(
+    zod.object({
+      investmentType: zod.object({
+        name: zod
+          .string()
+          .max(scenariosImportScenarioCreateResponseInvestmentsItemInvestmentTypeNameMax),
+        description: zod.string(),
+        returnAmtOrPct: zod
+          .enum(['amount', 'percent'])
+          .describe('* `amount` - Amount\n* `percent` - Percent'),
+        returnDistribution: zod.object({
+          type: zod
+            .enum(['fixed', 'normal', 'uniform'])
+            .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
+          value: zod.number().nullish(),
+          mean: zod.number().nullish(),
+          stdev: zod.number().nullish(),
+          lower: zod.number().nullish(),
+          upper: zod.number().nullish()
+        }),
+        expenseRatio: zod.number(),
+        incomeAmtOrPct: zod
+          .enum(['amount', 'percent'])
+          .describe('* `amount` - Amount\n* `percent` - Percent'),
+        incomeDistribution: zod.object({
+          type: zod
+            .enum(['fixed', 'normal', 'uniform'])
+            .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
+          value: zod.number().nullish(),
+          mean: zod.number().nullish(),
+          stdev: zod.number().nullish(),
+          lower: zod.number().nullish(),
+          upper: zod.number().nullish()
+        }),
+        taxability: zod.boolean()
+      }),
+      value: zod.number(),
+      taxStatus: zod
+        .enum(['non-retirement', 'pre-tax', 'after-tax'])
+        .describe(
+          '* `non-retirement` - Non-retirement\n* `pre-tax` - Pre-tax Retirement\n* `after-tax` - After-tax Retirement'
+        ),
+      investmentId: zod
+        .string()
+        .max(scenariosImportScenarioCreateResponseInvestmentsItemInvestmentIdMax)
+    })
+  ),
+  eventSeries: zod.array(
+    zod.object({
+      name: zod.string().max(scenariosImportScenarioCreateResponseEventSeriesItemNameMax),
+      description: zod.string().optional(),
+      startType: zod
+        .enum(['distribution', 'start_with', 'start_after'])
+        .describe(
+          '* `distribution` - Distribution\n* `start_with` - Start With Event\n* `start_after` - Start After Event'
+        ),
+      startDistribution: zod
+        .object({
+          type: zod
+            .enum(['fixed', 'normal', 'uniform'])
+            .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
+          value: zod.number().nullish(),
+          mean: zod.number().nullish(),
+          stdev: zod.number().nullish(),
+          lower: zod.number().nullish(),
+          upper: zod.number().nullish()
+        })
+        .nullish(),
+      startWithEventName: zod.string(),
+      startAfterEventName: zod.string(),
+      durationDistribution: zod.object({
+        type: zod
+          .enum(['fixed', 'normal', 'uniform'])
+          .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
+        value: zod.number().nullish(),
+        mean: zod.number().nullish(),
+        stdev: zod.number().nullish(),
+        lower: zod.number().nullish(),
+        upper: zod.number().nullish()
+      }),
+      type: zod
+        .enum(['income', 'expense', 'invest', 'rebalance'])
+        .describe(
+          '* `income` - Income\n* `expense` - Expense\n* `invest` - Invest\n* `rebalance` - Rebalance'
+        ),
+      initialAmount: zod.number().nullish(),
+      changeAmtOrPct: zod
+        .enum(['amount', 'percent'])
+        .describe('* `amount` - Amount\n* `percent` - Percent')
+        .or(zod.enum(['']))
+        .or(zod.literal(null))
+        .nullish(),
+      changeDistribution: zod
+        .object({
+          type: zod
+            .enum(['fixed', 'normal', 'uniform'])
+            .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
+          value: zod.number().nullish(),
+          mean: zod.number().nullish(),
+          stdev: zod.number().nullish(),
+          lower: zod.number().nullish(),
+          upper: zod.number().nullish()
+        })
+        .nullish(),
+      inflationAdjusted: zod.boolean().optional(),
+      userFraction: zod.number().nullish(),
+      socialSecurity: zod.boolean().optional(),
+      discretionary: zod.boolean().optional(),
+      maxCash: zod.number().nullish(),
+      glidePath: zod.boolean().optional(),
+      assetAllocations: zod.array(
+        zod.object({
+          investmentId: zod.string(),
+          percentage: zod.number(),
+          isFinalAllocation: zod.boolean().optional()
+        })
+      ),
+      startWithEventNameInput: zod.string().optional(),
+      startAfterEventNameInput: zod.string().optional(),
+      assetAllocationInput: zod.record(zod.string(), zod.any()).optional(),
+      assetAllocation2Input: zod.record(zod.string(), zod.any()).optional()
+    })
+  ),
+  spendingStrategyItems: zod.array(
+    zod.object({
+      eventSeriesName: zod.string(),
+      order: zod
+        .number()
+        .min(scenariosImportScenarioCreateResponseSpendingStrategyItemsItemOrderMin)
+        .max(scenariosImportScenarioCreateResponseSpendingStrategyItemsItemOrderMax)
+    })
+  ),
+  expenseWithdrawalStrategyItems: zod.array(
+    zod.object({
+      investmentId: zod.string(),
+      order: zod
+        .number()
+        .min(scenariosImportScenarioCreateResponseExpenseWithdrawalStrategyItemsItemOrderMin)
+        .max(scenariosImportScenarioCreateResponseExpenseWithdrawalStrategyItemsItemOrderMax)
+    })
+  ),
+  rmdStrategyItems: zod.array(
+    zod.object({
+      investmentId: zod.string(),
+      order: zod
+        .number()
+        .min(scenariosImportScenarioCreateResponseRmdStrategyItemsItemOrderMin)
+        .max(scenariosImportScenarioCreateResponseRmdStrategyItemsItemOrderMax)
+    })
+  ),
+  rothConversionStrategyItems: zod.array(
+    zod.object({
+      investmentId: zod.string(),
+      order: zod
+        .number()
+        .min(scenariosImportScenarioCreateResponseRothConversionStrategyItemsItemOrderMin)
+        .max(scenariosImportScenarioCreateResponseRothConversionStrategyItemsItemOrderMax)
+    })
+  ),
+  createdAt: zod.string().datetime({}),
+  updatedAt: zod.string().datetime({}),
+  spendingStrategyInput: zod.array(zod.string()).optional(),
+  expenseWithdrawalStrategyInput: zod.array(zod.string()).optional(),
+  rmdStrategyInput: zod.array(zod.string()).optional(),
+  rothConversionStrategyInput: zod.array(zod.string()).optional()
+});
