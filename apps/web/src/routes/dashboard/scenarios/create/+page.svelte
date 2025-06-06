@@ -43,5 +43,44 @@
     </Form.Control>
   </Form.Field>
 
+  <Form.Field {form} name="userBirthYear">
+    <Form.Control>
+      <Form.Label>Birth Year <span class="text-red-500">*</span></Form.Label>
+      <Input
+        type="number"
+        bind:value={$formData.userBirthYear}
+        min="1900"
+        max={new Date().getFullYear()}
+      />
+    </Form.Control>
+    <Form.Description>Enter your birth year.</Form.Description>
+    <Form.FieldErrors />
+  </Form.Field>
+
+  <Form.Field {form} name="userLifeExpectancy">
+    <Form.Control>
+      <Form.Label>Life Expectancy <span class="text-red-500">*</span></Form.Label>
+      <Input type="number" bind:value={$formData.userLifeExpectancy} min="1" max="120" />
+    </Form.Control>
+    <Form.Description>Enter your life expectancy in years.</Form.Description>
+    <Form.FieldErrors />
+  </Form.Field>
+
+  {#if isMarried}
+    <Form.Field {form} name="spouseBirthYear">
+      <Form.Control>
+        <Form.Label>Spouse Birth Year <span class="text-red-500">*</span></Form.Label>
+        <Input
+          type="number"
+          bind:value={$formData.userBirthYear}
+          min="1900"
+          max={new Date().getFullYear()}
+        />
+      </Form.Control>
+      <Form.Description>Enter your birth year.</Form.Description>
+      <Form.FieldErrors />
+    </Form.Field>
+  {/if}
+
   <Form.Button class="mt-4">Create Scenario</Form.Button>
 </form>

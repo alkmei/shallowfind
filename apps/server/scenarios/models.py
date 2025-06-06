@@ -693,6 +693,13 @@ class Scenario(models.Model):
         if self.user_birth_year < 1900:
             raise ValidationError({"user_birth_year": "Birth year seems unrealistic."})
 
+        if self.user_life_expectancy.type == "uniform":
+            raise ValidationError(
+                {
+                    "user_life_expectancy": "User life expectancy cannot be uniform distribution."
+                }
+            )
+
         # Couple-specific validation
         if self.marital_status == "couple":
             if self.spouse_birth_year is None:
@@ -715,6 +722,13 @@ class Scenario(models.Model):
             if self.spouse_birth_year < 1900:
                 raise ValidationError(
                     {"spouse_birth_year": "Spouse birth year seems unrealistic."}
+                )
+
+            if self.spouse_life_expectancy.type == "uniform":
+                raise ValidationError(
+                    {
+                        "spouse_life_expectancy": "Spouse life expectancy cannot be uniform distribution."
+                    }
                 )
 
         elif self.marital_status == "individual":
