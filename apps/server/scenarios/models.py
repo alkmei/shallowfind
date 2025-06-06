@@ -3,6 +3,7 @@ from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
 from django.contrib.auth import get_user_model
 from django.utils import timezone
+from djmoney.models.fields import MoneyField
 
 User = get_user_model()
 
@@ -160,7 +161,7 @@ class Investment(models.Model):
         "Scenario", on_delete=models.CASCADE, related_name="investments"
     )
     investment_type = models.ForeignKey(InvestmentType, on_delete=models.CASCADE)
-    value = models.FloatField()
+    value = MoneyField(max_digits=14, decimal_places=2, default_currency="USD")
     tax_status = models.CharField(max_length=15, choices=TAX_STATUSES)
     investment_id = models.CharField(max_length=100)  # Unique identifier from YAML
 
@@ -245,7 +246,9 @@ class EventSeries(models.Model):
     type = models.CharField(max_length=10, choices=EVENT_TYPES)
 
     # Income/Expense fields
-    initial_amount = models.FloatField(null=True, blank=True)
+    initial_amount = MoneyField(
+        max_digits=14, decimal_places=2, default_currency="USD", null=True, blank=True
+    )
     change_amt_or_pct = models.CharField(
         max_length=10, choices=AMOUNT_OR_PERCENT_CHOICES, null=True, blank=True
     )
@@ -266,7 +269,9 @@ class EventSeries(models.Model):
     discretionary = models.BooleanField(default=False)
 
     # Invest/Rebalance specific
-    max_cash = models.FloatField(null=True, blank=True)
+    max_cash = MoneyField(
+        max_digits=14, decimal_places=2, default_currency="USD", null=True, blank=True
+    )
     glide_path = models.BooleanField(default=False)
 
     class Meta:
@@ -542,6 +547,59 @@ class RothConversionStrategyItem(models.Model):
 class Scenario(models.Model):
     """Main scenario model containing all financial planning information"""
 
+    US_STATE_CHOICES = [
+        ("AL", "Alabama"),
+        ("AK", "Alaska"),
+        ("AZ", "Arizona"),
+        ("AR", "Arkansas"),
+        ("CA", "California"),
+        ("CO", "Colorado"),
+        ("CT", "Connecticut"),
+        ("DE", "Delaware"),
+        ("FL", "Florida"),
+        ("GA", "Georgia"),
+        ("HI", "Hawaii"),
+        ("ID", "Idaho"),
+        ("IL", "Illinois"),
+        ("IN", "Indiana"),
+        ("IA", "Iowa"),
+        ("KS", "Kansas"),
+        ("KY", "Kentucky"),
+        ("LA", "Louisiana"),
+        ("ME", "Maine"),
+        ("MD", "Maryland"),
+        ("MA", "Massachusetts"),
+        ("MI", "Michigan"),
+        ("MN", "Minnesota"),
+        ("MS", "Mississippi"),
+        ("MO", "Missouri"),
+        ("MT", "Montana"),
+        ("NE", "Nebraska"),
+        ("NV", "Nevada"),
+        ("NH", "New Hampshire"),
+        ("NJ", "New Jersey"),
+        ("NM", "New Mexico"),
+        ("NY", "New York"),
+        ("NC", "North Carolina"),
+        ("ND", "North Dakota"),
+        ("OH", "Ohio"),
+        ("OK", "Oklahoma"),
+        ("OR", "Oregon"),
+        ("PA", "Pennsylvania"),
+        ("RI", "Rhode Island"),
+        ("SC", "South Carolina"),
+        ("SD", "South Dakota"),
+        ("TN", "Tennessee"),
+        ("TX", "Texas"),
+        ("UT", "Utah"),
+        ("VT", "Vermont"),
+        ("VA", "Virginia"),
+        ("WA", "Washington"),
+        ("WV", "West Virginia"),
+        ("WI", "Wisconsin"),
+        ("WY", "Wyoming"),
+    ]
+
     MARITAL_STATUS_CHOICES = [
         ("individual", "Individual"),
         ("couple", "Couple"),
@@ -579,9 +637,11 @@ class Scenario(models.Model):
     inflation_assumption = models.ForeignKey(
         Distribution, on_delete=models.CASCADE, related_name="inflation_scenarios"
     )
-    after_tax_contribution_limit = models.FloatField()
-    financial_goal = models.FloatField()
-    residence_state = models.CharField(max_length=2)
+    after_tax_contribution_limit = MoneyField(
+        max_digits=10, decimal_places=2, default_currency="USD"
+    )
+    financial_goal = MoneyField(max_digits=14, decimal_places=2, default_currency="USD")
+    residence_state = models.CharField(max_length=2, choices=US_STATE_CHOICES)
 
     # Roth conversion settings
     roth_conversion_opt = models.BooleanField(default=False)
@@ -704,9 +764,3 @@ class Scenario(models.Model):
                         "roth_conversion_start": "Roth conversion start year cannot be in the past."
                     }
                 )
-
-        # State validation
-        if len(self.residence_state) != 2:
-            raise ValidationError(
-                {"residence_state": "State must be a 2-letter abbreviation."}
-            )
