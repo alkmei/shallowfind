@@ -1,4 +1,5 @@
 from django.core.exceptions import ValidationError
+from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
 from django.contrib.auth import get_user_model
 from django.utils import timezone
@@ -551,8 +552,14 @@ class Scenario(models.Model):
     marital_status = models.CharField(max_length=10, choices=MARITAL_STATUS_CHOICES)
 
     # Birth years
-    user_birth_year = models.IntegerField()
-    spouse_birth_year = models.IntegerField(null=True, blank=True)
+    user_birth_year = models.IntegerField(
+        validators=[MinValueValidator(1900), MaxValueValidator(timezone.now().year)]
+    )
+    spouse_birth_year = models.IntegerField(
+        null=True,
+        blank=True,
+        validators=[MinValueValidator(1900), MaxValueValidator(timezone.now().year)],
+    )
 
     # Life expectancy distributions
     user_life_expectancy = models.ForeignKey(

@@ -1201,14 +1201,12 @@ components:
           $ref: '#/components/schemas/MaritalStatusEnum'
         userBirthYear:
           type: integer
-          maximum: 9223372036854775807
-          minimum: -9223372036854775808
-          format: int64
+          maximum: 2025
+          minimum: 1900
         spouseBirthYear:
           type: integer
-          maximum: 9223372036854775807
-          minimum: -9223372036854775808
-          format: int64
+          maximum: 2025
+          minimum: 1900
           nullable: true
         userLifeExpectancy:
           $ref: '#/components/schemas/Distribution'
@@ -1380,14 +1378,12 @@ components:
           $ref: '#/components/schemas/MaritalStatusEnum'
         userBirthYear:
           type: integer
-          maximum: 9223372036854775807
-          minimum: -9223372036854775808
-          format: int64
+          maximum: 2025
+          minimum: 1900
         spouseBirthYear:
           type: integer
-          maximum: 9223372036854775807
-          minimum: -9223372036854775808
-          format: int64
+          maximum: 2025
+          minimum: 1900
           nullable: true
         userLifeExpectancy:
           $ref: '#/components/schemas/Distribution'
