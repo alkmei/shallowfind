@@ -29,6 +29,18 @@ export interface AdminUser {
   readonly lastLogin: string | null;
 }
 
+/**
+ * * `amount` - Amount
+ * `percent` - Percent
+ */
+export type AmountOrPercentEnum = (typeof AmountOrPercentEnum)[keyof typeof AmountOrPercentEnum];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const AmountOrPercentEnum = {
+  amount: 'amount',
+  percent: 'percent'
+} as const;
+
 export interface AssetAllocation {
   readonly investmentId: string;
   percentage: number;
@@ -77,7 +89,7 @@ export type EventSeriesStartDistribution = Distribution | null;
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export const EventSeriesChangeAmtOrPct = {
-  ...IncomeAmtOrPctEnum,
+  ...AmountOrPercentEnum,
   ...BlankEnum,
   ...NullEnum
 } as const;
@@ -108,8 +120,11 @@ export interface EventSeries {
   readonly startAfterEventName: string;
   durationDistribution: Distribution;
   type: EventSeriesTypeEnum;
-  /** @nullable */
-  initialAmount?: number | null;
+  /**
+   * @nullable
+   * @pattern ^-?\d{0,12}(?:\.\d{0,2})?$
+   */
+  initialAmount?: string | null;
   /** @nullable */
   changeAmtOrPct?: EventSeriesChangeAmtOrPct;
   /** @nullable */
@@ -119,8 +134,11 @@ export interface EventSeries {
   userFraction?: number | null;
   socialSecurity?: boolean;
   discretionary?: boolean;
-  /** @nullable */
-  maxCash?: number | null;
+  /**
+   * @nullable
+   * @pattern ^-?\d{0,12}(?:\.\d{0,2})?$
+   */
+  maxCash?: string | null;
   glidePath?: boolean;
   readonly assetAllocations: readonly AssetAllocation[];
   startWithEventNameInput?: string;
@@ -154,21 +172,10 @@ export interface ExpenseWithdrawalStrategyItem {
   order: number;
 }
 
-/**
- * * `amount` - Amount
- * `percent` - Percent
- */
-export type IncomeAmtOrPctEnum = (typeof IncomeAmtOrPctEnum)[keyof typeof IncomeAmtOrPctEnum];
-
-// eslint-disable-next-line @typescript-eslint/no-redeclare
-export const IncomeAmtOrPctEnum = {
-  amount: 'amount',
-  percent: 'percent'
-} as const;
-
 export interface Investment {
   investmentType: InvestmentType;
-  value: number;
+  /** @pattern ^-?\d{0,12}(?:\.\d{0,2})?$ */
+  value: string;
   taxStatus: TaxStatusEnum;
   /** @maxLength 100 */
   investmentId: string;
@@ -178,10 +185,10 @@ export interface InvestmentType {
   /** @maxLength 100 */
   name: string;
   description: string;
-  returnAmtOrPct: IncomeAmtOrPctEnum;
+  returnAmtOrPct: AmountOrPercentEnum;
   returnDistribution: Distribution;
   expenseRatio: number;
-  incomeAmtOrPct: IncomeAmtOrPctEnum;
+  incomeAmtOrPct: AmountOrPercentEnum;
   incomeDistribution: Distribution;
   taxability: boolean;
 }
@@ -238,13 +245,13 @@ export interface PatchedScenario {
   name?: string;
   maritalStatus?: MaritalStatusEnum;
   /**
-   * @minimum -9223372036854776000
-   * @maximum 9223372036854776000
+   * @minimum 1900
+   * @maximum 2025
    */
   userBirthYear?: number;
   /**
-   * @minimum -9223372036854776000
-   * @maximum 9223372036854776000
+   * @minimum 1900
+   * @maximum 2025
    * @nullable
    */
   spouseBirthYear?: number | null;
@@ -252,10 +259,11 @@ export interface PatchedScenario {
   /** @nullable */
   spouseLifeExpectancy?: PatchedScenarioSpouseLifeExpectancy;
   inflationAssumption?: Distribution;
-  afterTaxContributionLimit?: number;
-  financialGoal?: number;
-  /** @maxLength 2 */
-  residenceState?: string;
+  /** @pattern ^-?\d{0,8}(?:\.\d{0,2})?$ */
+  afterTaxContributionLimit?: string;
+  /** @pattern ^-?\d{0,12}(?:\.\d{0,2})?$ */
+  financialGoal?: string;
+  residenceState?: ResidenceStateEnum;
   rothConversionOpt?: boolean;
   /**
    * @minimum -9223372036854776000
@@ -314,6 +322,114 @@ export interface RMDStrategyItem {
   order: number;
 }
 
+/**
+ * * `AL` - Alabama
+ * `AK` - Alaska
+ * `AZ` - Arizona
+ * `AR` - Arkansas
+ * `CA` - California
+ * `CO` - Colorado
+ * `CT` - Connecticut
+ * `DE` - Delaware
+ * `FL` - Florida
+ * `GA` - Georgia
+ * `HI` - Hawaii
+ * `ID` - Idaho
+ * `IL` - Illinois
+ * `IN` - Indiana
+ * `IA` - Iowa
+ * `KS` - Kansas
+ * `KY` - Kentucky
+ * `LA` - Louisiana
+ * `ME` - Maine
+ * `MD` - Maryland
+ * `MA` - Massachusetts
+ * `MI` - Michigan
+ * `MN` - Minnesota
+ * `MS` - Mississippi
+ * `MO` - Missouri
+ * `MT` - Montana
+ * `NE` - Nebraska
+ * `NV` - Nevada
+ * `NH` - New Hampshire
+ * `NJ` - New Jersey
+ * `NM` - New Mexico
+ * `NY` - New York
+ * `NC` - North Carolina
+ * `ND` - North Dakota
+ * `OH` - Ohio
+ * `OK` - Oklahoma
+ * `OR` - Oregon
+ * `PA` - Pennsylvania
+ * `RI` - Rhode Island
+ * `SC` - South Carolina
+ * `SD` - South Dakota
+ * `TN` - Tennessee
+ * `TX` - Texas
+ * `UT` - Utah
+ * `VT` - Vermont
+ * `VA` - Virginia
+ * `WA` - Washington
+ * `WV` - West Virginia
+ * `WI` - Wisconsin
+ * `WY` - Wyoming
+ */
+export type ResidenceStateEnum = (typeof ResidenceStateEnum)[keyof typeof ResidenceStateEnum];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const ResidenceStateEnum = {
+  AL: 'AL',
+  AK: 'AK',
+  AZ: 'AZ',
+  AR: 'AR',
+  CA: 'CA',
+  CO: 'CO',
+  CT: 'CT',
+  DE: 'DE',
+  FL: 'FL',
+  GA: 'GA',
+  HI: 'HI',
+  ID: 'ID',
+  IL: 'IL',
+  IN: 'IN',
+  IA: 'IA',
+  KS: 'KS',
+  KY: 'KY',
+  LA: 'LA',
+  ME: 'ME',
+  MD: 'MD',
+  MA: 'MA',
+  MI: 'MI',
+  MN: 'MN',
+  MS: 'MS',
+  MO: 'MO',
+  MT: 'MT',
+  NE: 'NE',
+  NV: 'NV',
+  NH: 'NH',
+  NJ: 'NJ',
+  NM: 'NM',
+  NY: 'NY',
+  NC: 'NC',
+  ND: 'ND',
+  OH: 'OH',
+  OK: 'OK',
+  OR: 'OR',
+  PA: 'PA',
+  RI: 'RI',
+  SC: 'SC',
+  SD: 'SD',
+  TN: 'TN',
+  TX: 'TX',
+  UT: 'UT',
+  VT: 'VT',
+  VA: 'VA',
+  WA: 'WA',
+  WV: 'WV',
+  WI: 'WI',
+  WY: 'WY'
+} as const;
+
 export interface RothConversionStrategyItem {
   readonly investmentId: string;
   /**
@@ -332,15 +448,15 @@ export interface Scenario {
   readonly id: number;
   /** @maxLength 200 */
   name: string;
-  maritalStatus: MaritalStatusEnum;
+  maritalStatus?: MaritalStatusEnum;
   /**
-   * @minimum -9223372036854776000
-   * @maximum 9223372036854776000
+   * @minimum 1900
+   * @maximum 2025
    */
   userBirthYear: number;
   /**
-   * @minimum -9223372036854776000
-   * @maximum 9223372036854776000
+   * @minimum 1900
+   * @maximum 2025
    * @nullable
    */
   spouseBirthYear?: number | null;
@@ -348,10 +464,11 @@ export interface Scenario {
   /** @nullable */
   spouseLifeExpectancy?: ScenarioSpouseLifeExpectancy;
   inflationAssumption: Distribution;
-  afterTaxContributionLimit: number;
-  financialGoal: number;
-  /** @maxLength 2 */
-  residenceState: string;
+  /** @pattern ^-?\d{0,8}(?:\.\d{0,2})?$ */
+  afterTaxContributionLimit: string;
+  /** @pattern ^-?\d{0,12}(?:\.\d{0,2})?$ */
+  financialGoal: string;
+  residenceState: ResidenceStateEnum;
   rothConversionOpt?: boolean;
   /**
    * @minimum -9223372036854776000

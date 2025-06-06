@@ -12,13 +12,16 @@ import { z as zod } from 'zod';
 Provides list, create, retrieve, update, destroy actions.
  */
 export const scenariosListResponseNameMax = 200;
-export const scenariosListResponseUserBirthYearMin = -9223372036854776000;
+export const scenariosListResponseUserBirthYearMin = 1900;
 
-export const scenariosListResponseUserBirthYearMax = 9223372036854776000;
-export const scenariosListResponseSpouseBirthYearMin = -9223372036854776000;
+export const scenariosListResponseUserBirthYearMax = 2025;
+export const scenariosListResponseSpouseBirthYearMin = 1900;
 
-export const scenariosListResponseSpouseBirthYearMax = 9223372036854776000;
-export const scenariosListResponseResidenceStateMax = 2;
+export const scenariosListResponseSpouseBirthYearMax = 2025;
+export const scenariosListResponseAfterTaxContributionLimitRegExp = new RegExp(
+  '^-?\\d{0,8}(?:\\.\\d{0,2})?$'
+);
+export const scenariosListResponseFinancialGoalRegExp = new RegExp('^-?\\d{0,12}(?:\\.\\d{0,2})?$');
 export const scenariosListResponseRothConversionStartMin = -9223372036854776000;
 
 export const scenariosListResponseRothConversionStartMax = 9223372036854776000;
@@ -26,8 +29,17 @@ export const scenariosListResponseRothConversionEndMin = -9223372036854776000;
 
 export const scenariosListResponseRothConversionEndMax = 9223372036854776000;
 export const scenariosListResponseInvestmentsItemInvestmentTypeNameMax = 100;
+export const scenariosListResponseInvestmentsItemValueRegExp = new RegExp(
+  '^-?\\d{0,12}(?:\\.\\d{0,2})?$'
+);
 export const scenariosListResponseInvestmentsItemInvestmentIdMax = 100;
 export const scenariosListResponseEventSeriesItemNameMax = 100;
+export const scenariosListResponseEventSeriesItemInitialAmountRegExp = new RegExp(
+  '^-?\\d{0,12}(?:\\.\\d{0,2})?$'
+);
+export const scenariosListResponseEventSeriesItemMaxCashRegExp = new RegExp(
+  '^-?\\d{0,12}(?:\\.\\d{0,2})?$'
+);
 export const scenariosListResponseSpendingStrategyItemsItemOrderMin = 0;
 
 export const scenariosListResponseSpendingStrategyItemsItemOrderMax = 9223372036854776000;
@@ -46,6 +58,7 @@ export const scenariosListResponseItem = zod.object({
   name: zod.string().max(scenariosListResponseNameMax),
   maritalStatus: zod
     .enum(['individual', 'couple'])
+    .optional()
     .describe('* `individual` - Individual\n* `couple` - Couple'),
   userBirthYear: zod
     .number()
@@ -88,9 +101,66 @@ export const scenariosListResponseItem = zod.object({
     lower: zod.number().nullish(),
     upper: zod.number().nullish()
   }),
-  afterTaxContributionLimit: zod.number(),
-  financialGoal: zod.number(),
-  residenceState: zod.string().max(scenariosListResponseResidenceStateMax),
+  afterTaxContributionLimit: zod
+    .string()
+    .regex(scenariosListResponseAfterTaxContributionLimitRegExp),
+  financialGoal: zod.string().regex(scenariosListResponseFinancialGoalRegExp),
+  residenceState: zod
+    .enum([
+      'AL',
+      'AK',
+      'AZ',
+      'AR',
+      'CA',
+      'CO',
+      'CT',
+      'DE',
+      'FL',
+      'GA',
+      'HI',
+      'ID',
+      'IL',
+      'IN',
+      'IA',
+      'KS',
+      'KY',
+      'LA',
+      'ME',
+      'MD',
+      'MA',
+      'MI',
+      'MN',
+      'MS',
+      'MO',
+      'MT',
+      'NE',
+      'NV',
+      'NH',
+      'NJ',
+      'NM',
+      'NY',
+      'NC',
+      'ND',
+      'OH',
+      'OK',
+      'OR',
+      'PA',
+      'RI',
+      'SC',
+      'SD',
+      'TN',
+      'TX',
+      'UT',
+      'VT',
+      'VA',
+      'WA',
+      'WV',
+      'WI',
+      'WY'
+    ])
+    .describe(
+      '* `AL` - Alabama\n* `AK` - Alaska\n* `AZ` - Arizona\n* `AR` - Arkansas\n* `CA` - California\n* `CO` - Colorado\n* `CT` - Connecticut\n* `DE` - Delaware\n* `FL` - Florida\n* `GA` - Georgia\n* `HI` - Hawaii\n* `ID` - Idaho\n* `IL` - Illinois\n* `IN` - Indiana\n* `IA` - Iowa\n* `KS` - Kansas\n* `KY` - Kentucky\n* `LA` - Louisiana\n* `ME` - Maine\n* `MD` - Maryland\n* `MA` - Massachusetts\n* `MI` - Michigan\n* `MN` - Minnesota\n* `MS` - Mississippi\n* `MO` - Missouri\n* `MT` - Montana\n* `NE` - Nebraska\n* `NV` - Nevada\n* `NH` - New Hampshire\n* `NJ` - New Jersey\n* `NM` - New Mexico\n* `NY` - New York\n* `NC` - North Carolina\n* `ND` - North Dakota\n* `OH` - Ohio\n* `OK` - Oklahoma\n* `OR` - Oregon\n* `PA` - Pennsylvania\n* `RI` - Rhode Island\n* `SC` - South Carolina\n* `SD` - South Dakota\n* `TN` - Tennessee\n* `TX` - Texas\n* `UT` - Utah\n* `VT` - Vermont\n* `VA` - Virginia\n* `WA` - Washington\n* `WV` - West Virginia\n* `WI` - Wisconsin\n* `WY` - Wyoming'
+    ),
   rothConversionOpt: zod.boolean().optional(),
   rothConversionStart: zod
     .number()
@@ -136,7 +206,7 @@ export const scenariosListResponseItem = zod.object({
         }),
         taxability: zod.boolean()
       }),
-      value: zod.number(),
+      value: zod.string().regex(scenariosListResponseInvestmentsItemValueRegExp),
       taxStatus: zod
         .enum(['non-retirement', 'pre-tax', 'after-tax'])
         .describe(
@@ -183,7 +253,10 @@ export const scenariosListResponseItem = zod.object({
         .describe(
           '* `income` - Income\n* `expense` - Expense\n* `invest` - Invest\n* `rebalance` - Rebalance'
         ),
-      initialAmount: zod.number().nullish(),
+      initialAmount: zod
+        .string()
+        .regex(scenariosListResponseEventSeriesItemInitialAmountRegExp)
+        .nullish(),
       changeAmtOrPct: zod
         .enum(['amount', 'percent'])
         .describe('* `amount` - Amount\n* `percent` - Percent')
@@ -206,7 +279,7 @@ export const scenariosListResponseItem = zod.object({
       userFraction: zod.number().nullish(),
       socialSecurity: zod.boolean().optional(),
       discretionary: zod.boolean().optional(),
-      maxCash: zod.number().nullish(),
+      maxCash: zod.string().regex(scenariosListResponseEventSeriesItemMaxCashRegExp).nullish(),
       glidePath: zod.boolean().optional(),
       assetAllocations: zod.array(
         zod.object({
@@ -271,13 +344,16 @@ export const scenariosListResponse = zod.array(scenariosListResponseItem);
 Provides list, create, retrieve, update, destroy actions.
  */
 export const scenariosCreateBodyNameMax = 200;
-export const scenariosCreateBodyUserBirthYearMin = -9223372036854776000;
+export const scenariosCreateBodyUserBirthYearMin = 1900;
 
-export const scenariosCreateBodyUserBirthYearMax = 9223372036854776000;
-export const scenariosCreateBodySpouseBirthYearMin = -9223372036854776000;
+export const scenariosCreateBodyUserBirthYearMax = 2025;
+export const scenariosCreateBodySpouseBirthYearMin = 1900;
 
-export const scenariosCreateBodySpouseBirthYearMax = 9223372036854776000;
-export const scenariosCreateBodyResidenceStateMax = 2;
+export const scenariosCreateBodySpouseBirthYearMax = 2025;
+export const scenariosCreateBodyAfterTaxContributionLimitRegExp = new RegExp(
+  '^-?\\d{0,8}(?:\\.\\d{0,2})?$'
+);
+export const scenariosCreateBodyFinancialGoalRegExp = new RegExp('^-?\\d{0,12}(?:\\.\\d{0,2})?$');
 export const scenariosCreateBodyRothConversionStartMin = -9223372036854776000;
 
 export const scenariosCreateBodyRothConversionStartMax = 9223372036854776000;
@@ -285,13 +361,23 @@ export const scenariosCreateBodyRothConversionEndMin = -9223372036854776000;
 
 export const scenariosCreateBodyRothConversionEndMax = 9223372036854776000;
 export const scenariosCreateBodyInvestmentsItemInvestmentTypeNameMax = 100;
+export const scenariosCreateBodyInvestmentsItemValueRegExp = new RegExp(
+  '^-?\\d{0,12}(?:\\.\\d{0,2})?$'
+);
 export const scenariosCreateBodyInvestmentsItemInvestmentIdMax = 100;
 export const scenariosCreateBodyEventSeriesItemNameMax = 100;
+export const scenariosCreateBodyEventSeriesItemInitialAmountRegExp = new RegExp(
+  '^-?\\d{0,12}(?:\\.\\d{0,2})?$'
+);
+export const scenariosCreateBodyEventSeriesItemMaxCashRegExp = new RegExp(
+  '^-?\\d{0,12}(?:\\.\\d{0,2})?$'
+);
 
 export const scenariosCreateBody = zod.object({
   name: zod.string().max(scenariosCreateBodyNameMax),
   maritalStatus: zod
     .enum(['individual', 'couple'])
+    .optional()
     .describe('* `individual` - Individual\n* `couple` - Couple'),
   userBirthYear: zod
     .number()
@@ -334,9 +420,64 @@ export const scenariosCreateBody = zod.object({
     lower: zod.number().nullish(),
     upper: zod.number().nullish()
   }),
-  afterTaxContributionLimit: zod.number(),
-  financialGoal: zod.number(),
-  residenceState: zod.string().max(scenariosCreateBodyResidenceStateMax),
+  afterTaxContributionLimit: zod.string().regex(scenariosCreateBodyAfterTaxContributionLimitRegExp),
+  financialGoal: zod.string().regex(scenariosCreateBodyFinancialGoalRegExp),
+  residenceState: zod
+    .enum([
+      'AL',
+      'AK',
+      'AZ',
+      'AR',
+      'CA',
+      'CO',
+      'CT',
+      'DE',
+      'FL',
+      'GA',
+      'HI',
+      'ID',
+      'IL',
+      'IN',
+      'IA',
+      'KS',
+      'KY',
+      'LA',
+      'ME',
+      'MD',
+      'MA',
+      'MI',
+      'MN',
+      'MS',
+      'MO',
+      'MT',
+      'NE',
+      'NV',
+      'NH',
+      'NJ',
+      'NM',
+      'NY',
+      'NC',
+      'ND',
+      'OH',
+      'OK',
+      'OR',
+      'PA',
+      'RI',
+      'SC',
+      'SD',
+      'TN',
+      'TX',
+      'UT',
+      'VT',
+      'VA',
+      'WA',
+      'WV',
+      'WI',
+      'WY'
+    ])
+    .describe(
+      '* `AL` - Alabama\n* `AK` - Alaska\n* `AZ` - Arizona\n* `AR` - Arkansas\n* `CA` - California\n* `CO` - Colorado\n* `CT` - Connecticut\n* `DE` - Delaware\n* `FL` - Florida\n* `GA` - Georgia\n* `HI` - Hawaii\n* `ID` - Idaho\n* `IL` - Illinois\n* `IN` - Indiana\n* `IA` - Iowa\n* `KS` - Kansas\n* `KY` - Kentucky\n* `LA` - Louisiana\n* `ME` - Maine\n* `MD` - Maryland\n* `MA` - Massachusetts\n* `MI` - Michigan\n* `MN` - Minnesota\n* `MS` - Mississippi\n* `MO` - Missouri\n* `MT` - Montana\n* `NE` - Nebraska\n* `NV` - Nevada\n* `NH` - New Hampshire\n* `NJ` - New Jersey\n* `NM` - New Mexico\n* `NY` - New York\n* `NC` - North Carolina\n* `ND` - North Dakota\n* `OH` - Ohio\n* `OK` - Oklahoma\n* `OR` - Oregon\n* `PA` - Pennsylvania\n* `RI` - Rhode Island\n* `SC` - South Carolina\n* `SD` - South Dakota\n* `TN` - Tennessee\n* `TX` - Texas\n* `UT` - Utah\n* `VT` - Vermont\n* `VA` - Virginia\n* `WA` - Washington\n* `WV` - West Virginia\n* `WI` - Wisconsin\n* `WY` - Wyoming'
+    ),
   rothConversionOpt: zod.boolean().optional(),
   rothConversionStart: zod
     .number()
@@ -382,7 +523,7 @@ export const scenariosCreateBody = zod.object({
         }),
         taxability: zod.boolean()
       }),
-      value: zod.number(),
+      value: zod.string().regex(scenariosCreateBodyInvestmentsItemValueRegExp),
       taxStatus: zod
         .enum(['non-retirement', 'pre-tax', 'after-tax'])
         .describe(
@@ -429,7 +570,10 @@ export const scenariosCreateBody = zod.object({
         .describe(
           '* `income` - Income\n* `expense` - Expense\n* `invest` - Invest\n* `rebalance` - Rebalance'
         ),
-      initialAmount: zod.number().nullish(),
+      initialAmount: zod
+        .string()
+        .regex(scenariosCreateBodyEventSeriesItemInitialAmountRegExp)
+        .nullish(),
       changeAmtOrPct: zod
         .enum(['amount', 'percent'])
         .describe('* `amount` - Amount\n* `percent` - Percent')
@@ -452,7 +596,7 @@ export const scenariosCreateBody = zod.object({
       userFraction: zod.number().nullish(),
       socialSecurity: zod.boolean().optional(),
       discretionary: zod.boolean().optional(),
-      maxCash: zod.number().nullish(),
+      maxCash: zod.string().regex(scenariosCreateBodyEventSeriesItemMaxCashRegExp).nullish(),
       glidePath: zod.boolean().optional(),
       assetAllocations: zod.array(
         zod.object({
@@ -482,13 +626,18 @@ export const scenariosRetrieveParams = zod.object({
 });
 
 export const scenariosRetrieveResponseNameMax = 200;
-export const scenariosRetrieveResponseUserBirthYearMin = -9223372036854776000;
+export const scenariosRetrieveResponseUserBirthYearMin = 1900;
 
-export const scenariosRetrieveResponseUserBirthYearMax = 9223372036854776000;
-export const scenariosRetrieveResponseSpouseBirthYearMin = -9223372036854776000;
+export const scenariosRetrieveResponseUserBirthYearMax = 2025;
+export const scenariosRetrieveResponseSpouseBirthYearMin = 1900;
 
-export const scenariosRetrieveResponseSpouseBirthYearMax = 9223372036854776000;
-export const scenariosRetrieveResponseResidenceStateMax = 2;
+export const scenariosRetrieveResponseSpouseBirthYearMax = 2025;
+export const scenariosRetrieveResponseAfterTaxContributionLimitRegExp = new RegExp(
+  '^-?\\d{0,8}(?:\\.\\d{0,2})?$'
+);
+export const scenariosRetrieveResponseFinancialGoalRegExp = new RegExp(
+  '^-?\\d{0,12}(?:\\.\\d{0,2})?$'
+);
 export const scenariosRetrieveResponseRothConversionStartMin = -9223372036854776000;
 
 export const scenariosRetrieveResponseRothConversionStartMax = 9223372036854776000;
@@ -496,8 +645,17 @@ export const scenariosRetrieveResponseRothConversionEndMin = -922337203685477600
 
 export const scenariosRetrieveResponseRothConversionEndMax = 9223372036854776000;
 export const scenariosRetrieveResponseInvestmentsItemInvestmentTypeNameMax = 100;
+export const scenariosRetrieveResponseInvestmentsItemValueRegExp = new RegExp(
+  '^-?\\d{0,12}(?:\\.\\d{0,2})?$'
+);
 export const scenariosRetrieveResponseInvestmentsItemInvestmentIdMax = 100;
 export const scenariosRetrieveResponseEventSeriesItemNameMax = 100;
+export const scenariosRetrieveResponseEventSeriesItemInitialAmountRegExp = new RegExp(
+  '^-?\\d{0,12}(?:\\.\\d{0,2})?$'
+);
+export const scenariosRetrieveResponseEventSeriesItemMaxCashRegExp = new RegExp(
+  '^-?\\d{0,12}(?:\\.\\d{0,2})?$'
+);
 export const scenariosRetrieveResponseSpendingStrategyItemsItemOrderMin = 0;
 
 export const scenariosRetrieveResponseSpendingStrategyItemsItemOrderMax = 9223372036854776000;
@@ -516,6 +674,7 @@ export const scenariosRetrieveResponse = zod.object({
   name: zod.string().max(scenariosRetrieveResponseNameMax),
   maritalStatus: zod
     .enum(['individual', 'couple'])
+    .optional()
     .describe('* `individual` - Individual\n* `couple` - Couple'),
   userBirthYear: zod
     .number()
@@ -558,9 +717,66 @@ export const scenariosRetrieveResponse = zod.object({
     lower: zod.number().nullish(),
     upper: zod.number().nullish()
   }),
-  afterTaxContributionLimit: zod.number(),
-  financialGoal: zod.number(),
-  residenceState: zod.string().max(scenariosRetrieveResponseResidenceStateMax),
+  afterTaxContributionLimit: zod
+    .string()
+    .regex(scenariosRetrieveResponseAfterTaxContributionLimitRegExp),
+  financialGoal: zod.string().regex(scenariosRetrieveResponseFinancialGoalRegExp),
+  residenceState: zod
+    .enum([
+      'AL',
+      'AK',
+      'AZ',
+      'AR',
+      'CA',
+      'CO',
+      'CT',
+      'DE',
+      'FL',
+      'GA',
+      'HI',
+      'ID',
+      'IL',
+      'IN',
+      'IA',
+      'KS',
+      'KY',
+      'LA',
+      'ME',
+      'MD',
+      'MA',
+      'MI',
+      'MN',
+      'MS',
+      'MO',
+      'MT',
+      'NE',
+      'NV',
+      'NH',
+      'NJ',
+      'NM',
+      'NY',
+      'NC',
+      'ND',
+      'OH',
+      'OK',
+      'OR',
+      'PA',
+      'RI',
+      'SC',
+      'SD',
+      'TN',
+      'TX',
+      'UT',
+      'VT',
+      'VA',
+      'WA',
+      'WV',
+      'WI',
+      'WY'
+    ])
+    .describe(
+      '* `AL` - Alabama\n* `AK` - Alaska\n* `AZ` - Arizona\n* `AR` - Arkansas\n* `CA` - California\n* `CO` - Colorado\n* `CT` - Connecticut\n* `DE` - Delaware\n* `FL` - Florida\n* `GA` - Georgia\n* `HI` - Hawaii\n* `ID` - Idaho\n* `IL` - Illinois\n* `IN` - Indiana\n* `IA` - Iowa\n* `KS` - Kansas\n* `KY` - Kentucky\n* `LA` - Louisiana\n* `ME` - Maine\n* `MD` - Maryland\n* `MA` - Massachusetts\n* `MI` - Michigan\n* `MN` - Minnesota\n* `MS` - Mississippi\n* `MO` - Missouri\n* `MT` - Montana\n* `NE` - Nebraska\n* `NV` - Nevada\n* `NH` - New Hampshire\n* `NJ` - New Jersey\n* `NM` - New Mexico\n* `NY` - New York\n* `NC` - North Carolina\n* `ND` - North Dakota\n* `OH` - Ohio\n* `OK` - Oklahoma\n* `OR` - Oregon\n* `PA` - Pennsylvania\n* `RI` - Rhode Island\n* `SC` - South Carolina\n* `SD` - South Dakota\n* `TN` - Tennessee\n* `TX` - Texas\n* `UT` - Utah\n* `VT` - Vermont\n* `VA` - Virginia\n* `WA` - Washington\n* `WV` - West Virginia\n* `WI` - Wisconsin\n* `WY` - Wyoming'
+    ),
   rothConversionOpt: zod.boolean().optional(),
   rothConversionStart: zod
     .number()
@@ -606,7 +822,7 @@ export const scenariosRetrieveResponse = zod.object({
         }),
         taxability: zod.boolean()
       }),
-      value: zod.number(),
+      value: zod.string().regex(scenariosRetrieveResponseInvestmentsItemValueRegExp),
       taxStatus: zod
         .enum(['non-retirement', 'pre-tax', 'after-tax'])
         .describe(
@@ -653,7 +869,10 @@ export const scenariosRetrieveResponse = zod.object({
         .describe(
           '* `income` - Income\n* `expense` - Expense\n* `invest` - Invest\n* `rebalance` - Rebalance'
         ),
-      initialAmount: zod.number().nullish(),
+      initialAmount: zod
+        .string()
+        .regex(scenariosRetrieveResponseEventSeriesItemInitialAmountRegExp)
+        .nullish(),
       changeAmtOrPct: zod
         .enum(['amount', 'percent'])
         .describe('* `amount` - Amount\n* `percent` - Percent')
@@ -676,7 +895,7 @@ export const scenariosRetrieveResponse = zod.object({
       userFraction: zod.number().nullish(),
       socialSecurity: zod.boolean().optional(),
       discretionary: zod.boolean().optional(),
-      maxCash: zod.number().nullish(),
+      maxCash: zod.string().regex(scenariosRetrieveResponseEventSeriesItemMaxCashRegExp).nullish(),
       glidePath: zod.boolean().optional(),
       assetAllocations: zod.array(
         zod.object({
@@ -744,13 +963,16 @@ export const scenariosUpdateParams = zod.object({
 });
 
 export const scenariosUpdateBodyNameMax = 200;
-export const scenariosUpdateBodyUserBirthYearMin = -9223372036854776000;
+export const scenariosUpdateBodyUserBirthYearMin = 1900;
 
-export const scenariosUpdateBodyUserBirthYearMax = 9223372036854776000;
-export const scenariosUpdateBodySpouseBirthYearMin = -9223372036854776000;
+export const scenariosUpdateBodyUserBirthYearMax = 2025;
+export const scenariosUpdateBodySpouseBirthYearMin = 1900;
 
-export const scenariosUpdateBodySpouseBirthYearMax = 9223372036854776000;
-export const scenariosUpdateBodyResidenceStateMax = 2;
+export const scenariosUpdateBodySpouseBirthYearMax = 2025;
+export const scenariosUpdateBodyAfterTaxContributionLimitRegExp = new RegExp(
+  '^-?\\d{0,8}(?:\\.\\d{0,2})?$'
+);
+export const scenariosUpdateBodyFinancialGoalRegExp = new RegExp('^-?\\d{0,12}(?:\\.\\d{0,2})?$');
 export const scenariosUpdateBodyRothConversionStartMin = -9223372036854776000;
 
 export const scenariosUpdateBodyRothConversionStartMax = 9223372036854776000;
@@ -758,13 +980,23 @@ export const scenariosUpdateBodyRothConversionEndMin = -9223372036854776000;
 
 export const scenariosUpdateBodyRothConversionEndMax = 9223372036854776000;
 export const scenariosUpdateBodyInvestmentsItemInvestmentTypeNameMax = 100;
+export const scenariosUpdateBodyInvestmentsItemValueRegExp = new RegExp(
+  '^-?\\d{0,12}(?:\\.\\d{0,2})?$'
+);
 export const scenariosUpdateBodyInvestmentsItemInvestmentIdMax = 100;
 export const scenariosUpdateBodyEventSeriesItemNameMax = 100;
+export const scenariosUpdateBodyEventSeriesItemInitialAmountRegExp = new RegExp(
+  '^-?\\d{0,12}(?:\\.\\d{0,2})?$'
+);
+export const scenariosUpdateBodyEventSeriesItemMaxCashRegExp = new RegExp(
+  '^-?\\d{0,12}(?:\\.\\d{0,2})?$'
+);
 
 export const scenariosUpdateBody = zod.object({
   name: zod.string().max(scenariosUpdateBodyNameMax),
   maritalStatus: zod
     .enum(['individual', 'couple'])
+    .optional()
     .describe('* `individual` - Individual\n* `couple` - Couple'),
   userBirthYear: zod
     .number()
@@ -807,9 +1039,64 @@ export const scenariosUpdateBody = zod.object({
     lower: zod.number().nullish(),
     upper: zod.number().nullish()
   }),
-  afterTaxContributionLimit: zod.number(),
-  financialGoal: zod.number(),
-  residenceState: zod.string().max(scenariosUpdateBodyResidenceStateMax),
+  afterTaxContributionLimit: zod.string().regex(scenariosUpdateBodyAfterTaxContributionLimitRegExp),
+  financialGoal: zod.string().regex(scenariosUpdateBodyFinancialGoalRegExp),
+  residenceState: zod
+    .enum([
+      'AL',
+      'AK',
+      'AZ',
+      'AR',
+      'CA',
+      'CO',
+      'CT',
+      'DE',
+      'FL',
+      'GA',
+      'HI',
+      'ID',
+      'IL',
+      'IN',
+      'IA',
+      'KS',
+      'KY',
+      'LA',
+      'ME',
+      'MD',
+      'MA',
+      'MI',
+      'MN',
+      'MS',
+      'MO',
+      'MT',
+      'NE',
+      'NV',
+      'NH',
+      'NJ',
+      'NM',
+      'NY',
+      'NC',
+      'ND',
+      'OH',
+      'OK',
+      'OR',
+      'PA',
+      'RI',
+      'SC',
+      'SD',
+      'TN',
+      'TX',
+      'UT',
+      'VT',
+      'VA',
+      'WA',
+      'WV',
+      'WI',
+      'WY'
+    ])
+    .describe(
+      '* `AL` - Alabama\n* `AK` - Alaska\n* `AZ` - Arizona\n* `AR` - Arkansas\n* `CA` - California\n* `CO` - Colorado\n* `CT` - Connecticut\n* `DE` - Delaware\n* `FL` - Florida\n* `GA` - Georgia\n* `HI` - Hawaii\n* `ID` - Idaho\n* `IL` - Illinois\n* `IN` - Indiana\n* `IA` - Iowa\n* `KS` - Kansas\n* `KY` - Kentucky\n* `LA` - Louisiana\n* `ME` - Maine\n* `MD` - Maryland\n* `MA` - Massachusetts\n* `MI` - Michigan\n* `MN` - Minnesota\n* `MS` - Mississippi\n* `MO` - Missouri\n* `MT` - Montana\n* `NE` - Nebraska\n* `NV` - Nevada\n* `NH` - New Hampshire\n* `NJ` - New Jersey\n* `NM` - New Mexico\n* `NY` - New York\n* `NC` - North Carolina\n* `ND` - North Dakota\n* `OH` - Ohio\n* `OK` - Oklahoma\n* `OR` - Oregon\n* `PA` - Pennsylvania\n* `RI` - Rhode Island\n* `SC` - South Carolina\n* `SD` - South Dakota\n* `TN` - Tennessee\n* `TX` - Texas\n* `UT` - Utah\n* `VT` - Vermont\n* `VA` - Virginia\n* `WA` - Washington\n* `WV` - West Virginia\n* `WI` - Wisconsin\n* `WY` - Wyoming'
+    ),
   rothConversionOpt: zod.boolean().optional(),
   rothConversionStart: zod
     .number()
@@ -855,7 +1142,7 @@ export const scenariosUpdateBody = zod.object({
         }),
         taxability: zod.boolean()
       }),
-      value: zod.number(),
+      value: zod.string().regex(scenariosUpdateBodyInvestmentsItemValueRegExp),
       taxStatus: zod
         .enum(['non-retirement', 'pre-tax', 'after-tax'])
         .describe(
@@ -902,7 +1189,10 @@ export const scenariosUpdateBody = zod.object({
         .describe(
           '* `income` - Income\n* `expense` - Expense\n* `invest` - Invest\n* `rebalance` - Rebalance'
         ),
-      initialAmount: zod.number().nullish(),
+      initialAmount: zod
+        .string()
+        .regex(scenariosUpdateBodyEventSeriesItemInitialAmountRegExp)
+        .nullish(),
       changeAmtOrPct: zod
         .enum(['amount', 'percent'])
         .describe('* `amount` - Amount\n* `percent` - Percent')
@@ -925,7 +1215,7 @@ export const scenariosUpdateBody = zod.object({
       userFraction: zod.number().nullish(),
       socialSecurity: zod.boolean().optional(),
       discretionary: zod.boolean().optional(),
-      maxCash: zod.number().nullish(),
+      maxCash: zod.string().regex(scenariosUpdateBodyEventSeriesItemMaxCashRegExp).nullish(),
       glidePath: zod.boolean().optional(),
       assetAllocations: zod.array(
         zod.object({
@@ -947,13 +1237,18 @@ export const scenariosUpdateBody = zod.object({
 });
 
 export const scenariosUpdateResponseNameMax = 200;
-export const scenariosUpdateResponseUserBirthYearMin = -9223372036854776000;
+export const scenariosUpdateResponseUserBirthYearMin = 1900;
 
-export const scenariosUpdateResponseUserBirthYearMax = 9223372036854776000;
-export const scenariosUpdateResponseSpouseBirthYearMin = -9223372036854776000;
+export const scenariosUpdateResponseUserBirthYearMax = 2025;
+export const scenariosUpdateResponseSpouseBirthYearMin = 1900;
 
-export const scenariosUpdateResponseSpouseBirthYearMax = 9223372036854776000;
-export const scenariosUpdateResponseResidenceStateMax = 2;
+export const scenariosUpdateResponseSpouseBirthYearMax = 2025;
+export const scenariosUpdateResponseAfterTaxContributionLimitRegExp = new RegExp(
+  '^-?\\d{0,8}(?:\\.\\d{0,2})?$'
+);
+export const scenariosUpdateResponseFinancialGoalRegExp = new RegExp(
+  '^-?\\d{0,12}(?:\\.\\d{0,2})?$'
+);
 export const scenariosUpdateResponseRothConversionStartMin = -9223372036854776000;
 
 export const scenariosUpdateResponseRothConversionStartMax = 9223372036854776000;
@@ -961,8 +1256,17 @@ export const scenariosUpdateResponseRothConversionEndMin = -9223372036854776000;
 
 export const scenariosUpdateResponseRothConversionEndMax = 9223372036854776000;
 export const scenariosUpdateResponseInvestmentsItemInvestmentTypeNameMax = 100;
+export const scenariosUpdateResponseInvestmentsItemValueRegExp = new RegExp(
+  '^-?\\d{0,12}(?:\\.\\d{0,2})?$'
+);
 export const scenariosUpdateResponseInvestmentsItemInvestmentIdMax = 100;
 export const scenariosUpdateResponseEventSeriesItemNameMax = 100;
+export const scenariosUpdateResponseEventSeriesItemInitialAmountRegExp = new RegExp(
+  '^-?\\d{0,12}(?:\\.\\d{0,2})?$'
+);
+export const scenariosUpdateResponseEventSeriesItemMaxCashRegExp = new RegExp(
+  '^-?\\d{0,12}(?:\\.\\d{0,2})?$'
+);
 export const scenariosUpdateResponseSpendingStrategyItemsItemOrderMin = 0;
 
 export const scenariosUpdateResponseSpendingStrategyItemsItemOrderMax = 9223372036854776000;
@@ -981,6 +1285,7 @@ export const scenariosUpdateResponse = zod.object({
   name: zod.string().max(scenariosUpdateResponseNameMax),
   maritalStatus: zod
     .enum(['individual', 'couple'])
+    .optional()
     .describe('* `individual` - Individual\n* `couple` - Couple'),
   userBirthYear: zod
     .number()
@@ -1023,9 +1328,66 @@ export const scenariosUpdateResponse = zod.object({
     lower: zod.number().nullish(),
     upper: zod.number().nullish()
   }),
-  afterTaxContributionLimit: zod.number(),
-  financialGoal: zod.number(),
-  residenceState: zod.string().max(scenariosUpdateResponseResidenceStateMax),
+  afterTaxContributionLimit: zod
+    .string()
+    .regex(scenariosUpdateResponseAfterTaxContributionLimitRegExp),
+  financialGoal: zod.string().regex(scenariosUpdateResponseFinancialGoalRegExp),
+  residenceState: zod
+    .enum([
+      'AL',
+      'AK',
+      'AZ',
+      'AR',
+      'CA',
+      'CO',
+      'CT',
+      'DE',
+      'FL',
+      'GA',
+      'HI',
+      'ID',
+      'IL',
+      'IN',
+      'IA',
+      'KS',
+      'KY',
+      'LA',
+      'ME',
+      'MD',
+      'MA',
+      'MI',
+      'MN',
+      'MS',
+      'MO',
+      'MT',
+      'NE',
+      'NV',
+      'NH',
+      'NJ',
+      'NM',
+      'NY',
+      'NC',
+      'ND',
+      'OH',
+      'OK',
+      'OR',
+      'PA',
+      'RI',
+      'SC',
+      'SD',
+      'TN',
+      'TX',
+      'UT',
+      'VT',
+      'VA',
+      'WA',
+      'WV',
+      'WI',
+      'WY'
+    ])
+    .describe(
+      '* `AL` - Alabama\n* `AK` - Alaska\n* `AZ` - Arizona\n* `AR` - Arkansas\n* `CA` - California\n* `CO` - Colorado\n* `CT` - Connecticut\n* `DE` - Delaware\n* `FL` - Florida\n* `GA` - Georgia\n* `HI` - Hawaii\n* `ID` - Idaho\n* `IL` - Illinois\n* `IN` - Indiana\n* `IA` - Iowa\n* `KS` - Kansas\n* `KY` - Kentucky\n* `LA` - Louisiana\n* `ME` - Maine\n* `MD` - Maryland\n* `MA` - Massachusetts\n* `MI` - Michigan\n* `MN` - Minnesota\n* `MS` - Mississippi\n* `MO` - Missouri\n* `MT` - Montana\n* `NE` - Nebraska\n* `NV` - Nevada\n* `NH` - New Hampshire\n* `NJ` - New Jersey\n* `NM` - New Mexico\n* `NY` - New York\n* `NC` - North Carolina\n* `ND` - North Dakota\n* `OH` - Ohio\n* `OK` - Oklahoma\n* `OR` - Oregon\n* `PA` - Pennsylvania\n* `RI` - Rhode Island\n* `SC` - South Carolina\n* `SD` - South Dakota\n* `TN` - Tennessee\n* `TX` - Texas\n* `UT` - Utah\n* `VT` - Vermont\n* `VA` - Virginia\n* `WA` - Washington\n* `WV` - West Virginia\n* `WI` - Wisconsin\n* `WY` - Wyoming'
+    ),
   rothConversionOpt: zod.boolean().optional(),
   rothConversionStart: zod
     .number()
@@ -1071,7 +1433,7 @@ export const scenariosUpdateResponse = zod.object({
         }),
         taxability: zod.boolean()
       }),
-      value: zod.number(),
+      value: zod.string().regex(scenariosUpdateResponseInvestmentsItemValueRegExp),
       taxStatus: zod
         .enum(['non-retirement', 'pre-tax', 'after-tax'])
         .describe(
@@ -1118,7 +1480,10 @@ export const scenariosUpdateResponse = zod.object({
         .describe(
           '* `income` - Income\n* `expense` - Expense\n* `invest` - Invest\n* `rebalance` - Rebalance'
         ),
-      initialAmount: zod.number().nullish(),
+      initialAmount: zod
+        .string()
+        .regex(scenariosUpdateResponseEventSeriesItemInitialAmountRegExp)
+        .nullish(),
       changeAmtOrPct: zod
         .enum(['amount', 'percent'])
         .describe('* `amount` - Amount\n* `percent` - Percent')
@@ -1141,7 +1506,7 @@ export const scenariosUpdateResponse = zod.object({
       userFraction: zod.number().nullish(),
       socialSecurity: zod.boolean().optional(),
       discretionary: zod.boolean().optional(),
-      maxCash: zod.number().nullish(),
+      maxCash: zod.string().regex(scenariosUpdateResponseEventSeriesItemMaxCashRegExp).nullish(),
       glidePath: zod.boolean().optional(),
       assetAllocations: zod.array(
         zod.object({
@@ -1209,13 +1574,18 @@ export const scenariosPartialUpdateParams = zod.object({
 });
 
 export const scenariosPartialUpdateBodyNameMax = 200;
-export const scenariosPartialUpdateBodyUserBirthYearMin = -9223372036854776000;
+export const scenariosPartialUpdateBodyUserBirthYearMin = 1900;
 
-export const scenariosPartialUpdateBodyUserBirthYearMax = 9223372036854776000;
-export const scenariosPartialUpdateBodySpouseBirthYearMin = -9223372036854776000;
+export const scenariosPartialUpdateBodyUserBirthYearMax = 2025;
+export const scenariosPartialUpdateBodySpouseBirthYearMin = 1900;
 
-export const scenariosPartialUpdateBodySpouseBirthYearMax = 9223372036854776000;
-export const scenariosPartialUpdateBodyResidenceStateMax = 2;
+export const scenariosPartialUpdateBodySpouseBirthYearMax = 2025;
+export const scenariosPartialUpdateBodyAfterTaxContributionLimitRegExp = new RegExp(
+  '^-?\\d{0,8}(?:\\.\\d{0,2})?$'
+);
+export const scenariosPartialUpdateBodyFinancialGoalRegExp = new RegExp(
+  '^-?\\d{0,12}(?:\\.\\d{0,2})?$'
+);
 export const scenariosPartialUpdateBodyRothConversionStartMin = -9223372036854776000;
 
 export const scenariosPartialUpdateBodyRothConversionStartMax = 9223372036854776000;
@@ -1223,8 +1593,17 @@ export const scenariosPartialUpdateBodyRothConversionEndMin = -92233720368547760
 
 export const scenariosPartialUpdateBodyRothConversionEndMax = 9223372036854776000;
 export const scenariosPartialUpdateBodyInvestmentsItemInvestmentTypeNameMax = 100;
+export const scenariosPartialUpdateBodyInvestmentsItemValueRegExp = new RegExp(
+  '^-?\\d{0,12}(?:\\.\\d{0,2})?$'
+);
 export const scenariosPartialUpdateBodyInvestmentsItemInvestmentIdMax = 100;
 export const scenariosPartialUpdateBodyEventSeriesItemNameMax = 100;
+export const scenariosPartialUpdateBodyEventSeriesItemInitialAmountRegExp = new RegExp(
+  '^-?\\d{0,12}(?:\\.\\d{0,2})?$'
+);
+export const scenariosPartialUpdateBodyEventSeriesItemMaxCashRegExp = new RegExp(
+  '^-?\\d{0,12}(?:\\.\\d{0,2})?$'
+);
 
 export const scenariosPartialUpdateBody = zod.object({
   name: zod.string().max(scenariosPartialUpdateBodyNameMax).optional(),
@@ -1278,9 +1657,68 @@ export const scenariosPartialUpdateBody = zod.object({
       upper: zod.number().nullish()
     })
     .optional(),
-  afterTaxContributionLimit: zod.number().optional(),
-  financialGoal: zod.number().optional(),
-  residenceState: zod.string().max(scenariosPartialUpdateBodyResidenceStateMax).optional(),
+  afterTaxContributionLimit: zod
+    .string()
+    .regex(scenariosPartialUpdateBodyAfterTaxContributionLimitRegExp)
+    .optional(),
+  financialGoal: zod.string().regex(scenariosPartialUpdateBodyFinancialGoalRegExp).optional(),
+  residenceState: zod
+    .enum([
+      'AL',
+      'AK',
+      'AZ',
+      'AR',
+      'CA',
+      'CO',
+      'CT',
+      'DE',
+      'FL',
+      'GA',
+      'HI',
+      'ID',
+      'IL',
+      'IN',
+      'IA',
+      'KS',
+      'KY',
+      'LA',
+      'ME',
+      'MD',
+      'MA',
+      'MI',
+      'MN',
+      'MS',
+      'MO',
+      'MT',
+      'NE',
+      'NV',
+      'NH',
+      'NJ',
+      'NM',
+      'NY',
+      'NC',
+      'ND',
+      'OH',
+      'OK',
+      'OR',
+      'PA',
+      'RI',
+      'SC',
+      'SD',
+      'TN',
+      'TX',
+      'UT',
+      'VT',
+      'VA',
+      'WA',
+      'WV',
+      'WI',
+      'WY'
+    ])
+    .optional()
+    .describe(
+      '* `AL` - Alabama\n* `AK` - Alaska\n* `AZ` - Arizona\n* `AR` - Arkansas\n* `CA` - California\n* `CO` - Colorado\n* `CT` - Connecticut\n* `DE` - Delaware\n* `FL` - Florida\n* `GA` - Georgia\n* `HI` - Hawaii\n* `ID` - Idaho\n* `IL` - Illinois\n* `IN` - Indiana\n* `IA` - Iowa\n* `KS` - Kansas\n* `KY` - Kentucky\n* `LA` - Louisiana\n* `ME` - Maine\n* `MD` - Maryland\n* `MA` - Massachusetts\n* `MI` - Michigan\n* `MN` - Minnesota\n* `MS` - Mississippi\n* `MO` - Missouri\n* `MT` - Montana\n* `NE` - Nebraska\n* `NV` - Nevada\n* `NH` - New Hampshire\n* `NJ` - New Jersey\n* `NM` - New Mexico\n* `NY` - New York\n* `NC` - North Carolina\n* `ND` - North Dakota\n* `OH` - Ohio\n* `OK` - Oklahoma\n* `OR` - Oregon\n* `PA` - Pennsylvania\n* `RI` - Rhode Island\n* `SC` - South Carolina\n* `SD` - South Dakota\n* `TN` - Tennessee\n* `TX` - Texas\n* `UT` - Utah\n* `VT` - Vermont\n* `VA` - Virginia\n* `WA` - Washington\n* `WV` - West Virginia\n* `WI` - Wisconsin\n* `WY` - Wyoming'
+    ),
   rothConversionOpt: zod.boolean().optional(),
   rothConversionStart: zod
     .number()
@@ -1327,7 +1765,7 @@ export const scenariosPartialUpdateBody = zod.object({
           }),
           taxability: zod.boolean()
         }),
-        value: zod.number(),
+        value: zod.string().regex(scenariosPartialUpdateBodyInvestmentsItemValueRegExp),
         taxStatus: zod
           .enum(['non-retirement', 'pre-tax', 'after-tax'])
           .describe(
@@ -1376,7 +1814,10 @@ export const scenariosPartialUpdateBody = zod.object({
           .describe(
             '* `income` - Income\n* `expense` - Expense\n* `invest` - Invest\n* `rebalance` - Rebalance'
           ),
-        initialAmount: zod.number().nullish(),
+        initialAmount: zod
+          .string()
+          .regex(scenariosPartialUpdateBodyEventSeriesItemInitialAmountRegExp)
+          .nullish(),
         changeAmtOrPct: zod
           .enum(['amount', 'percent'])
           .describe('* `amount` - Amount\n* `percent` - Percent')
@@ -1399,7 +1840,10 @@ export const scenariosPartialUpdateBody = zod.object({
         userFraction: zod.number().nullish(),
         socialSecurity: zod.boolean().optional(),
         discretionary: zod.boolean().optional(),
-        maxCash: zod.number().nullish(),
+        maxCash: zod
+          .string()
+          .regex(scenariosPartialUpdateBodyEventSeriesItemMaxCashRegExp)
+          .nullish(),
         glidePath: zod.boolean().optional(),
         assetAllocations: zod.array(
           zod.object({
@@ -1422,13 +1866,18 @@ export const scenariosPartialUpdateBody = zod.object({
 });
 
 export const scenariosPartialUpdateResponseNameMax = 200;
-export const scenariosPartialUpdateResponseUserBirthYearMin = -9223372036854776000;
+export const scenariosPartialUpdateResponseUserBirthYearMin = 1900;
 
-export const scenariosPartialUpdateResponseUserBirthYearMax = 9223372036854776000;
-export const scenariosPartialUpdateResponseSpouseBirthYearMin = -9223372036854776000;
+export const scenariosPartialUpdateResponseUserBirthYearMax = 2025;
+export const scenariosPartialUpdateResponseSpouseBirthYearMin = 1900;
 
-export const scenariosPartialUpdateResponseSpouseBirthYearMax = 9223372036854776000;
-export const scenariosPartialUpdateResponseResidenceStateMax = 2;
+export const scenariosPartialUpdateResponseSpouseBirthYearMax = 2025;
+export const scenariosPartialUpdateResponseAfterTaxContributionLimitRegExp = new RegExp(
+  '^-?\\d{0,8}(?:\\.\\d{0,2})?$'
+);
+export const scenariosPartialUpdateResponseFinancialGoalRegExp = new RegExp(
+  '^-?\\d{0,12}(?:\\.\\d{0,2})?$'
+);
 export const scenariosPartialUpdateResponseRothConversionStartMin = -9223372036854776000;
 
 export const scenariosPartialUpdateResponseRothConversionStartMax = 9223372036854776000;
@@ -1436,8 +1885,17 @@ export const scenariosPartialUpdateResponseRothConversionEndMin = -9223372036854
 
 export const scenariosPartialUpdateResponseRothConversionEndMax = 9223372036854776000;
 export const scenariosPartialUpdateResponseInvestmentsItemInvestmentTypeNameMax = 100;
+export const scenariosPartialUpdateResponseInvestmentsItemValueRegExp = new RegExp(
+  '^-?\\d{0,12}(?:\\.\\d{0,2})?$'
+);
 export const scenariosPartialUpdateResponseInvestmentsItemInvestmentIdMax = 100;
 export const scenariosPartialUpdateResponseEventSeriesItemNameMax = 100;
+export const scenariosPartialUpdateResponseEventSeriesItemInitialAmountRegExp = new RegExp(
+  '^-?\\d{0,12}(?:\\.\\d{0,2})?$'
+);
+export const scenariosPartialUpdateResponseEventSeriesItemMaxCashRegExp = new RegExp(
+  '^-?\\d{0,12}(?:\\.\\d{0,2})?$'
+);
 export const scenariosPartialUpdateResponseSpendingStrategyItemsItemOrderMin = 0;
 
 export const scenariosPartialUpdateResponseSpendingStrategyItemsItemOrderMax = 9223372036854776000;
@@ -1456,6 +1914,7 @@ export const scenariosPartialUpdateResponse = zod.object({
   name: zod.string().max(scenariosPartialUpdateResponseNameMax),
   maritalStatus: zod
     .enum(['individual', 'couple'])
+    .optional()
     .describe('* `individual` - Individual\n* `couple` - Couple'),
   userBirthYear: zod
     .number()
@@ -1498,9 +1957,66 @@ export const scenariosPartialUpdateResponse = zod.object({
     lower: zod.number().nullish(),
     upper: zod.number().nullish()
   }),
-  afterTaxContributionLimit: zod.number(),
-  financialGoal: zod.number(),
-  residenceState: zod.string().max(scenariosPartialUpdateResponseResidenceStateMax),
+  afterTaxContributionLimit: zod
+    .string()
+    .regex(scenariosPartialUpdateResponseAfterTaxContributionLimitRegExp),
+  financialGoal: zod.string().regex(scenariosPartialUpdateResponseFinancialGoalRegExp),
+  residenceState: zod
+    .enum([
+      'AL',
+      'AK',
+      'AZ',
+      'AR',
+      'CA',
+      'CO',
+      'CT',
+      'DE',
+      'FL',
+      'GA',
+      'HI',
+      'ID',
+      'IL',
+      'IN',
+      'IA',
+      'KS',
+      'KY',
+      'LA',
+      'ME',
+      'MD',
+      'MA',
+      'MI',
+      'MN',
+      'MS',
+      'MO',
+      'MT',
+      'NE',
+      'NV',
+      'NH',
+      'NJ',
+      'NM',
+      'NY',
+      'NC',
+      'ND',
+      'OH',
+      'OK',
+      'OR',
+      'PA',
+      'RI',
+      'SC',
+      'SD',
+      'TN',
+      'TX',
+      'UT',
+      'VT',
+      'VA',
+      'WA',
+      'WV',
+      'WI',
+      'WY'
+    ])
+    .describe(
+      '* `AL` - Alabama\n* `AK` - Alaska\n* `AZ` - Arizona\n* `AR` - Arkansas\n* `CA` - California\n* `CO` - Colorado\n* `CT` - Connecticut\n* `DE` - Delaware\n* `FL` - Florida\n* `GA` - Georgia\n* `HI` - Hawaii\n* `ID` - Idaho\n* `IL` - Illinois\n* `IN` - Indiana\n* `IA` - Iowa\n* `KS` - Kansas\n* `KY` - Kentucky\n* `LA` - Louisiana\n* `ME` - Maine\n* `MD` - Maryland\n* `MA` - Massachusetts\n* `MI` - Michigan\n* `MN` - Minnesota\n* `MS` - Mississippi\n* `MO` - Missouri\n* `MT` - Montana\n* `NE` - Nebraska\n* `NV` - Nevada\n* `NH` - New Hampshire\n* `NJ` - New Jersey\n* `NM` - New Mexico\n* `NY` - New York\n* `NC` - North Carolina\n* `ND` - North Dakota\n* `OH` - Ohio\n* `OK` - Oklahoma\n* `OR` - Oregon\n* `PA` - Pennsylvania\n* `RI` - Rhode Island\n* `SC` - South Carolina\n* `SD` - South Dakota\n* `TN` - Tennessee\n* `TX` - Texas\n* `UT` - Utah\n* `VT` - Vermont\n* `VA` - Virginia\n* `WA` - Washington\n* `WV` - West Virginia\n* `WI` - Wisconsin\n* `WY` - Wyoming'
+    ),
   rothConversionOpt: zod.boolean().optional(),
   rothConversionStart: zod
     .number()
@@ -1546,7 +2062,7 @@ export const scenariosPartialUpdateResponse = zod.object({
         }),
         taxability: zod.boolean()
       }),
-      value: zod.number(),
+      value: zod.string().regex(scenariosPartialUpdateResponseInvestmentsItemValueRegExp),
       taxStatus: zod
         .enum(['non-retirement', 'pre-tax', 'after-tax'])
         .describe(
@@ -1593,7 +2109,10 @@ export const scenariosPartialUpdateResponse = zod.object({
         .describe(
           '* `income` - Income\n* `expense` - Expense\n* `invest` - Invest\n* `rebalance` - Rebalance'
         ),
-      initialAmount: zod.number().nullish(),
+      initialAmount: zod
+        .string()
+        .regex(scenariosPartialUpdateResponseEventSeriesItemInitialAmountRegExp)
+        .nullish(),
       changeAmtOrPct: zod
         .enum(['amount', 'percent'])
         .describe('* `amount` - Amount\n* `percent` - Percent')
@@ -1616,7 +2135,10 @@ export const scenariosPartialUpdateResponse = zod.object({
       userFraction: zod.number().nullish(),
       socialSecurity: zod.boolean().optional(),
       discretionary: zod.boolean().optional(),
-      maxCash: zod.number().nullish(),
+      maxCash: zod
+        .string()
+        .regex(scenariosPartialUpdateResponseEventSeriesItemMaxCashRegExp)
+        .nullish(),
       glidePath: zod.boolean().optional(),
       assetAllocations: zod.array(
         zod.object({
@@ -1691,13 +2213,18 @@ export const scenariosCloneCreateParams = zod.object({
 });
 
 export const scenariosCloneCreateBodyNameMax = 200;
-export const scenariosCloneCreateBodyUserBirthYearMin = -9223372036854776000;
+export const scenariosCloneCreateBodyUserBirthYearMin = 1900;
 
-export const scenariosCloneCreateBodyUserBirthYearMax = 9223372036854776000;
-export const scenariosCloneCreateBodySpouseBirthYearMin = -9223372036854776000;
+export const scenariosCloneCreateBodyUserBirthYearMax = 2025;
+export const scenariosCloneCreateBodySpouseBirthYearMin = 1900;
 
-export const scenariosCloneCreateBodySpouseBirthYearMax = 9223372036854776000;
-export const scenariosCloneCreateBodyResidenceStateMax = 2;
+export const scenariosCloneCreateBodySpouseBirthYearMax = 2025;
+export const scenariosCloneCreateBodyAfterTaxContributionLimitRegExp = new RegExp(
+  '^-?\\d{0,8}(?:\\.\\d{0,2})?$'
+);
+export const scenariosCloneCreateBodyFinancialGoalRegExp = new RegExp(
+  '^-?\\d{0,12}(?:\\.\\d{0,2})?$'
+);
 export const scenariosCloneCreateBodyRothConversionStartMin = -9223372036854776000;
 
 export const scenariosCloneCreateBodyRothConversionStartMax = 9223372036854776000;
@@ -1705,13 +2232,23 @@ export const scenariosCloneCreateBodyRothConversionEndMin = -9223372036854776000
 
 export const scenariosCloneCreateBodyRothConversionEndMax = 9223372036854776000;
 export const scenariosCloneCreateBodyInvestmentsItemInvestmentTypeNameMax = 100;
+export const scenariosCloneCreateBodyInvestmentsItemValueRegExp = new RegExp(
+  '^-?\\d{0,12}(?:\\.\\d{0,2})?$'
+);
 export const scenariosCloneCreateBodyInvestmentsItemInvestmentIdMax = 100;
 export const scenariosCloneCreateBodyEventSeriesItemNameMax = 100;
+export const scenariosCloneCreateBodyEventSeriesItemInitialAmountRegExp = new RegExp(
+  '^-?\\d{0,12}(?:\\.\\d{0,2})?$'
+);
+export const scenariosCloneCreateBodyEventSeriesItemMaxCashRegExp = new RegExp(
+  '^-?\\d{0,12}(?:\\.\\d{0,2})?$'
+);
 
 export const scenariosCloneCreateBody = zod.object({
   name: zod.string().max(scenariosCloneCreateBodyNameMax),
   maritalStatus: zod
     .enum(['individual', 'couple'])
+    .optional()
     .describe('* `individual` - Individual\n* `couple` - Couple'),
   userBirthYear: zod
     .number()
@@ -1754,9 +2291,66 @@ export const scenariosCloneCreateBody = zod.object({
     lower: zod.number().nullish(),
     upper: zod.number().nullish()
   }),
-  afterTaxContributionLimit: zod.number(),
-  financialGoal: zod.number(),
-  residenceState: zod.string().max(scenariosCloneCreateBodyResidenceStateMax),
+  afterTaxContributionLimit: zod
+    .string()
+    .regex(scenariosCloneCreateBodyAfterTaxContributionLimitRegExp),
+  financialGoal: zod.string().regex(scenariosCloneCreateBodyFinancialGoalRegExp),
+  residenceState: zod
+    .enum([
+      'AL',
+      'AK',
+      'AZ',
+      'AR',
+      'CA',
+      'CO',
+      'CT',
+      'DE',
+      'FL',
+      'GA',
+      'HI',
+      'ID',
+      'IL',
+      'IN',
+      'IA',
+      'KS',
+      'KY',
+      'LA',
+      'ME',
+      'MD',
+      'MA',
+      'MI',
+      'MN',
+      'MS',
+      'MO',
+      'MT',
+      'NE',
+      'NV',
+      'NH',
+      'NJ',
+      'NM',
+      'NY',
+      'NC',
+      'ND',
+      'OH',
+      'OK',
+      'OR',
+      'PA',
+      'RI',
+      'SC',
+      'SD',
+      'TN',
+      'TX',
+      'UT',
+      'VT',
+      'VA',
+      'WA',
+      'WV',
+      'WI',
+      'WY'
+    ])
+    .describe(
+      '* `AL` - Alabama\n* `AK` - Alaska\n* `AZ` - Arizona\n* `AR` - Arkansas\n* `CA` - California\n* `CO` - Colorado\n* `CT` - Connecticut\n* `DE` - Delaware\n* `FL` - Florida\n* `GA` - Georgia\n* `HI` - Hawaii\n* `ID` - Idaho\n* `IL` - Illinois\n* `IN` - Indiana\n* `IA` - Iowa\n* `KS` - Kansas\n* `KY` - Kentucky\n* `LA` - Louisiana\n* `ME` - Maine\n* `MD` - Maryland\n* `MA` - Massachusetts\n* `MI` - Michigan\n* `MN` - Minnesota\n* `MS` - Mississippi\n* `MO` - Missouri\n* `MT` - Montana\n* `NE` - Nebraska\n* `NV` - Nevada\n* `NH` - New Hampshire\n* `NJ` - New Jersey\n* `NM` - New Mexico\n* `NY` - New York\n* `NC` - North Carolina\n* `ND` - North Dakota\n* `OH` - Ohio\n* `OK` - Oklahoma\n* `OR` - Oregon\n* `PA` - Pennsylvania\n* `RI` - Rhode Island\n* `SC` - South Carolina\n* `SD` - South Dakota\n* `TN` - Tennessee\n* `TX` - Texas\n* `UT` - Utah\n* `VT` - Vermont\n* `VA` - Virginia\n* `WA` - Washington\n* `WV` - West Virginia\n* `WI` - Wisconsin\n* `WY` - Wyoming'
+    ),
   rothConversionOpt: zod.boolean().optional(),
   rothConversionStart: zod
     .number()
@@ -1802,7 +2396,7 @@ export const scenariosCloneCreateBody = zod.object({
         }),
         taxability: zod.boolean()
       }),
-      value: zod.number(),
+      value: zod.string().regex(scenariosCloneCreateBodyInvestmentsItemValueRegExp),
       taxStatus: zod
         .enum(['non-retirement', 'pre-tax', 'after-tax'])
         .describe(
@@ -1849,7 +2443,10 @@ export const scenariosCloneCreateBody = zod.object({
         .describe(
           '* `income` - Income\n* `expense` - Expense\n* `invest` - Invest\n* `rebalance` - Rebalance'
         ),
-      initialAmount: zod.number().nullish(),
+      initialAmount: zod
+        .string()
+        .regex(scenariosCloneCreateBodyEventSeriesItemInitialAmountRegExp)
+        .nullish(),
       changeAmtOrPct: zod
         .enum(['amount', 'percent'])
         .describe('* `amount` - Amount\n* `percent` - Percent')
@@ -1872,7 +2469,7 @@ export const scenariosCloneCreateBody = zod.object({
       userFraction: zod.number().nullish(),
       socialSecurity: zod.boolean().optional(),
       discretionary: zod.boolean().optional(),
-      maxCash: zod.number().nullish(),
+      maxCash: zod.string().regex(scenariosCloneCreateBodyEventSeriesItemMaxCashRegExp).nullish(),
       glidePath: zod.boolean().optional(),
       assetAllocations: zod.array(
         zod.object({
@@ -1894,13 +2491,18 @@ export const scenariosCloneCreateBody = zod.object({
 });
 
 export const scenariosCloneCreateResponseNameMax = 200;
-export const scenariosCloneCreateResponseUserBirthYearMin = -9223372036854776000;
+export const scenariosCloneCreateResponseUserBirthYearMin = 1900;
 
-export const scenariosCloneCreateResponseUserBirthYearMax = 9223372036854776000;
-export const scenariosCloneCreateResponseSpouseBirthYearMin = -9223372036854776000;
+export const scenariosCloneCreateResponseUserBirthYearMax = 2025;
+export const scenariosCloneCreateResponseSpouseBirthYearMin = 1900;
 
-export const scenariosCloneCreateResponseSpouseBirthYearMax = 9223372036854776000;
-export const scenariosCloneCreateResponseResidenceStateMax = 2;
+export const scenariosCloneCreateResponseSpouseBirthYearMax = 2025;
+export const scenariosCloneCreateResponseAfterTaxContributionLimitRegExp = new RegExp(
+  '^-?\\d{0,8}(?:\\.\\d{0,2})?$'
+);
+export const scenariosCloneCreateResponseFinancialGoalRegExp = new RegExp(
+  '^-?\\d{0,12}(?:\\.\\d{0,2})?$'
+);
 export const scenariosCloneCreateResponseRothConversionStartMin = -9223372036854776000;
 
 export const scenariosCloneCreateResponseRothConversionStartMax = 9223372036854776000;
@@ -1908,8 +2510,17 @@ export const scenariosCloneCreateResponseRothConversionEndMin = -922337203685477
 
 export const scenariosCloneCreateResponseRothConversionEndMax = 9223372036854776000;
 export const scenariosCloneCreateResponseInvestmentsItemInvestmentTypeNameMax = 100;
+export const scenariosCloneCreateResponseInvestmentsItemValueRegExp = new RegExp(
+  '^-?\\d{0,12}(?:\\.\\d{0,2})?$'
+);
 export const scenariosCloneCreateResponseInvestmentsItemInvestmentIdMax = 100;
 export const scenariosCloneCreateResponseEventSeriesItemNameMax = 100;
+export const scenariosCloneCreateResponseEventSeriesItemInitialAmountRegExp = new RegExp(
+  '^-?\\d{0,12}(?:\\.\\d{0,2})?$'
+);
+export const scenariosCloneCreateResponseEventSeriesItemMaxCashRegExp = new RegExp(
+  '^-?\\d{0,12}(?:\\.\\d{0,2})?$'
+);
 export const scenariosCloneCreateResponseSpendingStrategyItemsItemOrderMin = 0;
 
 export const scenariosCloneCreateResponseSpendingStrategyItemsItemOrderMax = 9223372036854776000;
@@ -1928,6 +2539,7 @@ export const scenariosCloneCreateResponse = zod.object({
   name: zod.string().max(scenariosCloneCreateResponseNameMax),
   maritalStatus: zod
     .enum(['individual', 'couple'])
+    .optional()
     .describe('* `individual` - Individual\n* `couple` - Couple'),
   userBirthYear: zod
     .number()
@@ -1970,9 +2582,66 @@ export const scenariosCloneCreateResponse = zod.object({
     lower: zod.number().nullish(),
     upper: zod.number().nullish()
   }),
-  afterTaxContributionLimit: zod.number(),
-  financialGoal: zod.number(),
-  residenceState: zod.string().max(scenariosCloneCreateResponseResidenceStateMax),
+  afterTaxContributionLimit: zod
+    .string()
+    .regex(scenariosCloneCreateResponseAfterTaxContributionLimitRegExp),
+  financialGoal: zod.string().regex(scenariosCloneCreateResponseFinancialGoalRegExp),
+  residenceState: zod
+    .enum([
+      'AL',
+      'AK',
+      'AZ',
+      'AR',
+      'CA',
+      'CO',
+      'CT',
+      'DE',
+      'FL',
+      'GA',
+      'HI',
+      'ID',
+      'IL',
+      'IN',
+      'IA',
+      'KS',
+      'KY',
+      'LA',
+      'ME',
+      'MD',
+      'MA',
+      'MI',
+      'MN',
+      'MS',
+      'MO',
+      'MT',
+      'NE',
+      'NV',
+      'NH',
+      'NJ',
+      'NM',
+      'NY',
+      'NC',
+      'ND',
+      'OH',
+      'OK',
+      'OR',
+      'PA',
+      'RI',
+      'SC',
+      'SD',
+      'TN',
+      'TX',
+      'UT',
+      'VT',
+      'VA',
+      'WA',
+      'WV',
+      'WI',
+      'WY'
+    ])
+    .describe(
+      '* `AL` - Alabama\n* `AK` - Alaska\n* `AZ` - Arizona\n* `AR` - Arkansas\n* `CA` - California\n* `CO` - Colorado\n* `CT` - Connecticut\n* `DE` - Delaware\n* `FL` - Florida\n* `GA` - Georgia\n* `HI` - Hawaii\n* `ID` - Idaho\n* `IL` - Illinois\n* `IN` - Indiana\n* `IA` - Iowa\n* `KS` - Kansas\n* `KY` - Kentucky\n* `LA` - Louisiana\n* `ME` - Maine\n* `MD` - Maryland\n* `MA` - Massachusetts\n* `MI` - Michigan\n* `MN` - Minnesota\n* `MS` - Mississippi\n* `MO` - Missouri\n* `MT` - Montana\n* `NE` - Nebraska\n* `NV` - Nevada\n* `NH` - New Hampshire\n* `NJ` - New Jersey\n* `NM` - New Mexico\n* `NY` - New York\n* `NC` - North Carolina\n* `ND` - North Dakota\n* `OH` - Ohio\n* `OK` - Oklahoma\n* `OR` - Oregon\n* `PA` - Pennsylvania\n* `RI` - Rhode Island\n* `SC` - South Carolina\n* `SD` - South Dakota\n* `TN` - Tennessee\n* `TX` - Texas\n* `UT` - Utah\n* `VT` - Vermont\n* `VA` - Virginia\n* `WA` - Washington\n* `WV` - West Virginia\n* `WI` - Wisconsin\n* `WY` - Wyoming'
+    ),
   rothConversionOpt: zod.boolean().optional(),
   rothConversionStart: zod
     .number()
@@ -2018,7 +2687,7 @@ export const scenariosCloneCreateResponse = zod.object({
         }),
         taxability: zod.boolean()
       }),
-      value: zod.number(),
+      value: zod.string().regex(scenariosCloneCreateResponseInvestmentsItemValueRegExp),
       taxStatus: zod
         .enum(['non-retirement', 'pre-tax', 'after-tax'])
         .describe(
@@ -2065,7 +2734,10 @@ export const scenariosCloneCreateResponse = zod.object({
         .describe(
           '* `income` - Income\n* `expense` - Expense\n* `invest` - Invest\n* `rebalance` - Rebalance'
         ),
-      initialAmount: zod.number().nullish(),
+      initialAmount: zod
+        .string()
+        .regex(scenariosCloneCreateResponseEventSeriesItemInitialAmountRegExp)
+        .nullish(),
       changeAmtOrPct: zod
         .enum(['amount', 'percent'])
         .describe('* `amount` - Amount\n* `percent` - Percent')
@@ -2088,7 +2760,10 @@ export const scenariosCloneCreateResponse = zod.object({
       userFraction: zod.number().nullish(),
       socialSecurity: zod.boolean().optional(),
       discretionary: zod.boolean().optional(),
-      maxCash: zod.number().nullish(),
+      maxCash: zod
+        .string()
+        .regex(scenariosCloneCreateResponseEventSeriesItemMaxCashRegExp)
+        .nullish(),
       glidePath: zod.boolean().optional(),
       assetAllocations: zod.array(
         zod.object({
@@ -2155,13 +2830,18 @@ export const scenariosExportRetrieveParams = zod.object({
 });
 
 export const scenariosExportRetrieveResponseNameMax = 200;
-export const scenariosExportRetrieveResponseUserBirthYearMin = -9223372036854776000;
+export const scenariosExportRetrieveResponseUserBirthYearMin = 1900;
 
-export const scenariosExportRetrieveResponseUserBirthYearMax = 9223372036854776000;
-export const scenariosExportRetrieveResponseSpouseBirthYearMin = -9223372036854776000;
+export const scenariosExportRetrieveResponseUserBirthYearMax = 2025;
+export const scenariosExportRetrieveResponseSpouseBirthYearMin = 1900;
 
-export const scenariosExportRetrieveResponseSpouseBirthYearMax = 9223372036854776000;
-export const scenariosExportRetrieveResponseResidenceStateMax = 2;
+export const scenariosExportRetrieveResponseSpouseBirthYearMax = 2025;
+export const scenariosExportRetrieveResponseAfterTaxContributionLimitRegExp = new RegExp(
+  '^-?\\d{0,8}(?:\\.\\d{0,2})?$'
+);
+export const scenariosExportRetrieveResponseFinancialGoalRegExp = new RegExp(
+  '^-?\\d{0,12}(?:\\.\\d{0,2})?$'
+);
 export const scenariosExportRetrieveResponseRothConversionStartMin = -9223372036854776000;
 
 export const scenariosExportRetrieveResponseRothConversionStartMax = 9223372036854776000;
@@ -2169,8 +2849,17 @@ export const scenariosExportRetrieveResponseRothConversionEndMin = -922337203685
 
 export const scenariosExportRetrieveResponseRothConversionEndMax = 9223372036854776000;
 export const scenariosExportRetrieveResponseInvestmentsItemInvestmentTypeNameMax = 100;
+export const scenariosExportRetrieveResponseInvestmentsItemValueRegExp = new RegExp(
+  '^-?\\d{0,12}(?:\\.\\d{0,2})?$'
+);
 export const scenariosExportRetrieveResponseInvestmentsItemInvestmentIdMax = 100;
 export const scenariosExportRetrieveResponseEventSeriesItemNameMax = 100;
+export const scenariosExportRetrieveResponseEventSeriesItemInitialAmountRegExp = new RegExp(
+  '^-?\\d{0,12}(?:\\.\\d{0,2})?$'
+);
+export const scenariosExportRetrieveResponseEventSeriesItemMaxCashRegExp = new RegExp(
+  '^-?\\d{0,12}(?:\\.\\d{0,2})?$'
+);
 export const scenariosExportRetrieveResponseSpendingStrategyItemsItemOrderMin = 0;
 
 export const scenariosExportRetrieveResponseSpendingStrategyItemsItemOrderMax = 9223372036854776000;
@@ -2189,6 +2878,7 @@ export const scenariosExportRetrieveResponse = zod.object({
   name: zod.string().max(scenariosExportRetrieveResponseNameMax),
   maritalStatus: zod
     .enum(['individual', 'couple'])
+    .optional()
     .describe('* `individual` - Individual\n* `couple` - Couple'),
   userBirthYear: zod
     .number()
@@ -2231,9 +2921,66 @@ export const scenariosExportRetrieveResponse = zod.object({
     lower: zod.number().nullish(),
     upper: zod.number().nullish()
   }),
-  afterTaxContributionLimit: zod.number(),
-  financialGoal: zod.number(),
-  residenceState: zod.string().max(scenariosExportRetrieveResponseResidenceStateMax),
+  afterTaxContributionLimit: zod
+    .string()
+    .regex(scenariosExportRetrieveResponseAfterTaxContributionLimitRegExp),
+  financialGoal: zod.string().regex(scenariosExportRetrieveResponseFinancialGoalRegExp),
+  residenceState: zod
+    .enum([
+      'AL',
+      'AK',
+      'AZ',
+      'AR',
+      'CA',
+      'CO',
+      'CT',
+      'DE',
+      'FL',
+      'GA',
+      'HI',
+      'ID',
+      'IL',
+      'IN',
+      'IA',
+      'KS',
+      'KY',
+      'LA',
+      'ME',
+      'MD',
+      'MA',
+      'MI',
+      'MN',
+      'MS',
+      'MO',
+      'MT',
+      'NE',
+      'NV',
+      'NH',
+      'NJ',
+      'NM',
+      'NY',
+      'NC',
+      'ND',
+      'OH',
+      'OK',
+      'OR',
+      'PA',
+      'RI',
+      'SC',
+      'SD',
+      'TN',
+      'TX',
+      'UT',
+      'VT',
+      'VA',
+      'WA',
+      'WV',
+      'WI',
+      'WY'
+    ])
+    .describe(
+      '* `AL` - Alabama\n* `AK` - Alaska\n* `AZ` - Arizona\n* `AR` - Arkansas\n* `CA` - California\n* `CO` - Colorado\n* `CT` - Connecticut\n* `DE` - Delaware\n* `FL` - Florida\n* `GA` - Georgia\n* `HI` - Hawaii\n* `ID` - Idaho\n* `IL` - Illinois\n* `IN` - Indiana\n* `IA` - Iowa\n* `KS` - Kansas\n* `KY` - Kentucky\n* `LA` - Louisiana\n* `ME` - Maine\n* `MD` - Maryland\n* `MA` - Massachusetts\n* `MI` - Michigan\n* `MN` - Minnesota\n* `MS` - Mississippi\n* `MO` - Missouri\n* `MT` - Montana\n* `NE` - Nebraska\n* `NV` - Nevada\n* `NH` - New Hampshire\n* `NJ` - New Jersey\n* `NM` - New Mexico\n* `NY` - New York\n* `NC` - North Carolina\n* `ND` - North Dakota\n* `OH` - Ohio\n* `OK` - Oklahoma\n* `OR` - Oregon\n* `PA` - Pennsylvania\n* `RI` - Rhode Island\n* `SC` - South Carolina\n* `SD` - South Dakota\n* `TN` - Tennessee\n* `TX` - Texas\n* `UT` - Utah\n* `VT` - Vermont\n* `VA` - Virginia\n* `WA` - Washington\n* `WV` - West Virginia\n* `WI` - Wisconsin\n* `WY` - Wyoming'
+    ),
   rothConversionOpt: zod.boolean().optional(),
   rothConversionStart: zod
     .number()
@@ -2279,7 +3026,7 @@ export const scenariosExportRetrieveResponse = zod.object({
         }),
         taxability: zod.boolean()
       }),
-      value: zod.number(),
+      value: zod.string().regex(scenariosExportRetrieveResponseInvestmentsItemValueRegExp),
       taxStatus: zod
         .enum(['non-retirement', 'pre-tax', 'after-tax'])
         .describe(
@@ -2326,7 +3073,10 @@ export const scenariosExportRetrieveResponse = zod.object({
         .describe(
           '* `income` - Income\n* `expense` - Expense\n* `invest` - Invest\n* `rebalance` - Rebalance'
         ),
-      initialAmount: zod.number().nullish(),
+      initialAmount: zod
+        .string()
+        .regex(scenariosExportRetrieveResponseEventSeriesItemInitialAmountRegExp)
+        .nullish(),
       changeAmtOrPct: zod
         .enum(['amount', 'percent'])
         .describe('* `amount` - Amount\n* `percent` - Percent')
@@ -2349,7 +3099,10 @@ export const scenariosExportRetrieveResponse = zod.object({
       userFraction: zod.number().nullish(),
       socialSecurity: zod.boolean().optional(),
       discretionary: zod.boolean().optional(),
-      maxCash: zod.number().nullish(),
+      maxCash: zod
+        .string()
+        .regex(scenariosExportRetrieveResponseEventSeriesItemMaxCashRegExp)
+        .nullish(),
       glidePath: zod.boolean().optional(),
       assetAllocations: zod.array(
         zod.object({
@@ -2416,13 +3169,18 @@ export const scenariosSimulateCreateParams = zod.object({
 });
 
 export const scenariosSimulateCreateBodyNameMax = 200;
-export const scenariosSimulateCreateBodyUserBirthYearMin = -9223372036854776000;
+export const scenariosSimulateCreateBodyUserBirthYearMin = 1900;
 
-export const scenariosSimulateCreateBodyUserBirthYearMax = 9223372036854776000;
-export const scenariosSimulateCreateBodySpouseBirthYearMin = -9223372036854776000;
+export const scenariosSimulateCreateBodyUserBirthYearMax = 2025;
+export const scenariosSimulateCreateBodySpouseBirthYearMin = 1900;
 
-export const scenariosSimulateCreateBodySpouseBirthYearMax = 9223372036854776000;
-export const scenariosSimulateCreateBodyResidenceStateMax = 2;
+export const scenariosSimulateCreateBodySpouseBirthYearMax = 2025;
+export const scenariosSimulateCreateBodyAfterTaxContributionLimitRegExp = new RegExp(
+  '^-?\\d{0,8}(?:\\.\\d{0,2})?$'
+);
+export const scenariosSimulateCreateBodyFinancialGoalRegExp = new RegExp(
+  '^-?\\d{0,12}(?:\\.\\d{0,2})?$'
+);
 export const scenariosSimulateCreateBodyRothConversionStartMin = -9223372036854776000;
 
 export const scenariosSimulateCreateBodyRothConversionStartMax = 9223372036854776000;
@@ -2430,13 +3188,23 @@ export const scenariosSimulateCreateBodyRothConversionEndMin = -9223372036854776
 
 export const scenariosSimulateCreateBodyRothConversionEndMax = 9223372036854776000;
 export const scenariosSimulateCreateBodyInvestmentsItemInvestmentTypeNameMax = 100;
+export const scenariosSimulateCreateBodyInvestmentsItemValueRegExp = new RegExp(
+  '^-?\\d{0,12}(?:\\.\\d{0,2})?$'
+);
 export const scenariosSimulateCreateBodyInvestmentsItemInvestmentIdMax = 100;
 export const scenariosSimulateCreateBodyEventSeriesItemNameMax = 100;
+export const scenariosSimulateCreateBodyEventSeriesItemInitialAmountRegExp = new RegExp(
+  '^-?\\d{0,12}(?:\\.\\d{0,2})?$'
+);
+export const scenariosSimulateCreateBodyEventSeriesItemMaxCashRegExp = new RegExp(
+  '^-?\\d{0,12}(?:\\.\\d{0,2})?$'
+);
 
 export const scenariosSimulateCreateBody = zod.object({
   name: zod.string().max(scenariosSimulateCreateBodyNameMax),
   maritalStatus: zod
     .enum(['individual', 'couple'])
+    .optional()
     .describe('* `individual` - Individual\n* `couple` - Couple'),
   userBirthYear: zod
     .number()
@@ -2479,9 +3247,66 @@ export const scenariosSimulateCreateBody = zod.object({
     lower: zod.number().nullish(),
     upper: zod.number().nullish()
   }),
-  afterTaxContributionLimit: zod.number(),
-  financialGoal: zod.number(),
-  residenceState: zod.string().max(scenariosSimulateCreateBodyResidenceStateMax),
+  afterTaxContributionLimit: zod
+    .string()
+    .regex(scenariosSimulateCreateBodyAfterTaxContributionLimitRegExp),
+  financialGoal: zod.string().regex(scenariosSimulateCreateBodyFinancialGoalRegExp),
+  residenceState: zod
+    .enum([
+      'AL',
+      'AK',
+      'AZ',
+      'AR',
+      'CA',
+      'CO',
+      'CT',
+      'DE',
+      'FL',
+      'GA',
+      'HI',
+      'ID',
+      'IL',
+      'IN',
+      'IA',
+      'KS',
+      'KY',
+      'LA',
+      'ME',
+      'MD',
+      'MA',
+      'MI',
+      'MN',
+      'MS',
+      'MO',
+      'MT',
+      'NE',
+      'NV',
+      'NH',
+      'NJ',
+      'NM',
+      'NY',
+      'NC',
+      'ND',
+      'OH',
+      'OK',
+      'OR',
+      'PA',
+      'RI',
+      'SC',
+      'SD',
+      'TN',
+      'TX',
+      'UT',
+      'VT',
+      'VA',
+      'WA',
+      'WV',
+      'WI',
+      'WY'
+    ])
+    .describe(
+      '* `AL` - Alabama\n* `AK` - Alaska\n* `AZ` - Arizona\n* `AR` - Arkansas\n* `CA` - California\n* `CO` - Colorado\n* `CT` - Connecticut\n* `DE` - Delaware\n* `FL` - Florida\n* `GA` - Georgia\n* `HI` - Hawaii\n* `ID` - Idaho\n* `IL` - Illinois\n* `IN` - Indiana\n* `IA` - Iowa\n* `KS` - Kansas\n* `KY` - Kentucky\n* `LA` - Louisiana\n* `ME` - Maine\n* `MD` - Maryland\n* `MA` - Massachusetts\n* `MI` - Michigan\n* `MN` - Minnesota\n* `MS` - Mississippi\n* `MO` - Missouri\n* `MT` - Montana\n* `NE` - Nebraska\n* `NV` - Nevada\n* `NH` - New Hampshire\n* `NJ` - New Jersey\n* `NM` - New Mexico\n* `NY` - New York\n* `NC` - North Carolina\n* `ND` - North Dakota\n* `OH` - Ohio\n* `OK` - Oklahoma\n* `OR` - Oregon\n* `PA` - Pennsylvania\n* `RI` - Rhode Island\n* `SC` - South Carolina\n* `SD` - South Dakota\n* `TN` - Tennessee\n* `TX` - Texas\n* `UT` - Utah\n* `VT` - Vermont\n* `VA` - Virginia\n* `WA` - Washington\n* `WV` - West Virginia\n* `WI` - Wisconsin\n* `WY` - Wyoming'
+    ),
   rothConversionOpt: zod.boolean().optional(),
   rothConversionStart: zod
     .number()
@@ -2527,7 +3352,7 @@ export const scenariosSimulateCreateBody = zod.object({
         }),
         taxability: zod.boolean()
       }),
-      value: zod.number(),
+      value: zod.string().regex(scenariosSimulateCreateBodyInvestmentsItemValueRegExp),
       taxStatus: zod
         .enum(['non-retirement', 'pre-tax', 'after-tax'])
         .describe(
@@ -2574,7 +3399,10 @@ export const scenariosSimulateCreateBody = zod.object({
         .describe(
           '* `income` - Income\n* `expense` - Expense\n* `invest` - Invest\n* `rebalance` - Rebalance'
         ),
-      initialAmount: zod.number().nullish(),
+      initialAmount: zod
+        .string()
+        .regex(scenariosSimulateCreateBodyEventSeriesItemInitialAmountRegExp)
+        .nullish(),
       changeAmtOrPct: zod
         .enum(['amount', 'percent'])
         .describe('* `amount` - Amount\n* `percent` - Percent')
@@ -2597,7 +3425,10 @@ export const scenariosSimulateCreateBody = zod.object({
       userFraction: zod.number().nullish(),
       socialSecurity: zod.boolean().optional(),
       discretionary: zod.boolean().optional(),
-      maxCash: zod.number().nullish(),
+      maxCash: zod
+        .string()
+        .regex(scenariosSimulateCreateBodyEventSeriesItemMaxCashRegExp)
+        .nullish(),
       glidePath: zod.boolean().optional(),
       assetAllocations: zod.array(
         zod.object({
@@ -2619,13 +3450,18 @@ export const scenariosSimulateCreateBody = zod.object({
 });
 
 export const scenariosSimulateCreateResponseNameMax = 200;
-export const scenariosSimulateCreateResponseUserBirthYearMin = -9223372036854776000;
+export const scenariosSimulateCreateResponseUserBirthYearMin = 1900;
 
-export const scenariosSimulateCreateResponseUserBirthYearMax = 9223372036854776000;
-export const scenariosSimulateCreateResponseSpouseBirthYearMin = -9223372036854776000;
+export const scenariosSimulateCreateResponseUserBirthYearMax = 2025;
+export const scenariosSimulateCreateResponseSpouseBirthYearMin = 1900;
 
-export const scenariosSimulateCreateResponseSpouseBirthYearMax = 9223372036854776000;
-export const scenariosSimulateCreateResponseResidenceStateMax = 2;
+export const scenariosSimulateCreateResponseSpouseBirthYearMax = 2025;
+export const scenariosSimulateCreateResponseAfterTaxContributionLimitRegExp = new RegExp(
+  '^-?\\d{0,8}(?:\\.\\d{0,2})?$'
+);
+export const scenariosSimulateCreateResponseFinancialGoalRegExp = new RegExp(
+  '^-?\\d{0,12}(?:\\.\\d{0,2})?$'
+);
 export const scenariosSimulateCreateResponseRothConversionStartMin = -9223372036854776000;
 
 export const scenariosSimulateCreateResponseRothConversionStartMax = 9223372036854776000;
@@ -2633,8 +3469,17 @@ export const scenariosSimulateCreateResponseRothConversionEndMin = -922337203685
 
 export const scenariosSimulateCreateResponseRothConversionEndMax = 9223372036854776000;
 export const scenariosSimulateCreateResponseInvestmentsItemInvestmentTypeNameMax = 100;
+export const scenariosSimulateCreateResponseInvestmentsItemValueRegExp = new RegExp(
+  '^-?\\d{0,12}(?:\\.\\d{0,2})?$'
+);
 export const scenariosSimulateCreateResponseInvestmentsItemInvestmentIdMax = 100;
 export const scenariosSimulateCreateResponseEventSeriesItemNameMax = 100;
+export const scenariosSimulateCreateResponseEventSeriesItemInitialAmountRegExp = new RegExp(
+  '^-?\\d{0,12}(?:\\.\\d{0,2})?$'
+);
+export const scenariosSimulateCreateResponseEventSeriesItemMaxCashRegExp = new RegExp(
+  '^-?\\d{0,12}(?:\\.\\d{0,2})?$'
+);
 export const scenariosSimulateCreateResponseSpendingStrategyItemsItemOrderMin = 0;
 
 export const scenariosSimulateCreateResponseSpendingStrategyItemsItemOrderMax = 9223372036854776000;
@@ -2653,6 +3498,7 @@ export const scenariosSimulateCreateResponse = zod.object({
   name: zod.string().max(scenariosSimulateCreateResponseNameMax),
   maritalStatus: zod
     .enum(['individual', 'couple'])
+    .optional()
     .describe('* `individual` - Individual\n* `couple` - Couple'),
   userBirthYear: zod
     .number()
@@ -2695,9 +3541,66 @@ export const scenariosSimulateCreateResponse = zod.object({
     lower: zod.number().nullish(),
     upper: zod.number().nullish()
   }),
-  afterTaxContributionLimit: zod.number(),
-  financialGoal: zod.number(),
-  residenceState: zod.string().max(scenariosSimulateCreateResponseResidenceStateMax),
+  afterTaxContributionLimit: zod
+    .string()
+    .regex(scenariosSimulateCreateResponseAfterTaxContributionLimitRegExp),
+  financialGoal: zod.string().regex(scenariosSimulateCreateResponseFinancialGoalRegExp),
+  residenceState: zod
+    .enum([
+      'AL',
+      'AK',
+      'AZ',
+      'AR',
+      'CA',
+      'CO',
+      'CT',
+      'DE',
+      'FL',
+      'GA',
+      'HI',
+      'ID',
+      'IL',
+      'IN',
+      'IA',
+      'KS',
+      'KY',
+      'LA',
+      'ME',
+      'MD',
+      'MA',
+      'MI',
+      'MN',
+      'MS',
+      'MO',
+      'MT',
+      'NE',
+      'NV',
+      'NH',
+      'NJ',
+      'NM',
+      'NY',
+      'NC',
+      'ND',
+      'OH',
+      'OK',
+      'OR',
+      'PA',
+      'RI',
+      'SC',
+      'SD',
+      'TN',
+      'TX',
+      'UT',
+      'VT',
+      'VA',
+      'WA',
+      'WV',
+      'WI',
+      'WY'
+    ])
+    .describe(
+      '* `AL` - Alabama\n* `AK` - Alaska\n* `AZ` - Arizona\n* `AR` - Arkansas\n* `CA` - California\n* `CO` - Colorado\n* `CT` - Connecticut\n* `DE` - Delaware\n* `FL` - Florida\n* `GA` - Georgia\n* `HI` - Hawaii\n* `ID` - Idaho\n* `IL` - Illinois\n* `IN` - Indiana\n* `IA` - Iowa\n* `KS` - Kansas\n* `KY` - Kentucky\n* `LA` - Louisiana\n* `ME` - Maine\n* `MD` - Maryland\n* `MA` - Massachusetts\n* `MI` - Michigan\n* `MN` - Minnesota\n* `MS` - Mississippi\n* `MO` - Missouri\n* `MT` - Montana\n* `NE` - Nebraska\n* `NV` - Nevada\n* `NH` - New Hampshire\n* `NJ` - New Jersey\n* `NM` - New Mexico\n* `NY` - New York\n* `NC` - North Carolina\n* `ND` - North Dakota\n* `OH` - Ohio\n* `OK` - Oklahoma\n* `OR` - Oregon\n* `PA` - Pennsylvania\n* `RI` - Rhode Island\n* `SC` - South Carolina\n* `SD` - South Dakota\n* `TN` - Tennessee\n* `TX` - Texas\n* `UT` - Utah\n* `VT` - Vermont\n* `VA` - Virginia\n* `WA` - Washington\n* `WV` - West Virginia\n* `WI` - Wisconsin\n* `WY` - Wyoming'
+    ),
   rothConversionOpt: zod.boolean().optional(),
   rothConversionStart: zod
     .number()
@@ -2743,7 +3646,7 @@ export const scenariosSimulateCreateResponse = zod.object({
         }),
         taxability: zod.boolean()
       }),
-      value: zod.number(),
+      value: zod.string().regex(scenariosSimulateCreateResponseInvestmentsItemValueRegExp),
       taxStatus: zod
         .enum(['non-retirement', 'pre-tax', 'after-tax'])
         .describe(
@@ -2790,7 +3693,10 @@ export const scenariosSimulateCreateResponse = zod.object({
         .describe(
           '* `income` - Income\n* `expense` - Expense\n* `invest` - Invest\n* `rebalance` - Rebalance'
         ),
-      initialAmount: zod.number().nullish(),
+      initialAmount: zod
+        .string()
+        .regex(scenariosSimulateCreateResponseEventSeriesItemInitialAmountRegExp)
+        .nullish(),
       changeAmtOrPct: zod
         .enum(['amount', 'percent'])
         .describe('* `amount` - Amount\n* `percent` - Percent')
@@ -2813,7 +3719,10 @@ export const scenariosSimulateCreateResponse = zod.object({
       userFraction: zod.number().nullish(),
       socialSecurity: zod.boolean().optional(),
       discretionary: zod.boolean().optional(),
-      maxCash: zod.number().nullish(),
+      maxCash: zod
+        .string()
+        .regex(scenariosSimulateCreateResponseEventSeriesItemMaxCashRegExp)
+        .nullish(),
       glidePath: zod.boolean().optional(),
       assetAllocations: zod.array(
         zod.object({
@@ -2880,13 +3789,18 @@ export const scenariosValidateScenarioRetrieveParams = zod.object({
 });
 
 export const scenariosValidateScenarioRetrieveResponseNameMax = 200;
-export const scenariosValidateScenarioRetrieveResponseUserBirthYearMin = -9223372036854776000;
+export const scenariosValidateScenarioRetrieveResponseUserBirthYearMin = 1900;
 
-export const scenariosValidateScenarioRetrieveResponseUserBirthYearMax = 9223372036854776000;
-export const scenariosValidateScenarioRetrieveResponseSpouseBirthYearMin = -9223372036854776000;
+export const scenariosValidateScenarioRetrieveResponseUserBirthYearMax = 2025;
+export const scenariosValidateScenarioRetrieveResponseSpouseBirthYearMin = 1900;
 
-export const scenariosValidateScenarioRetrieveResponseSpouseBirthYearMax = 9223372036854776000;
-export const scenariosValidateScenarioRetrieveResponseResidenceStateMax = 2;
+export const scenariosValidateScenarioRetrieveResponseSpouseBirthYearMax = 2025;
+export const scenariosValidateScenarioRetrieveResponseAfterTaxContributionLimitRegExp = new RegExp(
+  '^-?\\d{0,8}(?:\\.\\d{0,2})?$'
+);
+export const scenariosValidateScenarioRetrieveResponseFinancialGoalRegExp = new RegExp(
+  '^-?\\d{0,12}(?:\\.\\d{0,2})?$'
+);
 export const scenariosValidateScenarioRetrieveResponseRothConversionStartMin = -9223372036854776000;
 
 export const scenariosValidateScenarioRetrieveResponseRothConversionStartMax = 9223372036854776000;
@@ -2894,8 +3808,16 @@ export const scenariosValidateScenarioRetrieveResponseRothConversionEndMin = -92
 
 export const scenariosValidateScenarioRetrieveResponseRothConversionEndMax = 9223372036854776000;
 export const scenariosValidateScenarioRetrieveResponseInvestmentsItemInvestmentTypeNameMax = 100;
+export const scenariosValidateScenarioRetrieveResponseInvestmentsItemValueRegExp = new RegExp(
+  '^-?\\d{0,12}(?:\\.\\d{0,2})?$'
+);
 export const scenariosValidateScenarioRetrieveResponseInvestmentsItemInvestmentIdMax = 100;
 export const scenariosValidateScenarioRetrieveResponseEventSeriesItemNameMax = 100;
+export const scenariosValidateScenarioRetrieveResponseEventSeriesItemInitialAmountRegExp =
+  new RegExp('^-?\\d{0,12}(?:\\.\\d{0,2})?$');
+export const scenariosValidateScenarioRetrieveResponseEventSeriesItemMaxCashRegExp = new RegExp(
+  '^-?\\d{0,12}(?:\\.\\d{0,2})?$'
+);
 export const scenariosValidateScenarioRetrieveResponseSpendingStrategyItemsItemOrderMin = 0;
 
 export const scenariosValidateScenarioRetrieveResponseSpendingStrategyItemsItemOrderMax = 9223372036854776000;
@@ -2914,6 +3836,7 @@ export const scenariosValidateScenarioRetrieveResponse = zod.object({
   name: zod.string().max(scenariosValidateScenarioRetrieveResponseNameMax),
   maritalStatus: zod
     .enum(['individual', 'couple'])
+    .optional()
     .describe('* `individual` - Individual\n* `couple` - Couple'),
   userBirthYear: zod
     .number()
@@ -2956,9 +3879,66 @@ export const scenariosValidateScenarioRetrieveResponse = zod.object({
     lower: zod.number().nullish(),
     upper: zod.number().nullish()
   }),
-  afterTaxContributionLimit: zod.number(),
-  financialGoal: zod.number(),
-  residenceState: zod.string().max(scenariosValidateScenarioRetrieveResponseResidenceStateMax),
+  afterTaxContributionLimit: zod
+    .string()
+    .regex(scenariosValidateScenarioRetrieveResponseAfterTaxContributionLimitRegExp),
+  financialGoal: zod.string().regex(scenariosValidateScenarioRetrieveResponseFinancialGoalRegExp),
+  residenceState: zod
+    .enum([
+      'AL',
+      'AK',
+      'AZ',
+      'AR',
+      'CA',
+      'CO',
+      'CT',
+      'DE',
+      'FL',
+      'GA',
+      'HI',
+      'ID',
+      'IL',
+      'IN',
+      'IA',
+      'KS',
+      'KY',
+      'LA',
+      'ME',
+      'MD',
+      'MA',
+      'MI',
+      'MN',
+      'MS',
+      'MO',
+      'MT',
+      'NE',
+      'NV',
+      'NH',
+      'NJ',
+      'NM',
+      'NY',
+      'NC',
+      'ND',
+      'OH',
+      'OK',
+      'OR',
+      'PA',
+      'RI',
+      'SC',
+      'SD',
+      'TN',
+      'TX',
+      'UT',
+      'VT',
+      'VA',
+      'WA',
+      'WV',
+      'WI',
+      'WY'
+    ])
+    .describe(
+      '* `AL` - Alabama\n* `AK` - Alaska\n* `AZ` - Arizona\n* `AR` - Arkansas\n* `CA` - California\n* `CO` - Colorado\n* `CT` - Connecticut\n* `DE` - Delaware\n* `FL` - Florida\n* `GA` - Georgia\n* `HI` - Hawaii\n* `ID` - Idaho\n* `IL` - Illinois\n* `IN` - Indiana\n* `IA` - Iowa\n* `KS` - Kansas\n* `KY` - Kentucky\n* `LA` - Louisiana\n* `ME` - Maine\n* `MD` - Maryland\n* `MA` - Massachusetts\n* `MI` - Michigan\n* `MN` - Minnesota\n* `MS` - Mississippi\n* `MO` - Missouri\n* `MT` - Montana\n* `NE` - Nebraska\n* `NV` - Nevada\n* `NH` - New Hampshire\n* `NJ` - New Jersey\n* `NM` - New Mexico\n* `NY` - New York\n* `NC` - North Carolina\n* `ND` - North Dakota\n* `OH` - Ohio\n* `OK` - Oklahoma\n* `OR` - Oregon\n* `PA` - Pennsylvania\n* `RI` - Rhode Island\n* `SC` - South Carolina\n* `SD` - South Dakota\n* `TN` - Tennessee\n* `TX` - Texas\n* `UT` - Utah\n* `VT` - Vermont\n* `VA` - Virginia\n* `WA` - Washington\n* `WV` - West Virginia\n* `WI` - Wisconsin\n* `WY` - Wyoming'
+    ),
   rothConversionOpt: zod.boolean().optional(),
   rothConversionStart: zod
     .number()
@@ -3006,7 +3986,9 @@ export const scenariosValidateScenarioRetrieveResponse = zod.object({
         }),
         taxability: zod.boolean()
       }),
-      value: zod.number(),
+      value: zod
+        .string()
+        .regex(scenariosValidateScenarioRetrieveResponseInvestmentsItemValueRegExp),
       taxStatus: zod
         .enum(['non-retirement', 'pre-tax', 'after-tax'])
         .describe(
@@ -3055,7 +4037,10 @@ export const scenariosValidateScenarioRetrieveResponse = zod.object({
         .describe(
           '* `income` - Income\n* `expense` - Expense\n* `invest` - Invest\n* `rebalance` - Rebalance'
         ),
-      initialAmount: zod.number().nullish(),
+      initialAmount: zod
+        .string()
+        .regex(scenariosValidateScenarioRetrieveResponseEventSeriesItemInitialAmountRegExp)
+        .nullish(),
       changeAmtOrPct: zod
         .enum(['amount', 'percent'])
         .describe('* `amount` - Amount\n* `percent` - Percent')
@@ -3078,7 +4063,10 @@ export const scenariosValidateScenarioRetrieveResponse = zod.object({
       userFraction: zod.number().nullish(),
       socialSecurity: zod.boolean().optional(),
       discretionary: zod.boolean().optional(),
-      maxCash: zod.number().nullish(),
+      maxCash: zod
+        .string()
+        .regex(scenariosValidateScenarioRetrieveResponseEventSeriesItemMaxCashRegExp)
+        .nullish(),
       glidePath: zod.boolean().optional(),
       assetAllocations: zod.array(
         zod.object({
@@ -3141,13 +4129,18 @@ export const scenariosValidateScenarioRetrieveResponse = zod.object({
  * Import scenario from YAML file
  */
 export const scenariosImportScenarioCreateBodyNameMax = 200;
-export const scenariosImportScenarioCreateBodyUserBirthYearMin = -9223372036854776000;
+export const scenariosImportScenarioCreateBodyUserBirthYearMin = 1900;
 
-export const scenariosImportScenarioCreateBodyUserBirthYearMax = 9223372036854776000;
-export const scenariosImportScenarioCreateBodySpouseBirthYearMin = -9223372036854776000;
+export const scenariosImportScenarioCreateBodyUserBirthYearMax = 2025;
+export const scenariosImportScenarioCreateBodySpouseBirthYearMin = 1900;
 
-export const scenariosImportScenarioCreateBodySpouseBirthYearMax = 9223372036854776000;
-export const scenariosImportScenarioCreateBodyResidenceStateMax = 2;
+export const scenariosImportScenarioCreateBodySpouseBirthYearMax = 2025;
+export const scenariosImportScenarioCreateBodyAfterTaxContributionLimitRegExp = new RegExp(
+  '^-?\\d{0,8}(?:\\.\\d{0,2})?$'
+);
+export const scenariosImportScenarioCreateBodyFinancialGoalRegExp = new RegExp(
+  '^-?\\d{0,12}(?:\\.\\d{0,2})?$'
+);
 export const scenariosImportScenarioCreateBodyRothConversionStartMin = -9223372036854776000;
 
 export const scenariosImportScenarioCreateBodyRothConversionStartMax = 9223372036854776000;
@@ -3155,13 +4148,23 @@ export const scenariosImportScenarioCreateBodyRothConversionEndMin = -9223372036
 
 export const scenariosImportScenarioCreateBodyRothConversionEndMax = 9223372036854776000;
 export const scenariosImportScenarioCreateBodyInvestmentsItemInvestmentTypeNameMax = 100;
+export const scenariosImportScenarioCreateBodyInvestmentsItemValueRegExp = new RegExp(
+  '^-?\\d{0,12}(?:\\.\\d{0,2})?$'
+);
 export const scenariosImportScenarioCreateBodyInvestmentsItemInvestmentIdMax = 100;
 export const scenariosImportScenarioCreateBodyEventSeriesItemNameMax = 100;
+export const scenariosImportScenarioCreateBodyEventSeriesItemInitialAmountRegExp = new RegExp(
+  '^-?\\d{0,12}(?:\\.\\d{0,2})?$'
+);
+export const scenariosImportScenarioCreateBodyEventSeriesItemMaxCashRegExp = new RegExp(
+  '^-?\\d{0,12}(?:\\.\\d{0,2})?$'
+);
 
 export const scenariosImportScenarioCreateBody = zod.object({
   name: zod.string().max(scenariosImportScenarioCreateBodyNameMax),
   maritalStatus: zod
     .enum(['individual', 'couple'])
+    .optional()
     .describe('* `individual` - Individual\n* `couple` - Couple'),
   userBirthYear: zod
     .number()
@@ -3204,9 +4207,66 @@ export const scenariosImportScenarioCreateBody = zod.object({
     lower: zod.number().nullish(),
     upper: zod.number().nullish()
   }),
-  afterTaxContributionLimit: zod.number(),
-  financialGoal: zod.number(),
-  residenceState: zod.string().max(scenariosImportScenarioCreateBodyResidenceStateMax),
+  afterTaxContributionLimit: zod
+    .string()
+    .regex(scenariosImportScenarioCreateBodyAfterTaxContributionLimitRegExp),
+  financialGoal: zod.string().regex(scenariosImportScenarioCreateBodyFinancialGoalRegExp),
+  residenceState: zod
+    .enum([
+      'AL',
+      'AK',
+      'AZ',
+      'AR',
+      'CA',
+      'CO',
+      'CT',
+      'DE',
+      'FL',
+      'GA',
+      'HI',
+      'ID',
+      'IL',
+      'IN',
+      'IA',
+      'KS',
+      'KY',
+      'LA',
+      'ME',
+      'MD',
+      'MA',
+      'MI',
+      'MN',
+      'MS',
+      'MO',
+      'MT',
+      'NE',
+      'NV',
+      'NH',
+      'NJ',
+      'NM',
+      'NY',
+      'NC',
+      'ND',
+      'OH',
+      'OK',
+      'OR',
+      'PA',
+      'RI',
+      'SC',
+      'SD',
+      'TN',
+      'TX',
+      'UT',
+      'VT',
+      'VA',
+      'WA',
+      'WV',
+      'WI',
+      'WY'
+    ])
+    .describe(
+      '* `AL` - Alabama\n* `AK` - Alaska\n* `AZ` - Arizona\n* `AR` - Arkansas\n* `CA` - California\n* `CO` - Colorado\n* `CT` - Connecticut\n* `DE` - Delaware\n* `FL` - Florida\n* `GA` - Georgia\n* `HI` - Hawaii\n* `ID` - Idaho\n* `IL` - Illinois\n* `IN` - Indiana\n* `IA` - Iowa\n* `KS` - Kansas\n* `KY` - Kentucky\n* `LA` - Louisiana\n* `ME` - Maine\n* `MD` - Maryland\n* `MA` - Massachusetts\n* `MI` - Michigan\n* `MN` - Minnesota\n* `MS` - Mississippi\n* `MO` - Missouri\n* `MT` - Montana\n* `NE` - Nebraska\n* `NV` - Nevada\n* `NH` - New Hampshire\n* `NJ` - New Jersey\n* `NM` - New Mexico\n* `NY` - New York\n* `NC` - North Carolina\n* `ND` - North Dakota\n* `OH` - Ohio\n* `OK` - Oklahoma\n* `OR` - Oregon\n* `PA` - Pennsylvania\n* `RI` - Rhode Island\n* `SC` - South Carolina\n* `SD` - South Dakota\n* `TN` - Tennessee\n* `TX` - Texas\n* `UT` - Utah\n* `VT` - Vermont\n* `VA` - Virginia\n* `WA` - Washington\n* `WV` - West Virginia\n* `WI` - Wisconsin\n* `WY` - Wyoming'
+    ),
   rothConversionOpt: zod.boolean().optional(),
   rothConversionStart: zod
     .number()
@@ -3254,7 +4314,7 @@ export const scenariosImportScenarioCreateBody = zod.object({
         }),
         taxability: zod.boolean()
       }),
-      value: zod.number(),
+      value: zod.string().regex(scenariosImportScenarioCreateBodyInvestmentsItemValueRegExp),
       taxStatus: zod
         .enum(['non-retirement', 'pre-tax', 'after-tax'])
         .describe(
@@ -3303,7 +4363,10 @@ export const scenariosImportScenarioCreateBody = zod.object({
         .describe(
           '* `income` - Income\n* `expense` - Expense\n* `invest` - Invest\n* `rebalance` - Rebalance'
         ),
-      initialAmount: zod.number().nullish(),
+      initialAmount: zod
+        .string()
+        .regex(scenariosImportScenarioCreateBodyEventSeriesItemInitialAmountRegExp)
+        .nullish(),
       changeAmtOrPct: zod
         .enum(['amount', 'percent'])
         .describe('* `amount` - Amount\n* `percent` - Percent')
@@ -3326,7 +4389,10 @@ export const scenariosImportScenarioCreateBody = zod.object({
       userFraction: zod.number().nullish(),
       socialSecurity: zod.boolean().optional(),
       discretionary: zod.boolean().optional(),
-      maxCash: zod.number().nullish(),
+      maxCash: zod
+        .string()
+        .regex(scenariosImportScenarioCreateBodyEventSeriesItemMaxCashRegExp)
+        .nullish(),
       glidePath: zod.boolean().optional(),
       assetAllocations: zod.array(
         zod.object({
@@ -3348,13 +4414,18 @@ export const scenariosImportScenarioCreateBody = zod.object({
 });
 
 export const scenariosImportScenarioCreateResponseNameMax = 200;
-export const scenariosImportScenarioCreateResponseUserBirthYearMin = -9223372036854776000;
+export const scenariosImportScenarioCreateResponseUserBirthYearMin = 1900;
 
-export const scenariosImportScenarioCreateResponseUserBirthYearMax = 9223372036854776000;
-export const scenariosImportScenarioCreateResponseSpouseBirthYearMin = -9223372036854776000;
+export const scenariosImportScenarioCreateResponseUserBirthYearMax = 2025;
+export const scenariosImportScenarioCreateResponseSpouseBirthYearMin = 1900;
 
-export const scenariosImportScenarioCreateResponseSpouseBirthYearMax = 9223372036854776000;
-export const scenariosImportScenarioCreateResponseResidenceStateMax = 2;
+export const scenariosImportScenarioCreateResponseSpouseBirthYearMax = 2025;
+export const scenariosImportScenarioCreateResponseAfterTaxContributionLimitRegExp = new RegExp(
+  '^-?\\d{0,8}(?:\\.\\d{0,2})?$'
+);
+export const scenariosImportScenarioCreateResponseFinancialGoalRegExp = new RegExp(
+  '^-?\\d{0,12}(?:\\.\\d{0,2})?$'
+);
 export const scenariosImportScenarioCreateResponseRothConversionStartMin = -9223372036854776000;
 
 export const scenariosImportScenarioCreateResponseRothConversionStartMax = 9223372036854776000;
@@ -3362,8 +4433,17 @@ export const scenariosImportScenarioCreateResponseRothConversionEndMin = -922337
 
 export const scenariosImportScenarioCreateResponseRothConversionEndMax = 9223372036854776000;
 export const scenariosImportScenarioCreateResponseInvestmentsItemInvestmentTypeNameMax = 100;
+export const scenariosImportScenarioCreateResponseInvestmentsItemValueRegExp = new RegExp(
+  '^-?\\d{0,12}(?:\\.\\d{0,2})?$'
+);
 export const scenariosImportScenarioCreateResponseInvestmentsItemInvestmentIdMax = 100;
 export const scenariosImportScenarioCreateResponseEventSeriesItemNameMax = 100;
+export const scenariosImportScenarioCreateResponseEventSeriesItemInitialAmountRegExp = new RegExp(
+  '^-?\\d{0,12}(?:\\.\\d{0,2})?$'
+);
+export const scenariosImportScenarioCreateResponseEventSeriesItemMaxCashRegExp = new RegExp(
+  '^-?\\d{0,12}(?:\\.\\d{0,2})?$'
+);
 export const scenariosImportScenarioCreateResponseSpendingStrategyItemsItemOrderMin = 0;
 
 export const scenariosImportScenarioCreateResponseSpendingStrategyItemsItemOrderMax = 9223372036854776000;
@@ -3382,6 +4462,7 @@ export const scenariosImportScenarioCreateResponse = zod.object({
   name: zod.string().max(scenariosImportScenarioCreateResponseNameMax),
   maritalStatus: zod
     .enum(['individual', 'couple'])
+    .optional()
     .describe('* `individual` - Individual\n* `couple` - Couple'),
   userBirthYear: zod
     .number()
@@ -3424,9 +4505,66 @@ export const scenariosImportScenarioCreateResponse = zod.object({
     lower: zod.number().nullish(),
     upper: zod.number().nullish()
   }),
-  afterTaxContributionLimit: zod.number(),
-  financialGoal: zod.number(),
-  residenceState: zod.string().max(scenariosImportScenarioCreateResponseResidenceStateMax),
+  afterTaxContributionLimit: zod
+    .string()
+    .regex(scenariosImportScenarioCreateResponseAfterTaxContributionLimitRegExp),
+  financialGoal: zod.string().regex(scenariosImportScenarioCreateResponseFinancialGoalRegExp),
+  residenceState: zod
+    .enum([
+      'AL',
+      'AK',
+      'AZ',
+      'AR',
+      'CA',
+      'CO',
+      'CT',
+      'DE',
+      'FL',
+      'GA',
+      'HI',
+      'ID',
+      'IL',
+      'IN',
+      'IA',
+      'KS',
+      'KY',
+      'LA',
+      'ME',
+      'MD',
+      'MA',
+      'MI',
+      'MN',
+      'MS',
+      'MO',
+      'MT',
+      'NE',
+      'NV',
+      'NH',
+      'NJ',
+      'NM',
+      'NY',
+      'NC',
+      'ND',
+      'OH',
+      'OK',
+      'OR',
+      'PA',
+      'RI',
+      'SC',
+      'SD',
+      'TN',
+      'TX',
+      'UT',
+      'VT',
+      'VA',
+      'WA',
+      'WV',
+      'WI',
+      'WY'
+    ])
+    .describe(
+      '* `AL` - Alabama\n* `AK` - Alaska\n* `AZ` - Arizona\n* `AR` - Arkansas\n* `CA` - California\n* `CO` - Colorado\n* `CT` - Connecticut\n* `DE` - Delaware\n* `FL` - Florida\n* `GA` - Georgia\n* `HI` - Hawaii\n* `ID` - Idaho\n* `IL` - Illinois\n* `IN` - Indiana\n* `IA` - Iowa\n* `KS` - Kansas\n* `KY` - Kentucky\n* `LA` - Louisiana\n* `ME` - Maine\n* `MD` - Maryland\n* `MA` - Massachusetts\n* `MI` - Michigan\n* `MN` - Minnesota\n* `MS` - Mississippi\n* `MO` - Missouri\n* `MT` - Montana\n* `NE` - Nebraska\n* `NV` - Nevada\n* `NH` - New Hampshire\n* `NJ` - New Jersey\n* `NM` - New Mexico\n* `NY` - New York\n* `NC` - North Carolina\n* `ND` - North Dakota\n* `OH` - Ohio\n* `OK` - Oklahoma\n* `OR` - Oregon\n* `PA` - Pennsylvania\n* `RI` - Rhode Island\n* `SC` - South Carolina\n* `SD` - South Dakota\n* `TN` - Tennessee\n* `TX` - Texas\n* `UT` - Utah\n* `VT` - Vermont\n* `VA` - Virginia\n* `WA` - Washington\n* `WV` - West Virginia\n* `WI` - Wisconsin\n* `WY` - Wyoming'
+    ),
   rothConversionOpt: zod.boolean().optional(),
   rothConversionStart: zod
     .number()
@@ -3474,7 +4612,7 @@ export const scenariosImportScenarioCreateResponse = zod.object({
         }),
         taxability: zod.boolean()
       }),
-      value: zod.number(),
+      value: zod.string().regex(scenariosImportScenarioCreateResponseInvestmentsItemValueRegExp),
       taxStatus: zod
         .enum(['non-retirement', 'pre-tax', 'after-tax'])
         .describe(
@@ -3523,7 +4661,10 @@ export const scenariosImportScenarioCreateResponse = zod.object({
         .describe(
           '* `income` - Income\n* `expense` - Expense\n* `invest` - Invest\n* `rebalance` - Rebalance'
         ),
-      initialAmount: zod.number().nullish(),
+      initialAmount: zod
+        .string()
+        .regex(scenariosImportScenarioCreateResponseEventSeriesItemInitialAmountRegExp)
+        .nullish(),
       changeAmtOrPct: zod
         .enum(['amount', 'percent'])
         .describe('* `amount` - Amount\n* `percent` - Percent')
@@ -3546,7 +4687,10 @@ export const scenariosImportScenarioCreateResponse = zod.object({
       userFraction: zod.number().nullish(),
       socialSecurity: zod.boolean().optional(),
       discretionary: zod.boolean().optional(),
-      maxCash: zod.number().nullish(),
+      maxCash: zod
+        .string()
+        .regex(scenariosImportScenarioCreateResponseEventSeriesItemMaxCashRegExp)
+        .nullish(),
       glidePath: zod.boolean().optional(),
       assetAllocations: zod.array(
         zod.object({

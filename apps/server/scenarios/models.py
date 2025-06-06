@@ -607,7 +607,9 @@ class Scenario(models.Model):
 
     # Basic information
     name = models.CharField(max_length=200)
-    marital_status = models.CharField(max_length=10, choices=MARITAL_STATUS_CHOICES)
+    marital_status = models.CharField(
+        max_length=10, choices=MARITAL_STATUS_CHOICES, default="individual"
+    )
 
     # Birth years
     user_birth_year = models.IntegerField(

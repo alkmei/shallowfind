@@ -115,7 +115,9 @@ export const scenariosCreate = (
   const formUrlEncoded = new URLSearchParams();
   formUrlEncoded.append(`id`, scenario.id.toString());
   formUrlEncoded.append(`name`, scenario.name);
-  formUrlEncoded.append(`maritalStatus`, scenario.maritalStatus);
+  if (scenario.maritalStatus !== undefined) {
+    formUrlEncoded.append(`maritalStatus`, scenario.maritalStatus);
+  }
   formUrlEncoded.append(`userBirthYear`, scenario.userBirthYear.toString());
   if (scenario.spouseBirthYear !== undefined && scenario.spouseBirthYear !== null) {
     formUrlEncoded.append(`spouseBirthYear`, scenario.spouseBirthYear.toString());
@@ -125,8 +127,8 @@ export const scenariosCreate = (
     formUrlEncoded.append(`spouseLifeExpectancy`, scenario.spouseLifeExpectancy);
   }
   formUrlEncoded.append(`inflationAssumption`, JSON.stringify(scenario.inflationAssumption));
-  formUrlEncoded.append(`afterTaxContributionLimit`, scenario.afterTaxContributionLimit.toString());
-  formUrlEncoded.append(`financialGoal`, scenario.financialGoal.toString());
+  formUrlEncoded.append(`afterTaxContributionLimit`, scenario.afterTaxContributionLimit);
+  formUrlEncoded.append(`financialGoal`, scenario.financialGoal);
   formUrlEncoded.append(`residenceState`, scenario.residenceState);
   if (scenario.rothConversionOpt !== undefined) {
     formUrlEncoded.append(`rothConversionOpt`, scenario.rothConversionOpt.toString());
@@ -329,7 +331,9 @@ export const scenariosUpdate = (
   const formUrlEncoded = new URLSearchParams();
   formUrlEncoded.append(`id`, scenario.id.toString());
   formUrlEncoded.append(`name`, scenario.name);
-  formUrlEncoded.append(`maritalStatus`, scenario.maritalStatus);
+  if (scenario.maritalStatus !== undefined) {
+    formUrlEncoded.append(`maritalStatus`, scenario.maritalStatus);
+  }
   formUrlEncoded.append(`userBirthYear`, scenario.userBirthYear.toString());
   if (scenario.spouseBirthYear !== undefined && scenario.spouseBirthYear !== null) {
     formUrlEncoded.append(`spouseBirthYear`, scenario.spouseBirthYear.toString());
@@ -339,8 +343,8 @@ export const scenariosUpdate = (
     formUrlEncoded.append(`spouseLifeExpectancy`, scenario.spouseLifeExpectancy);
   }
   formUrlEncoded.append(`inflationAssumption`, JSON.stringify(scenario.inflationAssumption));
-  formUrlEncoded.append(`afterTaxContributionLimit`, scenario.afterTaxContributionLimit.toString());
-  formUrlEncoded.append(`financialGoal`, scenario.financialGoal.toString());
+  formUrlEncoded.append(`afterTaxContributionLimit`, scenario.afterTaxContributionLimit);
+  formUrlEncoded.append(`financialGoal`, scenario.financialGoal);
   formUrlEncoded.append(`residenceState`, scenario.residenceState);
   if (scenario.rothConversionOpt !== undefined) {
     formUrlEncoded.append(`rothConversionOpt`, scenario.rothConversionOpt.toString());
@@ -497,13 +501,10 @@ export const scenariosPartialUpdate = (
     );
   }
   if (patchedScenario.afterTaxContributionLimit !== undefined) {
-    formUrlEncoded.append(
-      `afterTaxContributionLimit`,
-      patchedScenario.afterTaxContributionLimit.toString()
-    );
+    formUrlEncoded.append(`afterTaxContributionLimit`, patchedScenario.afterTaxContributionLimit);
   }
   if (patchedScenario.financialGoal !== undefined) {
-    formUrlEncoded.append(`financialGoal`, patchedScenario.financialGoal.toString());
+    formUrlEncoded.append(`financialGoal`, patchedScenario.financialGoal);
   }
   if (patchedScenario.residenceState !== undefined) {
     formUrlEncoded.append(`residenceState`, patchedScenario.residenceState);
@@ -731,7 +732,9 @@ export const scenariosCloneCreate = (
   const formUrlEncoded = new URLSearchParams();
   formUrlEncoded.append(`id`, scenario.id.toString());
   formUrlEncoded.append(`name`, scenario.name);
-  formUrlEncoded.append(`maritalStatus`, scenario.maritalStatus);
+  if (scenario.maritalStatus !== undefined) {
+    formUrlEncoded.append(`maritalStatus`, scenario.maritalStatus);
+  }
   formUrlEncoded.append(`userBirthYear`, scenario.userBirthYear.toString());
   if (scenario.spouseBirthYear !== undefined && scenario.spouseBirthYear !== null) {
     formUrlEncoded.append(`spouseBirthYear`, scenario.spouseBirthYear.toString());
@@ -741,8 +744,8 @@ export const scenariosCloneCreate = (
     formUrlEncoded.append(`spouseLifeExpectancy`, scenario.spouseLifeExpectancy);
   }
   formUrlEncoded.append(`inflationAssumption`, JSON.stringify(scenario.inflationAssumption));
-  formUrlEncoded.append(`afterTaxContributionLimit`, scenario.afterTaxContributionLimit.toString());
-  formUrlEncoded.append(`financialGoal`, scenario.financialGoal.toString());
+  formUrlEncoded.append(`afterTaxContributionLimit`, scenario.afterTaxContributionLimit);
+  formUrlEncoded.append(`financialGoal`, scenario.financialGoal);
   formUrlEncoded.append(`residenceState`, scenario.residenceState);
   if (scenario.rothConversionOpt !== undefined) {
     formUrlEncoded.append(`rothConversionOpt`, scenario.rothConversionOpt.toString());
@@ -944,7 +947,9 @@ export const scenariosSimulateCreate = (
   const formUrlEncoded = new URLSearchParams();
   formUrlEncoded.append(`id`, scenario.id.toString());
   formUrlEncoded.append(`name`, scenario.name);
-  formUrlEncoded.append(`maritalStatus`, scenario.maritalStatus);
+  if (scenario.maritalStatus !== undefined) {
+    formUrlEncoded.append(`maritalStatus`, scenario.maritalStatus);
+  }
   formUrlEncoded.append(`userBirthYear`, scenario.userBirthYear.toString());
   if (scenario.spouseBirthYear !== undefined && scenario.spouseBirthYear !== null) {
     formUrlEncoded.append(`spouseBirthYear`, scenario.spouseBirthYear.toString());
@@ -954,8 +959,8 @@ export const scenariosSimulateCreate = (
     formUrlEncoded.append(`spouseLifeExpectancy`, scenario.spouseLifeExpectancy);
   }
   formUrlEncoded.append(`inflationAssumption`, JSON.stringify(scenario.inflationAssumption));
-  formUrlEncoded.append(`afterTaxContributionLimit`, scenario.afterTaxContributionLimit.toString());
-  formUrlEncoded.append(`financialGoal`, scenario.financialGoal.toString());
+  formUrlEncoded.append(`afterTaxContributionLimit`, scenario.afterTaxContributionLimit);
+  formUrlEncoded.append(`financialGoal`, scenario.financialGoal);
   formUrlEncoded.append(`residenceState`, scenario.residenceState);
   if (scenario.rothConversionOpt !== undefined) {
     formUrlEncoded.append(`rothConversionOpt`, scenario.rothConversionOpt.toString());
@@ -1166,7 +1171,9 @@ export const scenariosImportScenarioCreate = (
   const formUrlEncoded = new URLSearchParams();
   formUrlEncoded.append(`id`, scenario.id.toString());
   formUrlEncoded.append(`name`, scenario.name);
-  formUrlEncoded.append(`maritalStatus`, scenario.maritalStatus);
+  if (scenario.maritalStatus !== undefined) {
+    formUrlEncoded.append(`maritalStatus`, scenario.maritalStatus);
+  }
   formUrlEncoded.append(`userBirthYear`, scenario.userBirthYear.toString());
   if (scenario.spouseBirthYear !== undefined && scenario.spouseBirthYear !== null) {
     formUrlEncoded.append(`spouseBirthYear`, scenario.spouseBirthYear.toString());
@@ -1176,8 +1183,8 @@ export const scenariosImportScenarioCreate = (
     formUrlEncoded.append(`spouseLifeExpectancy`, scenario.spouseLifeExpectancy);
   }
   formUrlEncoded.append(`inflationAssumption`, JSON.stringify(scenario.inflationAssumption));
-  formUrlEncoded.append(`afterTaxContributionLimit`, scenario.afterTaxContributionLimit.toString());
-  formUrlEncoded.append(`financialGoal`, scenario.financialGoal.toString());
+  formUrlEncoded.append(`afterTaxContributionLimit`, scenario.afterTaxContributionLimit);
+  formUrlEncoded.append(`financialGoal`, scenario.financialGoal);
   formUrlEncoded.append(`residenceState`, scenario.residenceState);
   if (scenario.rothConversionOpt !== undefined) {
     formUrlEncoded.append(`rothConversionOpt`, scenario.rothConversionOpt.toString());

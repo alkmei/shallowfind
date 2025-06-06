@@ -18,7 +18,6 @@
   });
 
   const { form: formData, enhance } = form;
-  $formData.maritalStatus = 'individual'; // Default value
 
   let isMarried = $state($formData.maritalStatus === 'couple');
 
