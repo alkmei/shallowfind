@@ -5,6 +5,7 @@
   import * as Form from '$lib/components/ui/form';
   import { Input } from '$lib/components/ui/input';
   import Checkbox from '$lib/components/ui/checkbox/checkbox.svelte';
+  import LifeExpectancy from '$lib/components/ScenarioForm/LifeExpectancy.svelte';
 
   const form = superForm(defaults(zod(scenariosCreateBody)), {
     validators: zod(scenariosCreateBody),
@@ -57,14 +58,7 @@
     <Form.FieldErrors />
   </Form.Field>
 
-  <Form.Field {form} name="userLifeExpectancy">
-    <Form.Control>
-      <Form.Label>Life Expectancy <span class="text-red-500">*</span></Form.Label>
-      <Input type="number" bind:value={$formData.userLifeExpectancy} min="1" max="120" />
-    </Form.Control>
-    <Form.Description>Enter your life expectancy in years.</Form.Description>
-    <Form.FieldErrors />
-  </Form.Field>
+  <LifeExpectancy {form} />
 
   {#if isMarried}
     <Form.Field {form} name="spouseBirthYear">
