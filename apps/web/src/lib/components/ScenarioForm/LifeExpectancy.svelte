@@ -55,6 +55,10 @@
             />
           </Form.Control>
           <Form.FieldErrors />
+          <Form.Description>
+            Normal distribution allows for uncertainty in life expectancy. Most values will fall
+            within 2 standard deviations of the mean.
+          </Form.Description>
         </Form.Field>
 
         <Form.Field {form} name="userLifeExpectancy.stdev">
@@ -72,11 +76,6 @@
           <Form.FieldErrors />
         </Form.Field>
       </div>
-
-      <Form.Description>
-        Normal distribution allows for uncertainty in life expectancy. Most values will fall within
-        2 standard deviations of the mean.
-      </Form.Description>
     {:else}
       <!-- Fixed Distribution Field -->
       <Form.Field {form} name="userLifeExpectancy.value">
