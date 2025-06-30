@@ -58,7 +58,7 @@
     <Form.FieldErrors />
   </Form.Field>
 
-  <LifeExpectancy {form} />
+  <LifeExpectancy {form} forSpouse={false} />
 
   {#if isMarried}
     <Form.Field {form} name="spouseBirthYear">
@@ -74,6 +74,8 @@
       <Form.Description>Enter your birth year.</Form.Description>
       <Form.FieldErrors />
     </Form.Field>
+
+    <LifeExpectancy {form} forSpouse={true} />
   {/if}
 
   <Form.Button class="mt-4">Create Scenario</Form.Button>

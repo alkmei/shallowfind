@@ -3,8 +3,19 @@
   import { Input } from '$lib/components/ui/input';
   import { Label } from '$lib/components/ui/label';
   import { Switch } from '$lib/components/ui/switch';
+  import type { SuperForm } from 'sveltekit-superforms';
+  import { scenariosCreateBody } from '$lib/api/scenarios/scenarios.zod';
+  import { z } from 'zod';
 
-  const { form } = $props();
+  type ScenariosCreateBody = z.infer<typeof scenariosCreateBody>;
+
+  const {
+    form,
+    forSpouse
+  }: {
+    form: SuperForm<ScenariosCreateBody>;
+    forSpouse: boolean;
+  } = $props();
   const { form: formData } = form;
 
   let isNormalDistribution = $state($formData.userLifeExpectancy?.type === 'normal');
