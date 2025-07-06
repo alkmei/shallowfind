@@ -1057,6 +1057,10 @@ components:
       - startAfterEventName
       - startType
       - startWithEventName
+      - assetAllocation
+      - assetAllocation2
+      - duration
+      - name
       - type
     EventSeriesTypeEnum:
       enum:
@@ -1100,6 +1104,7 @@ components:
           maxLength: 100
       required:
       - investmentId
+      - id
       - investmentType
       - taxStatus
       - value
@@ -1598,6 +1603,22 @@ components:
       - updatedAt
       - userBirthYear
       - userLifeExpectancy
+      - RMDStrategy
+      - RothConversionOpt
+      - RothConversionStrategy
+      - afterTaxContributionLimit
+      - birthYears
+      - eventSeries
+      - expenseWithdrawalStrategy
+      - financialGoal
+      - inflationAssumption
+      - investmentTypes
+      - investments
+      - lifeExpectancy
+      - maritalStatus
+      - name
+      - residenceState
+      - spendingStrategy
     Session:
       type: object
       description: Serializer for handling user login data.
