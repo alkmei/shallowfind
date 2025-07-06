@@ -199,7 +199,7 @@ class InvestmentModelTest(TestCase):
             tax_status="non-retirement",
             investment_id="stocks-1",
         )
-        self.assertEqual(investment.value, 10000.0)
+        self.assertEqual(investment.value.amount, 10000.0)
         self.assertEqual(str(investment), "stocks-1 (Test Scenario)")
 
     def test_negative_value_validation(self):

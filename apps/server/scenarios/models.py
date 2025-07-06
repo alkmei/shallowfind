@@ -4,6 +4,7 @@ from django.db import models
 from django.contrib.auth import get_user_model
 from django.utils import timezone
 from djmoney.models.fields import MoneyField
+from djmoney.models.validators import MinMoneyValidator
 
 User = get_user_model()
 
@@ -42,6 +43,7 @@ class Distribution(models.Model):
             return f"Normal(mean={self.mean}, stdev={self.stdev})"
         elif self.type == "uniform":
             return f"Uniform(lower={self.lower}, upper={self.upper})"
+        return None
 
     def clean(self):
         super().clean()
@@ -174,7 +176,7 @@ class Investment(models.Model):
     def clean(self):
         super().clean()
 
-        if self.value < 0:
+        if self.value.amount < 0:
             raise ValidationError({"value": "Investment value cannot be negative."})
 
         # Tax-exempt investments should not be in retirement accounts
@@ -247,7 +249,9 @@ class EventSeries(models.Model):
 
     # Income/Expense fields
     initial_amount = MoneyField(
-        max_digits=14, decimal_places=2, default_currency="USD", null=True, blank=True
+        max_digits=14, decimal_places=2, default_currency="USD", null=True, blank=True, validators=[
+            MinMoneyValidator(0)
+        ]
     )
     change_amt_or_pct = models.CharField(
         max_length=10, choices=AMOUNT_OR_PERCENT_CHOICES, null=True, blank=True
@@ -270,7 +274,7 @@ class EventSeries(models.Model):
 
     # Invest/Rebalance specific
     max_cash = MoneyField(
-        max_digits=14, decimal_places=2, default_currency="USD", null=True, blank=True
+        max_digits=14, decimal_places=2, default_currency="USD", null=True, blank=True, validators=[MinMoneyValidator(0)]
     )
     glide_path = models.BooleanField(default=False)
 
@@ -323,11 +327,6 @@ class EventSeries(models.Model):
                         "initial_amount": f"Initial amount is required for {self.type} events."
                     }
                 )
-            if self.initial_amount < 0:
-                raise ValidationError(
-                    {"initial_amount": "Initial amount cannot be negative."}
-                )
-
             if self.user_fraction is not None and (
                 self.user_fraction < 0 or self.user_fraction > 1
             ):
@@ -336,8 +335,8 @@ class EventSeries(models.Model):
                 )
 
         elif self.type in ["invest", "rebalance"]:
-            if self.max_cash is not None and self.max_cash < 0:
-                raise ValidationError({"max_cash": "Maximum cash cannot be negative."})
+            if self.max_cash is None:
+                raise ValidationError({"max_cash": "Maximum cash needs to exist."})
 
             # These fields should not be set for invest/rebalance
             invalid_fields = [
@@ -747,12 +746,12 @@ class Scenario(models.Model):
                 )
 
         # Financial validation
-        if self.financial_goal < 0:
+        if self.financial_goal.amount < 0:
             raise ValidationError(
                 {"financial_goal": "Financial goal cannot be negative."}
             )
 
-        if self.after_tax_contribution_limit < 0:
+        if self.after_tax_contribution_limit.amount < 0:
             raise ValidationError(
                 {
                     "after_tax_contribution_limit": "Contribution limit cannot be negative."
