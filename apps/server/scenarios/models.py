@@ -249,9 +249,12 @@ class EventSeries(models.Model):
 
     # Income/Expense fields
     initial_amount = MoneyField(
-        max_digits=14, decimal_places=2, default_currency="USD", null=True, blank=True, validators=[
-            MinMoneyValidator(0)
-        ]
+        max_digits=14,
+        decimal_places=2,
+        default_currency="USD",
+        null=True,
+        blank=True,
+        validators=[MinMoneyValidator(0)],
     )
     change_amt_or_pct = models.CharField(
         max_length=10, choices=AMOUNT_OR_PERCENT_CHOICES, null=True, blank=True
@@ -274,7 +277,12 @@ class EventSeries(models.Model):
 
     # Invest/Rebalance specific
     max_cash = MoneyField(
-        max_digits=14, decimal_places=2, default_currency="USD", null=True, blank=True, validators=[MinMoneyValidator(0)]
+        max_digits=14,
+        decimal_places=2,
+        default_currency="USD",
+        null=True,
+        blank=True,
+        validators=[MinMoneyValidator(0)],
     )
     glide_path = models.BooleanField(default=False)
 

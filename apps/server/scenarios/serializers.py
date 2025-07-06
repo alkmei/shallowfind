@@ -68,9 +68,11 @@ class EventSeriesSerializer(serializers.ModelSerializer):
     asset_allocations = AssetAllocationSerializer(many=True, read_only=True)
 
     # Input fields for creating relationships
-    start_with_event_name_input = serializers.CharField(write_only=True, required=False)
+    start_with_event_name_input = serializers.CharField(
+        write_only=True, required=False, allow_null=True
+    )
     start_after_event_name_input = serializers.CharField(
-        write_only=True, required=False
+        write_only=True, required=False, allow_null=True
     )
     asset_allocation_input = serializers.DictField(write_only=True, required=False)
     asset_allocation2_input = serializers.DictField(write_only=True, required=False)

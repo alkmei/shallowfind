@@ -4,7 +4,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("scenarios", "0002_eventseries_initial_amount_currency_and_more"),
     ]
