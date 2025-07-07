@@ -69,38 +69,43 @@ export const scenariosListResponseItem = zod.object({
     .min(scenariosListResponseSpouseBirthYearMin)
     .max(scenariosListResponseSpouseBirthYearMax)
     .nullish(),
-  userLifeExpectancy: zod.object({
-    type: zod
-      .enum(['fixed', 'normal', 'uniform'])
-      .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
-    value: zod.number().nullish(),
-    mean: zod.number().nullish(),
-    stdev: zod.number().nullish(),
-    lower: zod.number().nullish(),
-    upper: zod.number().nullish()
-  }),
-  spouseLifeExpectancy: zod
+  userLifeExpectancy: zod
     .object({
       type: zod
         .enum(['fixed', 'normal', 'uniform'])
-        .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
+        .describe('* `fixed` - fixed\n* `normal` - normal\n* `uniform` - uniform'),
       value: zod.number().nullish(),
       mean: zod.number().nullish(),
       stdev: zod.number().nullish(),
       lower: zod.number().nullish(),
       upper: zod.number().nullish()
     })
+    .describe('Serializer for distribution JSON field'),
+  spouseLifeExpectancy: zod
+    .object({
+      type: zod
+        .enum(['fixed', 'normal', 'uniform'])
+        .describe('* `fixed` - fixed\n* `normal` - normal\n* `uniform` - uniform'),
+      value: zod.number().nullish(),
+      mean: zod.number().nullish(),
+      stdev: zod.number().nullish(),
+      lower: zod.number().nullish(),
+      upper: zod.number().nullish()
+    })
+    .describe('Serializer for distribution JSON field')
     .nullish(),
-  inflationAssumption: zod.object({
-    type: zod
-      .enum(['fixed', 'normal', 'uniform'])
-      .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
-    value: zod.number().nullish(),
-    mean: zod.number().nullish(),
-    stdev: zod.number().nullish(),
-    lower: zod.number().nullish(),
-    upper: zod.number().nullish()
-  }),
+  inflationAssumption: zod
+    .object({
+      type: zod
+        .enum(['fixed', 'normal', 'uniform'])
+        .describe('* `fixed` - fixed\n* `normal` - normal\n* `uniform` - uniform'),
+      value: zod.number().nullish(),
+      mean: zod.number().nullish(),
+      stdev: zod.number().nullish(),
+      lower: zod.number().nullish(),
+      upper: zod.number().nullish()
+    })
+    .describe('Serializer for distribution JSON field'),
   afterTaxContributionLimit: zod
     .string()
     .regex(scenariosListResponseAfterTaxContributionLimitRegExp),
@@ -180,30 +185,34 @@ export const scenariosListResponseItem = zod.object({
         returnAmtOrPct: zod
           .enum(['amount', 'percent'])
           .describe('* `amount` - Amount\n* `percent` - Percent'),
-        returnDistribution: zod.object({
-          type: zod
-            .enum(['fixed', 'normal', 'uniform'])
-            .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
-          value: zod.number().nullish(),
-          mean: zod.number().nullish(),
-          stdev: zod.number().nullish(),
-          lower: zod.number().nullish(),
-          upper: zod.number().nullish()
-        }),
+        returnDistribution: zod
+          .object({
+            type: zod
+              .enum(['fixed', 'normal', 'uniform'])
+              .describe('* `fixed` - fixed\n* `normal` - normal\n* `uniform` - uniform'),
+            value: zod.number().nullish(),
+            mean: zod.number().nullish(),
+            stdev: zod.number().nullish(),
+            lower: zod.number().nullish(),
+            upper: zod.number().nullish()
+          })
+          .describe('Serializer for distribution JSON field'),
         expenseRatio: zod.number(),
         incomeAmtOrPct: zod
           .enum(['amount', 'percent'])
           .describe('* `amount` - Amount\n* `percent` - Percent'),
-        incomeDistribution: zod.object({
-          type: zod
-            .enum(['fixed', 'normal', 'uniform'])
-            .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
-          value: zod.number().nullish(),
-          mean: zod.number().nullish(),
-          stdev: zod.number().nullish(),
-          lower: zod.number().nullish(),
-          upper: zod.number().nullish()
-        }),
+        incomeDistribution: zod
+          .object({
+            type: zod
+              .enum(['fixed', 'normal', 'uniform'])
+              .describe('* `fixed` - fixed\n* `normal` - normal\n* `uniform` - uniform'),
+            value: zod.number().nullish(),
+            mean: zod.number().nullish(),
+            stdev: zod.number().nullish(),
+            lower: zod.number().nullish(),
+            upper: zod.number().nullish()
+          })
+          .describe('Serializer for distribution JSON field'),
         taxability: zod.boolean()
       }),
       value: zod.string().regex(scenariosListResponseInvestmentsItemValueRegExp),
@@ -228,26 +237,29 @@ export const scenariosListResponseItem = zod.object({
         .object({
           type: zod
             .enum(['fixed', 'normal', 'uniform'])
-            .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
+            .describe('* `fixed` - fixed\n* `normal` - normal\n* `uniform` - uniform'),
           value: zod.number().nullish(),
           mean: zod.number().nullish(),
           stdev: zod.number().nullish(),
           lower: zod.number().nullish(),
           upper: zod.number().nullish()
         })
+        .describe('Serializer for distribution JSON field')
         .nullish(),
       startWithEventName: zod.string(),
       startAfterEventName: zod.string(),
-      durationDistribution: zod.object({
-        type: zod
-          .enum(['fixed', 'normal', 'uniform'])
-          .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
-        value: zod.number().nullish(),
-        mean: zod.number().nullish(),
-        stdev: zod.number().nullish(),
-        lower: zod.number().nullish(),
-        upper: zod.number().nullish()
-      }),
+      durationDistribution: zod
+        .object({
+          type: zod
+            .enum(['fixed', 'normal', 'uniform'])
+            .describe('* `fixed` - fixed\n* `normal` - normal\n* `uniform` - uniform'),
+          value: zod.number().nullish(),
+          mean: zod.number().nullish(),
+          stdev: zod.number().nullish(),
+          lower: zod.number().nullish(),
+          upper: zod.number().nullish()
+        })
+        .describe('Serializer for distribution JSON field'),
       type: zod
         .enum(['income', 'expense', 'invest', 'rebalance'])
         .describe(
@@ -267,13 +279,14 @@ export const scenariosListResponseItem = zod.object({
         .object({
           type: zod
             .enum(['fixed', 'normal', 'uniform'])
-            .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
+            .describe('* `fixed` - fixed\n* `normal` - normal\n* `uniform` - uniform'),
           value: zod.number().nullish(),
           mean: zod.number().nullish(),
           stdev: zod.number().nullish(),
           lower: zod.number().nullish(),
           upper: zod.number().nullish()
         })
+        .describe('Serializer for distribution JSON field')
         .nullish(),
       inflationAdjusted: zod.boolean().optional(),
       userFraction: zod.number().nullish(),
@@ -288,8 +301,8 @@ export const scenariosListResponseItem = zod.object({
           isFinalAllocation: zod.boolean().optional()
         })
       ),
-      startWithEventNameInput: zod.string().optional(),
-      startAfterEventNameInput: zod.string().optional(),
+      startWithEventNameInput: zod.string().nullish(),
+      startAfterEventNameInput: zod.string().nullish(),
       assetAllocationInput: zod.record(zod.string(), zod.any()).optional(),
       assetAllocation2Input: zod.record(zod.string(), zod.any()).optional()
     })
@@ -388,38 +401,43 @@ export const scenariosCreateBody = zod.object({
     .min(scenariosCreateBodySpouseBirthYearMin)
     .max(scenariosCreateBodySpouseBirthYearMax)
     .nullish(),
-  userLifeExpectancy: zod.object({
-    type: zod
-      .enum(['fixed', 'normal', 'uniform'])
-      .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
-    value: zod.number().nullish(),
-    mean: zod.number().nullish(),
-    stdev: zod.number().nullish(),
-    lower: zod.number().nullish(),
-    upper: zod.number().nullish()
-  }),
-  spouseLifeExpectancy: zod
+  userLifeExpectancy: zod
     .object({
       type: zod
         .enum(['fixed', 'normal', 'uniform'])
-        .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
+        .describe('* `fixed` - fixed\n* `normal` - normal\n* `uniform` - uniform'),
       value: zod.number().nullish(),
       mean: zod.number().nullish(),
       stdev: zod.number().nullish(),
       lower: zod.number().nullish(),
       upper: zod.number().nullish()
     })
+    .describe('Serializer for distribution JSON field'),
+  spouseLifeExpectancy: zod
+    .object({
+      type: zod
+        .enum(['fixed', 'normal', 'uniform'])
+        .describe('* `fixed` - fixed\n* `normal` - normal\n* `uniform` - uniform'),
+      value: zod.number().nullish(),
+      mean: zod.number().nullish(),
+      stdev: zod.number().nullish(),
+      lower: zod.number().nullish(),
+      upper: zod.number().nullish()
+    })
+    .describe('Serializer for distribution JSON field')
     .nullish(),
-  inflationAssumption: zod.object({
-    type: zod
-      .enum(['fixed', 'normal', 'uniform'])
-      .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
-    value: zod.number().nullish(),
-    mean: zod.number().nullish(),
-    stdev: zod.number().nullish(),
-    lower: zod.number().nullish(),
-    upper: zod.number().nullish()
-  }),
+  inflationAssumption: zod
+    .object({
+      type: zod
+        .enum(['fixed', 'normal', 'uniform'])
+        .describe('* `fixed` - fixed\n* `normal` - normal\n* `uniform` - uniform'),
+      value: zod.number().nullish(),
+      mean: zod.number().nullish(),
+      stdev: zod.number().nullish(),
+      lower: zod.number().nullish(),
+      upper: zod.number().nullish()
+    })
+    .describe('Serializer for distribution JSON field'),
   afterTaxContributionLimit: zod.string().regex(scenariosCreateBodyAfterTaxContributionLimitRegExp),
   financialGoal: zod.string().regex(scenariosCreateBodyFinancialGoalRegExp),
   residenceState: zod
@@ -497,30 +515,34 @@ export const scenariosCreateBody = zod.object({
         returnAmtOrPct: zod
           .enum(['amount', 'percent'])
           .describe('* `amount` - Amount\n* `percent` - Percent'),
-        returnDistribution: zod.object({
-          type: zod
-            .enum(['fixed', 'normal', 'uniform'])
-            .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
-          value: zod.number().nullish(),
-          mean: zod.number().nullish(),
-          stdev: zod.number().nullish(),
-          lower: zod.number().nullish(),
-          upper: zod.number().nullish()
-        }),
+        returnDistribution: zod
+          .object({
+            type: zod
+              .enum(['fixed', 'normal', 'uniform'])
+              .describe('* `fixed` - fixed\n* `normal` - normal\n* `uniform` - uniform'),
+            value: zod.number().nullish(),
+            mean: zod.number().nullish(),
+            stdev: zod.number().nullish(),
+            lower: zod.number().nullish(),
+            upper: zod.number().nullish()
+          })
+          .describe('Serializer for distribution JSON field'),
         expenseRatio: zod.number(),
         incomeAmtOrPct: zod
           .enum(['amount', 'percent'])
           .describe('* `amount` - Amount\n* `percent` - Percent'),
-        incomeDistribution: zod.object({
-          type: zod
-            .enum(['fixed', 'normal', 'uniform'])
-            .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
-          value: zod.number().nullish(),
-          mean: zod.number().nullish(),
-          stdev: zod.number().nullish(),
-          lower: zod.number().nullish(),
-          upper: zod.number().nullish()
-        }),
+        incomeDistribution: zod
+          .object({
+            type: zod
+              .enum(['fixed', 'normal', 'uniform'])
+              .describe('* `fixed` - fixed\n* `normal` - normal\n* `uniform` - uniform'),
+            value: zod.number().nullish(),
+            mean: zod.number().nullish(),
+            stdev: zod.number().nullish(),
+            lower: zod.number().nullish(),
+            upper: zod.number().nullish()
+          })
+          .describe('Serializer for distribution JSON field'),
         taxability: zod.boolean()
       }),
       value: zod.string().regex(scenariosCreateBodyInvestmentsItemValueRegExp),
@@ -545,26 +567,29 @@ export const scenariosCreateBody = zod.object({
         .object({
           type: zod
             .enum(['fixed', 'normal', 'uniform'])
-            .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
+            .describe('* `fixed` - fixed\n* `normal` - normal\n* `uniform` - uniform'),
           value: zod.number().nullish(),
           mean: zod.number().nullish(),
           stdev: zod.number().nullish(),
           lower: zod.number().nullish(),
           upper: zod.number().nullish()
         })
+        .describe('Serializer for distribution JSON field')
         .nullish(),
       startWithEventName: zod.string(),
       startAfterEventName: zod.string(),
-      durationDistribution: zod.object({
-        type: zod
-          .enum(['fixed', 'normal', 'uniform'])
-          .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
-        value: zod.number().nullish(),
-        mean: zod.number().nullish(),
-        stdev: zod.number().nullish(),
-        lower: zod.number().nullish(),
-        upper: zod.number().nullish()
-      }),
+      durationDistribution: zod
+        .object({
+          type: zod
+            .enum(['fixed', 'normal', 'uniform'])
+            .describe('* `fixed` - fixed\n* `normal` - normal\n* `uniform` - uniform'),
+          value: zod.number().nullish(),
+          mean: zod.number().nullish(),
+          stdev: zod.number().nullish(),
+          lower: zod.number().nullish(),
+          upper: zod.number().nullish()
+        })
+        .describe('Serializer for distribution JSON field'),
       type: zod
         .enum(['income', 'expense', 'invest', 'rebalance'])
         .describe(
@@ -584,13 +609,14 @@ export const scenariosCreateBody = zod.object({
         .object({
           type: zod
             .enum(['fixed', 'normal', 'uniform'])
-            .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
+            .describe('* `fixed` - fixed\n* `normal` - normal\n* `uniform` - uniform'),
           value: zod.number().nullish(),
           mean: zod.number().nullish(),
           stdev: zod.number().nullish(),
           lower: zod.number().nullish(),
           upper: zod.number().nullish()
         })
+        .describe('Serializer for distribution JSON field')
         .nullish(),
       inflationAdjusted: zod.boolean().optional(),
       userFraction: zod.number().nullish(),
@@ -605,8 +631,8 @@ export const scenariosCreateBody = zod.object({
           isFinalAllocation: zod.boolean().optional()
         })
       ),
-      startWithEventNameInput: zod.string().optional(),
-      startAfterEventNameInput: zod.string().optional(),
+      startWithEventNameInput: zod.string().nullish(),
+      startAfterEventNameInput: zod.string().nullish(),
       assetAllocationInput: zod.record(zod.string(), zod.any()).optional(),
       assetAllocation2Input: zod.record(zod.string(), zod.any()).optional()
     })
@@ -685,38 +711,43 @@ export const scenariosRetrieveResponse = zod.object({
     .min(scenariosRetrieveResponseSpouseBirthYearMin)
     .max(scenariosRetrieveResponseSpouseBirthYearMax)
     .nullish(),
-  userLifeExpectancy: zod.object({
-    type: zod
-      .enum(['fixed', 'normal', 'uniform'])
-      .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
-    value: zod.number().nullish(),
-    mean: zod.number().nullish(),
-    stdev: zod.number().nullish(),
-    lower: zod.number().nullish(),
-    upper: zod.number().nullish()
-  }),
-  spouseLifeExpectancy: zod
+  userLifeExpectancy: zod
     .object({
       type: zod
         .enum(['fixed', 'normal', 'uniform'])
-        .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
+        .describe('* `fixed` - fixed\n* `normal` - normal\n* `uniform` - uniform'),
       value: zod.number().nullish(),
       mean: zod.number().nullish(),
       stdev: zod.number().nullish(),
       lower: zod.number().nullish(),
       upper: zod.number().nullish()
     })
+    .describe('Serializer for distribution JSON field'),
+  spouseLifeExpectancy: zod
+    .object({
+      type: zod
+        .enum(['fixed', 'normal', 'uniform'])
+        .describe('* `fixed` - fixed\n* `normal` - normal\n* `uniform` - uniform'),
+      value: zod.number().nullish(),
+      mean: zod.number().nullish(),
+      stdev: zod.number().nullish(),
+      lower: zod.number().nullish(),
+      upper: zod.number().nullish()
+    })
+    .describe('Serializer for distribution JSON field')
     .nullish(),
-  inflationAssumption: zod.object({
-    type: zod
-      .enum(['fixed', 'normal', 'uniform'])
-      .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
-    value: zod.number().nullish(),
-    mean: zod.number().nullish(),
-    stdev: zod.number().nullish(),
-    lower: zod.number().nullish(),
-    upper: zod.number().nullish()
-  }),
+  inflationAssumption: zod
+    .object({
+      type: zod
+        .enum(['fixed', 'normal', 'uniform'])
+        .describe('* `fixed` - fixed\n* `normal` - normal\n* `uniform` - uniform'),
+      value: zod.number().nullish(),
+      mean: zod.number().nullish(),
+      stdev: zod.number().nullish(),
+      lower: zod.number().nullish(),
+      upper: zod.number().nullish()
+    })
+    .describe('Serializer for distribution JSON field'),
   afterTaxContributionLimit: zod
     .string()
     .regex(scenariosRetrieveResponseAfterTaxContributionLimitRegExp),
@@ -796,30 +827,34 @@ export const scenariosRetrieveResponse = zod.object({
         returnAmtOrPct: zod
           .enum(['amount', 'percent'])
           .describe('* `amount` - Amount\n* `percent` - Percent'),
-        returnDistribution: zod.object({
-          type: zod
-            .enum(['fixed', 'normal', 'uniform'])
-            .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
-          value: zod.number().nullish(),
-          mean: zod.number().nullish(),
-          stdev: zod.number().nullish(),
-          lower: zod.number().nullish(),
-          upper: zod.number().nullish()
-        }),
+        returnDistribution: zod
+          .object({
+            type: zod
+              .enum(['fixed', 'normal', 'uniform'])
+              .describe('* `fixed` - fixed\n* `normal` - normal\n* `uniform` - uniform'),
+            value: zod.number().nullish(),
+            mean: zod.number().nullish(),
+            stdev: zod.number().nullish(),
+            lower: zod.number().nullish(),
+            upper: zod.number().nullish()
+          })
+          .describe('Serializer for distribution JSON field'),
         expenseRatio: zod.number(),
         incomeAmtOrPct: zod
           .enum(['amount', 'percent'])
           .describe('* `amount` - Amount\n* `percent` - Percent'),
-        incomeDistribution: zod.object({
-          type: zod
-            .enum(['fixed', 'normal', 'uniform'])
-            .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
-          value: zod.number().nullish(),
-          mean: zod.number().nullish(),
-          stdev: zod.number().nullish(),
-          lower: zod.number().nullish(),
-          upper: zod.number().nullish()
-        }),
+        incomeDistribution: zod
+          .object({
+            type: zod
+              .enum(['fixed', 'normal', 'uniform'])
+              .describe('* `fixed` - fixed\n* `normal` - normal\n* `uniform` - uniform'),
+            value: zod.number().nullish(),
+            mean: zod.number().nullish(),
+            stdev: zod.number().nullish(),
+            lower: zod.number().nullish(),
+            upper: zod.number().nullish()
+          })
+          .describe('Serializer for distribution JSON field'),
         taxability: zod.boolean()
       }),
       value: zod.string().regex(scenariosRetrieveResponseInvestmentsItemValueRegExp),
@@ -844,26 +879,29 @@ export const scenariosRetrieveResponse = zod.object({
         .object({
           type: zod
             .enum(['fixed', 'normal', 'uniform'])
-            .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
+            .describe('* `fixed` - fixed\n* `normal` - normal\n* `uniform` - uniform'),
           value: zod.number().nullish(),
           mean: zod.number().nullish(),
           stdev: zod.number().nullish(),
           lower: zod.number().nullish(),
           upper: zod.number().nullish()
         })
+        .describe('Serializer for distribution JSON field')
         .nullish(),
       startWithEventName: zod.string(),
       startAfterEventName: zod.string(),
-      durationDistribution: zod.object({
-        type: zod
-          .enum(['fixed', 'normal', 'uniform'])
-          .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
-        value: zod.number().nullish(),
-        mean: zod.number().nullish(),
-        stdev: zod.number().nullish(),
-        lower: zod.number().nullish(),
-        upper: zod.number().nullish()
-      }),
+      durationDistribution: zod
+        .object({
+          type: zod
+            .enum(['fixed', 'normal', 'uniform'])
+            .describe('* `fixed` - fixed\n* `normal` - normal\n* `uniform` - uniform'),
+          value: zod.number().nullish(),
+          mean: zod.number().nullish(),
+          stdev: zod.number().nullish(),
+          lower: zod.number().nullish(),
+          upper: zod.number().nullish()
+        })
+        .describe('Serializer for distribution JSON field'),
       type: zod
         .enum(['income', 'expense', 'invest', 'rebalance'])
         .describe(
@@ -883,13 +921,14 @@ export const scenariosRetrieveResponse = zod.object({
         .object({
           type: zod
             .enum(['fixed', 'normal', 'uniform'])
-            .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
+            .describe('* `fixed` - fixed\n* `normal` - normal\n* `uniform` - uniform'),
           value: zod.number().nullish(),
           mean: zod.number().nullish(),
           stdev: zod.number().nullish(),
           lower: zod.number().nullish(),
           upper: zod.number().nullish()
         })
+        .describe('Serializer for distribution JSON field')
         .nullish(),
       inflationAdjusted: zod.boolean().optional(),
       userFraction: zod.number().nullish(),
@@ -904,8 +943,8 @@ export const scenariosRetrieveResponse = zod.object({
           isFinalAllocation: zod.boolean().optional()
         })
       ),
-      startWithEventNameInput: zod.string().optional(),
-      startAfterEventNameInput: zod.string().optional(),
+      startWithEventNameInput: zod.string().nullish(),
+      startAfterEventNameInput: zod.string().nullish(),
       assetAllocationInput: zod.record(zod.string(), zod.any()).optional(),
       assetAllocation2Input: zod.record(zod.string(), zod.any()).optional()
     })
@@ -1007,38 +1046,43 @@ export const scenariosUpdateBody = zod.object({
     .min(scenariosUpdateBodySpouseBirthYearMin)
     .max(scenariosUpdateBodySpouseBirthYearMax)
     .nullish(),
-  userLifeExpectancy: zod.object({
-    type: zod
-      .enum(['fixed', 'normal', 'uniform'])
-      .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
-    value: zod.number().nullish(),
-    mean: zod.number().nullish(),
-    stdev: zod.number().nullish(),
-    lower: zod.number().nullish(),
-    upper: zod.number().nullish()
-  }),
-  spouseLifeExpectancy: zod
+  userLifeExpectancy: zod
     .object({
       type: zod
         .enum(['fixed', 'normal', 'uniform'])
-        .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
+        .describe('* `fixed` - fixed\n* `normal` - normal\n* `uniform` - uniform'),
       value: zod.number().nullish(),
       mean: zod.number().nullish(),
       stdev: zod.number().nullish(),
       lower: zod.number().nullish(),
       upper: zod.number().nullish()
     })
+    .describe('Serializer for distribution JSON field'),
+  spouseLifeExpectancy: zod
+    .object({
+      type: zod
+        .enum(['fixed', 'normal', 'uniform'])
+        .describe('* `fixed` - fixed\n* `normal` - normal\n* `uniform` - uniform'),
+      value: zod.number().nullish(),
+      mean: zod.number().nullish(),
+      stdev: zod.number().nullish(),
+      lower: zod.number().nullish(),
+      upper: zod.number().nullish()
+    })
+    .describe('Serializer for distribution JSON field')
     .nullish(),
-  inflationAssumption: zod.object({
-    type: zod
-      .enum(['fixed', 'normal', 'uniform'])
-      .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
-    value: zod.number().nullish(),
-    mean: zod.number().nullish(),
-    stdev: zod.number().nullish(),
-    lower: zod.number().nullish(),
-    upper: zod.number().nullish()
-  }),
+  inflationAssumption: zod
+    .object({
+      type: zod
+        .enum(['fixed', 'normal', 'uniform'])
+        .describe('* `fixed` - fixed\n* `normal` - normal\n* `uniform` - uniform'),
+      value: zod.number().nullish(),
+      mean: zod.number().nullish(),
+      stdev: zod.number().nullish(),
+      lower: zod.number().nullish(),
+      upper: zod.number().nullish()
+    })
+    .describe('Serializer for distribution JSON field'),
   afterTaxContributionLimit: zod.string().regex(scenariosUpdateBodyAfterTaxContributionLimitRegExp),
   financialGoal: zod.string().regex(scenariosUpdateBodyFinancialGoalRegExp),
   residenceState: zod
@@ -1116,30 +1160,34 @@ export const scenariosUpdateBody = zod.object({
         returnAmtOrPct: zod
           .enum(['amount', 'percent'])
           .describe('* `amount` - Amount\n* `percent` - Percent'),
-        returnDistribution: zod.object({
-          type: zod
-            .enum(['fixed', 'normal', 'uniform'])
-            .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
-          value: zod.number().nullish(),
-          mean: zod.number().nullish(),
-          stdev: zod.number().nullish(),
-          lower: zod.number().nullish(),
-          upper: zod.number().nullish()
-        }),
+        returnDistribution: zod
+          .object({
+            type: zod
+              .enum(['fixed', 'normal', 'uniform'])
+              .describe('* `fixed` - fixed\n* `normal` - normal\n* `uniform` - uniform'),
+            value: zod.number().nullish(),
+            mean: zod.number().nullish(),
+            stdev: zod.number().nullish(),
+            lower: zod.number().nullish(),
+            upper: zod.number().nullish()
+          })
+          .describe('Serializer for distribution JSON field'),
         expenseRatio: zod.number(),
         incomeAmtOrPct: zod
           .enum(['amount', 'percent'])
           .describe('* `amount` - Amount\n* `percent` - Percent'),
-        incomeDistribution: zod.object({
-          type: zod
-            .enum(['fixed', 'normal', 'uniform'])
-            .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
-          value: zod.number().nullish(),
-          mean: zod.number().nullish(),
-          stdev: zod.number().nullish(),
-          lower: zod.number().nullish(),
-          upper: zod.number().nullish()
-        }),
+        incomeDistribution: zod
+          .object({
+            type: zod
+              .enum(['fixed', 'normal', 'uniform'])
+              .describe('* `fixed` - fixed\n* `normal` - normal\n* `uniform` - uniform'),
+            value: zod.number().nullish(),
+            mean: zod.number().nullish(),
+            stdev: zod.number().nullish(),
+            lower: zod.number().nullish(),
+            upper: zod.number().nullish()
+          })
+          .describe('Serializer for distribution JSON field'),
         taxability: zod.boolean()
       }),
       value: zod.string().regex(scenariosUpdateBodyInvestmentsItemValueRegExp),
@@ -1164,26 +1212,29 @@ export const scenariosUpdateBody = zod.object({
         .object({
           type: zod
             .enum(['fixed', 'normal', 'uniform'])
-            .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
+            .describe('* `fixed` - fixed\n* `normal` - normal\n* `uniform` - uniform'),
           value: zod.number().nullish(),
           mean: zod.number().nullish(),
           stdev: zod.number().nullish(),
           lower: zod.number().nullish(),
           upper: zod.number().nullish()
         })
+        .describe('Serializer for distribution JSON field')
         .nullish(),
       startWithEventName: zod.string(),
       startAfterEventName: zod.string(),
-      durationDistribution: zod.object({
-        type: zod
-          .enum(['fixed', 'normal', 'uniform'])
-          .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
-        value: zod.number().nullish(),
-        mean: zod.number().nullish(),
-        stdev: zod.number().nullish(),
-        lower: zod.number().nullish(),
-        upper: zod.number().nullish()
-      }),
+      durationDistribution: zod
+        .object({
+          type: zod
+            .enum(['fixed', 'normal', 'uniform'])
+            .describe('* `fixed` - fixed\n* `normal` - normal\n* `uniform` - uniform'),
+          value: zod.number().nullish(),
+          mean: zod.number().nullish(),
+          stdev: zod.number().nullish(),
+          lower: zod.number().nullish(),
+          upper: zod.number().nullish()
+        })
+        .describe('Serializer for distribution JSON field'),
       type: zod
         .enum(['income', 'expense', 'invest', 'rebalance'])
         .describe(
@@ -1203,13 +1254,14 @@ export const scenariosUpdateBody = zod.object({
         .object({
           type: zod
             .enum(['fixed', 'normal', 'uniform'])
-            .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
+            .describe('* `fixed` - fixed\n* `normal` - normal\n* `uniform` - uniform'),
           value: zod.number().nullish(),
           mean: zod.number().nullish(),
           stdev: zod.number().nullish(),
           lower: zod.number().nullish(),
           upper: zod.number().nullish()
         })
+        .describe('Serializer for distribution JSON field')
         .nullish(),
       inflationAdjusted: zod.boolean().optional(),
       userFraction: zod.number().nullish(),
@@ -1224,8 +1276,8 @@ export const scenariosUpdateBody = zod.object({
           isFinalAllocation: zod.boolean().optional()
         })
       ),
-      startWithEventNameInput: zod.string().optional(),
-      startAfterEventNameInput: zod.string().optional(),
+      startWithEventNameInput: zod.string().nullish(),
+      startAfterEventNameInput: zod.string().nullish(),
       assetAllocationInput: zod.record(zod.string(), zod.any()).optional(),
       assetAllocation2Input: zod.record(zod.string(), zod.any()).optional()
     })
@@ -1296,38 +1348,43 @@ export const scenariosUpdateResponse = zod.object({
     .min(scenariosUpdateResponseSpouseBirthYearMin)
     .max(scenariosUpdateResponseSpouseBirthYearMax)
     .nullish(),
-  userLifeExpectancy: zod.object({
-    type: zod
-      .enum(['fixed', 'normal', 'uniform'])
-      .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
-    value: zod.number().nullish(),
-    mean: zod.number().nullish(),
-    stdev: zod.number().nullish(),
-    lower: zod.number().nullish(),
-    upper: zod.number().nullish()
-  }),
-  spouseLifeExpectancy: zod
+  userLifeExpectancy: zod
     .object({
       type: zod
         .enum(['fixed', 'normal', 'uniform'])
-        .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
+        .describe('* `fixed` - fixed\n* `normal` - normal\n* `uniform` - uniform'),
       value: zod.number().nullish(),
       mean: zod.number().nullish(),
       stdev: zod.number().nullish(),
       lower: zod.number().nullish(),
       upper: zod.number().nullish()
     })
+    .describe('Serializer for distribution JSON field'),
+  spouseLifeExpectancy: zod
+    .object({
+      type: zod
+        .enum(['fixed', 'normal', 'uniform'])
+        .describe('* `fixed` - fixed\n* `normal` - normal\n* `uniform` - uniform'),
+      value: zod.number().nullish(),
+      mean: zod.number().nullish(),
+      stdev: zod.number().nullish(),
+      lower: zod.number().nullish(),
+      upper: zod.number().nullish()
+    })
+    .describe('Serializer for distribution JSON field')
     .nullish(),
-  inflationAssumption: zod.object({
-    type: zod
-      .enum(['fixed', 'normal', 'uniform'])
-      .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
-    value: zod.number().nullish(),
-    mean: zod.number().nullish(),
-    stdev: zod.number().nullish(),
-    lower: zod.number().nullish(),
-    upper: zod.number().nullish()
-  }),
+  inflationAssumption: zod
+    .object({
+      type: zod
+        .enum(['fixed', 'normal', 'uniform'])
+        .describe('* `fixed` - fixed\n* `normal` - normal\n* `uniform` - uniform'),
+      value: zod.number().nullish(),
+      mean: zod.number().nullish(),
+      stdev: zod.number().nullish(),
+      lower: zod.number().nullish(),
+      upper: zod.number().nullish()
+    })
+    .describe('Serializer for distribution JSON field'),
   afterTaxContributionLimit: zod
     .string()
     .regex(scenariosUpdateResponseAfterTaxContributionLimitRegExp),
@@ -1407,30 +1464,34 @@ export const scenariosUpdateResponse = zod.object({
         returnAmtOrPct: zod
           .enum(['amount', 'percent'])
           .describe('* `amount` - Amount\n* `percent` - Percent'),
-        returnDistribution: zod.object({
-          type: zod
-            .enum(['fixed', 'normal', 'uniform'])
-            .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
-          value: zod.number().nullish(),
-          mean: zod.number().nullish(),
-          stdev: zod.number().nullish(),
-          lower: zod.number().nullish(),
-          upper: zod.number().nullish()
-        }),
+        returnDistribution: zod
+          .object({
+            type: zod
+              .enum(['fixed', 'normal', 'uniform'])
+              .describe('* `fixed` - fixed\n* `normal` - normal\n* `uniform` - uniform'),
+            value: zod.number().nullish(),
+            mean: zod.number().nullish(),
+            stdev: zod.number().nullish(),
+            lower: zod.number().nullish(),
+            upper: zod.number().nullish()
+          })
+          .describe('Serializer for distribution JSON field'),
         expenseRatio: zod.number(),
         incomeAmtOrPct: zod
           .enum(['amount', 'percent'])
           .describe('* `amount` - Amount\n* `percent` - Percent'),
-        incomeDistribution: zod.object({
-          type: zod
-            .enum(['fixed', 'normal', 'uniform'])
-            .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
-          value: zod.number().nullish(),
-          mean: zod.number().nullish(),
-          stdev: zod.number().nullish(),
-          lower: zod.number().nullish(),
-          upper: zod.number().nullish()
-        }),
+        incomeDistribution: zod
+          .object({
+            type: zod
+              .enum(['fixed', 'normal', 'uniform'])
+              .describe('* `fixed` - fixed\n* `normal` - normal\n* `uniform` - uniform'),
+            value: zod.number().nullish(),
+            mean: zod.number().nullish(),
+            stdev: zod.number().nullish(),
+            lower: zod.number().nullish(),
+            upper: zod.number().nullish()
+          })
+          .describe('Serializer for distribution JSON field'),
         taxability: zod.boolean()
       }),
       value: zod.string().regex(scenariosUpdateResponseInvestmentsItemValueRegExp),
@@ -1455,26 +1516,29 @@ export const scenariosUpdateResponse = zod.object({
         .object({
           type: zod
             .enum(['fixed', 'normal', 'uniform'])
-            .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
+            .describe('* `fixed` - fixed\n* `normal` - normal\n* `uniform` - uniform'),
           value: zod.number().nullish(),
           mean: zod.number().nullish(),
           stdev: zod.number().nullish(),
           lower: zod.number().nullish(),
           upper: zod.number().nullish()
         })
+        .describe('Serializer for distribution JSON field')
         .nullish(),
       startWithEventName: zod.string(),
       startAfterEventName: zod.string(),
-      durationDistribution: zod.object({
-        type: zod
-          .enum(['fixed', 'normal', 'uniform'])
-          .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
-        value: zod.number().nullish(),
-        mean: zod.number().nullish(),
-        stdev: zod.number().nullish(),
-        lower: zod.number().nullish(),
-        upper: zod.number().nullish()
-      }),
+      durationDistribution: zod
+        .object({
+          type: zod
+            .enum(['fixed', 'normal', 'uniform'])
+            .describe('* `fixed` - fixed\n* `normal` - normal\n* `uniform` - uniform'),
+          value: zod.number().nullish(),
+          mean: zod.number().nullish(),
+          stdev: zod.number().nullish(),
+          lower: zod.number().nullish(),
+          upper: zod.number().nullish()
+        })
+        .describe('Serializer for distribution JSON field'),
       type: zod
         .enum(['income', 'expense', 'invest', 'rebalance'])
         .describe(
@@ -1494,13 +1558,14 @@ export const scenariosUpdateResponse = zod.object({
         .object({
           type: zod
             .enum(['fixed', 'normal', 'uniform'])
-            .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
+            .describe('* `fixed` - fixed\n* `normal` - normal\n* `uniform` - uniform'),
           value: zod.number().nullish(),
           mean: zod.number().nullish(),
           stdev: zod.number().nullish(),
           lower: zod.number().nullish(),
           upper: zod.number().nullish()
         })
+        .describe('Serializer for distribution JSON field')
         .nullish(),
       inflationAdjusted: zod.boolean().optional(),
       userFraction: zod.number().nullish(),
@@ -1515,8 +1580,8 @@ export const scenariosUpdateResponse = zod.object({
           isFinalAllocation: zod.boolean().optional()
         })
       ),
-      startWithEventNameInput: zod.string().optional(),
-      startAfterEventNameInput: zod.string().optional(),
+      startWithEventNameInput: zod.string().nullish(),
+      startAfterEventNameInput: zod.string().nullish(),
       assetAllocationInput: zod.record(zod.string(), zod.any()).optional(),
       assetAllocation2Input: zod.record(zod.string(), zod.any()).optional()
     })
@@ -1625,38 +1690,41 @@ export const scenariosPartialUpdateBody = zod.object({
     .object({
       type: zod
         .enum(['fixed', 'normal', 'uniform'])
-        .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
+        .describe('* `fixed` - fixed\n* `normal` - normal\n* `uniform` - uniform'),
       value: zod.number().nullish(),
       mean: zod.number().nullish(),
       stdev: zod.number().nullish(),
       lower: zod.number().nullish(),
       upper: zod.number().nullish()
     })
-    .optional(),
+    .optional()
+    .describe('Serializer for distribution JSON field'),
   spouseLifeExpectancy: zod
     .object({
       type: zod
         .enum(['fixed', 'normal', 'uniform'])
-        .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
+        .describe('* `fixed` - fixed\n* `normal` - normal\n* `uniform` - uniform'),
       value: zod.number().nullish(),
       mean: zod.number().nullish(),
       stdev: zod.number().nullish(),
       lower: zod.number().nullish(),
       upper: zod.number().nullish()
     })
+    .describe('Serializer for distribution JSON field')
     .nullish(),
   inflationAssumption: zod
     .object({
       type: zod
         .enum(['fixed', 'normal', 'uniform'])
-        .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
+        .describe('* `fixed` - fixed\n* `normal` - normal\n* `uniform` - uniform'),
       value: zod.number().nullish(),
       mean: zod.number().nullish(),
       stdev: zod.number().nullish(),
       lower: zod.number().nullish(),
       upper: zod.number().nullish()
     })
-    .optional(),
+    .optional()
+    .describe('Serializer for distribution JSON field'),
   afterTaxContributionLimit: zod
     .string()
     .regex(scenariosPartialUpdateBodyAfterTaxContributionLimitRegExp)
@@ -1739,30 +1807,34 @@ export const scenariosPartialUpdateBody = zod.object({
           returnAmtOrPct: zod
             .enum(['amount', 'percent'])
             .describe('* `amount` - Amount\n* `percent` - Percent'),
-          returnDistribution: zod.object({
-            type: zod
-              .enum(['fixed', 'normal', 'uniform'])
-              .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
-            value: zod.number().nullish(),
-            mean: zod.number().nullish(),
-            stdev: zod.number().nullish(),
-            lower: zod.number().nullish(),
-            upper: zod.number().nullish()
-          }),
+          returnDistribution: zod
+            .object({
+              type: zod
+                .enum(['fixed', 'normal', 'uniform'])
+                .describe('* `fixed` - fixed\n* `normal` - normal\n* `uniform` - uniform'),
+              value: zod.number().nullish(),
+              mean: zod.number().nullish(),
+              stdev: zod.number().nullish(),
+              lower: zod.number().nullish(),
+              upper: zod.number().nullish()
+            })
+            .describe('Serializer for distribution JSON field'),
           expenseRatio: zod.number(),
           incomeAmtOrPct: zod
             .enum(['amount', 'percent'])
             .describe('* `amount` - Amount\n* `percent` - Percent'),
-          incomeDistribution: zod.object({
-            type: zod
-              .enum(['fixed', 'normal', 'uniform'])
-              .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
-            value: zod.number().nullish(),
-            mean: zod.number().nullish(),
-            stdev: zod.number().nullish(),
-            lower: zod.number().nullish(),
-            upper: zod.number().nullish()
-          }),
+          incomeDistribution: zod
+            .object({
+              type: zod
+                .enum(['fixed', 'normal', 'uniform'])
+                .describe('* `fixed` - fixed\n* `normal` - normal\n* `uniform` - uniform'),
+              value: zod.number().nullish(),
+              mean: zod.number().nullish(),
+              stdev: zod.number().nullish(),
+              lower: zod.number().nullish(),
+              upper: zod.number().nullish()
+            })
+            .describe('Serializer for distribution JSON field'),
           taxability: zod.boolean()
         }),
         value: zod.string().regex(scenariosPartialUpdateBodyInvestmentsItemValueRegExp),
@@ -1789,26 +1861,29 @@ export const scenariosPartialUpdateBody = zod.object({
           .object({
             type: zod
               .enum(['fixed', 'normal', 'uniform'])
-              .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
+              .describe('* `fixed` - fixed\n* `normal` - normal\n* `uniform` - uniform'),
             value: zod.number().nullish(),
             mean: zod.number().nullish(),
             stdev: zod.number().nullish(),
             lower: zod.number().nullish(),
             upper: zod.number().nullish()
           })
+          .describe('Serializer for distribution JSON field')
           .nullish(),
         startWithEventName: zod.string(),
         startAfterEventName: zod.string(),
-        durationDistribution: zod.object({
-          type: zod
-            .enum(['fixed', 'normal', 'uniform'])
-            .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
-          value: zod.number().nullish(),
-          mean: zod.number().nullish(),
-          stdev: zod.number().nullish(),
-          lower: zod.number().nullish(),
-          upper: zod.number().nullish()
-        }),
+        durationDistribution: zod
+          .object({
+            type: zod
+              .enum(['fixed', 'normal', 'uniform'])
+              .describe('* `fixed` - fixed\n* `normal` - normal\n* `uniform` - uniform'),
+            value: zod.number().nullish(),
+            mean: zod.number().nullish(),
+            stdev: zod.number().nullish(),
+            lower: zod.number().nullish(),
+            upper: zod.number().nullish()
+          })
+          .describe('Serializer for distribution JSON field'),
         type: zod
           .enum(['income', 'expense', 'invest', 'rebalance'])
           .describe(
@@ -1828,13 +1903,14 @@ export const scenariosPartialUpdateBody = zod.object({
           .object({
             type: zod
               .enum(['fixed', 'normal', 'uniform'])
-              .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
+              .describe('* `fixed` - fixed\n* `normal` - normal\n* `uniform` - uniform'),
             value: zod.number().nullish(),
             mean: zod.number().nullish(),
             stdev: zod.number().nullish(),
             lower: zod.number().nullish(),
             upper: zod.number().nullish()
           })
+          .describe('Serializer for distribution JSON field')
           .nullish(),
         inflationAdjusted: zod.boolean().optional(),
         userFraction: zod.number().nullish(),
@@ -1852,8 +1928,8 @@ export const scenariosPartialUpdateBody = zod.object({
             isFinalAllocation: zod.boolean().optional()
           })
         ),
-        startWithEventNameInput: zod.string().optional(),
-        startAfterEventNameInput: zod.string().optional(),
+        startWithEventNameInput: zod.string().nullish(),
+        startAfterEventNameInput: zod.string().nullish(),
         assetAllocationInput: zod.record(zod.string(), zod.any()).optional(),
         assetAllocation2Input: zod.record(zod.string(), zod.any()).optional()
       })
@@ -1925,38 +2001,43 @@ export const scenariosPartialUpdateResponse = zod.object({
     .min(scenariosPartialUpdateResponseSpouseBirthYearMin)
     .max(scenariosPartialUpdateResponseSpouseBirthYearMax)
     .nullish(),
-  userLifeExpectancy: zod.object({
-    type: zod
-      .enum(['fixed', 'normal', 'uniform'])
-      .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
-    value: zod.number().nullish(),
-    mean: zod.number().nullish(),
-    stdev: zod.number().nullish(),
-    lower: zod.number().nullish(),
-    upper: zod.number().nullish()
-  }),
-  spouseLifeExpectancy: zod
+  userLifeExpectancy: zod
     .object({
       type: zod
         .enum(['fixed', 'normal', 'uniform'])
-        .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
+        .describe('* `fixed` - fixed\n* `normal` - normal\n* `uniform` - uniform'),
       value: zod.number().nullish(),
       mean: zod.number().nullish(),
       stdev: zod.number().nullish(),
       lower: zod.number().nullish(),
       upper: zod.number().nullish()
     })
+    .describe('Serializer for distribution JSON field'),
+  spouseLifeExpectancy: zod
+    .object({
+      type: zod
+        .enum(['fixed', 'normal', 'uniform'])
+        .describe('* `fixed` - fixed\n* `normal` - normal\n* `uniform` - uniform'),
+      value: zod.number().nullish(),
+      mean: zod.number().nullish(),
+      stdev: zod.number().nullish(),
+      lower: zod.number().nullish(),
+      upper: zod.number().nullish()
+    })
+    .describe('Serializer for distribution JSON field')
     .nullish(),
-  inflationAssumption: zod.object({
-    type: zod
-      .enum(['fixed', 'normal', 'uniform'])
-      .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
-    value: zod.number().nullish(),
-    mean: zod.number().nullish(),
-    stdev: zod.number().nullish(),
-    lower: zod.number().nullish(),
-    upper: zod.number().nullish()
-  }),
+  inflationAssumption: zod
+    .object({
+      type: zod
+        .enum(['fixed', 'normal', 'uniform'])
+        .describe('* `fixed` - fixed\n* `normal` - normal\n* `uniform` - uniform'),
+      value: zod.number().nullish(),
+      mean: zod.number().nullish(),
+      stdev: zod.number().nullish(),
+      lower: zod.number().nullish(),
+      upper: zod.number().nullish()
+    })
+    .describe('Serializer for distribution JSON field'),
   afterTaxContributionLimit: zod
     .string()
     .regex(scenariosPartialUpdateResponseAfterTaxContributionLimitRegExp),
@@ -2036,30 +2117,34 @@ export const scenariosPartialUpdateResponse = zod.object({
         returnAmtOrPct: zod
           .enum(['amount', 'percent'])
           .describe('* `amount` - Amount\n* `percent` - Percent'),
-        returnDistribution: zod.object({
-          type: zod
-            .enum(['fixed', 'normal', 'uniform'])
-            .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
-          value: zod.number().nullish(),
-          mean: zod.number().nullish(),
-          stdev: zod.number().nullish(),
-          lower: zod.number().nullish(),
-          upper: zod.number().nullish()
-        }),
+        returnDistribution: zod
+          .object({
+            type: zod
+              .enum(['fixed', 'normal', 'uniform'])
+              .describe('* `fixed` - fixed\n* `normal` - normal\n* `uniform` - uniform'),
+            value: zod.number().nullish(),
+            mean: zod.number().nullish(),
+            stdev: zod.number().nullish(),
+            lower: zod.number().nullish(),
+            upper: zod.number().nullish()
+          })
+          .describe('Serializer for distribution JSON field'),
         expenseRatio: zod.number(),
         incomeAmtOrPct: zod
           .enum(['amount', 'percent'])
           .describe('* `amount` - Amount\n* `percent` - Percent'),
-        incomeDistribution: zod.object({
-          type: zod
-            .enum(['fixed', 'normal', 'uniform'])
-            .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
-          value: zod.number().nullish(),
-          mean: zod.number().nullish(),
-          stdev: zod.number().nullish(),
-          lower: zod.number().nullish(),
-          upper: zod.number().nullish()
-        }),
+        incomeDistribution: zod
+          .object({
+            type: zod
+              .enum(['fixed', 'normal', 'uniform'])
+              .describe('* `fixed` - fixed\n* `normal` - normal\n* `uniform` - uniform'),
+            value: zod.number().nullish(),
+            mean: zod.number().nullish(),
+            stdev: zod.number().nullish(),
+            lower: zod.number().nullish(),
+            upper: zod.number().nullish()
+          })
+          .describe('Serializer for distribution JSON field'),
         taxability: zod.boolean()
       }),
       value: zod.string().regex(scenariosPartialUpdateResponseInvestmentsItemValueRegExp),
@@ -2084,26 +2169,29 @@ export const scenariosPartialUpdateResponse = zod.object({
         .object({
           type: zod
             .enum(['fixed', 'normal', 'uniform'])
-            .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
+            .describe('* `fixed` - fixed\n* `normal` - normal\n* `uniform` - uniform'),
           value: zod.number().nullish(),
           mean: zod.number().nullish(),
           stdev: zod.number().nullish(),
           lower: zod.number().nullish(),
           upper: zod.number().nullish()
         })
+        .describe('Serializer for distribution JSON field')
         .nullish(),
       startWithEventName: zod.string(),
       startAfterEventName: zod.string(),
-      durationDistribution: zod.object({
-        type: zod
-          .enum(['fixed', 'normal', 'uniform'])
-          .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
-        value: zod.number().nullish(),
-        mean: zod.number().nullish(),
-        stdev: zod.number().nullish(),
-        lower: zod.number().nullish(),
-        upper: zod.number().nullish()
-      }),
+      durationDistribution: zod
+        .object({
+          type: zod
+            .enum(['fixed', 'normal', 'uniform'])
+            .describe('* `fixed` - fixed\n* `normal` - normal\n* `uniform` - uniform'),
+          value: zod.number().nullish(),
+          mean: zod.number().nullish(),
+          stdev: zod.number().nullish(),
+          lower: zod.number().nullish(),
+          upper: zod.number().nullish()
+        })
+        .describe('Serializer for distribution JSON field'),
       type: zod
         .enum(['income', 'expense', 'invest', 'rebalance'])
         .describe(
@@ -2123,13 +2211,14 @@ export const scenariosPartialUpdateResponse = zod.object({
         .object({
           type: zod
             .enum(['fixed', 'normal', 'uniform'])
-            .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
+            .describe('* `fixed` - fixed\n* `normal` - normal\n* `uniform` - uniform'),
           value: zod.number().nullish(),
           mean: zod.number().nullish(),
           stdev: zod.number().nullish(),
           lower: zod.number().nullish(),
           upper: zod.number().nullish()
         })
+        .describe('Serializer for distribution JSON field')
         .nullish(),
       inflationAdjusted: zod.boolean().optional(),
       userFraction: zod.number().nullish(),
@@ -2147,8 +2236,8 @@ export const scenariosPartialUpdateResponse = zod.object({
           isFinalAllocation: zod.boolean().optional()
         })
       ),
-      startWithEventNameInput: zod.string().optional(),
-      startAfterEventNameInput: zod.string().optional(),
+      startWithEventNameInput: zod.string().nullish(),
+      startAfterEventNameInput: zod.string().nullish(),
       assetAllocationInput: zod.record(zod.string(), zod.any()).optional(),
       assetAllocation2Input: zod.record(zod.string(), zod.any()).optional()
     })
@@ -2259,38 +2348,43 @@ export const scenariosCloneCreateBody = zod.object({
     .min(scenariosCloneCreateBodySpouseBirthYearMin)
     .max(scenariosCloneCreateBodySpouseBirthYearMax)
     .nullish(),
-  userLifeExpectancy: zod.object({
-    type: zod
-      .enum(['fixed', 'normal', 'uniform'])
-      .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
-    value: zod.number().nullish(),
-    mean: zod.number().nullish(),
-    stdev: zod.number().nullish(),
-    lower: zod.number().nullish(),
-    upper: zod.number().nullish()
-  }),
-  spouseLifeExpectancy: zod
+  userLifeExpectancy: zod
     .object({
       type: zod
         .enum(['fixed', 'normal', 'uniform'])
-        .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
+        .describe('* `fixed` - fixed\n* `normal` - normal\n* `uniform` - uniform'),
       value: zod.number().nullish(),
       mean: zod.number().nullish(),
       stdev: zod.number().nullish(),
       lower: zod.number().nullish(),
       upper: zod.number().nullish()
     })
+    .describe('Serializer for distribution JSON field'),
+  spouseLifeExpectancy: zod
+    .object({
+      type: zod
+        .enum(['fixed', 'normal', 'uniform'])
+        .describe('* `fixed` - fixed\n* `normal` - normal\n* `uniform` - uniform'),
+      value: zod.number().nullish(),
+      mean: zod.number().nullish(),
+      stdev: zod.number().nullish(),
+      lower: zod.number().nullish(),
+      upper: zod.number().nullish()
+    })
+    .describe('Serializer for distribution JSON field')
     .nullish(),
-  inflationAssumption: zod.object({
-    type: zod
-      .enum(['fixed', 'normal', 'uniform'])
-      .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
-    value: zod.number().nullish(),
-    mean: zod.number().nullish(),
-    stdev: zod.number().nullish(),
-    lower: zod.number().nullish(),
-    upper: zod.number().nullish()
-  }),
+  inflationAssumption: zod
+    .object({
+      type: zod
+        .enum(['fixed', 'normal', 'uniform'])
+        .describe('* `fixed` - fixed\n* `normal` - normal\n* `uniform` - uniform'),
+      value: zod.number().nullish(),
+      mean: zod.number().nullish(),
+      stdev: zod.number().nullish(),
+      lower: zod.number().nullish(),
+      upper: zod.number().nullish()
+    })
+    .describe('Serializer for distribution JSON field'),
   afterTaxContributionLimit: zod
     .string()
     .regex(scenariosCloneCreateBodyAfterTaxContributionLimitRegExp),
@@ -2370,30 +2464,34 @@ export const scenariosCloneCreateBody = zod.object({
         returnAmtOrPct: zod
           .enum(['amount', 'percent'])
           .describe('* `amount` - Amount\n* `percent` - Percent'),
-        returnDistribution: zod.object({
-          type: zod
-            .enum(['fixed', 'normal', 'uniform'])
-            .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
-          value: zod.number().nullish(),
-          mean: zod.number().nullish(),
-          stdev: zod.number().nullish(),
-          lower: zod.number().nullish(),
-          upper: zod.number().nullish()
-        }),
+        returnDistribution: zod
+          .object({
+            type: zod
+              .enum(['fixed', 'normal', 'uniform'])
+              .describe('* `fixed` - fixed\n* `normal` - normal\n* `uniform` - uniform'),
+            value: zod.number().nullish(),
+            mean: zod.number().nullish(),
+            stdev: zod.number().nullish(),
+            lower: zod.number().nullish(),
+            upper: zod.number().nullish()
+          })
+          .describe('Serializer for distribution JSON field'),
         expenseRatio: zod.number(),
         incomeAmtOrPct: zod
           .enum(['amount', 'percent'])
           .describe('* `amount` - Amount\n* `percent` - Percent'),
-        incomeDistribution: zod.object({
-          type: zod
-            .enum(['fixed', 'normal', 'uniform'])
-            .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
-          value: zod.number().nullish(),
-          mean: zod.number().nullish(),
-          stdev: zod.number().nullish(),
-          lower: zod.number().nullish(),
-          upper: zod.number().nullish()
-        }),
+        incomeDistribution: zod
+          .object({
+            type: zod
+              .enum(['fixed', 'normal', 'uniform'])
+              .describe('* `fixed` - fixed\n* `normal` - normal\n* `uniform` - uniform'),
+            value: zod.number().nullish(),
+            mean: zod.number().nullish(),
+            stdev: zod.number().nullish(),
+            lower: zod.number().nullish(),
+            upper: zod.number().nullish()
+          })
+          .describe('Serializer for distribution JSON field'),
         taxability: zod.boolean()
       }),
       value: zod.string().regex(scenariosCloneCreateBodyInvestmentsItemValueRegExp),
@@ -2418,26 +2516,29 @@ export const scenariosCloneCreateBody = zod.object({
         .object({
           type: zod
             .enum(['fixed', 'normal', 'uniform'])
-            .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
+            .describe('* `fixed` - fixed\n* `normal` - normal\n* `uniform` - uniform'),
           value: zod.number().nullish(),
           mean: zod.number().nullish(),
           stdev: zod.number().nullish(),
           lower: zod.number().nullish(),
           upper: zod.number().nullish()
         })
+        .describe('Serializer for distribution JSON field')
         .nullish(),
       startWithEventName: zod.string(),
       startAfterEventName: zod.string(),
-      durationDistribution: zod.object({
-        type: zod
-          .enum(['fixed', 'normal', 'uniform'])
-          .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
-        value: zod.number().nullish(),
-        mean: zod.number().nullish(),
-        stdev: zod.number().nullish(),
-        lower: zod.number().nullish(),
-        upper: zod.number().nullish()
-      }),
+      durationDistribution: zod
+        .object({
+          type: zod
+            .enum(['fixed', 'normal', 'uniform'])
+            .describe('* `fixed` - fixed\n* `normal` - normal\n* `uniform` - uniform'),
+          value: zod.number().nullish(),
+          mean: zod.number().nullish(),
+          stdev: zod.number().nullish(),
+          lower: zod.number().nullish(),
+          upper: zod.number().nullish()
+        })
+        .describe('Serializer for distribution JSON field'),
       type: zod
         .enum(['income', 'expense', 'invest', 'rebalance'])
         .describe(
@@ -2457,13 +2558,14 @@ export const scenariosCloneCreateBody = zod.object({
         .object({
           type: zod
             .enum(['fixed', 'normal', 'uniform'])
-            .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
+            .describe('* `fixed` - fixed\n* `normal` - normal\n* `uniform` - uniform'),
           value: zod.number().nullish(),
           mean: zod.number().nullish(),
           stdev: zod.number().nullish(),
           lower: zod.number().nullish(),
           upper: zod.number().nullish()
         })
+        .describe('Serializer for distribution JSON field')
         .nullish(),
       inflationAdjusted: zod.boolean().optional(),
       userFraction: zod.number().nullish(),
@@ -2478,8 +2580,8 @@ export const scenariosCloneCreateBody = zod.object({
           isFinalAllocation: zod.boolean().optional()
         })
       ),
-      startWithEventNameInput: zod.string().optional(),
-      startAfterEventNameInput: zod.string().optional(),
+      startWithEventNameInput: zod.string().nullish(),
+      startAfterEventNameInput: zod.string().nullish(),
       assetAllocationInput: zod.record(zod.string(), zod.any()).optional(),
       assetAllocation2Input: zod.record(zod.string(), zod.any()).optional()
     })
@@ -2550,38 +2652,43 @@ export const scenariosCloneCreateResponse = zod.object({
     .min(scenariosCloneCreateResponseSpouseBirthYearMin)
     .max(scenariosCloneCreateResponseSpouseBirthYearMax)
     .nullish(),
-  userLifeExpectancy: zod.object({
-    type: zod
-      .enum(['fixed', 'normal', 'uniform'])
-      .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
-    value: zod.number().nullish(),
-    mean: zod.number().nullish(),
-    stdev: zod.number().nullish(),
-    lower: zod.number().nullish(),
-    upper: zod.number().nullish()
-  }),
-  spouseLifeExpectancy: zod
+  userLifeExpectancy: zod
     .object({
       type: zod
         .enum(['fixed', 'normal', 'uniform'])
-        .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
+        .describe('* `fixed` - fixed\n* `normal` - normal\n* `uniform` - uniform'),
       value: zod.number().nullish(),
       mean: zod.number().nullish(),
       stdev: zod.number().nullish(),
       lower: zod.number().nullish(),
       upper: zod.number().nullish()
     })
+    .describe('Serializer for distribution JSON field'),
+  spouseLifeExpectancy: zod
+    .object({
+      type: zod
+        .enum(['fixed', 'normal', 'uniform'])
+        .describe('* `fixed` - fixed\n* `normal` - normal\n* `uniform` - uniform'),
+      value: zod.number().nullish(),
+      mean: zod.number().nullish(),
+      stdev: zod.number().nullish(),
+      lower: zod.number().nullish(),
+      upper: zod.number().nullish()
+    })
+    .describe('Serializer for distribution JSON field')
     .nullish(),
-  inflationAssumption: zod.object({
-    type: zod
-      .enum(['fixed', 'normal', 'uniform'])
-      .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
-    value: zod.number().nullish(),
-    mean: zod.number().nullish(),
-    stdev: zod.number().nullish(),
-    lower: zod.number().nullish(),
-    upper: zod.number().nullish()
-  }),
+  inflationAssumption: zod
+    .object({
+      type: zod
+        .enum(['fixed', 'normal', 'uniform'])
+        .describe('* `fixed` - fixed\n* `normal` - normal\n* `uniform` - uniform'),
+      value: zod.number().nullish(),
+      mean: zod.number().nullish(),
+      stdev: zod.number().nullish(),
+      lower: zod.number().nullish(),
+      upper: zod.number().nullish()
+    })
+    .describe('Serializer for distribution JSON field'),
   afterTaxContributionLimit: zod
     .string()
     .regex(scenariosCloneCreateResponseAfterTaxContributionLimitRegExp),
@@ -2661,30 +2768,34 @@ export const scenariosCloneCreateResponse = zod.object({
         returnAmtOrPct: zod
           .enum(['amount', 'percent'])
           .describe('* `amount` - Amount\n* `percent` - Percent'),
-        returnDistribution: zod.object({
-          type: zod
-            .enum(['fixed', 'normal', 'uniform'])
-            .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
-          value: zod.number().nullish(),
-          mean: zod.number().nullish(),
-          stdev: zod.number().nullish(),
-          lower: zod.number().nullish(),
-          upper: zod.number().nullish()
-        }),
+        returnDistribution: zod
+          .object({
+            type: zod
+              .enum(['fixed', 'normal', 'uniform'])
+              .describe('* `fixed` - fixed\n* `normal` - normal\n* `uniform` - uniform'),
+            value: zod.number().nullish(),
+            mean: zod.number().nullish(),
+            stdev: zod.number().nullish(),
+            lower: zod.number().nullish(),
+            upper: zod.number().nullish()
+          })
+          .describe('Serializer for distribution JSON field'),
         expenseRatio: zod.number(),
         incomeAmtOrPct: zod
           .enum(['amount', 'percent'])
           .describe('* `amount` - Amount\n* `percent` - Percent'),
-        incomeDistribution: zod.object({
-          type: zod
-            .enum(['fixed', 'normal', 'uniform'])
-            .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
-          value: zod.number().nullish(),
-          mean: zod.number().nullish(),
-          stdev: zod.number().nullish(),
-          lower: zod.number().nullish(),
-          upper: zod.number().nullish()
-        }),
+        incomeDistribution: zod
+          .object({
+            type: zod
+              .enum(['fixed', 'normal', 'uniform'])
+              .describe('* `fixed` - fixed\n* `normal` - normal\n* `uniform` - uniform'),
+            value: zod.number().nullish(),
+            mean: zod.number().nullish(),
+            stdev: zod.number().nullish(),
+            lower: zod.number().nullish(),
+            upper: zod.number().nullish()
+          })
+          .describe('Serializer for distribution JSON field'),
         taxability: zod.boolean()
       }),
       value: zod.string().regex(scenariosCloneCreateResponseInvestmentsItemValueRegExp),
@@ -2709,26 +2820,29 @@ export const scenariosCloneCreateResponse = zod.object({
         .object({
           type: zod
             .enum(['fixed', 'normal', 'uniform'])
-            .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
+            .describe('* `fixed` - fixed\n* `normal` - normal\n* `uniform` - uniform'),
           value: zod.number().nullish(),
           mean: zod.number().nullish(),
           stdev: zod.number().nullish(),
           lower: zod.number().nullish(),
           upper: zod.number().nullish()
         })
+        .describe('Serializer for distribution JSON field')
         .nullish(),
       startWithEventName: zod.string(),
       startAfterEventName: zod.string(),
-      durationDistribution: zod.object({
-        type: zod
-          .enum(['fixed', 'normal', 'uniform'])
-          .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
-        value: zod.number().nullish(),
-        mean: zod.number().nullish(),
-        stdev: zod.number().nullish(),
-        lower: zod.number().nullish(),
-        upper: zod.number().nullish()
-      }),
+      durationDistribution: zod
+        .object({
+          type: zod
+            .enum(['fixed', 'normal', 'uniform'])
+            .describe('* `fixed` - fixed\n* `normal` - normal\n* `uniform` - uniform'),
+          value: zod.number().nullish(),
+          mean: zod.number().nullish(),
+          stdev: zod.number().nullish(),
+          lower: zod.number().nullish(),
+          upper: zod.number().nullish()
+        })
+        .describe('Serializer for distribution JSON field'),
       type: zod
         .enum(['income', 'expense', 'invest', 'rebalance'])
         .describe(
@@ -2748,13 +2862,14 @@ export const scenariosCloneCreateResponse = zod.object({
         .object({
           type: zod
             .enum(['fixed', 'normal', 'uniform'])
-            .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
+            .describe('* `fixed` - fixed\n* `normal` - normal\n* `uniform` - uniform'),
           value: zod.number().nullish(),
           mean: zod.number().nullish(),
           stdev: zod.number().nullish(),
           lower: zod.number().nullish(),
           upper: zod.number().nullish()
         })
+        .describe('Serializer for distribution JSON field')
         .nullish(),
       inflationAdjusted: zod.boolean().optional(),
       userFraction: zod.number().nullish(),
@@ -2772,8 +2887,8 @@ export const scenariosCloneCreateResponse = zod.object({
           isFinalAllocation: zod.boolean().optional()
         })
       ),
-      startWithEventNameInput: zod.string().optional(),
-      startAfterEventNameInput: zod.string().optional(),
+      startWithEventNameInput: zod.string().nullish(),
+      startAfterEventNameInput: zod.string().nullish(),
       assetAllocationInput: zod.record(zod.string(), zod.any()).optional(),
       assetAllocation2Input: zod.record(zod.string(), zod.any()).optional()
     })
@@ -2889,38 +3004,43 @@ export const scenariosExportRetrieveResponse = zod.object({
     .min(scenariosExportRetrieveResponseSpouseBirthYearMin)
     .max(scenariosExportRetrieveResponseSpouseBirthYearMax)
     .nullish(),
-  userLifeExpectancy: zod.object({
-    type: zod
-      .enum(['fixed', 'normal', 'uniform'])
-      .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
-    value: zod.number().nullish(),
-    mean: zod.number().nullish(),
-    stdev: zod.number().nullish(),
-    lower: zod.number().nullish(),
-    upper: zod.number().nullish()
-  }),
-  spouseLifeExpectancy: zod
+  userLifeExpectancy: zod
     .object({
       type: zod
         .enum(['fixed', 'normal', 'uniform'])
-        .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
+        .describe('* `fixed` - fixed\n* `normal` - normal\n* `uniform` - uniform'),
       value: zod.number().nullish(),
       mean: zod.number().nullish(),
       stdev: zod.number().nullish(),
       lower: zod.number().nullish(),
       upper: zod.number().nullish()
     })
+    .describe('Serializer for distribution JSON field'),
+  spouseLifeExpectancy: zod
+    .object({
+      type: zod
+        .enum(['fixed', 'normal', 'uniform'])
+        .describe('* `fixed` - fixed\n* `normal` - normal\n* `uniform` - uniform'),
+      value: zod.number().nullish(),
+      mean: zod.number().nullish(),
+      stdev: zod.number().nullish(),
+      lower: zod.number().nullish(),
+      upper: zod.number().nullish()
+    })
+    .describe('Serializer for distribution JSON field')
     .nullish(),
-  inflationAssumption: zod.object({
-    type: zod
-      .enum(['fixed', 'normal', 'uniform'])
-      .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
-    value: zod.number().nullish(),
-    mean: zod.number().nullish(),
-    stdev: zod.number().nullish(),
-    lower: zod.number().nullish(),
-    upper: zod.number().nullish()
-  }),
+  inflationAssumption: zod
+    .object({
+      type: zod
+        .enum(['fixed', 'normal', 'uniform'])
+        .describe('* `fixed` - fixed\n* `normal` - normal\n* `uniform` - uniform'),
+      value: zod.number().nullish(),
+      mean: zod.number().nullish(),
+      stdev: zod.number().nullish(),
+      lower: zod.number().nullish(),
+      upper: zod.number().nullish()
+    })
+    .describe('Serializer for distribution JSON field'),
   afterTaxContributionLimit: zod
     .string()
     .regex(scenariosExportRetrieveResponseAfterTaxContributionLimitRegExp),
@@ -3000,30 +3120,34 @@ export const scenariosExportRetrieveResponse = zod.object({
         returnAmtOrPct: zod
           .enum(['amount', 'percent'])
           .describe('* `amount` - Amount\n* `percent` - Percent'),
-        returnDistribution: zod.object({
-          type: zod
-            .enum(['fixed', 'normal', 'uniform'])
-            .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
-          value: zod.number().nullish(),
-          mean: zod.number().nullish(),
-          stdev: zod.number().nullish(),
-          lower: zod.number().nullish(),
-          upper: zod.number().nullish()
-        }),
+        returnDistribution: zod
+          .object({
+            type: zod
+              .enum(['fixed', 'normal', 'uniform'])
+              .describe('* `fixed` - fixed\n* `normal` - normal\n* `uniform` - uniform'),
+            value: zod.number().nullish(),
+            mean: zod.number().nullish(),
+            stdev: zod.number().nullish(),
+            lower: zod.number().nullish(),
+            upper: zod.number().nullish()
+          })
+          .describe('Serializer for distribution JSON field'),
         expenseRatio: zod.number(),
         incomeAmtOrPct: zod
           .enum(['amount', 'percent'])
           .describe('* `amount` - Amount\n* `percent` - Percent'),
-        incomeDistribution: zod.object({
-          type: zod
-            .enum(['fixed', 'normal', 'uniform'])
-            .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
-          value: zod.number().nullish(),
-          mean: zod.number().nullish(),
-          stdev: zod.number().nullish(),
-          lower: zod.number().nullish(),
-          upper: zod.number().nullish()
-        }),
+        incomeDistribution: zod
+          .object({
+            type: zod
+              .enum(['fixed', 'normal', 'uniform'])
+              .describe('* `fixed` - fixed\n* `normal` - normal\n* `uniform` - uniform'),
+            value: zod.number().nullish(),
+            mean: zod.number().nullish(),
+            stdev: zod.number().nullish(),
+            lower: zod.number().nullish(),
+            upper: zod.number().nullish()
+          })
+          .describe('Serializer for distribution JSON field'),
         taxability: zod.boolean()
       }),
       value: zod.string().regex(scenariosExportRetrieveResponseInvestmentsItemValueRegExp),
@@ -3048,26 +3172,29 @@ export const scenariosExportRetrieveResponse = zod.object({
         .object({
           type: zod
             .enum(['fixed', 'normal', 'uniform'])
-            .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
+            .describe('* `fixed` - fixed\n* `normal` - normal\n* `uniform` - uniform'),
           value: zod.number().nullish(),
           mean: zod.number().nullish(),
           stdev: zod.number().nullish(),
           lower: zod.number().nullish(),
           upper: zod.number().nullish()
         })
+        .describe('Serializer for distribution JSON field')
         .nullish(),
       startWithEventName: zod.string(),
       startAfterEventName: zod.string(),
-      durationDistribution: zod.object({
-        type: zod
-          .enum(['fixed', 'normal', 'uniform'])
-          .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
-        value: zod.number().nullish(),
-        mean: zod.number().nullish(),
-        stdev: zod.number().nullish(),
-        lower: zod.number().nullish(),
-        upper: zod.number().nullish()
-      }),
+      durationDistribution: zod
+        .object({
+          type: zod
+            .enum(['fixed', 'normal', 'uniform'])
+            .describe('* `fixed` - fixed\n* `normal` - normal\n* `uniform` - uniform'),
+          value: zod.number().nullish(),
+          mean: zod.number().nullish(),
+          stdev: zod.number().nullish(),
+          lower: zod.number().nullish(),
+          upper: zod.number().nullish()
+        })
+        .describe('Serializer for distribution JSON field'),
       type: zod
         .enum(['income', 'expense', 'invest', 'rebalance'])
         .describe(
@@ -3087,13 +3214,14 @@ export const scenariosExportRetrieveResponse = zod.object({
         .object({
           type: zod
             .enum(['fixed', 'normal', 'uniform'])
-            .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
+            .describe('* `fixed` - fixed\n* `normal` - normal\n* `uniform` - uniform'),
           value: zod.number().nullish(),
           mean: zod.number().nullish(),
           stdev: zod.number().nullish(),
           lower: zod.number().nullish(),
           upper: zod.number().nullish()
         })
+        .describe('Serializer for distribution JSON field')
         .nullish(),
       inflationAdjusted: zod.boolean().optional(),
       userFraction: zod.number().nullish(),
@@ -3111,8 +3239,8 @@ export const scenariosExportRetrieveResponse = zod.object({
           isFinalAllocation: zod.boolean().optional()
         })
       ),
-      startWithEventNameInput: zod.string().optional(),
-      startAfterEventNameInput: zod.string().optional(),
+      startWithEventNameInput: zod.string().nullish(),
+      startAfterEventNameInput: zod.string().nullish(),
       assetAllocationInput: zod.record(zod.string(), zod.any()).optional(),
       assetAllocation2Input: zod.record(zod.string(), zod.any()).optional()
     })
@@ -3215,38 +3343,43 @@ export const scenariosSimulateCreateBody = zod.object({
     .min(scenariosSimulateCreateBodySpouseBirthYearMin)
     .max(scenariosSimulateCreateBodySpouseBirthYearMax)
     .nullish(),
-  userLifeExpectancy: zod.object({
-    type: zod
-      .enum(['fixed', 'normal', 'uniform'])
-      .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
-    value: zod.number().nullish(),
-    mean: zod.number().nullish(),
-    stdev: zod.number().nullish(),
-    lower: zod.number().nullish(),
-    upper: zod.number().nullish()
-  }),
-  spouseLifeExpectancy: zod
+  userLifeExpectancy: zod
     .object({
       type: zod
         .enum(['fixed', 'normal', 'uniform'])
-        .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
+        .describe('* `fixed` - fixed\n* `normal` - normal\n* `uniform` - uniform'),
       value: zod.number().nullish(),
       mean: zod.number().nullish(),
       stdev: zod.number().nullish(),
       lower: zod.number().nullish(),
       upper: zod.number().nullish()
     })
+    .describe('Serializer for distribution JSON field'),
+  spouseLifeExpectancy: zod
+    .object({
+      type: zod
+        .enum(['fixed', 'normal', 'uniform'])
+        .describe('* `fixed` - fixed\n* `normal` - normal\n* `uniform` - uniform'),
+      value: zod.number().nullish(),
+      mean: zod.number().nullish(),
+      stdev: zod.number().nullish(),
+      lower: zod.number().nullish(),
+      upper: zod.number().nullish()
+    })
+    .describe('Serializer for distribution JSON field')
     .nullish(),
-  inflationAssumption: zod.object({
-    type: zod
-      .enum(['fixed', 'normal', 'uniform'])
-      .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
-    value: zod.number().nullish(),
-    mean: zod.number().nullish(),
-    stdev: zod.number().nullish(),
-    lower: zod.number().nullish(),
-    upper: zod.number().nullish()
-  }),
+  inflationAssumption: zod
+    .object({
+      type: zod
+        .enum(['fixed', 'normal', 'uniform'])
+        .describe('* `fixed` - fixed\n* `normal` - normal\n* `uniform` - uniform'),
+      value: zod.number().nullish(),
+      mean: zod.number().nullish(),
+      stdev: zod.number().nullish(),
+      lower: zod.number().nullish(),
+      upper: zod.number().nullish()
+    })
+    .describe('Serializer for distribution JSON field'),
   afterTaxContributionLimit: zod
     .string()
     .regex(scenariosSimulateCreateBodyAfterTaxContributionLimitRegExp),
@@ -3326,30 +3459,34 @@ export const scenariosSimulateCreateBody = zod.object({
         returnAmtOrPct: zod
           .enum(['amount', 'percent'])
           .describe('* `amount` - Amount\n* `percent` - Percent'),
-        returnDistribution: zod.object({
-          type: zod
-            .enum(['fixed', 'normal', 'uniform'])
-            .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
-          value: zod.number().nullish(),
-          mean: zod.number().nullish(),
-          stdev: zod.number().nullish(),
-          lower: zod.number().nullish(),
-          upper: zod.number().nullish()
-        }),
+        returnDistribution: zod
+          .object({
+            type: zod
+              .enum(['fixed', 'normal', 'uniform'])
+              .describe('* `fixed` - fixed\n* `normal` - normal\n* `uniform` - uniform'),
+            value: zod.number().nullish(),
+            mean: zod.number().nullish(),
+            stdev: zod.number().nullish(),
+            lower: zod.number().nullish(),
+            upper: zod.number().nullish()
+          })
+          .describe('Serializer for distribution JSON field'),
         expenseRatio: zod.number(),
         incomeAmtOrPct: zod
           .enum(['amount', 'percent'])
           .describe('* `amount` - Amount\n* `percent` - Percent'),
-        incomeDistribution: zod.object({
-          type: zod
-            .enum(['fixed', 'normal', 'uniform'])
-            .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
-          value: zod.number().nullish(),
-          mean: zod.number().nullish(),
-          stdev: zod.number().nullish(),
-          lower: zod.number().nullish(),
-          upper: zod.number().nullish()
-        }),
+        incomeDistribution: zod
+          .object({
+            type: zod
+              .enum(['fixed', 'normal', 'uniform'])
+              .describe('* `fixed` - fixed\n* `normal` - normal\n* `uniform` - uniform'),
+            value: zod.number().nullish(),
+            mean: zod.number().nullish(),
+            stdev: zod.number().nullish(),
+            lower: zod.number().nullish(),
+            upper: zod.number().nullish()
+          })
+          .describe('Serializer for distribution JSON field'),
         taxability: zod.boolean()
       }),
       value: zod.string().regex(scenariosSimulateCreateBodyInvestmentsItemValueRegExp),
@@ -3374,26 +3511,29 @@ export const scenariosSimulateCreateBody = zod.object({
         .object({
           type: zod
             .enum(['fixed', 'normal', 'uniform'])
-            .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
+            .describe('* `fixed` - fixed\n* `normal` - normal\n* `uniform` - uniform'),
           value: zod.number().nullish(),
           mean: zod.number().nullish(),
           stdev: zod.number().nullish(),
           lower: zod.number().nullish(),
           upper: zod.number().nullish()
         })
+        .describe('Serializer for distribution JSON field')
         .nullish(),
       startWithEventName: zod.string(),
       startAfterEventName: zod.string(),
-      durationDistribution: zod.object({
-        type: zod
-          .enum(['fixed', 'normal', 'uniform'])
-          .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
-        value: zod.number().nullish(),
-        mean: zod.number().nullish(),
-        stdev: zod.number().nullish(),
-        lower: zod.number().nullish(),
-        upper: zod.number().nullish()
-      }),
+      durationDistribution: zod
+        .object({
+          type: zod
+            .enum(['fixed', 'normal', 'uniform'])
+            .describe('* `fixed` - fixed\n* `normal` - normal\n* `uniform` - uniform'),
+          value: zod.number().nullish(),
+          mean: zod.number().nullish(),
+          stdev: zod.number().nullish(),
+          lower: zod.number().nullish(),
+          upper: zod.number().nullish()
+        })
+        .describe('Serializer for distribution JSON field'),
       type: zod
         .enum(['income', 'expense', 'invest', 'rebalance'])
         .describe(
@@ -3413,13 +3553,14 @@ export const scenariosSimulateCreateBody = zod.object({
         .object({
           type: zod
             .enum(['fixed', 'normal', 'uniform'])
-            .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
+            .describe('* `fixed` - fixed\n* `normal` - normal\n* `uniform` - uniform'),
           value: zod.number().nullish(),
           mean: zod.number().nullish(),
           stdev: zod.number().nullish(),
           lower: zod.number().nullish(),
           upper: zod.number().nullish()
         })
+        .describe('Serializer for distribution JSON field')
         .nullish(),
       inflationAdjusted: zod.boolean().optional(),
       userFraction: zod.number().nullish(),
@@ -3437,8 +3578,8 @@ export const scenariosSimulateCreateBody = zod.object({
           isFinalAllocation: zod.boolean().optional()
         })
       ),
-      startWithEventNameInput: zod.string().optional(),
-      startAfterEventNameInput: zod.string().optional(),
+      startWithEventNameInput: zod.string().nullish(),
+      startAfterEventNameInput: zod.string().nullish(),
       assetAllocationInput: zod.record(zod.string(), zod.any()).optional(),
       assetAllocation2Input: zod.record(zod.string(), zod.any()).optional()
     })
@@ -3509,38 +3650,43 @@ export const scenariosSimulateCreateResponse = zod.object({
     .min(scenariosSimulateCreateResponseSpouseBirthYearMin)
     .max(scenariosSimulateCreateResponseSpouseBirthYearMax)
     .nullish(),
-  userLifeExpectancy: zod.object({
-    type: zod
-      .enum(['fixed', 'normal', 'uniform'])
-      .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
-    value: zod.number().nullish(),
-    mean: zod.number().nullish(),
-    stdev: zod.number().nullish(),
-    lower: zod.number().nullish(),
-    upper: zod.number().nullish()
-  }),
-  spouseLifeExpectancy: zod
+  userLifeExpectancy: zod
     .object({
       type: zod
         .enum(['fixed', 'normal', 'uniform'])
-        .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
+        .describe('* `fixed` - fixed\n* `normal` - normal\n* `uniform` - uniform'),
       value: zod.number().nullish(),
       mean: zod.number().nullish(),
       stdev: zod.number().nullish(),
       lower: zod.number().nullish(),
       upper: zod.number().nullish()
     })
+    .describe('Serializer for distribution JSON field'),
+  spouseLifeExpectancy: zod
+    .object({
+      type: zod
+        .enum(['fixed', 'normal', 'uniform'])
+        .describe('* `fixed` - fixed\n* `normal` - normal\n* `uniform` - uniform'),
+      value: zod.number().nullish(),
+      mean: zod.number().nullish(),
+      stdev: zod.number().nullish(),
+      lower: zod.number().nullish(),
+      upper: zod.number().nullish()
+    })
+    .describe('Serializer for distribution JSON field')
     .nullish(),
-  inflationAssumption: zod.object({
-    type: zod
-      .enum(['fixed', 'normal', 'uniform'])
-      .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
-    value: zod.number().nullish(),
-    mean: zod.number().nullish(),
-    stdev: zod.number().nullish(),
-    lower: zod.number().nullish(),
-    upper: zod.number().nullish()
-  }),
+  inflationAssumption: zod
+    .object({
+      type: zod
+        .enum(['fixed', 'normal', 'uniform'])
+        .describe('* `fixed` - fixed\n* `normal` - normal\n* `uniform` - uniform'),
+      value: zod.number().nullish(),
+      mean: zod.number().nullish(),
+      stdev: zod.number().nullish(),
+      lower: zod.number().nullish(),
+      upper: zod.number().nullish()
+    })
+    .describe('Serializer for distribution JSON field'),
   afterTaxContributionLimit: zod
     .string()
     .regex(scenariosSimulateCreateResponseAfterTaxContributionLimitRegExp),
@@ -3620,30 +3766,34 @@ export const scenariosSimulateCreateResponse = zod.object({
         returnAmtOrPct: zod
           .enum(['amount', 'percent'])
           .describe('* `amount` - Amount\n* `percent` - Percent'),
-        returnDistribution: zod.object({
-          type: zod
-            .enum(['fixed', 'normal', 'uniform'])
-            .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
-          value: zod.number().nullish(),
-          mean: zod.number().nullish(),
-          stdev: zod.number().nullish(),
-          lower: zod.number().nullish(),
-          upper: zod.number().nullish()
-        }),
+        returnDistribution: zod
+          .object({
+            type: zod
+              .enum(['fixed', 'normal', 'uniform'])
+              .describe('* `fixed` - fixed\n* `normal` - normal\n* `uniform` - uniform'),
+            value: zod.number().nullish(),
+            mean: zod.number().nullish(),
+            stdev: zod.number().nullish(),
+            lower: zod.number().nullish(),
+            upper: zod.number().nullish()
+          })
+          .describe('Serializer for distribution JSON field'),
         expenseRatio: zod.number(),
         incomeAmtOrPct: zod
           .enum(['amount', 'percent'])
           .describe('* `amount` - Amount\n* `percent` - Percent'),
-        incomeDistribution: zod.object({
-          type: zod
-            .enum(['fixed', 'normal', 'uniform'])
-            .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
-          value: zod.number().nullish(),
-          mean: zod.number().nullish(),
-          stdev: zod.number().nullish(),
-          lower: zod.number().nullish(),
-          upper: zod.number().nullish()
-        }),
+        incomeDistribution: zod
+          .object({
+            type: zod
+              .enum(['fixed', 'normal', 'uniform'])
+              .describe('* `fixed` - fixed\n* `normal` - normal\n* `uniform` - uniform'),
+            value: zod.number().nullish(),
+            mean: zod.number().nullish(),
+            stdev: zod.number().nullish(),
+            lower: zod.number().nullish(),
+            upper: zod.number().nullish()
+          })
+          .describe('Serializer for distribution JSON field'),
         taxability: zod.boolean()
       }),
       value: zod.string().regex(scenariosSimulateCreateResponseInvestmentsItemValueRegExp),
@@ -3668,26 +3818,29 @@ export const scenariosSimulateCreateResponse = zod.object({
         .object({
           type: zod
             .enum(['fixed', 'normal', 'uniform'])
-            .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
+            .describe('* `fixed` - fixed\n* `normal` - normal\n* `uniform` - uniform'),
           value: zod.number().nullish(),
           mean: zod.number().nullish(),
           stdev: zod.number().nullish(),
           lower: zod.number().nullish(),
           upper: zod.number().nullish()
         })
+        .describe('Serializer for distribution JSON field')
         .nullish(),
       startWithEventName: zod.string(),
       startAfterEventName: zod.string(),
-      durationDistribution: zod.object({
-        type: zod
-          .enum(['fixed', 'normal', 'uniform'])
-          .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
-        value: zod.number().nullish(),
-        mean: zod.number().nullish(),
-        stdev: zod.number().nullish(),
-        lower: zod.number().nullish(),
-        upper: zod.number().nullish()
-      }),
+      durationDistribution: zod
+        .object({
+          type: zod
+            .enum(['fixed', 'normal', 'uniform'])
+            .describe('* `fixed` - fixed\n* `normal` - normal\n* `uniform` - uniform'),
+          value: zod.number().nullish(),
+          mean: zod.number().nullish(),
+          stdev: zod.number().nullish(),
+          lower: zod.number().nullish(),
+          upper: zod.number().nullish()
+        })
+        .describe('Serializer for distribution JSON field'),
       type: zod
         .enum(['income', 'expense', 'invest', 'rebalance'])
         .describe(
@@ -3707,13 +3860,14 @@ export const scenariosSimulateCreateResponse = zod.object({
         .object({
           type: zod
             .enum(['fixed', 'normal', 'uniform'])
-            .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
+            .describe('* `fixed` - fixed\n* `normal` - normal\n* `uniform` - uniform'),
           value: zod.number().nullish(),
           mean: zod.number().nullish(),
           stdev: zod.number().nullish(),
           lower: zod.number().nullish(),
           upper: zod.number().nullish()
         })
+        .describe('Serializer for distribution JSON field')
         .nullish(),
       inflationAdjusted: zod.boolean().optional(),
       userFraction: zod.number().nullish(),
@@ -3731,8 +3885,8 @@ export const scenariosSimulateCreateResponse = zod.object({
           isFinalAllocation: zod.boolean().optional()
         })
       ),
-      startWithEventNameInput: zod.string().optional(),
-      startAfterEventNameInput: zod.string().optional(),
+      startWithEventNameInput: zod.string().nullish(),
+      startAfterEventNameInput: zod.string().nullish(),
       assetAllocationInput: zod.record(zod.string(), zod.any()).optional(),
       assetAllocation2Input: zod.record(zod.string(), zod.any()).optional()
     })
@@ -3847,38 +4001,43 @@ export const scenariosValidateScenarioRetrieveResponse = zod.object({
     .min(scenariosValidateScenarioRetrieveResponseSpouseBirthYearMin)
     .max(scenariosValidateScenarioRetrieveResponseSpouseBirthYearMax)
     .nullish(),
-  userLifeExpectancy: zod.object({
-    type: zod
-      .enum(['fixed', 'normal', 'uniform'])
-      .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
-    value: zod.number().nullish(),
-    mean: zod.number().nullish(),
-    stdev: zod.number().nullish(),
-    lower: zod.number().nullish(),
-    upper: zod.number().nullish()
-  }),
-  spouseLifeExpectancy: zod
+  userLifeExpectancy: zod
     .object({
       type: zod
         .enum(['fixed', 'normal', 'uniform'])
-        .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
+        .describe('* `fixed` - fixed\n* `normal` - normal\n* `uniform` - uniform'),
       value: zod.number().nullish(),
       mean: zod.number().nullish(),
       stdev: zod.number().nullish(),
       lower: zod.number().nullish(),
       upper: zod.number().nullish()
     })
+    .describe('Serializer for distribution JSON field'),
+  spouseLifeExpectancy: zod
+    .object({
+      type: zod
+        .enum(['fixed', 'normal', 'uniform'])
+        .describe('* `fixed` - fixed\n* `normal` - normal\n* `uniform` - uniform'),
+      value: zod.number().nullish(),
+      mean: zod.number().nullish(),
+      stdev: zod.number().nullish(),
+      lower: zod.number().nullish(),
+      upper: zod.number().nullish()
+    })
+    .describe('Serializer for distribution JSON field')
     .nullish(),
-  inflationAssumption: zod.object({
-    type: zod
-      .enum(['fixed', 'normal', 'uniform'])
-      .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
-    value: zod.number().nullish(),
-    mean: zod.number().nullish(),
-    stdev: zod.number().nullish(),
-    lower: zod.number().nullish(),
-    upper: zod.number().nullish()
-  }),
+  inflationAssumption: zod
+    .object({
+      type: zod
+        .enum(['fixed', 'normal', 'uniform'])
+        .describe('* `fixed` - fixed\n* `normal` - normal\n* `uniform` - uniform'),
+      value: zod.number().nullish(),
+      mean: zod.number().nullish(),
+      stdev: zod.number().nullish(),
+      lower: zod.number().nullish(),
+      upper: zod.number().nullish()
+    })
+    .describe('Serializer for distribution JSON field'),
   afterTaxContributionLimit: zod
     .string()
     .regex(scenariosValidateScenarioRetrieveResponseAfterTaxContributionLimitRegExp),
@@ -3960,30 +4119,34 @@ export const scenariosValidateScenarioRetrieveResponse = zod.object({
         returnAmtOrPct: zod
           .enum(['amount', 'percent'])
           .describe('* `amount` - Amount\n* `percent` - Percent'),
-        returnDistribution: zod.object({
-          type: zod
-            .enum(['fixed', 'normal', 'uniform'])
-            .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
-          value: zod.number().nullish(),
-          mean: zod.number().nullish(),
-          stdev: zod.number().nullish(),
-          lower: zod.number().nullish(),
-          upper: zod.number().nullish()
-        }),
+        returnDistribution: zod
+          .object({
+            type: zod
+              .enum(['fixed', 'normal', 'uniform'])
+              .describe('* `fixed` - fixed\n* `normal` - normal\n* `uniform` - uniform'),
+            value: zod.number().nullish(),
+            mean: zod.number().nullish(),
+            stdev: zod.number().nullish(),
+            lower: zod.number().nullish(),
+            upper: zod.number().nullish()
+          })
+          .describe('Serializer for distribution JSON field'),
         expenseRatio: zod.number(),
         incomeAmtOrPct: zod
           .enum(['amount', 'percent'])
           .describe('* `amount` - Amount\n* `percent` - Percent'),
-        incomeDistribution: zod.object({
-          type: zod
-            .enum(['fixed', 'normal', 'uniform'])
-            .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
-          value: zod.number().nullish(),
-          mean: zod.number().nullish(),
-          stdev: zod.number().nullish(),
-          lower: zod.number().nullish(),
-          upper: zod.number().nullish()
-        }),
+        incomeDistribution: zod
+          .object({
+            type: zod
+              .enum(['fixed', 'normal', 'uniform'])
+              .describe('* `fixed` - fixed\n* `normal` - normal\n* `uniform` - uniform'),
+            value: zod.number().nullish(),
+            mean: zod.number().nullish(),
+            stdev: zod.number().nullish(),
+            lower: zod.number().nullish(),
+            upper: zod.number().nullish()
+          })
+          .describe('Serializer for distribution JSON field'),
         taxability: zod.boolean()
       }),
       value: zod
@@ -4012,26 +4175,29 @@ export const scenariosValidateScenarioRetrieveResponse = zod.object({
         .object({
           type: zod
             .enum(['fixed', 'normal', 'uniform'])
-            .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
+            .describe('* `fixed` - fixed\n* `normal` - normal\n* `uniform` - uniform'),
           value: zod.number().nullish(),
           mean: zod.number().nullish(),
           stdev: zod.number().nullish(),
           lower: zod.number().nullish(),
           upper: zod.number().nullish()
         })
+        .describe('Serializer for distribution JSON field')
         .nullish(),
       startWithEventName: zod.string(),
       startAfterEventName: zod.string(),
-      durationDistribution: zod.object({
-        type: zod
-          .enum(['fixed', 'normal', 'uniform'])
-          .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
-        value: zod.number().nullish(),
-        mean: zod.number().nullish(),
-        stdev: zod.number().nullish(),
-        lower: zod.number().nullish(),
-        upper: zod.number().nullish()
-      }),
+      durationDistribution: zod
+        .object({
+          type: zod
+            .enum(['fixed', 'normal', 'uniform'])
+            .describe('* `fixed` - fixed\n* `normal` - normal\n* `uniform` - uniform'),
+          value: zod.number().nullish(),
+          mean: zod.number().nullish(),
+          stdev: zod.number().nullish(),
+          lower: zod.number().nullish(),
+          upper: zod.number().nullish()
+        })
+        .describe('Serializer for distribution JSON field'),
       type: zod
         .enum(['income', 'expense', 'invest', 'rebalance'])
         .describe(
@@ -4051,13 +4217,14 @@ export const scenariosValidateScenarioRetrieveResponse = zod.object({
         .object({
           type: zod
             .enum(['fixed', 'normal', 'uniform'])
-            .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
+            .describe('* `fixed` - fixed\n* `normal` - normal\n* `uniform` - uniform'),
           value: zod.number().nullish(),
           mean: zod.number().nullish(),
           stdev: zod.number().nullish(),
           lower: zod.number().nullish(),
           upper: zod.number().nullish()
         })
+        .describe('Serializer for distribution JSON field')
         .nullish(),
       inflationAdjusted: zod.boolean().optional(),
       userFraction: zod.number().nullish(),
@@ -4075,8 +4242,8 @@ export const scenariosValidateScenarioRetrieveResponse = zod.object({
           isFinalAllocation: zod.boolean().optional()
         })
       ),
-      startWithEventNameInput: zod.string().optional(),
-      startAfterEventNameInput: zod.string().optional(),
+      startWithEventNameInput: zod.string().nullish(),
+      startAfterEventNameInput: zod.string().nullish(),
       assetAllocationInput: zod.record(zod.string(), zod.any()).optional(),
       assetAllocation2Input: zod.record(zod.string(), zod.any()).optional()
     })
@@ -4175,38 +4342,43 @@ export const scenariosImportScenarioCreateBody = zod.object({
     .min(scenariosImportScenarioCreateBodySpouseBirthYearMin)
     .max(scenariosImportScenarioCreateBodySpouseBirthYearMax)
     .nullish(),
-  userLifeExpectancy: zod.object({
-    type: zod
-      .enum(['fixed', 'normal', 'uniform'])
-      .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
-    value: zod.number().nullish(),
-    mean: zod.number().nullish(),
-    stdev: zod.number().nullish(),
-    lower: zod.number().nullish(),
-    upper: zod.number().nullish()
-  }),
-  spouseLifeExpectancy: zod
+  userLifeExpectancy: zod
     .object({
       type: zod
         .enum(['fixed', 'normal', 'uniform'])
-        .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
+        .describe('* `fixed` - fixed\n* `normal` - normal\n* `uniform` - uniform'),
       value: zod.number().nullish(),
       mean: zod.number().nullish(),
       stdev: zod.number().nullish(),
       lower: zod.number().nullish(),
       upper: zod.number().nullish()
     })
+    .describe('Serializer for distribution JSON field'),
+  spouseLifeExpectancy: zod
+    .object({
+      type: zod
+        .enum(['fixed', 'normal', 'uniform'])
+        .describe('* `fixed` - fixed\n* `normal` - normal\n* `uniform` - uniform'),
+      value: zod.number().nullish(),
+      mean: zod.number().nullish(),
+      stdev: zod.number().nullish(),
+      lower: zod.number().nullish(),
+      upper: zod.number().nullish()
+    })
+    .describe('Serializer for distribution JSON field')
     .nullish(),
-  inflationAssumption: zod.object({
-    type: zod
-      .enum(['fixed', 'normal', 'uniform'])
-      .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
-    value: zod.number().nullish(),
-    mean: zod.number().nullish(),
-    stdev: zod.number().nullish(),
-    lower: zod.number().nullish(),
-    upper: zod.number().nullish()
-  }),
+  inflationAssumption: zod
+    .object({
+      type: zod
+        .enum(['fixed', 'normal', 'uniform'])
+        .describe('* `fixed` - fixed\n* `normal` - normal\n* `uniform` - uniform'),
+      value: zod.number().nullish(),
+      mean: zod.number().nullish(),
+      stdev: zod.number().nullish(),
+      lower: zod.number().nullish(),
+      upper: zod.number().nullish()
+    })
+    .describe('Serializer for distribution JSON field'),
   afterTaxContributionLimit: zod
     .string()
     .regex(scenariosImportScenarioCreateBodyAfterTaxContributionLimitRegExp),
@@ -4288,30 +4460,34 @@ export const scenariosImportScenarioCreateBody = zod.object({
         returnAmtOrPct: zod
           .enum(['amount', 'percent'])
           .describe('* `amount` - Amount\n* `percent` - Percent'),
-        returnDistribution: zod.object({
-          type: zod
-            .enum(['fixed', 'normal', 'uniform'])
-            .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
-          value: zod.number().nullish(),
-          mean: zod.number().nullish(),
-          stdev: zod.number().nullish(),
-          lower: zod.number().nullish(),
-          upper: zod.number().nullish()
-        }),
+        returnDistribution: zod
+          .object({
+            type: zod
+              .enum(['fixed', 'normal', 'uniform'])
+              .describe('* `fixed` - fixed\n* `normal` - normal\n* `uniform` - uniform'),
+            value: zod.number().nullish(),
+            mean: zod.number().nullish(),
+            stdev: zod.number().nullish(),
+            lower: zod.number().nullish(),
+            upper: zod.number().nullish()
+          })
+          .describe('Serializer for distribution JSON field'),
         expenseRatio: zod.number(),
         incomeAmtOrPct: zod
           .enum(['amount', 'percent'])
           .describe('* `amount` - Amount\n* `percent` - Percent'),
-        incomeDistribution: zod.object({
-          type: zod
-            .enum(['fixed', 'normal', 'uniform'])
-            .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
-          value: zod.number().nullish(),
-          mean: zod.number().nullish(),
-          stdev: zod.number().nullish(),
-          lower: zod.number().nullish(),
-          upper: zod.number().nullish()
-        }),
+        incomeDistribution: zod
+          .object({
+            type: zod
+              .enum(['fixed', 'normal', 'uniform'])
+              .describe('* `fixed` - fixed\n* `normal` - normal\n* `uniform` - uniform'),
+            value: zod.number().nullish(),
+            mean: zod.number().nullish(),
+            stdev: zod.number().nullish(),
+            lower: zod.number().nullish(),
+            upper: zod.number().nullish()
+          })
+          .describe('Serializer for distribution JSON field'),
         taxability: zod.boolean()
       }),
       value: zod.string().regex(scenariosImportScenarioCreateBodyInvestmentsItemValueRegExp),
@@ -4338,26 +4514,29 @@ export const scenariosImportScenarioCreateBody = zod.object({
         .object({
           type: zod
             .enum(['fixed', 'normal', 'uniform'])
-            .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
+            .describe('* `fixed` - fixed\n* `normal` - normal\n* `uniform` - uniform'),
           value: zod.number().nullish(),
           mean: zod.number().nullish(),
           stdev: zod.number().nullish(),
           lower: zod.number().nullish(),
           upper: zod.number().nullish()
         })
+        .describe('Serializer for distribution JSON field')
         .nullish(),
       startWithEventName: zod.string(),
       startAfterEventName: zod.string(),
-      durationDistribution: zod.object({
-        type: zod
-          .enum(['fixed', 'normal', 'uniform'])
-          .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
-        value: zod.number().nullish(),
-        mean: zod.number().nullish(),
-        stdev: zod.number().nullish(),
-        lower: zod.number().nullish(),
-        upper: zod.number().nullish()
-      }),
+      durationDistribution: zod
+        .object({
+          type: zod
+            .enum(['fixed', 'normal', 'uniform'])
+            .describe('* `fixed` - fixed\n* `normal` - normal\n* `uniform` - uniform'),
+          value: zod.number().nullish(),
+          mean: zod.number().nullish(),
+          stdev: zod.number().nullish(),
+          lower: zod.number().nullish(),
+          upper: zod.number().nullish()
+        })
+        .describe('Serializer for distribution JSON field'),
       type: zod
         .enum(['income', 'expense', 'invest', 'rebalance'])
         .describe(
@@ -4377,13 +4556,14 @@ export const scenariosImportScenarioCreateBody = zod.object({
         .object({
           type: zod
             .enum(['fixed', 'normal', 'uniform'])
-            .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
+            .describe('* `fixed` - fixed\n* `normal` - normal\n* `uniform` - uniform'),
           value: zod.number().nullish(),
           mean: zod.number().nullish(),
           stdev: zod.number().nullish(),
           lower: zod.number().nullish(),
           upper: zod.number().nullish()
         })
+        .describe('Serializer for distribution JSON field')
         .nullish(),
       inflationAdjusted: zod.boolean().optional(),
       userFraction: zod.number().nullish(),
@@ -4401,8 +4581,8 @@ export const scenariosImportScenarioCreateBody = zod.object({
           isFinalAllocation: zod.boolean().optional()
         })
       ),
-      startWithEventNameInput: zod.string().optional(),
-      startAfterEventNameInput: zod.string().optional(),
+      startWithEventNameInput: zod.string().nullish(),
+      startAfterEventNameInput: zod.string().nullish(),
       assetAllocationInput: zod.record(zod.string(), zod.any()).optional(),
       assetAllocation2Input: zod.record(zod.string(), zod.any()).optional()
     })
@@ -4473,38 +4653,43 @@ export const scenariosImportScenarioCreateResponse = zod.object({
     .min(scenariosImportScenarioCreateResponseSpouseBirthYearMin)
     .max(scenariosImportScenarioCreateResponseSpouseBirthYearMax)
     .nullish(),
-  userLifeExpectancy: zod.object({
-    type: zod
-      .enum(['fixed', 'normal', 'uniform'])
-      .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
-    value: zod.number().nullish(),
-    mean: zod.number().nullish(),
-    stdev: zod.number().nullish(),
-    lower: zod.number().nullish(),
-    upper: zod.number().nullish()
-  }),
-  spouseLifeExpectancy: zod
+  userLifeExpectancy: zod
     .object({
       type: zod
         .enum(['fixed', 'normal', 'uniform'])
-        .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
+        .describe('* `fixed` - fixed\n* `normal` - normal\n* `uniform` - uniform'),
       value: zod.number().nullish(),
       mean: zod.number().nullish(),
       stdev: zod.number().nullish(),
       lower: zod.number().nullish(),
       upper: zod.number().nullish()
     })
+    .describe('Serializer for distribution JSON field'),
+  spouseLifeExpectancy: zod
+    .object({
+      type: zod
+        .enum(['fixed', 'normal', 'uniform'])
+        .describe('* `fixed` - fixed\n* `normal` - normal\n* `uniform` - uniform'),
+      value: zod.number().nullish(),
+      mean: zod.number().nullish(),
+      stdev: zod.number().nullish(),
+      lower: zod.number().nullish(),
+      upper: zod.number().nullish()
+    })
+    .describe('Serializer for distribution JSON field')
     .nullish(),
-  inflationAssumption: zod.object({
-    type: zod
-      .enum(['fixed', 'normal', 'uniform'])
-      .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
-    value: zod.number().nullish(),
-    mean: zod.number().nullish(),
-    stdev: zod.number().nullish(),
-    lower: zod.number().nullish(),
-    upper: zod.number().nullish()
-  }),
+  inflationAssumption: zod
+    .object({
+      type: zod
+        .enum(['fixed', 'normal', 'uniform'])
+        .describe('* `fixed` - fixed\n* `normal` - normal\n* `uniform` - uniform'),
+      value: zod.number().nullish(),
+      mean: zod.number().nullish(),
+      stdev: zod.number().nullish(),
+      lower: zod.number().nullish(),
+      upper: zod.number().nullish()
+    })
+    .describe('Serializer for distribution JSON field'),
   afterTaxContributionLimit: zod
     .string()
     .regex(scenariosImportScenarioCreateResponseAfterTaxContributionLimitRegExp),
@@ -4586,30 +4771,34 @@ export const scenariosImportScenarioCreateResponse = zod.object({
         returnAmtOrPct: zod
           .enum(['amount', 'percent'])
           .describe('* `amount` - Amount\n* `percent` - Percent'),
-        returnDistribution: zod.object({
-          type: zod
-            .enum(['fixed', 'normal', 'uniform'])
-            .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
-          value: zod.number().nullish(),
-          mean: zod.number().nullish(),
-          stdev: zod.number().nullish(),
-          lower: zod.number().nullish(),
-          upper: zod.number().nullish()
-        }),
+        returnDistribution: zod
+          .object({
+            type: zod
+              .enum(['fixed', 'normal', 'uniform'])
+              .describe('* `fixed` - fixed\n* `normal` - normal\n* `uniform` - uniform'),
+            value: zod.number().nullish(),
+            mean: zod.number().nullish(),
+            stdev: zod.number().nullish(),
+            lower: zod.number().nullish(),
+            upper: zod.number().nullish()
+          })
+          .describe('Serializer for distribution JSON field'),
         expenseRatio: zod.number(),
         incomeAmtOrPct: zod
           .enum(['amount', 'percent'])
           .describe('* `amount` - Amount\n* `percent` - Percent'),
-        incomeDistribution: zod.object({
-          type: zod
-            .enum(['fixed', 'normal', 'uniform'])
-            .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
-          value: zod.number().nullish(),
-          mean: zod.number().nullish(),
-          stdev: zod.number().nullish(),
-          lower: zod.number().nullish(),
-          upper: zod.number().nullish()
-        }),
+        incomeDistribution: zod
+          .object({
+            type: zod
+              .enum(['fixed', 'normal', 'uniform'])
+              .describe('* `fixed` - fixed\n* `normal` - normal\n* `uniform` - uniform'),
+            value: zod.number().nullish(),
+            mean: zod.number().nullish(),
+            stdev: zod.number().nullish(),
+            lower: zod.number().nullish(),
+            upper: zod.number().nullish()
+          })
+          .describe('Serializer for distribution JSON field'),
         taxability: zod.boolean()
       }),
       value: zod.string().regex(scenariosImportScenarioCreateResponseInvestmentsItemValueRegExp),
@@ -4636,26 +4825,29 @@ export const scenariosImportScenarioCreateResponse = zod.object({
         .object({
           type: zod
             .enum(['fixed', 'normal', 'uniform'])
-            .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
+            .describe('* `fixed` - fixed\n* `normal` - normal\n* `uniform` - uniform'),
           value: zod.number().nullish(),
           mean: zod.number().nullish(),
           stdev: zod.number().nullish(),
           lower: zod.number().nullish(),
           upper: zod.number().nullish()
         })
+        .describe('Serializer for distribution JSON field')
         .nullish(),
       startWithEventName: zod.string(),
       startAfterEventName: zod.string(),
-      durationDistribution: zod.object({
-        type: zod
-          .enum(['fixed', 'normal', 'uniform'])
-          .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
-        value: zod.number().nullish(),
-        mean: zod.number().nullish(),
-        stdev: zod.number().nullish(),
-        lower: zod.number().nullish(),
-        upper: zod.number().nullish()
-      }),
+      durationDistribution: zod
+        .object({
+          type: zod
+            .enum(['fixed', 'normal', 'uniform'])
+            .describe('* `fixed` - fixed\n* `normal` - normal\n* `uniform` - uniform'),
+          value: zod.number().nullish(),
+          mean: zod.number().nullish(),
+          stdev: zod.number().nullish(),
+          lower: zod.number().nullish(),
+          upper: zod.number().nullish()
+        })
+        .describe('Serializer for distribution JSON field'),
       type: zod
         .enum(['income', 'expense', 'invest', 'rebalance'])
         .describe(
@@ -4675,13 +4867,14 @@ export const scenariosImportScenarioCreateResponse = zod.object({
         .object({
           type: zod
             .enum(['fixed', 'normal', 'uniform'])
-            .describe('* `fixed` - Fixed\n* `normal` - Normal\n* `uniform` - Uniform'),
+            .describe('* `fixed` - fixed\n* `normal` - normal\n* `uniform` - uniform'),
           value: zod.number().nullish(),
           mean: zod.number().nullish(),
           stdev: zod.number().nullish(),
           lower: zod.number().nullish(),
           upper: zod.number().nullish()
         })
+        .describe('Serializer for distribution JSON field')
         .nullish(),
       inflationAdjusted: zod.boolean().optional(),
       userFraction: zod.number().nullish(),
@@ -4699,8 +4892,8 @@ export const scenariosImportScenarioCreateResponse = zod.object({
           isFinalAllocation: zod.boolean().optional()
         })
       ),
-      startWithEventNameInput: zod.string().optional(),
-      startAfterEventNameInput: zod.string().optional(),
+      startWithEventNameInput: zod.string().nullish(),
+      startAfterEventNameInput: zod.string().nullish(),
       assetAllocationInput: zod.record(zod.string(), zod.any()).optional(),
       assetAllocation2Input: zod.record(zod.string(), zod.any()).optional()
     })

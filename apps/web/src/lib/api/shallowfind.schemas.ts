@@ -54,6 +54,9 @@ export const BlankEnum = {
   '': ''
 } as const;
 
+/**
+ * Serializer for distribution JSON field
+ */
 export interface Distribution {
   type: DistributionTypeEnum;
   /** @nullable */
@@ -69,9 +72,9 @@ export interface Distribution {
 }
 
 /**
- * * `fixed` - Fixed
- * `normal` - Normal
- * `uniform` - Uniform
+ * * `fixed` - fixed
+ * `normal` - normal
+ * `uniform` - uniform
  */
 export type DistributionTypeEnum = (typeof DistributionTypeEnum)[keyof typeof DistributionTypeEnum];
 
@@ -141,8 +144,10 @@ export interface EventSeries {
   maxCash?: string | null;
   glidePath?: boolean;
   readonly assetAllocations: readonly AssetAllocation[];
-  startWithEventNameInput?: string;
-  startAfterEventNameInput?: string;
+  /** @nullable */
+  startWithEventNameInput?: string | null;
+  /** @nullable */
+  startAfterEventNameInput?: string | null;
   assetAllocationInput?: EventSeriesAssetAllocationInput;
   assetAllocation2Input?: EventSeriesAssetAllocation2Input;
 }
