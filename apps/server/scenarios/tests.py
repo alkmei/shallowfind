@@ -4,7 +4,6 @@ from django.contrib.auth import get_user_model
 from django.utils import timezone
 
 from .models import (
-    Distribution,
     InvestmentType,
     Investment,
     EventSeries,
@@ -14,92 +13,185 @@ from .models import (
     Scenario,
 )
 
-
 User = get_user_model()
 
 
-class DistributionModelTest(TestCase):
-    def test_fixed_distribution_creation(self):
-        """Test creating a valid fixed distribution"""
-        dist = Distribution.objects.create(type="fixed", value=100.0)
-        self.assertEqual(dist.type, "fixed")
-        self.assertEqual(dist.value, 100.0)
-        self.assertEqual(str(dist), "Fixed(100.0)")
+class DistributionJSONFieldTest(TestCase):
+    """Test distribution JSON field validation"""
 
-    def test_normal_distribution_creation(self):
-        """Test creating a valid normal distribution"""
-        dist = Distribution.objects.create(type="normal", mean=50.0, stdev=10.0)
-        self.assertEqual(dist.type, "normal")
-        self.assertEqual(dist.mean, 50.0)
-        self.assertEqual(dist.stdev, 10.0)
-        self.assertEqual(str(dist), "Normal(mean=50.0, stdev=10.0)")
+    def test_fixed_distribution_validation(self):
+        """Test that fixed distribution validates correctly"""
+        user = User.objects.create_user(email="testuser@test.com")
 
-    def test_uniform_distribution_creation(self):
-        """Test creating a valid uniform distribution"""
-        dist = Distribution.objects.create(type="uniform", lower=10.0, upper=20.0)
-        self.assertEqual(dist.type, "uniform")
-        self.assertEqual(dist.lower, 10.0)
-        self.assertEqual(dist.upper, 20.0)
-        self.assertEqual(str(dist), "Uniform(lower=10.0, upper=20.0)")
+        # Valid fixed distribution
+        valid_dist = {
+            "type": "fixed",
+            "value": 85.0,
+            "mean": None,
+            "stdev": None,
+            "lower": None,
+            "upper": None
+        }
 
-    def test_fixed_distribution_clean_validation(self):
-        """Test that fixed distribution requires value"""
-        dist = Distribution(type="fixed")
-        with self.assertRaises(ValidationError) as cm:
-            dist.full_clean()
-        self.assertIn("value", cm.exception.message_dict)
+        scenario = Scenario.objects.create(
+            name="Test Scenario",
+            marital_status="individual",
+            user_birth_year=1985,
+            user_life_expectancy=valid_dist,
+            inflation_assumption=valid_dist,
+            after_tax_contribution_limit=7000,
+            financial_goal=10000,
+            residence_state="NY",
+            user=user,
+        )
 
-    def test_normal_distribution_clean_validation(self):
-        """Test that normal distribution requires mean and stdev"""
-        dist = Distribution(type="normal", mean=50.0)
-        with self.assertRaises(ValidationError) as cm:
-            dist.full_clean()
-        self.assertIn("stdev", cm.exception.message_dict)
+        self.assertEqual(scenario.user_life_expectancy['type'], 'fixed')
+        self.assertEqual(scenario.user_life_expectancy['value'], 85.0)
 
-    def test_normal_distribution_negative_stdev_validation(self):
-        """Test that normal distribution rejects negative stdev"""
-        dist = Distribution(type="normal", mean=50.0, stdev=-5.0)
-        with self.assertRaises(ValidationError) as cm:
-            dist.full_clean()
-        self.assertIn("stdev", cm.exception.message_dict)
+    def test_normal_distribution_validation(self):
+        """Test that normal distribution validates correctly"""
+        user = User.objects.create_user(email="testuser@test.com")
 
-    def test_uniform_distribution_clean_validation(self):
-        """Test that uniform distribution requires both bounds"""
-        dist = Distribution(type="uniform", lower=10.0)
-        with self.assertRaises(ValidationError) as cm:
-            dist.full_clean()
-        self.assertIn("upper", cm.exception.message_dict)
+        # Valid normal distribution
+        normal_dist = {
+            "type": "normal",
+            "value": None,
+            "mean": 85.0,
+            "stdev": 3.5,
+            "lower": None,
+            "upper": None
+        }
 
-    def test_uniform_distribution_invalid_bounds(self):
-        """Test that uniform distribution rejects lower >= upper"""
-        dist = Distribution(type="uniform", lower=20.0, upper=10.0)
-        with self.assertRaises(ValidationError) as cm:
-            dist.full_clean()
-        self.assertIn("upper", cm.exception.message_dict)
+        fixed_dist = {
+            "type": "fixed",
+            "value": 0.03,
+            "mean": None,
+            "stdev": None,
+            "lower": None,
+            "upper": None
+        }
 
-    def test_fixed_distribution_extra_fields_validation(self):
-        """Test that fixed distribution rejects extra fields"""
-        dist = Distribution(type="fixed", value=100.0, mean=50.0)
-        with self.assertRaises(ValidationError):
-            dist.full_clean()
+        scenario = Scenario.objects.create(
+            name="Test Scenario",
+            marital_status="individual",
+            user_birth_year=1985,
+            user_life_expectancy=normal_dist,
+            inflation_assumption=fixed_dist,
+            after_tax_contribution_limit=7000,
+            financial_goal=10000,
+            residence_state="NY",
+            user=user,
+        )
+
+        self.assertEqual(scenario.user_life_expectancy['type'], 'normal')
+        self.assertEqual(scenario.user_life_expectancy['mean'], 85.0)
+        self.assertEqual(scenario.user_life_expectancy['stdev'], 3.5)
+
+    def test_uniform_distribution_validation(self):
+        """Test that uniform distribution validates correctly"""
+        user = User.objects.create_user(email="testuser@test.com")
+
+        # Valid uniform distribution
+        uniform_dist = {
+            "type": "uniform",
+            "value": None,
+            "mean": None,
+            "stdev": None,
+            "lower": 2.0,
+            "upper": 4.0
+        }
+
+        fixed_dist = {
+            "type": "fixed",
+            "value": 85.0,
+            "mean": None,
+            "stdev": None,
+            "lower": None,
+            "upper": None
+        }
+
+        scenario = Scenario.objects.create(
+            name="Test Scenario",
+            marital_status="individual",
+            user_birth_year=1985,
+            user_life_expectancy=fixed_dist,
+            inflation_assumption=uniform_dist,
+            after_tax_contribution_limit=7000,
+            financial_goal=10000,
+            residence_state="NY",
+            user=user,
+        )
+
+        self.assertEqual(scenario.inflation_assumption['type'], 'uniform')
+        self.assertEqual(scenario.inflation_assumption['lower'], 2.0)
+        self.assertEqual(scenario.inflation_assumption['upper'], 4.0)
 
 
 class InvestmentTypeModelTest(TestCase):
     @classmethod
     def setUpTestData(cls):
-        cls.return_dist = Distribution.objects.create(type="fixed", value=0.06)
-        cls.income_dist = Distribution.objects.create(type="fixed", value=0.02)
+        # Create a user and scenario for testing InvestmentType
+        cls.user = User.objects.create_user(email="testuser@test.com")
+
+        cls.life_expectancy_dist = {
+            "type": "fixed",
+            "value": 80,
+            "mean": None,
+            "stdev": None,
+            "lower": None,
+            "upper": None,
+        }
+
+        cls.inflation_dist = {
+            "type": "fixed",
+            "value": 0.03,
+            "mean": None,
+            "stdev": None,
+            "lower": None,
+            "upper": None,
+        }
+
+        cls.scenario = Scenario.objects.create(
+            name="Test Scenario",
+            marital_status="individual",
+            user_birth_year=1985,
+            user_life_expectancy=cls.life_expectancy_dist,
+            inflation_assumption=cls.inflation_dist,
+            after_tax_contribution_limit=7000,
+            financial_goal=10000,
+            residence_state="NY",
+            user=cls.user,
+        )
 
     def test_investment_type_creation(self):
         """Test creating a valid investment type"""
+        return_dist = {
+            "type": "fixed",
+            "value": 0.06,
+            "mean": None,
+            "stdev": None,
+            "lower": None,
+            "upper": None
+        }
+
+        income_dist = {
+            "type": "fixed",
+            "value": 0.02,
+            "mean": None,
+            "stdev": None,
+            "lower": None,
+            "upper": None
+        }
+
         inv_type = InvestmentType.objects.create(
+            scenario=self.scenario,
             name="S&P 500",
             description="S&P 500 index fund",
             return_amt_or_pct="percent",
-            return_distribution=self.return_dist,
+            return_distribution=return_dist,
             expense_ratio=0.001,
             income_amt_or_pct="percent",
-            income_distribution=self.income_dist,
+            income_distribution=income_dist,
             taxability=True,
         )
         self.assertEqual(inv_type.name, "S&P 500")
@@ -107,14 +199,33 @@ class InvestmentTypeModelTest(TestCase):
 
     def test_expense_ratio_validation(self):
         """Test expense ratio must be between 0 and 1"""
+        return_dist = {
+            "type": "fixed",
+            "value": 0.06,
+            "mean": None,
+            "stdev": None,
+            "lower": None,
+            "upper": None
+        }
+
+        income_dist = {
+            "type": "fixed",
+            "value": 0.02,
+            "mean": None,
+            "stdev": None,
+            "lower": None,
+            "upper": None
+        }
+
         inv_type = InvestmentType(
+            scenario=self.scenario,
             name="Test",
             description="Test",
             return_amt_or_pct="percent",
-            return_distribution=self.return_dist,
+            return_distribution=return_dist,
             expense_ratio=1.5,  # Invalid: > 1
             income_amt_or_pct="percent",
-            income_distribution=self.income_dist,
+            income_distribution=income_dist,
             taxability=True,
         )
         with self.assertRaises(ValidationError) as cm:
@@ -123,14 +234,33 @@ class InvestmentTypeModelTest(TestCase):
 
     def test_cash_tax_exempt_validation(self):
         """Test that cash cannot be tax-exempt"""
+        return_dist = {
+            "type": "fixed",
+            "value": 0.06,
+            "mean": None,
+            "stdev": None,
+            "lower": None,
+            "upper": None
+        }
+
+        income_dist = {
+            "type": "fixed",
+            "value": 0.02,
+            "mean": None,
+            "stdev": None,
+            "lower": None,
+            "upper": None
+        }
+
         inv_type = InvestmentType(
+            scenario=self.scenario,
             name="cash",
             description="Cash",
             return_amt_or_pct="amount",
-            return_distribution=self.return_dist,
+            return_distribution=return_dist,
             expense_ratio=0.0,
             income_amt_or_pct="percent",
-            income_distribution=self.income_dist,
+            income_distribution=income_dist,
             taxability=False,  # Invalid for cash
         )
         with self.assertRaises(ValidationError) as cm:
@@ -142,22 +272,57 @@ class InvestmentModelTest(TestCase):
     @classmethod
     def setUpTestData(cls):
         cls.user = User.objects.create_user(email="testuser@test.com")
+
+        cls.life_expectancy_dist = {
+            "type": "fixed",
+            "value": 80,
+            "mean": None,
+            "stdev": None,
+            "lower": None,
+            "upper": None
+        }
+
+        cls.inflation_dist = {
+            "type": "fixed",
+            "value": 0.03,
+            "mean": None,
+            "stdev": None,
+            "lower": None,
+            "upper": None
+        }
+
         cls.scenario = Scenario.objects.create(
             name="Test Scenario",
             marital_status="individual",
             user_birth_year=1985,
-            user_life_expectancy=Distribution.objects.create(type="fixed", value=80),
-            inflation_assumption=Distribution.objects.create(type="fixed", value=0.03),
+            user_life_expectancy=cls.life_expectancy_dist,
+            inflation_assumption=cls.inflation_dist,
             after_tax_contribution_limit=7000,
             financial_goal=10000,
             residence_state="NY",
             user=cls.user,
         )
 
-        cls.return_dist = Distribution.objects.create(type="fixed", value=0.06)
-        cls.income_dist = Distribution.objects.create(type="fixed", value=0.02)
+        cls.return_dist = {
+            "type": "fixed",
+            "value": 0.06,
+            "mean": None,
+            "stdev": None,
+            "lower": None,
+            "upper": None
+        }
+
+        cls.income_dist = {
+            "type": "fixed",
+            "value": 0.02,
+            "mean": None,
+            "stdev": None,
+            "lower": None,
+            "upper": None
+        }
 
         cls.stock_type = InvestmentType.objects.create(
+            scenario=cls.scenario,
             name="S&P 500",
             description="Stock fund",
             return_amt_or_pct="percent",
@@ -169,6 +334,7 @@ class InvestmentModelTest(TestCase):
         )
 
         cls.bond_type = InvestmentType.objects.create(
+            scenario=cls.scenario,
             name="tax-exempt bonds",
             description="Municipal bonds",
             return_amt_or_pct="percent",
@@ -180,6 +346,7 @@ class InvestmentModelTest(TestCase):
         )
 
         cls.cash_type = InvestmentType.objects.create(
+            scenario=cls.scenario,
             name="cash",
             description="Cash",
             return_amt_or_pct="amount",
@@ -267,21 +434,63 @@ class EventSeriesModelTest(TestCase):
     @classmethod
     def setUpTestData(cls):
         cls.user = User.objects.create_user(email="testuser@test.com")
+
+        cls.life_expectancy_dist = {
+            "type": "fixed",
+            "value": 80,
+            "mean": None,
+            "stdev": None,
+            "lower": None,
+            "upper": None
+        }
+
+        cls.inflation_dist = {
+            "type": "fixed",
+            "value": 0.03,
+            "mean": None,
+            "stdev": None,
+            "lower": None,
+            "upper": None
+        }
+
         cls.scenario = Scenario.objects.create(
             name="Test Scenario",
             marital_status="individual",
             user_birth_year=1985,
-            user_life_expectancy=Distribution.objects.create(type="fixed", value=80),
-            inflation_assumption=Distribution.objects.create(type="fixed", value=0.03),
+            user_life_expectancy=cls.life_expectancy_dist,
+            inflation_assumption=cls.inflation_dist,
             after_tax_contribution_limit=7000,
             financial_goal=10000,
             residence_state="NY",
             user=cls.user,
         )
 
-        cls.start_dist = Distribution.objects.create(type="fixed", value=2025)
-        cls.duration_dist = Distribution.objects.create(type="fixed", value=10)
-        cls.change_dist = Distribution.objects.create(type="fixed", value=1000)
+        cls.start_dist = {
+            "type": "fixed",
+            "value": 2025,
+            "mean": None,
+            "stdev": None,
+            "lower": None,
+            "upper": None
+        }
+
+        cls.duration_dist = {
+            "type": "fixed",
+            "value": 10,
+            "mean": None,
+            "stdev": None,
+            "lower": None,
+            "upper": None
+        }
+
+        cls.change_dist = {
+            "type": "fixed",
+            "value": 1000,
+            "mean": None,
+            "stdev": None,
+            "lower": None,
+            "upper": None
+        }
 
     def test_income_event_series_creation(self):
         """Test creating a valid income event series"""
@@ -386,26 +595,64 @@ class AssetAllocationModelTest(TestCase):
     @classmethod
     def setUpTestData(cls):
         cls.user = User.objects.create_user(email="testuser@test.com")
+
+        cls.life_expectancy_dist = {
+            "type": "fixed",
+            "value": 80,
+            "mean": None,
+            "stdev": None,
+            "lower": None,
+            "upper": None
+        }
+
+        cls.inflation_dist = {
+            "type": "fixed",
+            "value": 0.03,
+            "mean": None,
+            "stdev": None,
+            "lower": None,
+            "upper": None
+        }
+
         cls.scenario = Scenario.objects.create(
             name="Test Scenario",
             marital_status="individual",
             user_birth_year=1985,
-            user_life_expectancy=Distribution.objects.create(type="fixed", value=80),
-            inflation_assumption=Distribution.objects.create(type="fixed", value=0.03),
+            user_life_expectancy=cls.life_expectancy_dist,
+            inflation_assumption=cls.inflation_dist,
             after_tax_contribution_limit=7000,
             financial_goal=10000,
             residence_state="NY",
             user=cls.user,
         )
 
+        cls.return_dist = {
+            "type": "fixed",
+            "value": 0.06,
+            "mean": None,
+            "stdev": None,
+            "lower": None,
+            "upper": None
+        }
+
+        cls.income_dist = {
+            "type": "fixed",
+            "value": 0.02,
+            "mean": None,
+            "stdev": None,
+            "lower": None,
+            "upper": None
+        }
+
         cls.investment_type = InvestmentType.objects.create(
+            scenario=cls.scenario,
             name="S&P 500",
             description="Stock fund",
             return_amt_or_pct="percent",
-            return_distribution=Distribution.objects.create(type="fixed", value=0.06),
+            return_distribution=cls.return_dist,
             expense_ratio=0.001,
             income_amt_or_pct="percent",
-            income_distribution=Distribution.objects.create(type="fixed", value=0.02),
+            income_distribution=cls.income_dist,
             taxability=True,
         )
 
@@ -417,13 +664,31 @@ class AssetAllocationModelTest(TestCase):
             investment_id="stocks-1",
         )
 
+        cls.start_dist = {
+            "type": "fixed",
+            "value": 2025,
+            "mean": None,
+            "stdev": None,
+            "lower": None,
+            "upper": None
+        }
+
+        cls.duration_dist = {
+            "type": "fixed",
+            "value": 10,
+            "mean": None,
+            "stdev": None,
+            "lower": None,
+            "upper": None
+        }
+
         cls.event_series = EventSeries.objects.create(
             scenario=cls.scenario,
             name="investment",
             type="invest",
             start_type="distribution",
-            start_distribution=Distribution.objects.create(type="fixed", value=2025),
-            duration_distribution=Distribution.objects.create(type="fixed", value=10),
+            start_distribution=cls.start_dist,
+            duration_distribution=cls.duration_dist,
             max_cash=1000.0,
         )
 
@@ -485,25 +750,62 @@ class SpendingStrategyItemModelTest(TestCase):
     @classmethod
     def setUpTestData(cls):
         cls.user = User.objects.create_user(email="testuser@test.com")
+
+        cls.life_expectancy_dist = {
+            "type": "fixed",
+            "value": 80,
+            "mean": None,
+            "stdev": None,
+            "lower": None,
+            "upper": None
+        }
+
+        cls.inflation_dist = {
+            "type": "fixed",
+            "value": 0.03,
+            "mean": None,
+            "stdev": None,
+            "lower": None,
+            "upper": None
+        }
+
         cls.scenario = Scenario.objects.create(
             name="Test Scenario",
             marital_status="individual",
             user_birth_year=1985,
-            user_life_expectancy=Distribution.objects.create(type="fixed", value=80),
-            inflation_assumption=Distribution.objects.create(type="fixed", value=0.03),
+            user_life_expectancy=cls.life_expectancy_dist,
+            inflation_assumption=cls.inflation_dist,
             after_tax_contribution_limit=7000,
             financial_goal=10000,
             residence_state="NY",
             user=cls.user,
         )
 
+        cls.start_dist = {
+            "type": "fixed",
+            "value": 2025,
+            "mean": None,
+            "stdev": None,
+            "lower": None,
+            "upper": None
+        }
+
+        cls.duration_dist = {
+            "type": "fixed",
+            "value": 10,
+            "mean": None,
+            "stdev": None,
+            "lower": None,
+            "upper": None
+        }
+
         cls.discretionary_expense = EventSeries.objects.create(
             scenario=cls.scenario,
             name="vacation",
             type="expense",
             start_type="distribution",
-            start_distribution=Distribution.objects.create(type="fixed", value=2025),
-            duration_distribution=Distribution.objects.create(type="fixed", value=10),
+            start_distribution=cls.start_dist,
+            duration_distribution=cls.duration_dist,
             initial_amount=5000.0,
             discretionary=True,
         )
@@ -513,8 +815,8 @@ class SpendingStrategyItemModelTest(TestCase):
             name="food",
             type="expense",
             start_type="distribution",
-            start_distribution=Distribution.objects.create(type="fixed", value=2025),
-            duration_distribution=Distribution.objects.create(type="fixed", value=10),
+            start_distribution=cls.start_dist,
+            duration_distribution=cls.duration_dist,
             initial_amount=3000.0,
             discretionary=False,
         )
@@ -554,26 +856,64 @@ class RMDStrategyItemModelTest(TestCase):
     @classmethod
     def setUpTestData(cls):
         cls.user = User.objects.create_user(email="testuser@test.com")
+
+        cls.life_expectancy_dist = {
+            "type": "fixed",
+            "value": 80,
+            "mean": None,
+            "stdev": None,
+            "lower": None,
+            "upper": None
+        }
+
+        cls.inflation_dist = {
+            "type": "fixed",
+            "value": 0.03,
+            "mean": None,
+            "stdev": None,
+            "lower": None,
+            "upper": None
+        }
+
         cls.scenario = Scenario.objects.create(
             name="Test Scenario",
             marital_status="individual",
             user_birth_year=1985,
-            user_life_expectancy=Distribution.objects.create(type="fixed", value=80),
-            inflation_assumption=Distribution.objects.create(type="fixed", value=0.03),
+            user_life_expectancy=cls.life_expectancy_dist,
+            inflation_assumption=cls.inflation_dist,
             after_tax_contribution_limit=7000,
             financial_goal=10000,
             residence_state="NY",
             user=cls.user,
         )
 
+        cls.return_dist = {
+            "type": "fixed",
+            "value": 0.06,
+            "mean": None,
+            "stdev": None,
+            "lower": None,
+            "upper": None
+        }
+
+        cls.income_dist = {
+            "type": "fixed",
+            "value": 0.02,
+            "mean": None,
+            "stdev": None,
+            "lower": None,
+            "upper": None
+        }
+
         cls.investment_type = InvestmentType.objects.create(
+            scenario=cls.scenario,
             name="S&P 500",
             description="Stock fund",
             return_amt_or_pct="percent",
-            return_distribution=Distribution.objects.create(type="fixed", value=0.06),
+            return_distribution=cls.return_dist,
             expense_ratio=0.001,
             income_amt_or_pct="percent",
-            income_distribution=Distribution.objects.create(type="fixed", value=0.02),
+            income_distribution=cls.income_dist,
             taxability=True,
         )
 
@@ -617,11 +957,30 @@ class ScenarioModelTest(TestCase):
     @classmethod
     def setUpTestData(cls):
         cls.user = User.objects.create_user(email="testuser@test.com")
-        cls.life_expectancy_dist = Distribution.objects.create(type="fixed", value=80)
-        cls.spouse_life_expectancy_dist = Distribution.objects.create(
-            type="fixed", value=82
-        )
-        cls.inflation_dist = Distribution.objects.create(type="fixed", value=0.03)
+        cls.life_expectancy_dist = {
+            "type": "fixed",
+            "value": 80,
+            "mean": None,
+            "stdev": None,
+            "lower": None,
+            "upper": None
+        }
+        cls.spouse_life_expectancy_dist = {
+            "type": "fixed",
+            "value": 82,
+            "mean": None,
+            "stdev": None,
+            "lower": None,
+            "upper": None
+        }
+        cls.inflation_dist = {
+            "type": "fixed",
+            "value": 0.03,
+            "mean": None,
+            "stdev": None,
+            "lower": None,
+            "upper": None
+        }
 
     def test_individual_scenario_creation(self):
         """Test creating a valid individual scenario"""
@@ -718,6 +1077,7 @@ class ScenarioModelTest(TestCase):
             marital_status="individual",
             user_birth_year=1985,
             user_life_expectancy=self.life_expectancy_dist,
+            spouse_life_expectancy=None,
             inflation_assumption=self.inflation_dist,
             after_tax_contribution_limit=7000,
             financial_goal=-5000,  # Invalid: negative

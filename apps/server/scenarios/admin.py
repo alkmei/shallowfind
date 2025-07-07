@@ -1,6 +1,7 @@
 from django.contrib import admin
+from django.utils.html import format_html
+import json
 from .models import (
-    Distribution,
     InvestmentType,
     Investment,
     EventSeries,
@@ -13,36 +14,41 @@ from .models import (
 )
 
 
-@admin.register(Distribution)
-class DistributionAdmin(admin.ModelAdmin):
-    list_display = ("id", "type", "value", "mean", "stdev", "lower", "upper")
-    list_filter = ("type",)
-    search_fields = ("type",)
-    fieldsets = (
-        ("Distribution Type", {"fields": ("type",)}),
-        ("Fixed Distribution", {"fields": ("value",), "classes": ("collapse",)}),
-        (
-            "Normal Distribution",
-            {"fields": ("mean", "stdev"), "classes": ("collapse",)},
-        ),
-        (
-            "Uniform Distribution",
-            {"fields": ("lower", "upper"), "classes": ("collapse",)},
-        ),
-    )
+def format_distribution_display(distribution_data):
+    """Helper function to format distribution JSON for display"""
+    if not distribution_data:
+        return "Not set"
+
+    dist_type = distribution_data.get("type", "Unknown")
+
+    if dist_type == "fixed":
+        return f"Fixed: {distribution_data.get('value', 'N/A')}"
+    elif dist_type == "normal":
+        mean = distribution_data.get("mean", "N/A")
+        stdev = distribution_data.get("stdev", "N/A")
+        return f"Normal: μ={mean}, σ={stdev}"
+    elif dist_type == "uniform":
+        lower = distribution_data.get("lower", "N/A")
+        upper = distribution_data.get("upper", "N/A")
+        return f"Uniform: [{lower}, {upper}]"
+    else:
+        return f"Unknown type: {dist_type}"
 
 
 @admin.register(InvestmentType)
 class InvestmentTypeAdmin(admin.ModelAdmin):
     list_display = (
         "name",
+        "scenario",
         "return_amt_or_pct",
+        "return_distribution_display",
         "expense_ratio",
         "income_amt_or_pct",
+        "income_distribution_display",
         "taxability",
     )
     list_filter = ("return_amt_or_pct", "income_amt_or_pct", "taxability")
-    search_fields = ("name", "description")
+    search_fields = ("name", "description", "scenario__name")
     fieldsets = (
         ("Basic Information", {"fields": ("name", "description", "taxability")}),
         (
@@ -54,6 +60,18 @@ class InvestmentTypeAdmin(admin.ModelAdmin):
             {"fields": ("income_amt_or_pct", "income_distribution")},
         ),
     )
+
+    def return_distribution_display(self, obj):
+        """Display return distribution in a readable format"""
+        return format_distribution_display(obj.return_distribution)
+
+    return_distribution_display.short_description = "Return Distribution"
+
+    def income_distribution_display(self, obj):
+        """Display income distribution in a readable format"""
+        return format_distribution_display(obj.income_distribution)
+
+    income_distribution_display.short_description = "Income Distribution"
 
 
 class InvestmentInline(admin.TabularInline):
@@ -95,6 +113,8 @@ class EventSeriesAdmin(admin.ModelAdmin):
         "scenario",
         "type",
         "start_type",
+        "start_distribution_display",
+        "duration_distribution_display",
         "inflation_adjusted",
         "discretionary",
         "social_security",
@@ -142,6 +162,24 @@ class EventSeriesAdmin(admin.ModelAdmin):
             {"fields": ("max_cash", "glide_path"), "classes": ("collapse",)},
         ),
     )
+
+    def start_distribution_display(self, obj):
+        """Display start distribution in a readable format"""
+        return format_distribution_display(obj.start_distribution)
+
+    start_distribution_display.short_description = "Start Distribution"
+
+    def duration_distribution_display(self, obj):
+        """Display duration distribution in a readable format"""
+        return format_distribution_display(obj.duration_distribution)
+
+    duration_distribution_display.short_description = "Duration Distribution"
+
+    def change_distribution_display(self, obj):
+        """Display change distribution in a readable format"""
+        return format_distribution_display(obj.change_distribution)
+
+    change_distribution_display.short_description = "Change Distribution"
 
 
 @admin.register(AssetAllocation)
@@ -218,6 +256,7 @@ class ScenarioAdmin(admin.ModelAdmin):
         "name",
         "marital_status",
         "user_birth_year",
+        "user_life_expectancy_display",
         "residence_state",
         "financial_goal",
         "roth_conversion_opt",
@@ -229,7 +268,13 @@ class ScenarioAdmin(admin.ModelAdmin):
         "roth_conversion_opt",
         "created_at",
     )
-    readonly_fields = ("created_at", "updated_at")
+    readonly_fields = (
+        "created_at",
+        "updated_at",
+        "user_life_expectancy_formatted",
+        "spouse_life_expectancy_formatted",
+        "inflation_assumption_formatted",
+    )
     inlines = [
         InvestmentInline,
         SpendingStrategyItemInline,
@@ -246,7 +291,9 @@ class ScenarioAdmin(admin.ModelAdmin):
                     "user_birth_year",
                     "spouse_birth_year",
                     "user_life_expectancy",
+                    "user_life_expectancy_formatted",
                     "spouse_life_expectancy",
+                    "spouse_life_expectancy_formatted",
                 )
             },
         ),
@@ -257,6 +304,7 @@ class ScenarioAdmin(admin.ModelAdmin):
                     "financial_goal",
                     "after_tax_contribution_limit",
                     "inflation_assumption",
+                    "inflation_assumption_formatted",
                     "residence_state",
                 )
             },
@@ -277,6 +325,38 @@ class ScenarioAdmin(admin.ModelAdmin):
             {"fields": ("created_at", "updated_at"), "classes": ("collapse",)},
         ),
     )
+
+    def user_life_expectancy_display(self, obj):
+        """Display user life expectancy in list view"""
+        return format_distribution_display(obj.user_life_expectancy)
+
+    user_life_expectancy_display.short_description = "Life Expectancy"
+
+    def user_life_expectancy_formatted(self, obj):
+        """Display formatted user life expectancy in detail view"""
+        return format_html(
+            "<pre>{}</pre>", json.dumps(obj.user_life_expectancy, indent=2)
+        )
+
+    user_life_expectancy_formatted.short_description = "User Life Expectancy (JSON)"
+
+    def spouse_life_expectancy_formatted(self, obj):
+        """Display formatted spouse life expectancy in detail view"""
+        if obj.spouse_life_expectancy:
+            return format_html(
+                "<pre>{}</pre>", json.dumps(obj.spouse_life_expectancy, indent=2)
+            )
+        return "N/A"
+
+    spouse_life_expectancy_formatted.short_description = "Spouse Life Expectancy (JSON)"
+
+    def inflation_assumption_formatted(self, obj):
+        """Display formatted inflation assumption in detail view"""
+        return format_html(
+            "<pre>{}</pre>", json.dumps(obj.inflation_assumption, indent=2)
+        )
+
+    inflation_assumption_formatted.short_description = "Inflation Assumption (JSON)"
 
     def get_queryset(self, request):
         qs = super().get_queryset(request)

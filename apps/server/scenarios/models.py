@@ -1,3 +1,5 @@
+from typing import Dict, Any
+
 from django.core.exceptions import ValidationError
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
@@ -5,6 +7,8 @@ from django.contrib.auth import get_user_model
 from django.utils import timezone
 from djmoney.models.fields import MoneyField
 from djmoney.models.validators import MinMoneyValidator
+
+from scenarios.types import Distribution
 
 User = get_user_model()
 
@@ -14,109 +18,89 @@ AMOUNT_OR_PERCENT_CHOICES = [
 ]
 
 
-class Distribution(models.Model):
-    """Base model for representing probability distributions"""
+class DistributionField(models.JSONField):
+    """Custom JSONField for distribution data with automatic validation"""
 
-    DISTRIBUTION_TYPES = [
-        ("fixed", "Fixed"),
-        ("normal", "Normal"),
-        ("uniform", "Uniform"),
-    ]
+    def __init__(self, *args, **kwargs):
+        kwargs.setdefault("default", dict)
+        super().__init__(*args, **kwargs)
 
-    type = models.CharField(max_length=10, choices=DISTRIBUTION_TYPES)
+    def validate(self, value, model_instance):
+        super().validate(value, model_instance)
+        if value is not None:
+            self._validate_distribution(value)
 
-    # For fixed distributions
-    value = models.FloatField(null=True, blank=True)
+    def _validate_distribution(self, value: Dict[str, Any]):
+        """Validate distribution JSON structure"""
+        if not isinstance(value, dict):
+            raise ValidationError("Distribution must be a dictionary")
 
-    # For normal distributions
-    mean = models.FloatField(null=True, blank=True)
-    stdev = models.FloatField(null=True, blank=True)
+        dist_type = value.get("type")
+        if dist_type not in ["fixed", "normal", "uniform"]:
+            raise ValidationError(
+                "Distribution type must be 'fixed', 'normal', or 'uniform'"
+            )
 
-    # For uniform distributions
-    lower = models.FloatField(null=True, blank=True)
-    upper = models.FloatField(null=True, blank=True)
+        if dist_type == "fixed":
+            if "value" not in value or value["value"] is None:
+                raise ValidationError("Fixed distribution requires 'value' field")
+            # Ensure other fields are None/not present
+            for field in ["mean", "stdev", "lower", "upper"]:
+                if value.get(field) is not None:
+                    raise ValidationError(
+                        f"Fixed distribution should not have '{field}' field"
+                    )
 
-    def __str__(self):
-        if self.type == "fixed":
-            return f"Fixed({self.value})"
-        elif self.type == "normal":
-            return f"Normal(mean={self.mean}, stdev={self.stdev})"
-        elif self.type == "uniform":
-            return f"Uniform(lower={self.lower}, upper={self.upper})"
-        return None
-
-    def clean(self):
-        super().clean()
-
-        if self.type == "fixed":
-            if self.value is None:
+        elif dist_type == "normal":
+            if "mean" not in value or "stdev" not in value:
                 raise ValidationError(
-                    {"value": "Value is required for fixed distributions."}
+                    "Normal distribution requires 'mean' and 'stdev' fields"
                 )
-            if (
-                self.mean is not None
-                or self.stdev is not None
-                or self.lower is not None
-                or self.upper is not None
-            ):
+            if value["mean"] is None or value["stdev"] is None:
                 raise ValidationError(
-                    "Only value should be set for fixed distributions."
+                    "Normal distribution mean and stdev cannot be None"
                 )
+            if value["stdev"] <= 0:
+                raise ValidationError(
+                    "Normal distribution standard deviation must be positive"
+                )
+            # Ensure other fields are None/not present
+            for field in ["value", "lower", "upper"]:
+                if value.get(field) is not None:
+                    raise ValidationError(
+                        f"Normal distribution should not have '{field}' field"
+                    )
 
-        elif self.type == "normal":
-            if self.mean is None or self.stdev is None:
+        elif dist_type == "uniform":
+            if "lower" not in value or "upper" not in value:
                 raise ValidationError(
-                    {
-                        "mean": "Mean and standard deviation are required for normal distributions.",
-                        "stdev": "Mean and standard deviation are required for normal distributions.",
-                    }
+                    "Uniform distribution requires 'lower' and 'upper' fields"
                 )
-            if self.stdev <= 0:
-                raise ValidationError({"stdev": "Standard deviation must be positive."})
-            if (
-                self.value is not None
-                or self.lower is not None
-                or self.upper is not None
-            ):
+            if value["lower"] is None or value["upper"] is None:
+                raise ValidationError("Uniform distribution bounds cannot be None")
+            if value["lower"] >= value["upper"]:
                 raise ValidationError(
-                    "Only mean and stdev should be set for normal distributions."
+                    "Uniform distribution upper bound must be greater than lower bound"
                 )
-
-        elif self.type == "uniform":
-            if self.lower is None or self.upper is None:
-                raise ValidationError(
-                    {
-                        "lower": "Lower and upper bounds are required for uniform distributions.",
-                        "upper": "Lower and upper bounds are required for uniform distributions.",
-                    }
-                )
-            if self.lower >= self.upper:
-                raise ValidationError(
-                    {"upper": "Upper bound must be greater than lower bound."}
-                )
-            if (
-                self.value is not None
-                or self.mean is not None
-                or self.stdev is not None
-            ):
-                raise ValidationError(
-                    "Only lower and upper should be set for uniform distributions."
-                )
+            # Ensure other fields are None/not present
+            for field in ["value", "mean", "stdev"]:
+                if value.get(field) is not None:
+                    raise ValidationError(
+                        f"Uniform distribution should not have '{field}' field"
+                    )
 
 
 class InvestmentType(models.Model):
     """Defines types of investments (S&P 500, bonds, etc.)"""
 
-    name = models.CharField(max_length=100, unique=True)
+    name = models.CharField(max_length=100)
     description = models.TextField()
 
     # Return configuration
     return_amt_or_pct = models.CharField(
         max_length=10, choices=AMOUNT_OR_PERCENT_CHOICES
     )
-    return_distribution = models.ForeignKey(
-        Distribution, on_delete=models.CASCADE, related_name="return_investment_types"
-    )
+    return_distribution: Distribution = DistributionField()
 
     expense_ratio = models.FloatField()
 
@@ -124,11 +108,20 @@ class InvestmentType(models.Model):
     income_amt_or_pct = models.CharField(
         max_length=10, choices=AMOUNT_OR_PERCENT_CHOICES
     )
-    income_distribution = models.ForeignKey(
-        Distribution, on_delete=models.CASCADE, related_name="income_investment_types"
-    )
+    income_distribution: Distribution = DistributionField()
 
     taxability = models.BooleanField()  # True = taxable, False = tax-exempt
+
+    scenario = models.ForeignKey(
+        "Scenario", on_delete=models.CASCADE, related_name="investment_types"
+    )
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=["scenario", "name"], name="unique_investment_type_per_scenario"
+            )
+        ]
 
     def __str__(self):
         return self.name
@@ -218,13 +211,7 @@ class EventSeries(models.Model):
 
     # Start year configuration
     start_type = models.CharField(max_length=20, choices=START_TYPES)
-    start_distribution = models.ForeignKey(
-        Distribution,
-        on_delete=models.CASCADE,
-        null=True,
-        blank=True,
-        related_name="start_event_series",
-    )
+    start_distribution: Distribution = DistributionField(null=True, blank=True, default=None)
     start_with_event = models.ForeignKey(
         "self",
         on_delete=models.CASCADE,
@@ -241,9 +228,7 @@ class EventSeries(models.Model):
     )
 
     # Duration
-    duration_distribution = models.ForeignKey(
-        Distribution, on_delete=models.CASCADE, related_name="duration_event_series"
-    )
+    duration_distribution: Distribution = DistributionField()
 
     type = models.CharField(max_length=10, choices=EVENT_TYPES)
 
@@ -259,13 +244,7 @@ class EventSeries(models.Model):
     change_amt_or_pct = models.CharField(
         max_length=10, choices=AMOUNT_OR_PERCENT_CHOICES, null=True, blank=True
     )
-    change_distribution = models.ForeignKey(
-        Distribution,
-        on_delete=models.CASCADE,
-        null=True,
-        blank=True,
-        related_name="change_event_series",
-    )
+    change_distribution: Distribution = DistributionField(null=True, blank=True, default=None)
     inflation_adjusted = models.BooleanField(default=False)
     user_fraction = models.FloatField(null=True, blank=True)  # For married couples
 
@@ -629,23 +608,11 @@ class Scenario(models.Model):
     )
 
     # Life expectancy distributions
-    user_life_expectancy = models.ForeignKey(
-        Distribution,
-        on_delete=models.CASCADE,
-        related_name="user_life_expectancy_scenarios",
-    )
-    spouse_life_expectancy = models.ForeignKey(
-        Distribution,
-        on_delete=models.CASCADE,
-        null=True,
-        blank=True,
-        related_name="spouse_life_expectancy_scenarios",
-    )
+    user_life_expectancy: Distribution = DistributionField()
+    spouse_life_expectancy: Distribution = DistributionField(null=True, blank=True, default=None)
 
     # Financial settings
-    inflation_assumption = models.ForeignKey(
-        Distribution, on_delete=models.CASCADE, related_name="inflation_scenarios"
-    )
+    inflation_assumption: Distribution = DistributionField()
     after_tax_contribution_limit = MoneyField(
         max_digits=10, decimal_places=2, default_currency="USD"
     )
@@ -700,7 +667,7 @@ class Scenario(models.Model):
         if self.user_birth_year < 1900:
             raise ValidationError({"user_birth_year": "Birth year seems unrealistic."})
 
-        if self.user_life_expectancy.type == "uniform":
+        if self.user_life_expectancy["type"] == "uniform":
             raise ValidationError(
                 {
                     "user_life_expectancy": "User life expectancy cannot be uniform distribution."
@@ -731,7 +698,7 @@ class Scenario(models.Model):
                     {"spouse_birth_year": "Spouse birth year seems unrealistic."}
                 )
 
-            if self.spouse_life_expectancy.type == "uniform":
+            if self.spouse_life_expectancy["type"] == "uniform":
                 raise ValidationError(
                     {
                         "spouse_life_expectancy": "Spouse life expectancy cannot be uniform distribution."

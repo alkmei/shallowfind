@@ -1,7 +1,6 @@
 from rest_framework import serializers
 from .models import (
     Scenario,
-    Distribution,
     InvestmentType,
     Investment,
     EventSeries,
@@ -13,10 +12,40 @@ from .models import (
 )
 
 
-class DistributionSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Distribution
-        fields = ["type", "value", "mean", "stdev", "lower", "upper"]
+class DistributionSerializer(serializers.Serializer):
+    """Serializer for distribution JSON field"""
+
+    type = serializers.ChoiceField(choices=["fixed", "normal", "uniform"])
+    value = serializers.FloatField(required=False, allow_null=True)
+    mean = serializers.FloatField(required=False, allow_null=True)
+    stdev = serializers.FloatField(required=False, allow_null=True)
+    lower = serializers.FloatField(required=False, allow_null=True)
+    upper = serializers.FloatField(required=False, allow_null=True)
+
+    def validate(self, attrs):
+        dist_type = attrs.get("type")
+
+        if dist_type == "fixed":
+            if attrs.get("value") is None:
+                raise serializers.ValidationError("Fixed distribution requires 'value'")
+        elif dist_type == "normal":
+            if attrs.get("mean") is None or attrs.get("stdev") is None:
+                raise serializers.ValidationError(
+                    "Normal distribution requires 'mean' and 'stdev'"
+                )
+            if attrs.get("stdev", 0) <= 0:
+                raise serializers.ValidationError("Standard deviation must be positive")
+        elif dist_type == "uniform":
+            if attrs.get("lower") is None or attrs.get("upper") is None:
+                raise serializers.ValidationError(
+                    "Uniform distribution requires 'lower' and 'upper'"
+                )
+            if attrs.get("lower", 0) >= attrs.get("upper", 1):
+                raise serializers.ValidationError(
+                    "Upper bound must be greater than lower bound"
+                )
+
+        return attrs
 
 
 class InvestmentTypeSerializer(serializers.ModelSerializer):
@@ -210,9 +239,6 @@ class ScenarioSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         # Extract nested data
-        user_life_expectancy_data = validated_data.pop("user_life_expectancy")
-        spouse_life_expectancy_data = validated_data.pop("spouse_life_expectancy", None)
-        inflation_assumption_data = validated_data.pop("inflation_assumption")
         investments_data = validated_data.pop("investments")
         event_series_data = validated_data.pop("event_series")
 
@@ -226,39 +252,19 @@ class ScenarioSerializer(serializers.ModelSerializer):
             "roth_conversion_strategy_input", []
         )
 
-        # Create distributions
-        user_life_expectancy = Distribution.objects.create(**user_life_expectancy_data)
-        spouse_life_expectancy = None
-        if spouse_life_expectancy_data:
-            spouse_life_expectancy = Distribution.objects.create(
-                **spouse_life_expectancy_data
-            )
-        inflation_assumption = Distribution.objects.create(**inflation_assumption_data)
-
         # Create scenario
         scenario = Scenario.objects.create(
-            user_life_expectancy=user_life_expectancy,
-            spouse_life_expectancy=spouse_life_expectancy,
-            inflation_assumption=inflation_assumption,
             **validated_data,
         )
 
         # Create investment types and investments
         for investment_data in investments_data:
             investment_type_data = investment_data.pop("investment_type")
-            return_dist_data = investment_type_data.pop("return_distribution")
-            income_dist_data = investment_type_data.pop("income_distribution")
-
-            return_dist = Distribution.objects.create(**return_dist_data)
-            income_dist = Distribution.objects.create(**income_dist_data)
 
             investment_type, created = InvestmentType.objects.get_or_create(
+                scenario=scenario,
                 name=investment_type_data["name"],
-                defaults={
-                    **investment_type_data,
-                    "return_distribution": return_dist,
-                    "income_distribution": income_dist,
-                },
+                defaults=investment_type_data,
             )
 
             Investment.objects.create(
@@ -267,34 +273,12 @@ class ScenarioSerializer(serializers.ModelSerializer):
 
         # Create event series
         for event_data in event_series_data:
-            start_dist_data = event_data.pop("start_distribution", None)
-            duration_dist_data = event_data.pop("duration_distribution")
-            change_dist_data = event_data.pop("change_distribution", None)
-
-            # Remove input fields and asset allocation data
             event_data.pop("start_with_event_name_input", None)
             event_data.pop("start_after_event_name_input", None)
             asset_allocation_input = event_data.pop("asset_allocation_input", {})
             asset_allocation2_input = event_data.pop("asset_allocation2_input", {})
 
-            start_dist = None
-            if start_dist_data:
-                start_dist = Distribution.objects.create(**start_dist_data)
-
-            duration_dist = Distribution.objects.create(**duration_dist_data)
-
-            change_dist = None
-            if change_dist_data:
-                change_dist = Distribution.objects.create(**change_dist_data)
-
-            event_series = EventSeries.objects.create(
-                scenario=scenario,
-                start_distribution=start_dist,
-                duration_distribution=duration_dist,
-                change_distribution=change_dist,
-                **event_data,
-            )
-
+            event_series = EventSeries.objects.create(scenario=scenario, **event_data)
             # Create asset allocations if provided
             if asset_allocation_input:
                 for investment_id, percentage in asset_allocation_input.items():
