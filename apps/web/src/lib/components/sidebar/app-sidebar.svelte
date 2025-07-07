@@ -103,9 +103,9 @@
 </script>
 
 <script lang="ts">
-  import NavMain from './NavMain.svelte';
-  import NavUser from './NavUser.svelte';
-  import SidebarLogo from './SidebarLogo.svelte';
+  import NavMain from './nav-main.svelte';
+  import NavUser from './nav-user.svelte';
+  import SidebarLogo from './sidebar-logo.svelte';
   import * as Sidebar from '$lib/components/ui/sidebar/index.js';
   import type { ComponentProps } from 'svelte';
   import type { AdminUser } from '$lib/api/shallowfind.schemas';

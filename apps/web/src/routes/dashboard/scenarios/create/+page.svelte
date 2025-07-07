@@ -5,7 +5,7 @@
   import * as Form from '$lib/components/ui/form';
   import { Input } from '$lib/components/ui/input';
   import Checkbox from '$lib/components/ui/checkbox/checkbox.svelte';
-  import LifeExpectancy from '$lib/components/ScenarioForm/LifeExpectancy.svelte';
+  import LifeExpectancy from '$lib/components/scenario-form/life-expectancy.svelte';
 
   const form = superForm(defaults(zod(scenariosCreateBody)), {
     validators: zod(scenariosCreateBody),

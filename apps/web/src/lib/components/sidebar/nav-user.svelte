@@ -6,11 +6,8 @@
   import { useSidebar } from '$lib/components/ui/sidebar/index.js';
   import { Settings2 } from '@lucide/svelte';
   import BadgeCheckIcon from '@lucide/svelte/icons/badge-check';
-  import BellIcon from '@lucide/svelte/icons/bell';
   import ChevronsUpDownIcon from '@lucide/svelte/icons/chevrons-up-down';
-  import CreditCardIcon from '@lucide/svelte/icons/credit-card';
   import LogOutIcon from '@lucide/svelte/icons/log-out';
-  import SparklesIcon from '@lucide/svelte/icons/sparkles';
 
   let { user }: { user: AdminUser } = $props();
   const sidebar = useSidebar();
@@ -34,7 +31,7 @@
               <Avatar.Fallback class="rounded-lg">CN</Avatar.Fallback>
             </Avatar.Root>
             <div class="grid flex-1 text-left text-sm leading-tight">
-              <span class="truncate font-medium">{user.first_name}</span>
+              <span class="truncate font-medium">{user.firstName}</span>
               <span class="truncate text-xs">{user.email}</span>
             </div>
             <ChevronsUpDownIcon class="ml-auto size-4" />
@@ -57,7 +54,7 @@
               <Avatar.Fallback class="rounded-lg">CN</Avatar.Fallback>
             </Avatar.Root>
             <div class="grid flex-1 text-left text-sm leading-tight">
-              <span class="truncate font-medium">{user.first_name}</span>
+              <span class="truncate font-medium">{user.firstName}</span>
               <span class="truncate text-xs">{user.email}</span>
             </div>
           </div>
