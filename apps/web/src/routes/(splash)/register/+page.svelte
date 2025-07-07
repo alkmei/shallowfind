@@ -17,7 +17,7 @@
         goto('/');
       },
       onError: (error) => {
-        // Handle error, e.g., show a notification or alert
+        // TODO: Handle error, e.g., show a notification or alert
         console.error('Registration failed:', error);
       }
     }
