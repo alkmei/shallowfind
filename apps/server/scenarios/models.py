@@ -211,7 +211,9 @@ class EventSeries(models.Model):
 
     # Start year configuration
     start_type = models.CharField(max_length=20, choices=START_TYPES)
-    start_distribution: Distribution = DistributionField(null=True, blank=True, default=None)
+    start_distribution: Distribution = DistributionField(
+        null=True, blank=True, default=None
+    )
     start_with_event = models.ForeignKey(
         "self",
         on_delete=models.CASCADE,
@@ -244,7 +246,9 @@ class EventSeries(models.Model):
     change_amt_or_pct = models.CharField(
         max_length=10, choices=AMOUNT_OR_PERCENT_CHOICES, null=True, blank=True
     )
-    change_distribution: Distribution = DistributionField(null=True, blank=True, default=None)
+    change_distribution: Distribution = DistributionField(
+        null=True, blank=True, default=None
+    )
     inflation_adjusted = models.BooleanField(default=False)
     user_fraction = models.FloatField(null=True, blank=True)  # For married couples
 
@@ -609,7 +613,9 @@ class Scenario(models.Model):
 
     # Life expectancy distributions
     user_life_expectancy: Distribution = DistributionField()
-    spouse_life_expectancy: Distribution = DistributionField(null=True, blank=True, default=None)
+    spouse_life_expectancy: Distribution = DistributionField(
+        null=True, blank=True, default=None
+    )
 
     # Financial settings
     inflation_assumption: Distribution = DistributionField()

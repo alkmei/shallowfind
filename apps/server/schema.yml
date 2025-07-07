@@ -940,6 +940,7 @@ components:
       - ''
     Distribution:
       type: object
+      description: Serializer for distribution JSON field
       properties:
         type:
           $ref: '#/components/schemas/DistributionTypeEnum'
@@ -972,9 +973,9 @@ components:
       - uniform
       type: string
       description: |-
-        * `fixed` - Fixed
-        * `normal` - Normal
-        * `uniform` - Uniform
+        * `fixed` - fixed
+        * `normal` - normal
+        * `uniform` - uniform
     EventSeries:
       type: object
       properties:
@@ -1039,9 +1040,11 @@ components:
         startWithEventNameInput:
           type: string
           writeOnly: true
+          nullable: true
         startAfterEventNameInput:
           type: string
           writeOnly: true
+          nullable: true
         assetAllocationInput:
           type: object
           additionalProperties: {}

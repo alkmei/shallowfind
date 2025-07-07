@@ -30,7 +30,7 @@ class DistributionJSONFieldTest(TestCase):
             "mean": None,
             "stdev": None,
             "lower": None,
-            "upper": None
+            "upper": None,
         }
 
         scenario = Scenario.objects.create(
@@ -45,8 +45,8 @@ class DistributionJSONFieldTest(TestCase):
             user=user,
         )
 
-        self.assertEqual(scenario.user_life_expectancy['type'], 'fixed')
-        self.assertEqual(scenario.user_life_expectancy['value'], 85.0)
+        self.assertEqual(scenario.user_life_expectancy["type"], "fixed")
+        self.assertEqual(scenario.user_life_expectancy["value"], 85.0)
 
     def test_normal_distribution_validation(self):
         """Test that normal distribution validates correctly"""
@@ -59,7 +59,7 @@ class DistributionJSONFieldTest(TestCase):
             "mean": 85.0,
             "stdev": 3.5,
             "lower": None,
-            "upper": None
+            "upper": None,
         }
 
         fixed_dist = {
@@ -68,7 +68,7 @@ class DistributionJSONFieldTest(TestCase):
             "mean": None,
             "stdev": None,
             "lower": None,
-            "upper": None
+            "upper": None,
         }
 
         scenario = Scenario.objects.create(
@@ -83,9 +83,9 @@ class DistributionJSONFieldTest(TestCase):
             user=user,
         )
 
-        self.assertEqual(scenario.user_life_expectancy['type'], 'normal')
-        self.assertEqual(scenario.user_life_expectancy['mean'], 85.0)
-        self.assertEqual(scenario.user_life_expectancy['stdev'], 3.5)
+        self.assertEqual(scenario.user_life_expectancy["type"], "normal")
+        self.assertEqual(scenario.user_life_expectancy["mean"], 85.0)
+        self.assertEqual(scenario.user_life_expectancy["stdev"], 3.5)
 
     def test_uniform_distribution_validation(self):
         """Test that uniform distribution validates correctly"""
@@ -98,7 +98,7 @@ class DistributionJSONFieldTest(TestCase):
             "mean": None,
             "stdev": None,
             "lower": 2.0,
-            "upper": 4.0
+            "upper": 4.0,
         }
 
         fixed_dist = {
@@ -107,7 +107,7 @@ class DistributionJSONFieldTest(TestCase):
             "mean": None,
             "stdev": None,
             "lower": None,
-            "upper": None
+            "upper": None,
         }
 
         scenario = Scenario.objects.create(
@@ -122,9 +122,9 @@ class DistributionJSONFieldTest(TestCase):
             user=user,
         )
 
-        self.assertEqual(scenario.inflation_assumption['type'], 'uniform')
-        self.assertEqual(scenario.inflation_assumption['lower'], 2.0)
-        self.assertEqual(scenario.inflation_assumption['upper'], 4.0)
+        self.assertEqual(scenario.inflation_assumption["type"], "uniform")
+        self.assertEqual(scenario.inflation_assumption["lower"], 2.0)
+        self.assertEqual(scenario.inflation_assumption["upper"], 4.0)
 
 
 class InvestmentTypeModelTest(TestCase):
@@ -171,7 +171,7 @@ class InvestmentTypeModelTest(TestCase):
             "mean": None,
             "stdev": None,
             "lower": None,
-            "upper": None
+            "upper": None,
         }
 
         income_dist = {
@@ -180,7 +180,7 @@ class InvestmentTypeModelTest(TestCase):
             "mean": None,
             "stdev": None,
             "lower": None,
-            "upper": None
+            "upper": None,
         }
 
         inv_type = InvestmentType.objects.create(
@@ -205,7 +205,7 @@ class InvestmentTypeModelTest(TestCase):
             "mean": None,
             "stdev": None,
             "lower": None,
-            "upper": None
+            "upper": None,
         }
 
         income_dist = {
@@ -214,7 +214,7 @@ class InvestmentTypeModelTest(TestCase):
             "mean": None,
             "stdev": None,
             "lower": None,
-            "upper": None
+            "upper": None,
         }
 
         inv_type = InvestmentType(
@@ -240,7 +240,7 @@ class InvestmentTypeModelTest(TestCase):
             "mean": None,
             "stdev": None,
             "lower": None,
-            "upper": None
+            "upper": None,
         }
 
         income_dist = {
@@ -249,7 +249,7 @@ class InvestmentTypeModelTest(TestCase):
             "mean": None,
             "stdev": None,
             "lower": None,
-            "upper": None
+            "upper": None,
         }
 
         inv_type = InvestmentType(
@@ -279,7 +279,7 @@ class InvestmentModelTest(TestCase):
             "mean": None,
             "stdev": None,
             "lower": None,
-            "upper": None
+            "upper": None,
         }
 
         cls.inflation_dist = {
@@ -288,7 +288,7 @@ class InvestmentModelTest(TestCase):
             "mean": None,
             "stdev": None,
             "lower": None,
-            "upper": None
+            "upper": None,
         }
 
         cls.scenario = Scenario.objects.create(
@@ -309,7 +309,7 @@ class InvestmentModelTest(TestCase):
             "mean": None,
             "stdev": None,
             "lower": None,
-            "upper": None
+            "upper": None,
         }
 
         cls.income_dist = {
@@ -318,7 +318,7 @@ class InvestmentModelTest(TestCase):
             "mean": None,
             "stdev": None,
             "lower": None,
-            "upper": None
+            "upper": None,
         }
 
         cls.stock_type = InvestmentType.objects.create(
@@ -441,7 +441,7 @@ class EventSeriesModelTest(TestCase):
             "mean": None,
             "stdev": None,
             "lower": None,
-            "upper": None
+            "upper": None,
         }
 
         cls.inflation_dist = {
@@ -450,7 +450,7 @@ class EventSeriesModelTest(TestCase):
             "mean": None,
             "stdev": None,
             "lower": None,
-            "upper": None
+            "upper": None,
         }
 
         cls.scenario = Scenario.objects.create(
@@ -471,7 +471,7 @@ class EventSeriesModelTest(TestCase):
             "mean": None,
             "stdev": None,
             "lower": None,
-            "upper": None
+            "upper": None,
         }
 
         cls.duration_dist = {
@@ -480,7 +480,7 @@ class EventSeriesModelTest(TestCase):
             "mean": None,
             "stdev": None,
             "lower": None,
-            "upper": None
+            "upper": None,
         }
 
         cls.change_dist = {
@@ -489,7 +489,7 @@ class EventSeriesModelTest(TestCase):
             "mean": None,
             "stdev": None,
             "lower": None,
-            "upper": None
+            "upper": None,
         }
 
     def test_income_event_series_creation(self):
@@ -602,7 +602,7 @@ class AssetAllocationModelTest(TestCase):
             "mean": None,
             "stdev": None,
             "lower": None,
-            "upper": None
+            "upper": None,
         }
 
         cls.inflation_dist = {
@@ -611,7 +611,7 @@ class AssetAllocationModelTest(TestCase):
             "mean": None,
             "stdev": None,
             "lower": None,
-            "upper": None
+            "upper": None,
         }
 
         cls.scenario = Scenario.objects.create(
@@ -632,7 +632,7 @@ class AssetAllocationModelTest(TestCase):
             "mean": None,
             "stdev": None,
             "lower": None,
-            "upper": None
+            "upper": None,
         }
 
         cls.income_dist = {
@@ -641,7 +641,7 @@ class AssetAllocationModelTest(TestCase):
             "mean": None,
             "stdev": None,
             "lower": None,
-            "upper": None
+            "upper": None,
         }
 
         cls.investment_type = InvestmentType.objects.create(
@@ -670,7 +670,7 @@ class AssetAllocationModelTest(TestCase):
             "mean": None,
             "stdev": None,
             "lower": None,
-            "upper": None
+            "upper": None,
         }
 
         cls.duration_dist = {
@@ -679,7 +679,7 @@ class AssetAllocationModelTest(TestCase):
             "mean": None,
             "stdev": None,
             "lower": None,
-            "upper": None
+            "upper": None,
         }
 
         cls.event_series = EventSeries.objects.create(
@@ -757,7 +757,7 @@ class SpendingStrategyItemModelTest(TestCase):
             "mean": None,
             "stdev": None,
             "lower": None,
-            "upper": None
+            "upper": None,
         }
 
         cls.inflation_dist = {
@@ -766,7 +766,7 @@ class SpendingStrategyItemModelTest(TestCase):
             "mean": None,
             "stdev": None,
             "lower": None,
-            "upper": None
+            "upper": None,
         }
 
         cls.scenario = Scenario.objects.create(
@@ -787,7 +787,7 @@ class SpendingStrategyItemModelTest(TestCase):
             "mean": None,
             "stdev": None,
             "lower": None,
-            "upper": None
+            "upper": None,
         }
 
         cls.duration_dist = {
@@ -796,7 +796,7 @@ class SpendingStrategyItemModelTest(TestCase):
             "mean": None,
             "stdev": None,
             "lower": None,
-            "upper": None
+            "upper": None,
         }
 
         cls.discretionary_expense = EventSeries.objects.create(
@@ -863,7 +863,7 @@ class RMDStrategyItemModelTest(TestCase):
             "mean": None,
             "stdev": None,
             "lower": None,
-            "upper": None
+            "upper": None,
         }
 
         cls.inflation_dist = {
@@ -872,7 +872,7 @@ class RMDStrategyItemModelTest(TestCase):
             "mean": None,
             "stdev": None,
             "lower": None,
-            "upper": None
+            "upper": None,
         }
 
         cls.scenario = Scenario.objects.create(
@@ -893,7 +893,7 @@ class RMDStrategyItemModelTest(TestCase):
             "mean": None,
             "stdev": None,
             "lower": None,
-            "upper": None
+            "upper": None,
         }
 
         cls.income_dist = {
@@ -902,7 +902,7 @@ class RMDStrategyItemModelTest(TestCase):
             "mean": None,
             "stdev": None,
             "lower": None,
-            "upper": None
+            "upper": None,
         }
 
         cls.investment_type = InvestmentType.objects.create(
@@ -963,7 +963,7 @@ class ScenarioModelTest(TestCase):
             "mean": None,
             "stdev": None,
             "lower": None,
-            "upper": None
+            "upper": None,
         }
         cls.spouse_life_expectancy_dist = {
             "type": "fixed",
@@ -971,7 +971,7 @@ class ScenarioModelTest(TestCase):
             "mean": None,
             "stdev": None,
             "lower": None,
-            "upper": None
+            "upper": None,
         }
         cls.inflation_dist = {
             "type": "fixed",
@@ -979,7 +979,7 @@ class ScenarioModelTest(TestCase):
             "mean": None,
             "stdev": None,
             "lower": None,
-            "upper": None
+            "upper": None,
         }
 
     def test_individual_scenario_creation(self):
