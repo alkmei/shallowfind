@@ -597,6 +597,7 @@ class Scenario(models.Model):
 
     # Basic information
     name = models.CharField(max_length=200)
+    description = models.TextField(blank=True, null=True, max_length=1000)
     marital_status = models.CharField(
         max_length=10, choices=MARITAL_STATUS_CHOICES, default="individual"
     )
