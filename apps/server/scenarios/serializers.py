@@ -211,6 +211,7 @@ class ScenarioSerializer(serializers.ModelSerializer):
         fields = [
             "id",
             "name",
+            "description",
             "marital_status",
             "user_birth_year",
             "spouse_birth_year",

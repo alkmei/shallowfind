@@ -248,6 +248,11 @@ export interface PatchedScenario {
   readonly id?: number;
   /** @maxLength 200 */
   name?: string;
+  /**
+   * @maxLength 1000
+   * @nullable
+   */
+  description?: string | null;
   maritalStatus?: MaritalStatusEnum;
   /**
    * @minimum 1900
@@ -453,6 +458,11 @@ export interface Scenario {
   readonly id: number;
   /** @maxLength 200 */
   name: string;
+  /**
+   * @maxLength 1000
+   * @nullable
+   */
+  description?: string | null;
   maritalStatus?: MaritalStatusEnum;
   /**
    * @minimum 1900

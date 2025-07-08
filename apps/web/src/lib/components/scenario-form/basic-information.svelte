@@ -34,6 +34,15 @@
     <Form.Description>Enter a unique name for your scenario.</Form.Description>
     <Form.FieldErrors />
   </Form.Field>
+  <Form.Field {form} name="description">
+    <Form.Control>
+      {#snippet children({ props })}
+        <Form.Label>Marital Status</Form.Label>
+        <Checkbox {...props} bind:checked={isMarried} />
+      {/snippet}
+    </Form.Control>
+    <Form.FieldErrors />
+  </Form.Field>
   <Form.Field {form} name="maritalStatus">
     <Form.Control>
       {#snippet children({ props })}

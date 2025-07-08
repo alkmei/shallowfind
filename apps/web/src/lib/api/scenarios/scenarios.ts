@@ -115,6 +115,9 @@ export const scenariosCreate = (
   const formUrlEncoded = new URLSearchParams();
   formUrlEncoded.append(`id`, scenario.id.toString());
   formUrlEncoded.append(`name`, scenario.name);
+  if (scenario.description !== undefined && scenario.description !== null) {
+    formUrlEncoded.append(`description`, scenario.description);
+  }
   if (scenario.maritalStatus !== undefined) {
     formUrlEncoded.append(`maritalStatus`, scenario.maritalStatus);
   }
@@ -331,6 +334,9 @@ export const scenariosUpdate = (
   const formUrlEncoded = new URLSearchParams();
   formUrlEncoded.append(`id`, scenario.id.toString());
   formUrlEncoded.append(`name`, scenario.name);
+  if (scenario.description !== undefined && scenario.description !== null) {
+    formUrlEncoded.append(`description`, scenario.description);
+  }
   if (scenario.maritalStatus !== undefined) {
     formUrlEncoded.append(`maritalStatus`, scenario.maritalStatus);
   }
@@ -475,6 +481,9 @@ export const scenariosPartialUpdate = (
   }
   if (patchedScenario.name !== undefined) {
     formUrlEncoded.append(`name`, patchedScenario.name);
+  }
+  if (patchedScenario.description !== undefined && patchedScenario.description !== null) {
+    formUrlEncoded.append(`description`, patchedScenario.description);
   }
   if (patchedScenario.maritalStatus !== undefined) {
     formUrlEncoded.append(`maritalStatus`, patchedScenario.maritalStatus);
@@ -732,6 +741,9 @@ export const scenariosCloneCreate = (
   const formUrlEncoded = new URLSearchParams();
   formUrlEncoded.append(`id`, scenario.id.toString());
   formUrlEncoded.append(`name`, scenario.name);
+  if (scenario.description !== undefined && scenario.description !== null) {
+    formUrlEncoded.append(`description`, scenario.description);
+  }
   if (scenario.maritalStatus !== undefined) {
     formUrlEncoded.append(`maritalStatus`, scenario.maritalStatus);
   }
@@ -947,6 +959,9 @@ export const scenariosSimulateCreate = (
   const formUrlEncoded = new URLSearchParams();
   formUrlEncoded.append(`id`, scenario.id.toString());
   formUrlEncoded.append(`name`, scenario.name);
+  if (scenario.description !== undefined && scenario.description !== null) {
+    formUrlEncoded.append(`description`, scenario.description);
+  }
   if (scenario.maritalStatus !== undefined) {
     formUrlEncoded.append(`maritalStatus`, scenario.maritalStatus);
   }
@@ -1171,6 +1186,9 @@ export const scenariosImportScenarioCreate = (
   const formUrlEncoded = new URLSearchParams();
   formUrlEncoded.append(`id`, scenario.id.toString());
   formUrlEncoded.append(`name`, scenario.name);
+  if (scenario.description !== undefined && scenario.description !== null) {
+    formUrlEncoded.append(`description`, scenario.description);
+  }
   if (scenario.maritalStatus !== undefined) {
     formUrlEncoded.append(`maritalStatus`, scenario.maritalStatus);
   }

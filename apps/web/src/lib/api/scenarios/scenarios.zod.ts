@@ -12,6 +12,7 @@ import { z as zod } from 'zod';
 Provides list, create, retrieve, update, destroy actions.
  */
 export const scenariosListResponseNameMax = 200;
+export const scenariosListResponseDescriptionMax = 1000;
 export const scenariosListResponseUserBirthYearMin = 1900;
 
 export const scenariosListResponseUserBirthYearMax = 2025;
@@ -56,6 +57,7 @@ export const scenariosListResponseRothConversionStrategyItemsItemOrderMax = 9223
 export const scenariosListResponseItem = zod.object({
   id: zod.number(),
   name: zod.string().max(scenariosListResponseNameMax),
+  description: zod.string().max(scenariosListResponseDescriptionMax).nullish(),
   maritalStatus: zod
     .enum(['individual', 'couple'])
     .optional()
@@ -357,6 +359,7 @@ export const scenariosListResponse = zod.array(scenariosListResponseItem);
 Provides list, create, retrieve, update, destroy actions.
  */
 export const scenariosCreateBodyNameMax = 200;
+export const scenariosCreateBodyDescriptionMax = 1000;
 export const scenariosCreateBodyUserBirthYearMin = 1900;
 
 export const scenariosCreateBodyUserBirthYearMax = 2025;
@@ -388,6 +391,7 @@ export const scenariosCreateBodyEventSeriesItemMaxCashRegExp = new RegExp(
 
 export const scenariosCreateBody = zod.object({
   name: zod.string().max(scenariosCreateBodyNameMax),
+  description: zod.string().max(scenariosCreateBodyDescriptionMax).nullish(),
   maritalStatus: zod
     .enum(['individual', 'couple'])
     .optional()
@@ -652,6 +656,7 @@ export const scenariosRetrieveParams = zod.object({
 });
 
 export const scenariosRetrieveResponseNameMax = 200;
+export const scenariosRetrieveResponseDescriptionMax = 1000;
 export const scenariosRetrieveResponseUserBirthYearMin = 1900;
 
 export const scenariosRetrieveResponseUserBirthYearMax = 2025;
@@ -698,6 +703,7 @@ export const scenariosRetrieveResponseRothConversionStrategyItemsItemOrderMax = 
 export const scenariosRetrieveResponse = zod.object({
   id: zod.number(),
   name: zod.string().max(scenariosRetrieveResponseNameMax),
+  description: zod.string().max(scenariosRetrieveResponseDescriptionMax).nullish(),
   maritalStatus: zod
     .enum(['individual', 'couple'])
     .optional()
@@ -1002,6 +1008,7 @@ export const scenariosUpdateParams = zod.object({
 });
 
 export const scenariosUpdateBodyNameMax = 200;
+export const scenariosUpdateBodyDescriptionMax = 1000;
 export const scenariosUpdateBodyUserBirthYearMin = 1900;
 
 export const scenariosUpdateBodyUserBirthYearMax = 2025;
@@ -1033,6 +1040,7 @@ export const scenariosUpdateBodyEventSeriesItemMaxCashRegExp = new RegExp(
 
 export const scenariosUpdateBody = zod.object({
   name: zod.string().max(scenariosUpdateBodyNameMax),
+  description: zod.string().max(scenariosUpdateBodyDescriptionMax).nullish(),
   maritalStatus: zod
     .enum(['individual', 'couple'])
     .optional()
@@ -1289,6 +1297,7 @@ export const scenariosUpdateBody = zod.object({
 });
 
 export const scenariosUpdateResponseNameMax = 200;
+export const scenariosUpdateResponseDescriptionMax = 1000;
 export const scenariosUpdateResponseUserBirthYearMin = 1900;
 
 export const scenariosUpdateResponseUserBirthYearMax = 2025;
@@ -1335,6 +1344,7 @@ export const scenariosUpdateResponseRothConversionStrategyItemsItemOrderMax = 92
 export const scenariosUpdateResponse = zod.object({
   id: zod.number(),
   name: zod.string().max(scenariosUpdateResponseNameMax),
+  description: zod.string().max(scenariosUpdateResponseDescriptionMax).nullish(),
   maritalStatus: zod
     .enum(['individual', 'couple'])
     .optional()
@@ -1639,6 +1649,7 @@ export const scenariosPartialUpdateParams = zod.object({
 });
 
 export const scenariosPartialUpdateBodyNameMax = 200;
+export const scenariosPartialUpdateBodyDescriptionMax = 1000;
 export const scenariosPartialUpdateBodyUserBirthYearMin = 1900;
 
 export const scenariosPartialUpdateBodyUserBirthYearMax = 2025;
@@ -1672,6 +1683,7 @@ export const scenariosPartialUpdateBodyEventSeriesItemMaxCashRegExp = new RegExp
 
 export const scenariosPartialUpdateBody = zod.object({
   name: zod.string().max(scenariosPartialUpdateBodyNameMax).optional(),
+  description: zod.string().max(scenariosPartialUpdateBodyDescriptionMax).nullish(),
   maritalStatus: zod
     .enum(['individual', 'couple'])
     .optional()
@@ -1942,6 +1954,7 @@ export const scenariosPartialUpdateBody = zod.object({
 });
 
 export const scenariosPartialUpdateResponseNameMax = 200;
+export const scenariosPartialUpdateResponseDescriptionMax = 1000;
 export const scenariosPartialUpdateResponseUserBirthYearMin = 1900;
 
 export const scenariosPartialUpdateResponseUserBirthYearMax = 2025;
@@ -1988,6 +2001,7 @@ export const scenariosPartialUpdateResponseRothConversionStrategyItemsItemOrderM
 export const scenariosPartialUpdateResponse = zod.object({
   id: zod.number(),
   name: zod.string().max(scenariosPartialUpdateResponseNameMax),
+  description: zod.string().max(scenariosPartialUpdateResponseDescriptionMax).nullish(),
   maritalStatus: zod
     .enum(['individual', 'couple'])
     .optional()
@@ -2302,6 +2316,7 @@ export const scenariosCloneCreateParams = zod.object({
 });
 
 export const scenariosCloneCreateBodyNameMax = 200;
+export const scenariosCloneCreateBodyDescriptionMax = 1000;
 export const scenariosCloneCreateBodyUserBirthYearMin = 1900;
 
 export const scenariosCloneCreateBodyUserBirthYearMax = 2025;
@@ -2335,6 +2350,7 @@ export const scenariosCloneCreateBodyEventSeriesItemMaxCashRegExp = new RegExp(
 
 export const scenariosCloneCreateBody = zod.object({
   name: zod.string().max(scenariosCloneCreateBodyNameMax),
+  description: zod.string().max(scenariosCloneCreateBodyDescriptionMax).nullish(),
   maritalStatus: zod
     .enum(['individual', 'couple'])
     .optional()
@@ -2593,6 +2609,7 @@ export const scenariosCloneCreateBody = zod.object({
 });
 
 export const scenariosCloneCreateResponseNameMax = 200;
+export const scenariosCloneCreateResponseDescriptionMax = 1000;
 export const scenariosCloneCreateResponseUserBirthYearMin = 1900;
 
 export const scenariosCloneCreateResponseUserBirthYearMax = 2025;
@@ -2639,6 +2656,7 @@ export const scenariosCloneCreateResponseRothConversionStrategyItemsItemOrderMax
 export const scenariosCloneCreateResponse = zod.object({
   id: zod.number(),
   name: zod.string().max(scenariosCloneCreateResponseNameMax),
+  description: zod.string().max(scenariosCloneCreateResponseDescriptionMax).nullish(),
   maritalStatus: zod
     .enum(['individual', 'couple'])
     .optional()
@@ -2945,6 +2963,7 @@ export const scenariosExportRetrieveParams = zod.object({
 });
 
 export const scenariosExportRetrieveResponseNameMax = 200;
+export const scenariosExportRetrieveResponseDescriptionMax = 1000;
 export const scenariosExportRetrieveResponseUserBirthYearMin = 1900;
 
 export const scenariosExportRetrieveResponseUserBirthYearMax = 2025;
@@ -2991,6 +3010,7 @@ export const scenariosExportRetrieveResponseRothConversionStrategyItemsItemOrder
 export const scenariosExportRetrieveResponse = zod.object({
   id: zod.number(),
   name: zod.string().max(scenariosExportRetrieveResponseNameMax),
+  description: zod.string().max(scenariosExportRetrieveResponseDescriptionMax).nullish(),
   maritalStatus: zod
     .enum(['individual', 'couple'])
     .optional()
@@ -3297,6 +3317,7 @@ export const scenariosSimulateCreateParams = zod.object({
 });
 
 export const scenariosSimulateCreateBodyNameMax = 200;
+export const scenariosSimulateCreateBodyDescriptionMax = 1000;
 export const scenariosSimulateCreateBodyUserBirthYearMin = 1900;
 
 export const scenariosSimulateCreateBodyUserBirthYearMax = 2025;
@@ -3330,6 +3351,7 @@ export const scenariosSimulateCreateBodyEventSeriesItemMaxCashRegExp = new RegEx
 
 export const scenariosSimulateCreateBody = zod.object({
   name: zod.string().max(scenariosSimulateCreateBodyNameMax),
+  description: zod.string().max(scenariosSimulateCreateBodyDescriptionMax).nullish(),
   maritalStatus: zod
     .enum(['individual', 'couple'])
     .optional()
@@ -3591,6 +3613,7 @@ export const scenariosSimulateCreateBody = zod.object({
 });
 
 export const scenariosSimulateCreateResponseNameMax = 200;
+export const scenariosSimulateCreateResponseDescriptionMax = 1000;
 export const scenariosSimulateCreateResponseUserBirthYearMin = 1900;
 
 export const scenariosSimulateCreateResponseUserBirthYearMax = 2025;
@@ -3637,6 +3660,7 @@ export const scenariosSimulateCreateResponseRothConversionStrategyItemsItemOrder
 export const scenariosSimulateCreateResponse = zod.object({
   id: zod.number(),
   name: zod.string().max(scenariosSimulateCreateResponseNameMax),
+  description: zod.string().max(scenariosSimulateCreateResponseDescriptionMax).nullish(),
   maritalStatus: zod
     .enum(['individual', 'couple'])
     .optional()
@@ -3943,6 +3967,7 @@ export const scenariosValidateScenarioRetrieveParams = zod.object({
 });
 
 export const scenariosValidateScenarioRetrieveResponseNameMax = 200;
+export const scenariosValidateScenarioRetrieveResponseDescriptionMax = 1000;
 export const scenariosValidateScenarioRetrieveResponseUserBirthYearMin = 1900;
 
 export const scenariosValidateScenarioRetrieveResponseUserBirthYearMax = 2025;
@@ -3988,6 +4013,7 @@ export const scenariosValidateScenarioRetrieveResponseRothConversionStrategyItem
 export const scenariosValidateScenarioRetrieveResponse = zod.object({
   id: zod.number(),
   name: zod.string().max(scenariosValidateScenarioRetrieveResponseNameMax),
+  description: zod.string().max(scenariosValidateScenarioRetrieveResponseDescriptionMax).nullish(),
   maritalStatus: zod
     .enum(['individual', 'couple'])
     .optional()
@@ -4296,6 +4322,7 @@ export const scenariosValidateScenarioRetrieveResponse = zod.object({
  * Import scenario from YAML file
  */
 export const scenariosImportScenarioCreateBodyNameMax = 200;
+export const scenariosImportScenarioCreateBodyDescriptionMax = 1000;
 export const scenariosImportScenarioCreateBodyUserBirthYearMin = 1900;
 
 export const scenariosImportScenarioCreateBodyUserBirthYearMax = 2025;
@@ -4329,6 +4356,7 @@ export const scenariosImportScenarioCreateBodyEventSeriesItemMaxCashRegExp = new
 
 export const scenariosImportScenarioCreateBody = zod.object({
   name: zod.string().max(scenariosImportScenarioCreateBodyNameMax),
+  description: zod.string().max(scenariosImportScenarioCreateBodyDescriptionMax).nullish(),
   maritalStatus: zod
     .enum(['individual', 'couple'])
     .optional()
@@ -4594,6 +4622,7 @@ export const scenariosImportScenarioCreateBody = zod.object({
 });
 
 export const scenariosImportScenarioCreateResponseNameMax = 200;
+export const scenariosImportScenarioCreateResponseDescriptionMax = 1000;
 export const scenariosImportScenarioCreateResponseUserBirthYearMin = 1900;
 
 export const scenariosImportScenarioCreateResponseUserBirthYearMax = 2025;
@@ -4640,6 +4669,7 @@ export const scenariosImportScenarioCreateResponseRothConversionStrategyItemsIte
 export const scenariosImportScenarioCreateResponse = zod.object({
   id: zod.number(),
   name: zod.string().max(scenariosImportScenarioCreateResponseNameMax),
+  description: zod.string().max(scenariosImportScenarioCreateResponseDescriptionMax).nullish(),
   maritalStatus: zod
     .enum(['individual', 'couple'])
     .optional()
