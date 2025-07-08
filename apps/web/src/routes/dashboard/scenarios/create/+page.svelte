@@ -1,13 +1,13 @@
 <script lang="ts">
   import BasicInformation from '$lib/components/scenario-form/basic-information.svelte';
-  import * as Form from '$lib/components/ui/form';
-  import { get } from 'svelte/store';
   import { scenariosCreateBody } from '$lib/api/scenarios/scenarios.zod';
   import { z } from 'zod';
   import { zod } from 'sveltekit-superforms/adapters';
   import { defaults, superForm, type SuperForm } from 'sveltekit-superforms';
   import { createScenariosCreate } from '$lib/api/scenarios/scenarios';
   import { goto } from '$app/navigation';
+  import Button from '$lib/components/ui/button/button.svelte';
+  import { Progress } from '$lib/components/ui/progress';
 
   type ScenarioFormData = z.infer<typeof scenariosCreateBody>;
 
@@ -51,11 +51,24 @@
 </script>
 
 <form method="POST" use:enhance>
+  <div class="mb-6">
+    <h1 class="mb-4 text-2xl font-bold">Create Scenario</h1>
+    <Progress max={formState.totalSteps - 1} value={formState.currentStep} />
+  </div>
+
   {#if formState.currentStep === 0}
-    <!-- Pass the form data store and other form utilities -->
     <BasicInformation {form} />
   {/if}
-  <Form.Button class="mt-4">Create Scenario</Form.Button>
+  <div class="mt-4">
+    {#if formState.currentStep > 0}
+      <Button variant="outline" onclick={() => (formState.currentStep -= 1)}>Previous</Button>
+    {/if}
+    {#if formState.currentStep < formState.totalSteps - 1}
+      <Button type="button" onclick={() => (formState.currentStep += 1)}>Next</Button>
+    {:else}
+      <Button type="submit">Submit</Button>
+    {/if}
+  </div>
 </form>
 
 <!-- Use $formData to access the reactive form data -->
