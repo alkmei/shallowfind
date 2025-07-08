@@ -1,11 +1,11 @@
 <script lang="ts">
   import type { scenariosCreateBody } from '$lib/api/scenarios/scenarios.zod';
   import * as Form from '$lib/components/ui/form';
-  import { Input } from '$lib/components/ui/input';
   import type { SuperForm } from 'sveltekit-superforms';
   import z from 'zod';
-  import Checkbox from '../ui/checkbox/checkbox.svelte';
-  import Textarea from '../ui/textarea/textarea.svelte';
+  import { Checkbox } from '../ui/checkbox';
+  import { Input } from '../ui/input';
+  import LifeExpectancy from './life-expectancy.svelte';
 
   type ScenariosCreateBody = z.infer<typeof scenariosCreateBody>;
 
@@ -23,35 +23,24 @@
     },
     set value(newValue: boolean) {
       $formData.maritalStatus = newValue ? 'couple' : 'individual';
+      if (!newValue) {
+        $formData.spouseBirthYear = null;
+        $formData.spouseLifeExpectancy = null;
+      } else {
+        $formData.spouseLifeExpectancy = {
+          type: 'fixed'
+        };
+      }
     }
   });
 </script>
 
 <div class="flex flex-col gap-3">
-  <h2 class="text-xl font-bold">Basic Information</h2>
-  <Form.Field {form} name="name">
-    <Form.Control>
-      {#snippet children({ props })}
-        <Form.Label>Scenario Name <span class="text-red-500">*</span></Form.Label>
-        <Input {...props} bind:value={$formData.name} />
-      {/snippet}
-    </Form.Control>
-    <Form.Description>Enter a unique name for your scenario.</Form.Description>
-    <Form.FieldErrors />
-  </Form.Field>
-  <Form.Field {form} name="description">
-    <Form.Control>
-      {#snippet children({ props })}
-        <Form.Label>Description</Form.Label>
-        <Textarea {...props} bind:value={$formData.description} />
-      {/snippet}
-    </Form.Control>
-    <Form.FieldErrors />
-  </Form.Field>
+  <h2 class="text-xl font-bold">Demographic Information</h2>
   <Form.Field {form} name="maritalStatus" class="flex items-center gap-2">
     <Form.Control>
       {#snippet children({ props })}
-        <Form.Label>Marital Status</Form.Label>
+        <Form.Label>is Married?</Form.Label>
         <Checkbox {...props} bind:checked={isMarried.value} />
       {/snippet}
     </Form.Control>
@@ -94,4 +83,5 @@
       </Form.Field>
     {/if}
   </div>
+  <LifeExpectancy {form} isMarried={isMarried.value} />
 </div>

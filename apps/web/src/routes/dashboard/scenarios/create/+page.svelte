@@ -1,5 +1,5 @@
 <script lang="ts">
-  import BasicInformation from '$lib/components/scenario-form/basic-information.svelte';
+  import BasicInformation from '$lib/components/scenario-form/basic-information-form.svelte';
   import { scenariosCreateBody } from '$lib/api/scenarios/scenarios.zod';
   import { z } from 'zod';
   import { zod } from 'sveltekit-superforms/adapters';
@@ -8,6 +8,7 @@
   import { goto } from '$app/navigation';
   import Button from '$lib/components/ui/button/button.svelte';
   import { Progress } from '$lib/components/ui/progress';
+  import DemographicsForm from '$lib/components/scenario-form/demographics-form.svelte';
 
   type ScenarioFormData = z.infer<typeof scenariosCreateBody>;
 
@@ -58,6 +59,8 @@
 
   {#if formState.currentStep === 0}
     <BasicInformation {form} />
+  {:else if formState.currentStep === 1}
+    <DemographicsForm {form} />
   {/if}
   <div class="mt-4">
     {#if formState.currentStep > 0}
