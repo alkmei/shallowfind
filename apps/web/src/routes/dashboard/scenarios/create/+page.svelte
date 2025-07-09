@@ -9,8 +9,7 @@
   import Button from '$lib/components/ui/button/button.svelte';
   import { Progress } from '$lib/components/ui/progress';
   import DemographicsForm from '$lib/components/scenario-form/demographics-form.svelte';
-
-  type ScenarioFormData = z.infer<typeof scenariosCreateBody>;
+  import FinancialSettingsForm from '$lib/components/scenario-form/financial-settings-form.svelte';
 
   const mutation = createScenariosCreate({
     mutation: {
@@ -61,6 +60,8 @@
     <BasicInformation {form} />
   {:else if formState.currentStep === 1}
     <DemographicsForm {form} />
+  {:else if formState.currentStep === 2}
+    <FinancialSettingsForm {form} />
   {/if}
   <div class="mt-4">
     {#if formState.currentStep > 0}

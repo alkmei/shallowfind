@@ -23,14 +23,6 @@
     },
     set value(newValue: boolean) {
       $formData.maritalStatus = newValue ? 'couple' : 'individual';
-      if (!newValue) {
-        $formData.spouseBirthYear = null;
-        $formData.spouseLifeExpectancy = null;
-      } else {
-        $formData.spouseLifeExpectancy = {
-          type: 'fixed'
-        };
-      }
     }
   });
 </script>

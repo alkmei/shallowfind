@@ -25,12 +25,6 @@
     },
     set value(newValue: boolean) {
       $formData.userLifeExpectancy.type = newValue ? 'normal' : 'fixed';
-      if (newValue) {
-        $formData.userLifeExpectancy.value = null;
-      } else {
-        $formData.userLifeExpectancy.mean = null;
-        $formData.userLifeExpectancy.stdev = null;
-      }
     }
   });
 
@@ -41,12 +35,6 @@
     set value(newValue: boolean) {
       if (!$formData.spouseLifeExpectancy) return;
       $formData.spouseLifeExpectancy.type = newValue ? 'normal' : 'fixed';
-      if (newValue) {
-        $formData.spouseLifeExpectancy.value = null;
-      } else {
-        $formData.spouseLifeExpectancy.mean = null;
-        $formData.spouseLifeExpectancy.stdev = null;
-      }
     }
   });
 </script>

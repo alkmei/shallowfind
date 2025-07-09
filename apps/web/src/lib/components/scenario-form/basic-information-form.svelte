@@ -4,7 +4,6 @@
   import { Input } from '$lib/components/ui/input';
   import type { SuperForm } from 'sveltekit-superforms';
   import z from 'zod';
-  import Checkbox from '../ui/checkbox/checkbox.svelte';
   import Textarea from '../ui/textarea/textarea.svelte';
 
   type ScenariosCreateBody = z.infer<typeof scenariosCreateBody>;
