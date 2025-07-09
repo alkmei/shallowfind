@@ -5,13 +5,19 @@
   import z from 'zod';
   import * as Tabs from '$lib/components/ui/tabs';
   import { Input } from '../ui/input';
+  import { Switch } from '../ui/switch';
+  import { Label } from '../ui/label';
 
   type ScenariosCreateBody = z.infer<typeof scenariosCreateBody>;
 
   const {
-    form
+    form,
+    isRothConversionEnabled = $bindable()
   }: {
     form: SuperForm<ScenariosCreateBody>;
+    isRothConversionEnabled: {
+      enabled: boolean;
+    };
   } = $props();
   const { form: formData } = form;
 </script>
@@ -102,4 +108,31 @@
     </Form.Control>
     <Form.FieldErrors />
   </Form.Field>
+
+  <h2 class="text-xl font-bold">Roth Conversion Optimizer</h2>
+
+  <Label>Roth Conversion Optimizer</Label>
+  <Switch bind:checked={isRothConversionEnabled.enabled} />
+  {#if isRothConversionEnabled.enabled}
+    <div class="flex flex-row gap-3">
+      <Form.Field {form} name="rothConversionStart" class="flex-grow">
+        <Form.Control>
+          <Form.Label>Conversion Start Year</Form.Label>
+          <Input
+            type="number"
+            placeholder="Start Year"
+            bind:value={$formData.rothConversionStart}
+          />
+        </Form.Control>
+        <Form.FieldErrors />
+      </Form.Field>
+      <Form.Field {form} name="rothConversionEnd" class="flex-grow">
+        <Form.Control>
+          <Form.Label>Conversion End Year</Form.Label>
+          <Input type="number" placeholder="End Year" bind:value={$formData.rothConversionEnd} />
+        </Form.Control>
+        <Form.FieldErrors />
+      </Form.Field>
+    </div>
+  {/if}
 </div>

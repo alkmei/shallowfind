@@ -40,16 +40,14 @@
   interface FormState {
     currentStep: number;
     totalSteps: number;
-    isValid: Record<number, boolean>;
-    touched: Record<number, boolean>;
   }
 
   const formState = $state<FormState>({
     currentStep: 0,
-    totalSteps: 7,
-    isValid: {},
-    touched: {}
+    totalSteps: 7
   });
+
+  let isRothConversionEnabled = $state({ enabled: false });
 </script>
 
 <form method="POST" use:enhance>
@@ -63,7 +61,7 @@
   {:else if formState.currentStep === 1}
     <DemographicsForm {form} />
   {:else if formState.currentStep === 2}
-    <FinancialSettingsForm {form} />
+    <FinancialSettingsForm {form} bind:isRothConversionEnabled />
   {/if}
   <div class="mt-4">
     {#if formState.currentStep > 0}
