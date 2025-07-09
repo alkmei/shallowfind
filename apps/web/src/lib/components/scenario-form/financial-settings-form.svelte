@@ -121,6 +121,8 @@
           <Input
             type="number"
             placeholder="Start Year"
+            min={new Date().getFullYear()}
+            max={new Date().getFullYear() + 100}
             bind:value={$formData.rothConversionStart}
           />
         </Form.Control>
@@ -129,7 +131,15 @@
       <Form.Field {form} name="rothConversionEnd" class="flex-grow">
         <Form.Control>
           <Form.Label>Conversion End Year</Form.Label>
-          <Input type="number" placeholder="End Year" bind:value={$formData.rothConversionEnd} />
+          <Input
+            type="number"
+            placeholder="End Year"
+            min={$formData.rothConversionStart
+              ? Number($formData.rothConversionStart) + 1
+              : new Date().getFullYear() + 1}
+            max={new Date().getFullYear() + 100}
+            bind:value={$formData.rothConversionEnd}
+          />
         </Form.Control>
         <Form.FieldErrors />
       </Form.Field>
