@@ -123,11 +123,8 @@ export interface EventSeries {
   readonly startAfterEventName: string;
   durationDistribution: Distribution;
   type: EventSeriesTypeEnum;
-  /**
-   * @nullable
-   * @pattern ^-?\d{0,12}(?:\.\d{0,2})?$
-   */
-  initialAmount?: string | null;
+  /** @pattern ^-?\d{0,12}(?:\.\d{0,2})?$ */
+  initialAmount: string;
   /** @nullable */
   changeAmtOrPct?: EventSeriesChangeAmtOrPct;
   /** @nullable */
@@ -137,11 +134,8 @@ export interface EventSeries {
   userFraction?: number | null;
   socialSecurity?: boolean;
   discretionary?: boolean;
-  /**
-   * @nullable
-   * @pattern ^-?\d{0,12}(?:\.\d{0,2})?$
-   */
-  maxCash?: string | null;
+  /** @pattern ^-?\d{0,12}(?:\.\d{0,2})?$ */
+  maxCash: string;
   glidePath?: boolean;
   readonly assetAllocations: readonly AssetAllocation[];
   /** @nullable */

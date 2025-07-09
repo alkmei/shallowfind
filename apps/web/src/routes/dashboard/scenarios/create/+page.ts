@@ -37,6 +37,7 @@ export const load = async ({ params, fetch }) => {
     afterTaxContributionLimit: '',
     financialGoal: '',
     residenceState: 'AL',
+    rothConversionOpt: false,
     rothConversionStart: null,
     rothConversionEnd: null,
     investments: [],

@@ -10,6 +10,7 @@ from .models import (
     RMDStrategyItem,
     RothConversionStrategyItem,
 )
+from djmoney.contrib.django_rest_framework import MoneyField
 
 
 class DistributionSerializer(serializers.Serializer):
@@ -68,6 +69,9 @@ class InvestmentTypeSerializer(serializers.ModelSerializer):
 
 class InvestmentSerializer(serializers.ModelSerializer):
     investment_type = InvestmentTypeSerializer()
+    value = MoneyField(
+        max_digits=14, decimal_places=2, default_currency="USD", min_value=0
+    )
 
     class Meta:
         model = Investment
@@ -105,6 +109,22 @@ class EventSeriesSerializer(serializers.ModelSerializer):
     )
     asset_allocation_input = serializers.DictField(write_only=True, required=False)
     asset_allocation2_input = serializers.DictField(write_only=True, required=False)
+
+    initial_amount = MoneyField(
+        max_digits=14,
+        decimal_places=2,
+        default_currency="USD",
+        allow_null=True,
+        min_value=0,
+    )
+
+    max_cash = MoneyField(
+        max_digits=14,
+        decimal_places=2,
+        default_currency="USD",
+        allow_null=True,
+        min_value=0,
+    )
 
     class Meta:
         model = EventSeries
@@ -204,6 +224,13 @@ class ScenarioSerializer(serializers.ModelSerializer):
     )
     roth_conversion_strategy_input = serializers.ListField(
         child=serializers.CharField(), write_only=True, required=False
+    )
+
+    after_tax_contribution_limit = MoneyField(
+        max_digits=10, decimal_places=2, default_currency="USD", min_value=0
+    )
+    financial_goal = MoneyField(
+        max_digits=14, decimal_places=2, default_currency="USD", min_value=0
     )
 
     class Meta:

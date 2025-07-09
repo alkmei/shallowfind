@@ -11,13 +11,9 @@
   type ScenariosCreateBody = z.infer<typeof scenariosCreateBody>;
 
   const {
-    form,
-    isRothConversionEnabled = $bindable()
+    form
   }: {
     form: SuperForm<ScenariosCreateBody>;
-    isRothConversionEnabled: {
-      enabled: boolean;
-    };
   } = $props();
   const { form: formData } = form;
 </script>
@@ -112,8 +108,14 @@
   <h2 class="text-xl font-bold">Roth Conversion Optimizer</h2>
 
   <Label>Roth Conversion Optimizer</Label>
-  <Switch bind:checked={isRothConversionEnabled.enabled} />
-  {#if isRothConversionEnabled.enabled}
+  <Form.Field {form} name="rothConversionOpt">
+    <Form.Control>
+      <Form.Label>Enable Roth Conversion Optimization</Form.Label>
+      <Switch bind:checked={$formData.rothConversionOpt} />
+    </Form.Control>
+    <Form.FieldErrors />
+  </Form.Field>
+  {#if $formData.rothConversionOpt}
     <div class="flex flex-row gap-3">
       <Form.Field {form} name="rothConversionStart" class="flex-grow">
         <Form.Control>

@@ -10,6 +10,7 @@
   import { Progress } from '$lib/components/ui/progress';
   import DemographicsForm from '$lib/components/scenario-form/demographics-form.svelte';
   import FinancialSettingsForm from '$lib/components/scenario-form/financial-settings-form.svelte';
+  import InvestmentForm from '$lib/components/scenario-form/investment-form.svelte';
 
   let { data } = $props();
 
@@ -46,8 +47,6 @@
     currentStep: 0,
     totalSteps: 7
   });
-
-  let isRothConversionEnabled = $state({ enabled: false });
 </script>
 
 <form method="POST" use:enhance>
@@ -61,7 +60,9 @@
   {:else if formState.currentStep === 1}
     <DemographicsForm {form} />
   {:else if formState.currentStep === 2}
-    <FinancialSettingsForm {form} bind:isRothConversionEnabled />
+    <FinancialSettingsForm {form} />
+  {:else if formState.currentStep === 3}
+    <InvestmentForm {form} />
   {/if}
   <div class="mt-4">
     {#if formState.currentStep > 0}

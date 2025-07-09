@@ -267,10 +267,7 @@ export const scenariosListResponseItem = zod.object({
         .describe(
           '* `income` - Income\n* `expense` - Expense\n* `invest` - Invest\n* `rebalance` - Rebalance'
         ),
-      initialAmount: zod
-        .string()
-        .regex(scenariosListResponseEventSeriesItemInitialAmountRegExp)
-        .nullish(),
+      initialAmount: zod.string().regex(scenariosListResponseEventSeriesItemInitialAmountRegExp),
       changeAmtOrPct: zod
         .enum(['amount', 'percent'])
         .describe('* `amount` - Amount\n* `percent` - Percent')
@@ -294,7 +291,7 @@ export const scenariosListResponseItem = zod.object({
       userFraction: zod.number().nullish(),
       socialSecurity: zod.boolean().optional(),
       discretionary: zod.boolean().optional(),
-      maxCash: zod.string().regex(scenariosListResponseEventSeriesItemMaxCashRegExp).nullish(),
+      maxCash: zod.string().regex(scenariosListResponseEventSeriesItemMaxCashRegExp),
       glidePath: zod.boolean().optional(),
       assetAllocations: zod.array(
         zod.object({
@@ -599,10 +596,7 @@ export const scenariosCreateBody = zod.object({
         .describe(
           '* `income` - Income\n* `expense` - Expense\n* `invest` - Invest\n* `rebalance` - Rebalance'
         ),
-      initialAmount: zod
-        .string()
-        .regex(scenariosCreateBodyEventSeriesItemInitialAmountRegExp)
-        .nullish(),
+      initialAmount: zod.string().regex(scenariosCreateBodyEventSeriesItemInitialAmountRegExp),
       changeAmtOrPct: zod
         .enum(['amount', 'percent'])
         .describe('* `amount` - Amount\n* `percent` - Percent')
@@ -626,7 +620,7 @@ export const scenariosCreateBody = zod.object({
       userFraction: zod.number().nullish(),
       socialSecurity: zod.boolean().optional(),
       discretionary: zod.boolean().optional(),
-      maxCash: zod.string().regex(scenariosCreateBodyEventSeriesItemMaxCashRegExp).nullish(),
+      maxCash: zod.string().regex(scenariosCreateBodyEventSeriesItemMaxCashRegExp),
       glidePath: zod.boolean().optional(),
       assetAllocations: zod.array(
         zod.object({
@@ -915,8 +909,7 @@ export const scenariosRetrieveResponse = zod.object({
         ),
       initialAmount: zod
         .string()
-        .regex(scenariosRetrieveResponseEventSeriesItemInitialAmountRegExp)
-        .nullish(),
+        .regex(scenariosRetrieveResponseEventSeriesItemInitialAmountRegExp),
       changeAmtOrPct: zod
         .enum(['amount', 'percent'])
         .describe('* `amount` - Amount\n* `percent` - Percent')
@@ -940,7 +933,7 @@ export const scenariosRetrieveResponse = zod.object({
       userFraction: zod.number().nullish(),
       socialSecurity: zod.boolean().optional(),
       discretionary: zod.boolean().optional(),
-      maxCash: zod.string().regex(scenariosRetrieveResponseEventSeriesItemMaxCashRegExp).nullish(),
+      maxCash: zod.string().regex(scenariosRetrieveResponseEventSeriesItemMaxCashRegExp),
       glidePath: zod.boolean().optional(),
       assetAllocations: zod.array(
         zod.object({
@@ -1248,10 +1241,7 @@ export const scenariosUpdateBody = zod.object({
         .describe(
           '* `income` - Income\n* `expense` - Expense\n* `invest` - Invest\n* `rebalance` - Rebalance'
         ),
-      initialAmount: zod
-        .string()
-        .regex(scenariosUpdateBodyEventSeriesItemInitialAmountRegExp)
-        .nullish(),
+      initialAmount: zod.string().regex(scenariosUpdateBodyEventSeriesItemInitialAmountRegExp),
       changeAmtOrPct: zod
         .enum(['amount', 'percent'])
         .describe('* `amount` - Amount\n* `percent` - Percent')
@@ -1275,7 +1265,7 @@ export const scenariosUpdateBody = zod.object({
       userFraction: zod.number().nullish(),
       socialSecurity: zod.boolean().optional(),
       discretionary: zod.boolean().optional(),
-      maxCash: zod.string().regex(scenariosUpdateBodyEventSeriesItemMaxCashRegExp).nullish(),
+      maxCash: zod.string().regex(scenariosUpdateBodyEventSeriesItemMaxCashRegExp),
       glidePath: zod.boolean().optional(),
       assetAllocations: zod.array(
         zod.object({
@@ -1554,10 +1544,7 @@ export const scenariosUpdateResponse = zod.object({
         .describe(
           '* `income` - Income\n* `expense` - Expense\n* `invest` - Invest\n* `rebalance` - Rebalance'
         ),
-      initialAmount: zod
-        .string()
-        .regex(scenariosUpdateResponseEventSeriesItemInitialAmountRegExp)
-        .nullish(),
+      initialAmount: zod.string().regex(scenariosUpdateResponseEventSeriesItemInitialAmountRegExp),
       changeAmtOrPct: zod
         .enum(['amount', 'percent'])
         .describe('* `amount` - Amount\n* `percent` - Percent')
@@ -1581,7 +1568,7 @@ export const scenariosUpdateResponse = zod.object({
       userFraction: zod.number().nullish(),
       socialSecurity: zod.boolean().optional(),
       discretionary: zod.boolean().optional(),
-      maxCash: zod.string().regex(scenariosUpdateResponseEventSeriesItemMaxCashRegExp).nullish(),
+      maxCash: zod.string().regex(scenariosUpdateResponseEventSeriesItemMaxCashRegExp),
       glidePath: zod.boolean().optional(),
       assetAllocations: zod.array(
         zod.object({
@@ -1903,8 +1890,7 @@ export const scenariosPartialUpdateBody = zod.object({
           ),
         initialAmount: zod
           .string()
-          .regex(scenariosPartialUpdateBodyEventSeriesItemInitialAmountRegExp)
-          .nullish(),
+          .regex(scenariosPartialUpdateBodyEventSeriesItemInitialAmountRegExp),
         changeAmtOrPct: zod
           .enum(['amount', 'percent'])
           .describe('* `amount` - Amount\n* `percent` - Percent')
@@ -1928,10 +1914,7 @@ export const scenariosPartialUpdateBody = zod.object({
         userFraction: zod.number().nullish(),
         socialSecurity: zod.boolean().optional(),
         discretionary: zod.boolean().optional(),
-        maxCash: zod
-          .string()
-          .regex(scenariosPartialUpdateBodyEventSeriesItemMaxCashRegExp)
-          .nullish(),
+        maxCash: zod.string().regex(scenariosPartialUpdateBodyEventSeriesItemMaxCashRegExp),
         glidePath: zod.boolean().optional(),
         assetAllocations: zod.array(
           zod.object({
@@ -2213,8 +2196,7 @@ export const scenariosPartialUpdateResponse = zod.object({
         ),
       initialAmount: zod
         .string()
-        .regex(scenariosPartialUpdateResponseEventSeriesItemInitialAmountRegExp)
-        .nullish(),
+        .regex(scenariosPartialUpdateResponseEventSeriesItemInitialAmountRegExp),
       changeAmtOrPct: zod
         .enum(['amount', 'percent'])
         .describe('* `amount` - Amount\n* `percent` - Percent')
@@ -2238,10 +2220,7 @@ export const scenariosPartialUpdateResponse = zod.object({
       userFraction: zod.number().nullish(),
       socialSecurity: zod.boolean().optional(),
       discretionary: zod.boolean().optional(),
-      maxCash: zod
-        .string()
-        .regex(scenariosPartialUpdateResponseEventSeriesItemMaxCashRegExp)
-        .nullish(),
+      maxCash: zod.string().regex(scenariosPartialUpdateResponseEventSeriesItemMaxCashRegExp),
       glidePath: zod.boolean().optional(),
       assetAllocations: zod.array(
         zod.object({
@@ -2560,10 +2539,7 @@ export const scenariosCloneCreateBody = zod.object({
         .describe(
           '* `income` - Income\n* `expense` - Expense\n* `invest` - Invest\n* `rebalance` - Rebalance'
         ),
-      initialAmount: zod
-        .string()
-        .regex(scenariosCloneCreateBodyEventSeriesItemInitialAmountRegExp)
-        .nullish(),
+      initialAmount: zod.string().regex(scenariosCloneCreateBodyEventSeriesItemInitialAmountRegExp),
       changeAmtOrPct: zod
         .enum(['amount', 'percent'])
         .describe('* `amount` - Amount\n* `percent` - Percent')
@@ -2587,7 +2563,7 @@ export const scenariosCloneCreateBody = zod.object({
       userFraction: zod.number().nullish(),
       socialSecurity: zod.boolean().optional(),
       discretionary: zod.boolean().optional(),
-      maxCash: zod.string().regex(scenariosCloneCreateBodyEventSeriesItemMaxCashRegExp).nullish(),
+      maxCash: zod.string().regex(scenariosCloneCreateBodyEventSeriesItemMaxCashRegExp),
       glidePath: zod.boolean().optional(),
       assetAllocations: zod.array(
         zod.object({
@@ -2868,8 +2844,7 @@ export const scenariosCloneCreateResponse = zod.object({
         ),
       initialAmount: zod
         .string()
-        .regex(scenariosCloneCreateResponseEventSeriesItemInitialAmountRegExp)
-        .nullish(),
+        .regex(scenariosCloneCreateResponseEventSeriesItemInitialAmountRegExp),
       changeAmtOrPct: zod
         .enum(['amount', 'percent'])
         .describe('* `amount` - Amount\n* `percent` - Percent')
@@ -2893,10 +2868,7 @@ export const scenariosCloneCreateResponse = zod.object({
       userFraction: zod.number().nullish(),
       socialSecurity: zod.boolean().optional(),
       discretionary: zod.boolean().optional(),
-      maxCash: zod
-        .string()
-        .regex(scenariosCloneCreateResponseEventSeriesItemMaxCashRegExp)
-        .nullish(),
+      maxCash: zod.string().regex(scenariosCloneCreateResponseEventSeriesItemMaxCashRegExp),
       glidePath: zod.boolean().optional(),
       assetAllocations: zod.array(
         zod.object({
@@ -3222,8 +3194,7 @@ export const scenariosExportRetrieveResponse = zod.object({
         ),
       initialAmount: zod
         .string()
-        .regex(scenariosExportRetrieveResponseEventSeriesItemInitialAmountRegExp)
-        .nullish(),
+        .regex(scenariosExportRetrieveResponseEventSeriesItemInitialAmountRegExp),
       changeAmtOrPct: zod
         .enum(['amount', 'percent'])
         .describe('* `amount` - Amount\n* `percent` - Percent')
@@ -3247,10 +3218,7 @@ export const scenariosExportRetrieveResponse = zod.object({
       userFraction: zod.number().nullish(),
       socialSecurity: zod.boolean().optional(),
       discretionary: zod.boolean().optional(),
-      maxCash: zod
-        .string()
-        .regex(scenariosExportRetrieveResponseEventSeriesItemMaxCashRegExp)
-        .nullish(),
+      maxCash: zod.string().regex(scenariosExportRetrieveResponseEventSeriesItemMaxCashRegExp),
       glidePath: zod.boolean().optional(),
       assetAllocations: zod.array(
         zod.object({
@@ -3563,8 +3531,7 @@ export const scenariosSimulateCreateBody = zod.object({
         ),
       initialAmount: zod
         .string()
-        .regex(scenariosSimulateCreateBodyEventSeriesItemInitialAmountRegExp)
-        .nullish(),
+        .regex(scenariosSimulateCreateBodyEventSeriesItemInitialAmountRegExp),
       changeAmtOrPct: zod
         .enum(['amount', 'percent'])
         .describe('* `amount` - Amount\n* `percent` - Percent')
@@ -3588,10 +3555,7 @@ export const scenariosSimulateCreateBody = zod.object({
       userFraction: zod.number().nullish(),
       socialSecurity: zod.boolean().optional(),
       discretionary: zod.boolean().optional(),
-      maxCash: zod
-        .string()
-        .regex(scenariosSimulateCreateBodyEventSeriesItemMaxCashRegExp)
-        .nullish(),
+      maxCash: zod.string().regex(scenariosSimulateCreateBodyEventSeriesItemMaxCashRegExp),
       glidePath: zod.boolean().optional(),
       assetAllocations: zod.array(
         zod.object({
@@ -3872,8 +3836,7 @@ export const scenariosSimulateCreateResponse = zod.object({
         ),
       initialAmount: zod
         .string()
-        .regex(scenariosSimulateCreateResponseEventSeriesItemInitialAmountRegExp)
-        .nullish(),
+        .regex(scenariosSimulateCreateResponseEventSeriesItemInitialAmountRegExp),
       changeAmtOrPct: zod
         .enum(['amount', 'percent'])
         .describe('* `amount` - Amount\n* `percent` - Percent')
@@ -3897,10 +3860,7 @@ export const scenariosSimulateCreateResponse = zod.object({
       userFraction: zod.number().nullish(),
       socialSecurity: zod.boolean().optional(),
       discretionary: zod.boolean().optional(),
-      maxCash: zod
-        .string()
-        .regex(scenariosSimulateCreateResponseEventSeriesItemMaxCashRegExp)
-        .nullish(),
+      maxCash: zod.string().regex(scenariosSimulateCreateResponseEventSeriesItemMaxCashRegExp),
       glidePath: zod.boolean().optional(),
       assetAllocations: zod.array(
         zod.object({
@@ -4231,8 +4191,7 @@ export const scenariosValidateScenarioRetrieveResponse = zod.object({
         ),
       initialAmount: zod
         .string()
-        .regex(scenariosValidateScenarioRetrieveResponseEventSeriesItemInitialAmountRegExp)
-        .nullish(),
+        .regex(scenariosValidateScenarioRetrieveResponseEventSeriesItemInitialAmountRegExp),
       changeAmtOrPct: zod
         .enum(['amount', 'percent'])
         .describe('* `amount` - Amount\n* `percent` - Percent')
@@ -4258,8 +4217,7 @@ export const scenariosValidateScenarioRetrieveResponse = zod.object({
       discretionary: zod.boolean().optional(),
       maxCash: zod
         .string()
-        .regex(scenariosValidateScenarioRetrieveResponseEventSeriesItemMaxCashRegExp)
-        .nullish(),
+        .regex(scenariosValidateScenarioRetrieveResponseEventSeriesItemMaxCashRegExp),
       glidePath: zod.boolean().optional(),
       assetAllocations: zod.array(
         zod.object({
@@ -4572,8 +4530,7 @@ export const scenariosImportScenarioCreateBody = zod.object({
         ),
       initialAmount: zod
         .string()
-        .regex(scenariosImportScenarioCreateBodyEventSeriesItemInitialAmountRegExp)
-        .nullish(),
+        .regex(scenariosImportScenarioCreateBodyEventSeriesItemInitialAmountRegExp),
       changeAmtOrPct: zod
         .enum(['amount', 'percent'])
         .describe('* `amount` - Amount\n* `percent` - Percent')
@@ -4597,10 +4554,7 @@ export const scenariosImportScenarioCreateBody = zod.object({
       userFraction: zod.number().nullish(),
       socialSecurity: zod.boolean().optional(),
       discretionary: zod.boolean().optional(),
-      maxCash: zod
-        .string()
-        .regex(scenariosImportScenarioCreateBodyEventSeriesItemMaxCashRegExp)
-        .nullish(),
+      maxCash: zod.string().regex(scenariosImportScenarioCreateBodyEventSeriesItemMaxCashRegExp),
       glidePath: zod.boolean().optional(),
       assetAllocations: zod.array(
         zod.object({
@@ -4885,8 +4839,7 @@ export const scenariosImportScenarioCreateResponse = zod.object({
         ),
       initialAmount: zod
         .string()
-        .regex(scenariosImportScenarioCreateResponseEventSeriesItemInitialAmountRegExp)
-        .nullish(),
+        .regex(scenariosImportScenarioCreateResponseEventSeriesItemInitialAmountRegExp),
       changeAmtOrPct: zod
         .enum(['amount', 'percent'])
         .describe('* `amount` - Amount\n* `percent` - Percent')
@@ -4912,8 +4865,7 @@ export const scenariosImportScenarioCreateResponse = zod.object({
       discretionary: zod.boolean().optional(),
       maxCash: zod
         .string()
-        .regex(scenariosImportScenarioCreateResponseEventSeriesItemMaxCashRegExp)
-        .nullish(),
+        .regex(scenariosImportScenarioCreateResponseEventSeriesItemMaxCashRegExp),
       glidePath: zod.boolean().optional(),
       assetAllocations: zod.array(
         zod.object({
