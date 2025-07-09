@@ -156,7 +156,7 @@ class Investment(models.Model):
         "Scenario", on_delete=models.CASCADE, related_name="investments"
     )
     investment_type = models.ForeignKey(InvestmentType, on_delete=models.CASCADE)
-    value = MoneyField(max_digits=14, decimal_places=2, default_currency="USD")
+    value = MoneyField(max_digits=14, decimal_places=2, default_currency="USD", validators=[MinValueValidator(0)])
     tax_status = models.CharField(max_length=15, choices=TAX_STATUSES)
     investment_id = models.CharField(max_length=100)  # Unique identifier from YAML
 
@@ -621,9 +621,9 @@ class Scenario(models.Model):
     # Financial settings
     inflation_assumption: Distribution = DistributionField()
     after_tax_contribution_limit = MoneyField(
-        max_digits=10, decimal_places=2, default_currency="USD"
+        max_digits=10, decimal_places=2, default_currency="USD", validators=[MinValueValidator(0)]
     )
-    financial_goal = MoneyField(max_digits=14, decimal_places=2, default_currency="USD")
+    financial_goal = MoneyField(max_digits=14, decimal_places=2, default_currency="USD", validators=[MinValueValidator(0)])
     residence_state = models.CharField(max_length=2, choices=US_STATE_CHOICES)
 
     # Roth conversion settings
