@@ -11,6 +11,8 @@
   import DemographicsForm from '$lib/components/scenario-form/demographics-form.svelte';
   import FinancialSettingsForm from '$lib/components/scenario-form/financial-settings-form.svelte';
 
+  let { data } = $props();
+
   const mutation = createScenariosCreate({
     mutation: {
       onSuccess: () => {
@@ -23,7 +25,7 @@
   });
 
   // Destructure the form stores from superForm
-  const form = superForm(defaults(zod(scenariosCreateBody)), {
+  const form = superForm(data.form, {
     validators: zod(scenariosCreateBody),
     SPA: true,
     dataType: 'json',
