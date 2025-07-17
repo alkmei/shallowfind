@@ -90,6 +90,11 @@ export const DistributionTypeEnum = {
  */
 export type EventSeriesStartDistribution = Distribution | null;
 
+export type NullEnum = (typeof NullEnum)[keyof typeof NullEnum];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const NullEnum = {} as const;
+
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export const EventSeriesChangeAmtOrPct = {
   ...AmountOrPercentEnum,
@@ -123,8 +128,11 @@ export interface EventSeries {
   readonly startAfterEventName: string;
   durationDistribution: Distribution;
   type: EventSeriesTypeEnum;
-  /** @pattern ^-?\d{0,12}(?:\.\d{0,2})?$ */
-  initialAmount: string;
+  /**
+   * @nullable
+   * @pattern ^-?\d{0,12}(?:\.\d{0,2})?$
+   */
+  initialAmount: string | null;
   /** @nullable */
   changeAmtOrPct?: EventSeriesChangeAmtOrPct;
   /** @nullable */
@@ -134,8 +142,11 @@ export interface EventSeries {
   userFraction?: number | null;
   socialSecurity?: boolean;
   discretionary?: boolean;
-  /** @pattern ^-?\d{0,12}(?:\.\d{0,2})?$ */
-  maxCash: string;
+  /**
+   * @nullable
+   * @pattern ^-?\d{0,12}(?:\.\d{0,2})?$
+   */
+  maxCash: string | null;
   glidePath?: boolean;
   readonly assetAllocations: readonly AssetAllocation[];
   /** @nullable */
@@ -203,11 +214,6 @@ export const MaritalStatusEnum = {
   individual: 'individual',
   couple: 'couple'
 } as const;
-
-export type NullEnum = (typeof NullEnum)[keyof typeof NullEnum];
-
-// eslint-disable-next-line @typescript-eslint/no-redeclare
-export const NullEnum = {} as const;
 
 export interface PatchedAdminUser {
   readonly id?: number;

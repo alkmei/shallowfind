@@ -9,6 +9,7 @@
   import { Label } from '../ui/label';
   import { Input } from '../ui/input';
   import { Textarea } from '../ui/textarea';
+  import InvestmentTypeModal from './investment-type-modal.svelte';
 
   type ScenariosCreateBody = z.infer<typeof scenariosCreateBody>;
 
@@ -20,28 +21,7 @@
 <div class="flex flex-col gap-3">
   <div class="flex justify-between">
     <h2 class="grow text-xl font-bold">Investment Types</h2>
-    <Dialog.Root>
-      <Dialog.Trigger>
-        <Button class="w-48"><Plus /> New Investment Type</Button>
-      </Dialog.Trigger>
-      <Dialog.Content>
-        <Dialog.Title>Add New Investment Type</Dialog.Title>
-        <Dialog.Description>
-          Add a new investment type to categorize your investments. Names should be unique.
-        </Dialog.Description>
-        <div class="flex flex-col gap-3">
-          <Label for="name" class="text-right">Name</Label>
-          <Input id="name" />
-
-          <Label for="description" class="text-right">Description</Label>
-          <Textarea id="description" />
-        </div>
-
-        <Dialog.Footer>
-          <Button type="submit">Save changes</Button>
-        </Dialog.Footer>
-      </Dialog.Content>
-    </Dialog.Root>
+    <InvestmentTypeModal {investmentTypes} />
   </div>
   {#if investmentTypes.length > 0}
     <ul class="rounded border p-2">
