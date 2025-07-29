@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from shallowfind.modules.scenarios.router import router as scenario_router
+from shallowfind.controllers.scenario_controller import router as scenario_router
 
 app = FastAPI(
     title="Shallowfind",
@@ -9,7 +9,7 @@ app = FastAPI(
     redoc_url="/redoc",
 )
 
-app.include_router(scenario_router, prefix="/api/scenarios", tags=["Scenarios"])
+app.include_router(scenario_router, prefix="/api/v1", tags=["Scenarios"])
 
 
 @app.get("/")

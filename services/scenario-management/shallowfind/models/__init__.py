@@ -1,5 +1,4 @@
 from .base import Base
-from .user import User, UserProfile
 from .scenario import Scenario, ScenarioSharing
 from .investment import InvestmentType, Investment
 from .event_series import EventSeries, EventAssetAllocation
