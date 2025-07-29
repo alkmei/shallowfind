@@ -41,7 +41,6 @@ INSTALLED_APPS = [
     "corsheaders",
     "django_extensions",
     "drf_spectacular",
-    "djmoney",
     "users",
     "scenarios",
 ]

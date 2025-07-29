@@ -2,6 +2,7 @@ from django.test import TestCase
 from django.core.exceptions import ValidationError
 from django.contrib.auth import get_user_model
 from django.utils import timezone
+from decimal import Decimal
 
 from .models import (
     InvestmentType,
@@ -39,8 +40,8 @@ class DistributionJSONFieldTest(TestCase):
             user_birth_year=1985,
             user_life_expectancy=valid_dist,
             inflation_assumption=valid_dist,
-            after_tax_contribution_limit=7000,
-            financial_goal=10000,
+            after_tax_contribution_limit=Decimal('7000.00'),
+            financial_goal=Decimal('10000.00'),
             residence_state="NY",
             user=user,
         )
@@ -77,8 +78,8 @@ class DistributionJSONFieldTest(TestCase):
             user_birth_year=1985,
             user_life_expectancy=normal_dist,
             inflation_assumption=fixed_dist,
-            after_tax_contribution_limit=7000,
-            financial_goal=10000,
+            after_tax_contribution_limit=Decimal('7000.00'),
+            financial_goal=Decimal('10000.00'),
             residence_state="NY",
             user=user,
         )
@@ -116,8 +117,8 @@ class DistributionJSONFieldTest(TestCase):
             user_birth_year=1985,
             user_life_expectancy=fixed_dist,
             inflation_assumption=uniform_dist,
-            after_tax_contribution_limit=7000,
-            financial_goal=10000,
+            after_tax_contribution_limit=Decimal('7000.00'),
+            financial_goal=Decimal('10000.00'),
             residence_state="NY",
             user=user,
         )
@@ -157,8 +158,8 @@ class InvestmentTypeModelTest(TestCase):
             user_birth_year=1985,
             user_life_expectancy=cls.life_expectancy_dist,
             inflation_assumption=cls.inflation_dist,
-            after_tax_contribution_limit=7000,
-            financial_goal=10000,
+            after_tax_contribution_limit=Decimal('7000.00'),
+            financial_goal=Decimal('10000.00'),
             residence_state="NY",
             user=cls.user,
         )
@@ -297,8 +298,8 @@ class InvestmentModelTest(TestCase):
             user_birth_year=1985,
             user_life_expectancy=cls.life_expectancy_dist,
             inflation_assumption=cls.inflation_dist,
-            after_tax_contribution_limit=7000,
-            financial_goal=10000,
+            after_tax_contribution_limit=Decimal('7000.00'),
+            financial_goal=Decimal('10000.00'),
             residence_state="NY",
             user=cls.user,
         )
@@ -362,11 +363,11 @@ class InvestmentModelTest(TestCase):
         investment = Investment.objects.create(
             scenario=self.scenario,
             investment_type=self.stock_type,
-            value=10000.0,
+            value=Decimal('10000.00'),
             tax_status="non-retirement",
             investment_id="stocks-1",
         )
-        self.assertEqual(investment.value.amount, 10000.0)
+        self.assertEqual(investment.value, Decimal('10000.00'))
         self.assertEqual(str(investment), "stocks-1 (Test Scenario)")
 
     def test_negative_value_validation(self):
@@ -374,7 +375,7 @@ class InvestmentModelTest(TestCase):
         investment = Investment(
             scenario=self.scenario,
             investment_type=self.stock_type,
-            value=-1000.0,
+            value=Decimal('-1000.00'),
             tax_status="non-retirement",
             investment_id="test",
         )
@@ -387,7 +388,7 @@ class InvestmentModelTest(TestCase):
         investment = Investment(
             scenario=self.scenario,
             investment_type=self.bond_type,  # tax-exempt
-            value=5000.0,
+            value=Decimal('5000.00'),
             tax_status="pre-tax",  # Invalid combination
             investment_id="bonds-1",
         )
@@ -400,7 +401,7 @@ class InvestmentModelTest(TestCase):
         investment = Investment(
             scenario=self.scenario,
             investment_type=self.cash_type,
-            value=1000.0,
+            value=Decimal('1000.00'),
             tax_status="pre-tax",  # Invalid for cash
             investment_id="cash-1",
         )
@@ -413,7 +414,7 @@ class InvestmentModelTest(TestCase):
         Investment.objects.create(
             scenario=self.scenario,
             investment_type=self.stock_type,
-            value=5000.0,
+            value=Decimal('5000.00'),
             tax_status="non-retirement",
             investment_id="test-investment",
         )
@@ -423,7 +424,7 @@ class InvestmentModelTest(TestCase):
             duplicate = Investment(
                 scenario=self.scenario,
                 investment_type=self.stock_type,
-                value=3000.0,
+                value=Decimal('3000.00'),
                 tax_status="non-retirement",
                 investment_id="test-investment",
             )
@@ -459,8 +460,8 @@ class EventSeriesModelTest(TestCase):
             user_birth_year=1985,
             user_life_expectancy=cls.life_expectancy_dist,
             inflation_assumption=cls.inflation_dist,
-            after_tax_contribution_limit=7000,
-            financial_goal=10000,
+            after_tax_contribution_limit=Decimal('7000.00'),
+            financial_goal=Decimal('10000.00'),
             residence_state="NY",
             user=cls.user,
         )
@@ -501,7 +502,7 @@ class EventSeriesModelTest(TestCase):
             start_type="distribution",
             start_distribution=self.start_dist,
             duration_distribution=self.duration_dist,
-            initial_amount=75000.0,
+            initial_amount=Decimal('75000.00'),
             change_amt_or_pct="amount",
             change_distribution=self.change_dist,
             inflation_adjusted=True,
@@ -520,7 +521,7 @@ class EventSeriesModelTest(TestCase):
             start_type="distribution",
             start_distribution=None,  # Required but missing
             duration_distribution=self.duration_dist,
-            initial_amount=5000.0,
+            initial_amount=Decimal('5000.00'),
         )
         with self.assertRaises(ValidationError) as cm:
             event.full_clean()
@@ -535,7 +536,7 @@ class EventSeriesModelTest(TestCase):
             start_type="distribution",
             start_distribution=self.start_dist,
             duration_distribution=self.duration_dist,
-            initial_amount=5000.0,
+            initial_amount=Decimal('5000.00'),
         )
 
         event.start_type = "start_with"
@@ -567,7 +568,7 @@ class EventSeriesModelTest(TestCase):
             start_type="distribution",
             start_distribution=self.start_dist,
             duration_distribution=self.duration_dist,
-            initial_amount=75000.0,
+            initial_amount=Decimal('75000.00'),
             user_fraction=1.5,  # Invalid: > 1
         )
         with self.assertRaises(ValidationError) as cm:
@@ -583,8 +584,8 @@ class EventSeriesModelTest(TestCase):
             start_type="distribution",
             start_distribution=self.start_dist,
             duration_distribution=self.duration_dist,
-            initial_amount=5000.0,  # Should not be set for invest events
-            max_cash=1000.0,
+            initial_amount=Decimal('5000.00'),  # Should not be set for invest events
+            max_cash=Decimal('1000.00'),
         )
         with self.assertRaises(ValidationError) as cm:
             event.full_clean()
@@ -620,8 +621,8 @@ class AssetAllocationModelTest(TestCase):
             user_birth_year=1985,
             user_life_expectancy=cls.life_expectancy_dist,
             inflation_assumption=cls.inflation_dist,
-            after_tax_contribution_limit=7000,
-            financial_goal=10000,
+            after_tax_contribution_limit=Decimal('7000.00'),
+            financial_goal=Decimal('10000.00'),
             residence_state="NY",
             user=cls.user,
         )
@@ -659,7 +660,7 @@ class AssetAllocationModelTest(TestCase):
         cls.investment = Investment.objects.create(
             scenario=cls.scenario,
             investment_type=cls.investment_type,
-            value=10000.0,
+            value=Decimal('10000.00'),
             tax_status="non-retirement",
             investment_id="stocks-1",
         )
@@ -689,7 +690,7 @@ class AssetAllocationModelTest(TestCase):
             start_type="distribution",
             start_distribution=cls.start_dist,
             duration_distribution=cls.duration_dist,
-            max_cash=1000.0,
+            max_cash=Decimal('1000.00'),
         )
 
     def test_asset_allocation_creation(self):
@@ -729,7 +730,7 @@ class AssetAllocationModelTest(TestCase):
         investment2 = Investment.objects.create(
             scenario=self.scenario,
             investment_type=self.investment_type,
-            value=5000.0,
+            value=Decimal('5000.00'),
             tax_status="non-retirement",
             investment_id="stocks-2",
         )
@@ -775,8 +776,8 @@ class SpendingStrategyItemModelTest(TestCase):
             user_birth_year=1985,
             user_life_expectancy=cls.life_expectancy_dist,
             inflation_assumption=cls.inflation_dist,
-            after_tax_contribution_limit=7000,
-            financial_goal=10000,
+            after_tax_contribution_limit=Decimal('7000.00'),
+            financial_goal=Decimal('10000.00'),
             residence_state="NY",
             user=cls.user,
         )
@@ -806,7 +807,7 @@ class SpendingStrategyItemModelTest(TestCase):
             start_type="distribution",
             start_distribution=cls.start_dist,
             duration_distribution=cls.duration_dist,
-            initial_amount=5000.0,
+            initial_amount=Decimal('5000.00'),
             discretionary=True,
         )
 
@@ -817,7 +818,7 @@ class SpendingStrategyItemModelTest(TestCase):
             start_type="distribution",
             start_distribution=cls.start_dist,
             duration_distribution=cls.duration_dist,
-            initial_amount=3000.0,
+            initial_amount=Decimal('3000.00'),
             discretionary=False,
         )
 
@@ -881,8 +882,8 @@ class RMDStrategyItemModelTest(TestCase):
             user_birth_year=1985,
             user_life_expectancy=cls.life_expectancy_dist,
             inflation_assumption=cls.inflation_dist,
-            after_tax_contribution_limit=7000,
-            financial_goal=10000,
+            after_tax_contribution_limit=Decimal('7000.00'),
+            financial_goal=Decimal('10000.00'),
             residence_state="NY",
             user=cls.user,
         )
@@ -920,7 +921,7 @@ class RMDStrategyItemModelTest(TestCase):
         cls.pre_tax_investment = Investment.objects.create(
             scenario=cls.scenario,
             investment_type=cls.investment_type,
-            value=50000.0,
+            value=Decimal('50000.00'),
             tax_status="pre-tax",
             investment_id="401k-stocks",
         )
@@ -928,7 +929,7 @@ class RMDStrategyItemModelTest(TestCase):
         cls.non_retirement_investment = Investment.objects.create(
             scenario=cls.scenario,
             investment_type=cls.investment_type,
-            value=25000.0,
+            value=Decimal('25000.00'),
             tax_status="non-retirement",
             investment_id="taxable-stocks",
         )
@@ -990,8 +991,8 @@ class ScenarioModelTest(TestCase):
             user_birth_year=1985,
             user_life_expectancy=self.life_expectancy_dist,
             inflation_assumption=self.inflation_dist,
-            after_tax_contribution_limit=7000,
-            financial_goal=100000,
+            after_tax_contribution_limit=Decimal('7000.00'),
+            financial_goal=Decimal('100000.00'),
             residence_state="NY",
             user=self.user,
         )
@@ -1008,8 +1009,8 @@ class ScenarioModelTest(TestCase):
             user_life_expectancy=self.life_expectancy_dist,
             spouse_life_expectancy=self.spouse_life_expectancy_dist,
             inflation_assumption=self.inflation_dist,
-            after_tax_contribution_limit=7000,
-            financial_goal=200000,
+            after_tax_contribution_limit=Decimal('7000.00'),
+            financial_goal=Decimal('200000.00'),
             residence_state="NY",
             user=self.user,
         )
@@ -1025,8 +1026,8 @@ class ScenarioModelTest(TestCase):
             user_birth_year=current_year + 1,  # Future year
             user_life_expectancy=self.life_expectancy_dist,
             inflation_assumption=self.inflation_dist,
-            after_tax_contribution_limit=7000,
-            financial_goal=10000,
+            after_tax_contribution_limit=Decimal('7000.00'),
+            financial_goal=Decimal('10000.00'),
             residence_state="NY",
             user=self.user,
         )
@@ -1043,8 +1044,8 @@ class ScenarioModelTest(TestCase):
             spouse_birth_year=None,  # Required for couples
             user_life_expectancy=self.life_expectancy_dist,
             inflation_assumption=self.inflation_dist,
-            after_tax_contribution_limit=7000,
-            financial_goal=10000,
+            after_tax_contribution_limit=Decimal('7000.00'),
+            financial_goal=Decimal('10000.00'),
             residence_state="NY",
             user=self.user,
         )
@@ -1061,8 +1062,8 @@ class ScenarioModelTest(TestCase):
             spouse_birth_year=1987,  # Should not be set for individuals
             user_life_expectancy=self.life_expectancy_dist,
             inflation_assumption=self.inflation_dist,
-            after_tax_contribution_limit=7000,
-            financial_goal=10000,
+            after_tax_contribution_limit=Decimal('7000.00'),
+            financial_goal=Decimal('10000.00'),
             residence_state="NY",
             user=self.user,
         )
@@ -1079,8 +1080,8 @@ class ScenarioModelTest(TestCase):
             user_life_expectancy=self.life_expectancy_dist,
             spouse_life_expectancy=None,
             inflation_assumption=self.inflation_dist,
-            after_tax_contribution_limit=7000,
-            financial_goal=-5000,  # Invalid: negative
+            after_tax_contribution_limit=Decimal('7000.00'),
+            financial_goal=Decimal('-5000.00'),  # Invalid: negative
             residence_state="NY",
             user=self.user,
         )
@@ -1096,8 +1097,8 @@ class ScenarioModelTest(TestCase):
             user_birth_year=1985,
             user_life_expectancy=self.life_expectancy_dist,
             inflation_assumption=self.inflation_dist,
-            after_tax_contribution_limit=7000,
-            financial_goal=10000,
+            after_tax_contribution_limit=Decimal('7000.00'),
+            financial_goal=Decimal('10000.00'),
             residence_state="NY",
             roth_conversion_opt=True,
             roth_conversion_start=None,  # Required when opt is True
@@ -1115,8 +1116,8 @@ class ScenarioModelTest(TestCase):
             user_birth_year=1985,
             user_life_expectancy=self.life_expectancy_dist,
             inflation_assumption=self.inflation_dist,
-            after_tax_contribution_limit=7000,
-            financial_goal=10000,
+            after_tax_contribution_limit=Decimal('7000.00'),
+            financial_goal=Decimal('10000.00'),
             residence_state="NEW YORK",  # Invalid: not 2 chars
             user=self.user,
         )

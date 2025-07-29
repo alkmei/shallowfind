@@ -5,8 +5,6 @@ from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
 from django.contrib.auth import get_user_model
 from django.utils import timezone
-from djmoney.models.fields import MoneyField
-from djmoney.models.validators import MinMoneyValidator
 
 from scenarios.typing import Distribution
 
@@ -156,10 +154,9 @@ class Investment(models.Model):
         "Scenario", on_delete=models.CASCADE, related_name="investments"
     )
     investment_type = models.ForeignKey(InvestmentType, on_delete=models.CASCADE)
-    value = MoneyField(
+    value = models.DecimalField(
         max_digits=14,
         decimal_places=2,
-        default_currency="USD",
         validators=[MinValueValidator(0)],
     )
     tax_status = models.CharField(max_length=15, choices=TAX_STATUSES)
@@ -174,7 +171,7 @@ class Investment(models.Model):
     def clean(self):
         super().clean()
 
-        if self.value.amount < 0:
+        if self.value < 0:
             raise ValidationError({"value": "Investment value cannot be negative."})
 
         # Tax-exempt investments should not be in retirement accounts
@@ -240,13 +237,12 @@ class EventSeries(models.Model):
     type = models.CharField(max_length=10, choices=EVENT_TYPES)
 
     # Income/Expense fields
-    initial_amount = MoneyField(
+    initial_amount = models.DecimalField(
         max_digits=14,
         decimal_places=2,
-        default_currency="USD",
         null=True,
         blank=True,
-        validators=[MinMoneyValidator(0)],
+        validators=[MinValueValidator(0)],
     )
     change_amt_or_pct = models.CharField(
         max_length=10, choices=AMOUNT_OR_PERCENT_CHOICES, null=True, blank=True
@@ -264,13 +260,12 @@ class EventSeries(models.Model):
     discretionary = models.BooleanField(default=False)
 
     # Invest/Rebalance specific
-    max_cash = MoneyField(
+    max_cash = models.DecimalField(
         max_digits=14,
         decimal_places=2,
-        default_currency="USD",
         null=True,
         blank=True,
-        validators=[MinMoneyValidator(0)],
+        validators=[MinValueValidator(0)],
     )
     glide_path = models.BooleanField(default=False)
 
@@ -625,16 +620,14 @@ class Scenario(models.Model):
 
     # Financial settings
     inflation_assumption: Distribution = DistributionField()
-    after_tax_contribution_limit = MoneyField(
+    after_tax_contribution_limit = models.DecimalField(
         max_digits=10,
         decimal_places=2,
-        default_currency="USD",
         validators=[MinValueValidator(0)],
     )
-    financial_goal = MoneyField(
+    financial_goal = models.DecimalField(
         max_digits=14,
         decimal_places=2,
-        default_currency="USD",
         validators=[MinValueValidator(0)],
     )
     residence_state = models.CharField(max_length=2, choices=US_STATE_CHOICES)
@@ -741,12 +734,12 @@ class Scenario(models.Model):
                 )
 
         # Financial validation
-        if self.financial_goal.amount < 0:
+        if self.financial_goal < 0:
             raise ValidationError(
                 {"financial_goal": "Financial goal cannot be negative."}
             )
 
-        if self.after_tax_contribution_limit.amount < 0:
+        if self.after_tax_contribution_limit < 0:
             raise ValidationError(
                 {
                     "after_tax_contribution_limit": "Contribution limit cannot be negative."
