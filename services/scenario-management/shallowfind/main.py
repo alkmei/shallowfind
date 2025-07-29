@@ -1,5 +1,4 @@
 from fastapi import FastAPI
-from shallowfind.modules.users.router import router as user_router
 from shallowfind.modules.scenarios.router import router as scenario_router
 
 app = FastAPI(
@@ -10,7 +9,6 @@ app = FastAPI(
     redoc_url="/redoc",
 )
 
-app.include_router(user_router, prefix="/api/users", tags=["Users"])
 app.include_router(scenario_router, prefix="/api/scenarios", tags=["Scenarios"])
 
 
