@@ -1,5 +1,5 @@
 {
-  "name": "server",
+  "name": "scenario-management",
   "version": "0.0.1",
   "scripts": {
     "preinstall": "uv sync",
