@@ -73,7 +73,7 @@ class Scenario(Base):
         server_default=func.now(),
         onupdate=func.now(),
     )
-    completed_at: Mapped[DateTime | None] = mapped_column(DateTime, nullable=True)
+    completed_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
 
     # Relationships
     user = relationship("User", back_populates="scenarios")

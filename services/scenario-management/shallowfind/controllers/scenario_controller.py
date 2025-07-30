@@ -1,4 +1,3 @@
-# controllers/scenario_controller.py
 from typing import List, Optional
 from fastapi import APIRouter, Depends, Query
 from http import HTTPStatus
@@ -267,7 +266,7 @@ async def publish_scenario(
         )
 
 
-@router.delete("/{scenario_id}", response_model=SuccessResponse[dict])
+@router.delete("/{scenario_id}", response_model=SuccessResponse[dict[str, bool]])
 async def delete_scenario(
     scenario_id: uuid.UUID,
     current_user: str = Depends(get_current_user),
@@ -301,7 +300,7 @@ async def delete_scenario(
         )
 
 
-@router.post("/{scenario_id}/share", response_model=SuccessResponse[dict])
+@router.post("/{scenario_id}/share", response_model=SuccessResponse[dict[str, bool]])
 async def share_scenario(
     scenario_id: uuid.UUID,
     sharing_data: ScenarioSharingCreate,
@@ -341,7 +340,7 @@ async def share_scenario(
         )
 
 
-@router.delete("/{scenario_id}/share/{shared_with_user_id}", response_model=SuccessResponse[dict])
+@router.delete("/{scenario_id}/share/{shared_with_user_id}", response_model=SuccessResponse[dict[str, bool]])
 async def unshare_scenario(
     scenario_id: uuid.UUID,
     shared_with_user_id: uuid.UUID,

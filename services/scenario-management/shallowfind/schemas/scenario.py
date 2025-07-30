@@ -1,6 +1,6 @@
 # schemas/scenario.py
 from typing import List, Optional
-from pydantic import BaseModel, Field, field_validator
+from pydantic import BaseModel, Field, ValidationInfo, field_validator
 from datetime import datetime
 import uuid
 
@@ -21,23 +21,23 @@ class ScenarioBase(BaseModel):
     annual_contribution_limit: Optional[float] = Field(None, ge=0)
 
     @field_validator('spouse_birth_year')
-    def validate_spouse_birth_year(cls, v, values):
-        if values.get('scenario_type') == ScenarioTypeEnum.married_couple and v is None:
+    def validate_spouse_birth_year(cls, v: int | None, info: ValidationInfo):
+        if info.data['scenario_type'] == ScenarioTypeEnum.married_couple and v is None:
             raise ValueError('spouse_birth_year is required for married couples')
-        if values.get('scenario_type') == ScenarioTypeEnum.individual and v is not None:
+        if info.data['scenario_type'] == ScenarioTypeEnum.individual and v is not None:
             raise ValueError('spouse_birth_year should not be provided for individuals')
         return v
 
     @field_validator('spouse_life_expectancy')
-    def validate_spouse_life_expectancy(cls, v, values):
-        if values.get('scenario_type') == ScenarioTypeEnum.married_couple and v is None:
+    def validate_spouse_life_expectancy(cls, v: dict[str, str | float] | None, info: ValidationInfo):
+        if info.data['scenario_type'] == ScenarioTypeEnum.married_couple and v is None:
             raise ValueError('spouse_life_expectancy is required for married couples')
-        if values.get('scenario_type') == ScenarioTypeEnum.individual and v is not None:
+        if info.data['scenario_type'] == ScenarioTypeEnum.individual and v is not None:
             raise ValueError('spouse_life_expectancy should not be provided for individuals')
         return v
 
     @field_validator('state_of_residence')
-    def validate_state_code(cls, v):
+    def validate_state_code(cls, v: str | None):
         if v is not None:
             return v.upper()
         return v
@@ -63,7 +63,7 @@ class ScenarioUpdate(BaseModel):
     annual_contribution_limit: Optional[float] = Field(None, ge=0)
 
     @field_validator('state_of_residence')
-    def validate_state_code(cls, v):
+    def validate_state_code(cls, v: str | None):
         if v is not None:
             return v.upper()
         return v

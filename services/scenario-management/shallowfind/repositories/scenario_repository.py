@@ -100,7 +100,7 @@ class ScenarioRepository:
             return None
 
         scenario.status = StatusEnum.complete
-        scenario.completed_at = datetime.now()
+        scenario.completed_at = func.now()
         scenario.updated_at = func.now()
 
         self.db.commit()
