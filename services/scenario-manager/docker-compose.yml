@@ -1,0 +1,13 @@
+services:
+  scenario_db:
+    image: postgres
+    restart: no
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+volumes:
+  pgdata:
