@@ -1,0 +1,22 @@
+using System.ComponentModel.DataAnnotations;
+using ScenarioManager.Domain.Entities;
+using ScenarioManager.Domain.Enums;
+
+namespace ScenarioManager.Application.DTOs;
+
+public class CreateInvestmentTypeRequest
+{
+    [Required] [MaxLength(255)] public required string Name { get; set; }
+
+    [MaxLength(1000)] public string? Description { get; set; }
+
+    [Required] public required Distribution ExpectedAnnualReturn { get; set; }
+
+    public decimal ExpenseRatio { get; set; } = 0m;
+
+    [Required] public required Distribution ExpectedAnnualIncome { get; set; }
+
+    public InvestmentTaxability Taxability { get; set; } = InvestmentTaxability.Taxable;
+
+    public bool IsCash { get; set; } = false;
+}

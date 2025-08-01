@@ -24,6 +24,7 @@ builder.Services.AddDbContext<ScenarioDbContext>(options =>
 
 // Add application services
 builder.Services.AddScoped<IScenarioService, ScenarioService>();
+builder.Services.AddScoped<IInvestmentTypeService, InvestmentTypeService>();
 
 // Add API documentation
 builder.Services.AddEndpointsApiExplorer();
