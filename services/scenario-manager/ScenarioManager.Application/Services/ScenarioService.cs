@@ -20,6 +20,7 @@ public class ScenarioService : IScenarioService
         var scenario = new Scenario
         {
             Name = request.Name,
+            Description = request.Description,
             OwnerId = ownerId,
             ScenarioType = request.ScenarioType,
             Status = ScenarioStatus.Draft,
@@ -62,6 +63,7 @@ public class ScenarioService : IScenarioService
             return null;
 
         scenario.Name = request.Name;
+        scenario.Description = request.Description ?? scenario.Name;
         scenario.ScenarioType = request.ScenarioType;
         scenario.UpdatedAt = DateTime.UtcNow;
 
@@ -90,6 +92,7 @@ public class ScenarioService : IScenarioService
         {
             Id = scenario.Id,
             Name = scenario.Name,
+            Description = scenario.Description,
             OwnerId = scenario.OwnerId,
             ScenarioType = scenario.ScenarioType,
             Status = scenario.Status,

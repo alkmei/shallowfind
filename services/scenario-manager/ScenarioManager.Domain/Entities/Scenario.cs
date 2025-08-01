@@ -7,6 +7,8 @@ public class Scenario : BaseEntity
 {
     [Required] [MaxLength(255)] public required string Name { get; set; }
 
+    public string? Description { get; set; }
+
     [Required] public required string OwnerId { get; set; }
 
     public ScenarioType ScenarioType { get; set; }
