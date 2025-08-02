@@ -1,4 +1,4 @@
-namespace ScenarioManager.Application.DTOs;
+namespace ScenarioManager.Application.DTOs.Scenarios;
 
 public interface IScenarioService
 {

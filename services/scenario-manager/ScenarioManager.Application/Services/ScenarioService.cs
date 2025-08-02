@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using ScenarioManager.Application.DTOs;
+using ScenarioManager.Application.DTOs.Scenarios;
 using ScenarioManager.Domain.Entities;
 using ScenarioManager.Domain.Enums;
 using ScenarioManager.Infrastructure.Data;

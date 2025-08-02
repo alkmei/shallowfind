@@ -2,7 +2,9 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
 using Microsoft.EntityFrameworkCore;
-using ScenarioManager.Application.DTOs;
+using ScenarioManager.Application.DTOs.EventSeries;
+using ScenarioManager.Application.DTOs.InvestmentTypes;
+using ScenarioManager.Application.DTOs.Scenarios;
 using ScenarioManager.Application.Services;
 using ScenarioManager.Infrastructure.Data;
 
@@ -25,6 +27,7 @@ builder.Services.AddDbContext<ScenarioDbContext>(options =>
 // Add application services
 builder.Services.AddScoped<IScenarioService, ScenarioService>();
 builder.Services.AddScoped<IInvestmentTypeService, InvestmentTypeService>();
+builder.Services.AddScoped<IEventSeriesService, EventSeriesService>();
 
 // Add API documentation
 builder.Services.AddEndpointsApiExplorer();

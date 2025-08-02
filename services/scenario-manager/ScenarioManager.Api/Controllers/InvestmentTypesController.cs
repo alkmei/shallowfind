@@ -1,6 +1,7 @@
 using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc;
 using ScenarioManager.Application.DTOs;
+using ScenarioManager.Application.DTOs.InvestmentTypes;
 
 namespace ScenarioManager.Api.Controllers;
 

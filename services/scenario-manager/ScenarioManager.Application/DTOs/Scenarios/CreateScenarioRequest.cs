@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using ScenarioManager.Domain.Enums;
 
-namespace ScenarioManager.Application.DTOs;
+namespace ScenarioManager.Application.DTOs.Scenarios;
 
 public class CreateScenarioRequest
 {

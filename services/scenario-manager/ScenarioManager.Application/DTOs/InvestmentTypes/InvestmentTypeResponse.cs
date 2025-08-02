@@ -1,7 +1,7 @@
 using ScenarioManager.Domain.Entities;
 using ScenarioManager.Domain.Enums;
 
-namespace ScenarioManager.Application.DTOs;
+namespace ScenarioManager.Application.DTOs.InvestmentTypes;
 
 public class InvestmentTypeResponse
 {

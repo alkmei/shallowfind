@@ -1,4 +1,4 @@
-namespace ScenarioManager.Application.DTOs;
+namespace ScenarioManager.Application.DTOs.InvestmentTypes;
 
 public interface IInvestmentTypeService
 {

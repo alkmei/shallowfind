@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using ScenarioManager.Application.DTOs;
+using ScenarioManager.Application.DTOs.InvestmentTypes;
 using ScenarioManager.Domain.Entities;
 using ScenarioManager.Infrastructure.Data;
 
