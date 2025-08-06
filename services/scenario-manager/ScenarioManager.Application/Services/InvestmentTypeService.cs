@@ -1,5 +1,4 @@
 using Microsoft.EntityFrameworkCore;
-using ScenarioManager.Application.DTOs;
 using ScenarioManager.Application.DTOs.InvestmentTypes;
 using ScenarioManager.Domain.Entities;
 using ScenarioManager.Infrastructure.Data;
@@ -99,7 +98,7 @@ public class InvestmentTypeService : IInvestmentTypeService
             return false;
 
         // Check if there are any investments using this investment type
-        if (investmentType.Investments.Any())
+        if (investmentType.Investments.Count != 0)
             throw new InvalidOperationException("Cannot delete investment type that is being used by investments");
 
         _context.InvestmentTypes.Remove(investmentType);
