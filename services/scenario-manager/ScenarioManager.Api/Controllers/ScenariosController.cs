@@ -1,10 +1,11 @@
 using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using ScenarioManager.Application.DTOs;
 using ScenarioManager.Application.DTOs.Scenarios;
 
 namespace ScenarioManager.Api.Controllers;
 
+[Authorize]
 [ApiController]
 [Route("api/[controller]")]
 public class ScenariosController : ControllerBase
@@ -77,7 +78,7 @@ public class ScenariosController : ControllerBase
     /// </summary>
     [HttpPut("{id}")]
     public async Task<ActionResult<ScenarioResponse>> UpdateScenario(string id,
-        [FromBody] CreateScenarioRequest request)
+        [FromBody] UpdateScenarioRequest request)
     {
         if (!ModelState.IsValid)
             return BadRequest(ModelState);

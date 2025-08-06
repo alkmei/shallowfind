@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using ScenarioManager.Application.DTOs.EventSeries;
 using ScenarioManager.Application.DTOs.InvestmentTypes;
 using ScenarioManager.Application.DTOs.Scenarios;
+using ScenarioManager.Application.DTOs.Strategies;
 using ScenarioManager.Application.Services;
 using ScenarioManager.Infrastructure.Data;
 
@@ -28,6 +29,7 @@ builder.Services.AddDbContext<ScenarioDbContext>(options =>
 builder.Services.AddScoped<IScenarioService, ScenarioService>();
 builder.Services.AddScoped<IInvestmentTypeService, InvestmentTypeService>();
 builder.Services.AddScoped<IEventSeriesService, EventSeriesService>();
+builder.Services.AddScoped<IStrategyService, StrategyService>();
 
 // Add API documentation
 builder.Services.AddEndpointsApiExplorer();
@@ -44,7 +46,23 @@ builder.Services.AddCors(options =>
     });
 });
 
+builder.Services.AddAuthentication("Bearer")
+    .AddJwtBearer("Bearer", options =>
+    {
+        options.Authority =
+            "https://securetoken.google.com/shallowfind-df121"; // URL of your Identity Provider or Auth server.
+        options.Audience = "shallowfind-df121"; // Must match the "aud" claim in the JWT.
+        options.ClaimsIssuer = "https://identitytoolkit.google.com/"; // Must match the "iss" claim in the JWT.
+        options.RequireHttpsMetadata = false; // Only set to false for development
+    });
+
+builder.Services.AddAuthorization();
+
 var app = builder.Build();
+
+// Add authentication/authorization middleware here if needed
+app.UseAuthentication();
+app.UseAuthorization();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -55,10 +73,6 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseCors();
-
-// Add authentication/authorization middleware here if needed
-// app.UseAuthentication();
-// app.UseAuthorization();
 
 app.MapControllers();
 

@@ -1,5 +1,4 @@
 using Microsoft.EntityFrameworkCore;
-using ScenarioManager.Application.DTOs;
 using ScenarioManager.Application.DTOs.Scenarios;
 using ScenarioManager.Domain.Entities;
 using ScenarioManager.Domain.Enums;
@@ -55,24 +54,6 @@ public class ScenarioService : IScenarioService
         return scenarios.Select(MapToResponse);
     }
 
-    public async Task<ScenarioResponse?> UpdateScenarioAsync(string id, CreateScenarioRequest request, string userId)
-    {
-        var scenario = await _context.Scenarios
-            .FirstOrDefaultAsync(s => s.Id == id && s.OwnerId == userId);
-
-        if (scenario == null)
-            return null;
-
-        scenario.Name = request.Name;
-        scenario.Description = request.Description ?? scenario.Name;
-        scenario.ScenarioType = request.ScenarioType;
-        scenario.UpdatedAt = DateTime.UtcNow;
-
-        await _context.SaveChangesAsync();
-
-        return MapToResponse(scenario);
-    }
-
     public async Task<bool> DeleteScenarioAsync(string id, string userId)
     {
         var scenario = await _context.Scenarios
@@ -85,6 +66,36 @@ public class ScenarioService : IScenarioService
         await _context.SaveChangesAsync();
 
         return true;
+    }
+
+    public async Task<ScenarioResponse?> UpdateScenarioAsync(string id, UpdateScenarioRequest request, string userId)
+    {
+        var scenario = await _context.Scenarios
+            .FirstOrDefaultAsync(s => s.Id == id && s.OwnerId == userId);
+
+        if (scenario == null)
+            return null;
+
+        scenario.Name = request.Name ?? scenario.Name;
+        scenario.Description = request.Description ?? scenario.Description;
+        scenario.ScenarioType = request.ScenarioType ?? scenario.ScenarioType;
+        scenario.UserBirthYear = request.UserBirthYear ?? scenario.UserBirthYear;
+        scenario.SpouseBirthYear = request.SpouseBirthYear ?? scenario.SpouseBirthYear;
+        scenario.UserLifeExpectancy = request.UserLifeExpectancy ?? scenario.UserLifeExpectancy;
+        scenario.SpouseLifeExpectancy = request.SpouseLifeExpectancy ?? scenario.SpouseLifeExpectancy;
+        scenario.FinancialGoal = request.FinancialGoal ?? scenario.FinancialGoal;
+        scenario.StateOfResidence = request.StateOfResidence ?? scenario.StateOfResidence;
+        scenario.InflationAssumption = request.InflationAssumption ?? scenario.InflationAssumption;
+        scenario.AnnualRetirementContributionLimit =
+            request.AnnualRetirementContributionLimit ?? scenario.AnnualRetirementContributionLimit;
+        scenario.RothOptimizerEnabled = request.RothOptimizerEnabled ?? scenario.RothOptimizerEnabled;
+        scenario.RothOptimizerStartYear = request.RothOptimizerStartYear ?? scenario.RothOptimizerStartYear;
+        scenario.RothOptimizerEndYear = request.RothOptimizerEndYear ?? scenario.RothOptimizerEndYear;
+        scenario.UpdatedAt = DateTime.UtcNow;
+
+        await _context.SaveChangesAsync();
+
+        return MapToResponse(scenario);
     }
 
     private static ScenarioResponse MapToResponse(Scenario scenario)

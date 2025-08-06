@@ -8,4 +8,5 @@ services:
       POSTGRES_PASSWORD: postgres
     volumes:
       - pgdata:/var/lib/postgresql/data
-      
+volumes:
+  pgdata:  
