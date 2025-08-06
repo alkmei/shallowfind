@@ -6,6 +6,7 @@ namespace ScenarioManager.Application.DTOs.Investments;
 
 public class InvestmentResponse
 {
+    public required string Id { get; set; }
     [Required] public required string ScenarioId { get; set; }
 
     [Required] public required string InvestmentTypeId { get; set; }

@@ -102,6 +102,7 @@ public class InvestmentService : IInvestmentService
     {
         return new InvestmentResponse
         {
+            Id = investment.Id,
             ScenarioId = investment.ScenarioId,
             InvestmentTypeId = investment.InvestmentTypeId,
             Name = investment.Name,
