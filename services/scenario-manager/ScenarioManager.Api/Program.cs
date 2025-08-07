@@ -30,6 +30,7 @@ builder.Services.AddScoped<IScenarioService, ScenarioService>();
 builder.Services.AddScoped<IInvestmentTypeService, InvestmentTypeService>();
 builder.Services.AddScoped<IEventSeriesService, EventSeriesService>();
 builder.Services.AddScoped<IStrategyService, StrategyService>();
+builder.Services.AddScoped<IInvestmentService, InvestmentService>();
 
 // Add API documentation
 builder.Services.AddEndpointsApiExplorer();
