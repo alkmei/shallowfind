@@ -1,7 +1,23 @@
-<script lang="ts" module>
-  import AudioWaveformIcon from '@lucide/svelte/icons/audio-waveform';
-  import CommandIcon from '@lucide/svelte/icons/command';
-  import GalleryVerticalEndIcon from '@lucide/svelte/icons/gallery-vertical-end';
+<script lang="ts">
+  import NavMain from './nav-main.svelte';
+  import NavUser from './nav-user.svelte';
+  import SidebarLogo from './sidebar-logo.svelte';
+  import * as Sidebar from '$lib/components/ui/sidebar';
+  import type { ComponentProps } from 'svelte';
+  import { BadgeDollarSign, Layers, TrendingUp, Wrench } from '@lucide/svelte';
+
+  let {
+    ref = $bindable(null),
+    collapsible = 'icon',
+    ...restProps
+  }: ComponentProps<typeof Sidebar.Root> = $props();
+
+  let { user }: { user: { firstName: string; email: string } } = {
+    user: {
+      firstName: 'Charlie',
+      email: 'charlie@example.com'
+    }
+  };
 
   const data = {
     navMain: [
@@ -99,28 +115,6 @@
         ]
       }
     ]
-  };
-</script>
-
-<script lang="ts">
-  import NavMain from './nav-main.svelte';
-  import NavUser from './nav-user.svelte';
-  import SidebarLogo from './sidebar-logo.svelte';
-  import * as Sidebar from '$lib/components/ui/sidebar/index.js';
-  import type { ComponentProps } from 'svelte';
-  import { BadgeDollarSign, Layers, TrendingUp, Wrench } from '@lucide/svelte';
-
-  let {
-    ref = $bindable(null),
-    collapsible = 'icon',
-    ...restProps
-  }: ComponentProps<typeof Sidebar.Root> = $props();
-
-  let { user }: { user: { firstName: string; email: string } } = {
-    user: {
-      firstName: 'Charlie',
-      email: 'charlie@example.com'
-    }
   };
 </script>
 
