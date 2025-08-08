@@ -8,7 +8,7 @@
   import ChevronsUpDownIcon from '@lucide/svelte/icons/chevrons-up-down';
   import LogOutIcon from '@lucide/svelte/icons/log-out';
 
-  let { user }: { user: { firstName: string; email: string } } = $props();
+  let { user }: { user: { name: string; email: string } } = $props();
   const sidebar = useSidebar();
 </script>
 
@@ -30,7 +30,7 @@
               <Avatar.Fallback class="rounded-lg">CN</Avatar.Fallback>
             </Avatar.Root>
             <div class="grid flex-1 text-left text-sm leading-tight">
-              <span class="truncate font-medium">{user.firstName}</span>
+              <span class="truncate font-medium">{user.name}</span>
               <span class="truncate text-xs">{user.email}</span>
             </div>
             <ChevronsUpDownIcon class="ml-auto size-4" />
@@ -53,7 +53,7 @@
               <Avatar.Fallback class="rounded-lg">CN</Avatar.Fallback>
             </Avatar.Root>
             <div class="grid flex-1 text-left text-sm leading-tight">
-              <span class="truncate font-medium">{user.firstName}</span>
+              <span class="truncate font-medium">{user.name}</span>
               <span class="truncate text-xs">{user.email}</span>
             </div>
           </div>

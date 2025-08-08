@@ -1,14 +1,20 @@
-<script>
+<script lang="ts">
   import AppSidebar from '$lib/components/sidebar/app-sidebar.svelte';
   import * as Sidebar from '$lib/components/ui/sidebar';
   import { Separator } from '$lib/components/ui/separator';
   import * as Breadcrumb from '$lib/components/ui/breadcrumb';
+  import type { LayoutProps } from './$types';
 
-  let { children } = $props();
+  let { data, children }: LayoutProps = $props();
 </script>
 
 <Sidebar.Provider>
-  <AppSidebar />
+  <AppSidebar
+    user={{
+      name: data.user.name ?? data.user.email?.split('@')[0] ?? 'Anonymous',
+      email: data.user.email ?? 'anon@example.com'
+    }}
+  />
 
   <Sidebar.Inset>
     <header

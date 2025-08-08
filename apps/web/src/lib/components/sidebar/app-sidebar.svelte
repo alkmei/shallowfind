@@ -9,15 +9,11 @@
   let {
     ref = $bindable(null),
     collapsible = 'icon',
+    user,
     ...restProps
-  }: ComponentProps<typeof Sidebar.Root> = $props();
-
-  let { user }: { user: { firstName: string; email: string } } = {
-    user: {
-      firstName: 'Charlie',
-      email: 'charlie@example.com'
-    }
-  };
+  }: ComponentProps<typeof Sidebar.Root> & {
+    user: { name: string; email: string };
+  } = $props();
 
   const data = {
     navMain: [
