@@ -28,10 +28,6 @@
             url: '/dashboard/scenarios'
           },
           {
-            title: 'Create New Scenario',
-            url: '/dashboard/scenarios/create'
-          },
-          {
             title: 'Scenario Explorer',
             url: '#'
           },
