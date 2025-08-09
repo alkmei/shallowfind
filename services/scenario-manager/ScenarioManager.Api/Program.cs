@@ -34,7 +34,15 @@ builder.Services.AddScoped<IInvestmentService, InvestmentService>();
 
 // Add API documentation
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(options =>
+{
+    options.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo
+    {
+        Title = "Scenario Manager API",
+        Version = "v1",
+        Description = "API for managing scenarios, strategies, and investments."
+    });
+});
 
 // Add CORS if needed
 builder.Services.AddCors(options =>

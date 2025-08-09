@@ -1,8 +1,9 @@
 {
   "openapi": "3.0.4",
   "info": {
-    "title": "ScenarioManager.Api, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
-    "version": "1.0"
+    "title": "Scenario Manager API",
+    "description": "API for managing scenarios, strategies, and investments.",
+    "version": "v1"
   },
   "paths": {
     "/api/scenarios/{scenarioId}/expense-events": {

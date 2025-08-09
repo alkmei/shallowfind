@@ -7,7 +7,7 @@ export default defineConfig({
       mode: 'tags-split',
       target: './src/lib/api/scenario-management',
       baseUrl: 'http://localhost:5050',
-      client: 'svelte-query',
+      client: 'axios',
       override: {
         query: {
           options: {

@@ -1,6 +1,9 @@
 <script lang="ts">
-  import DraftScenarioDialog from '$lib/components/draft-scenario-dialog.svelte';
+  import type { PageData } from './$types';
+  import DraftScenarioDialog from './draft-scenario-dialog.svelte';
+
+  let { data }: { data: PageData } = $props();
 </script>
 
 <h1 class="text-2xl">My Scenarios</h1>
-<DraftScenarioDialog />
+<DraftScenarioDialog {data} />
