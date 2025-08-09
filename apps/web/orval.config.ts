@@ -6,6 +6,7 @@ export default defineConfig({
     output: {
       mode: 'tags-split',
       target: './src/lib/api/scenario-management',
+      baseUrl: 'http://localhost:5050',
       client: 'svelte-query',
       override: {
         query: {

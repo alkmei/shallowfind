@@ -1,5 +1,6 @@
 <script lang="ts">
   import * as Dialog from '$lib/components/ui/dialog';
+  import * as Form from '$lib/components/ui/form';
   import Button from './ui/button/button.svelte';
 </script>
 
@@ -15,9 +16,7 @@
       </Dialog.Description>
     </Dialog.Header>
 
-    <!-- Form or inputs for creating a new scenario would go here -->
-    <p>Form content goes here...</p>
-
+    <form method="POST"></form>
     <Dialog.Footer>
       <Dialog.Close>
         <Button variant="secondary">Cancel</Button>
