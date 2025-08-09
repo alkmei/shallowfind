@@ -19,31 +19,31 @@ export const getScenarios = () => {
     createScenarioRequest: CreateScenarioRequest,
     options?: AxiosRequestConfig
   ): Promise<TData> => {
-    return axios.post(`http://localhost:5050/api/scenarios`, createScenarioRequest, options);
+    return axios.post(`http://localhost:5010/api/scenarios`, createScenarioRequest, options);
   };
   const getApiScenarios = <TData = AxiosResponse<ScenarioResponse[]>>(
     options?: AxiosRequestConfig
   ): Promise<TData> => {
-    return axios.get(`http://localhost:5050/api/scenarios`, options);
+    return axios.get(`http://localhost:5010/api/scenarios`, options);
   };
   const getApiScenariosId = <TData = AxiosResponse<ScenarioResponse>>(
     id: string,
     options?: AxiosRequestConfig
   ): Promise<TData> => {
-    return axios.get(`http://localhost:5050/api/scenarios/${id}`, options);
+    return axios.get(`http://localhost:5010/api/scenarios/${id}`, options);
   };
   const putApiScenariosId = <TData = AxiosResponse<ScenarioResponse>>(
     id: string,
     updateScenarioRequest: UpdateScenarioRequest,
     options?: AxiosRequestConfig
   ): Promise<TData> => {
-    return axios.put(`http://localhost:5050/api/scenarios/${id}`, updateScenarioRequest, options);
+    return axios.put(`http://localhost:5010/api/scenarios/${id}`, updateScenarioRequest, options);
   };
   const deleteApiScenariosId = <TData = AxiosResponse<null>>(
     id: string,
     options?: AxiosRequestConfig
   ): Promise<TData> => {
-    return axios.delete(`http://localhost:5050/api/scenarios/${id}`, options).then((res) => {
+    return axios.delete(`http://localhost:5010/api/scenarios/${id}`, options).then((res) => {
       if (res.data === '') res.data = null;
       return res as TData;
     });

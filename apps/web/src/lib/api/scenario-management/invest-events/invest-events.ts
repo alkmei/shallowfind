@@ -17,7 +17,7 @@ export const getInvestEvents = () => {
     options?: AxiosRequestConfig
   ): Promise<TData> => {
     return axios.post(
-      `http://localhost:5050/api/scenarios/${scenarioId}/invest-events`,
+      `http://localhost:5010/api/scenarios/${scenarioId}/invest-events`,
       createInvestEventRequest,
       options
     );
@@ -26,7 +26,7 @@ export const getInvestEvents = () => {
     scenarioId: string,
     options?: AxiosRequestConfig
   ): Promise<TData> => {
-    return axios.get(`http://localhost:5050/api/scenarios/${scenarioId}/invest-events`, options);
+    return axios.get(`http://localhost:5010/api/scenarios/${scenarioId}/invest-events`, options);
   };
   const getApiScenariosScenarioIdInvestEventsId = <TData = AxiosResponse<EventSeriesResponse>>(
     scenarioId: string,
@@ -34,7 +34,7 @@ export const getInvestEvents = () => {
     options?: AxiosRequestConfig
   ): Promise<TData> => {
     return axios.get(
-      `http://localhost:5050/api/scenarios/${scenarioId}/invest-events/${id}`,
+      `http://localhost:5010/api/scenarios/${scenarioId}/invest-events/${id}`,
       options
     );
   };
@@ -45,7 +45,7 @@ export const getInvestEvents = () => {
     options?: AxiosRequestConfig
   ): Promise<TData> => {
     return axios.put(
-      `http://localhost:5050/api/scenarios/${scenarioId}/invest-events/${id}`,
+      `http://localhost:5010/api/scenarios/${scenarioId}/invest-events/${id}`,
       createInvestEventRequest,
       options
     );
@@ -56,7 +56,7 @@ export const getInvestEvents = () => {
     options?: AxiosRequestConfig
   ): Promise<TData> => {
     return axios
-      .delete(`http://localhost:5050/api/scenarios/${scenarioId}/invest-events/${id}`, options)
+      .delete(`http://localhost:5010/api/scenarios/${scenarioId}/invest-events/${id}`, options)
       .then((res) => {
         if (res.data === '') res.data = null;
         return res as TData;

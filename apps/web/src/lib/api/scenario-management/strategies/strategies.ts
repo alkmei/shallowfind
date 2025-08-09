@@ -17,7 +17,7 @@ export const getStrategies = () => {
     options?: AxiosRequestConfig
   ): Promise<TData> => {
     return axios.post(
-      `http://localhost:5050/api/scenarios/${scenarioId}/strategies`,
+      `http://localhost:5010/api/scenarios/${scenarioId}/strategies`,
       createStrategyRequest,
       options
     );
@@ -26,14 +26,14 @@ export const getStrategies = () => {
     scenarioId: string,
     options?: AxiosRequestConfig
   ): Promise<TData> => {
-    return axios.get(`http://localhost:5050/api/scenarios/${scenarioId}/strategies`, options);
+    return axios.get(`http://localhost:5010/api/scenarios/${scenarioId}/strategies`, options);
   };
   const getApiScenariosScenarioIdStrategiesId = <TData = AxiosResponse<StrategyResponse>>(
     scenarioId: string,
     id: string,
     options?: AxiosRequestConfig
   ): Promise<TData> => {
-    return axios.get(`http://localhost:5050/api/scenarios/${scenarioId}/strategies/${id}`, options);
+    return axios.get(`http://localhost:5010/api/scenarios/${scenarioId}/strategies/${id}`, options);
   };
   const putApiScenariosScenarioIdStrategiesId = <TData = AxiosResponse<StrategyResponse>>(
     scenarioId: string,
@@ -42,7 +42,7 @@ export const getStrategies = () => {
     options?: AxiosRequestConfig
   ): Promise<TData> => {
     return axios.put(
-      `http://localhost:5050/api/scenarios/${scenarioId}/strategies/${id}`,
+      `http://localhost:5010/api/scenarios/${scenarioId}/strategies/${id}`,
       createStrategyRequest,
       options
     );
@@ -53,7 +53,7 @@ export const getStrategies = () => {
     options?: AxiosRequestConfig
   ): Promise<TData> => {
     return axios
-      .delete(`http://localhost:5050/api/scenarios/${scenarioId}/strategies/${id}`, options)
+      .delete(`http://localhost:5010/api/scenarios/${scenarioId}/strategies/${id}`, options)
       .then((res) => {
         if (res.data === '') res.data = null;
         return res as TData;

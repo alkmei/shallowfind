@@ -17,7 +17,7 @@ export const getExpenseEvents = () => {
     options?: AxiosRequestConfig
   ): Promise<TData> => {
     return axios.post(
-      `http://localhost:5050/api/scenarios/${scenarioId}/expense-events`,
+      `http://localhost:5010/api/scenarios/${scenarioId}/expense-events`,
       createExpenseEventRequest,
       options
     );
@@ -26,7 +26,7 @@ export const getExpenseEvents = () => {
     scenarioId: string,
     options?: AxiosRequestConfig
   ): Promise<TData> => {
-    return axios.get(`http://localhost:5050/api/scenarios/${scenarioId}/expense-events`, options);
+    return axios.get(`http://localhost:5010/api/scenarios/${scenarioId}/expense-events`, options);
   };
   const getApiScenariosScenarioIdExpenseEventsId = <TData = AxiosResponse<EventSeriesResponse>>(
     scenarioId: string,
@@ -34,7 +34,7 @@ export const getExpenseEvents = () => {
     options?: AxiosRequestConfig
   ): Promise<TData> => {
     return axios.get(
-      `http://localhost:5050/api/scenarios/${scenarioId}/expense-events/${id}`,
+      `http://localhost:5010/api/scenarios/${scenarioId}/expense-events/${id}`,
       options
     );
   };
@@ -45,7 +45,7 @@ export const getExpenseEvents = () => {
     options?: AxiosRequestConfig
   ): Promise<TData> => {
     return axios.put(
-      `http://localhost:5050/api/scenarios/${scenarioId}/expense-events/${id}`,
+      `http://localhost:5010/api/scenarios/${scenarioId}/expense-events/${id}`,
       createExpenseEventRequest,
       options
     );
@@ -56,7 +56,7 @@ export const getExpenseEvents = () => {
     options?: AxiosRequestConfig
   ): Promise<TData> => {
     return axios
-      .delete(`http://localhost:5050/api/scenarios/${scenarioId}/expense-events/${id}`, options)
+      .delete(`http://localhost:5010/api/scenarios/${scenarioId}/expense-events/${id}`, options)
       .then((res) => {
         if (res.data === '') res.data = null;
         return res as TData;

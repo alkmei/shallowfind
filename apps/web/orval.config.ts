@@ -6,7 +6,7 @@ export default defineConfig({
     output: {
       mode: 'tags-split',
       target: './src/lib/api/scenario-management',
-      baseUrl: 'http://localhost:5050',
+      baseUrl: 'http://localhost:5010',
       client: 'axios',
       override: {
         query: {

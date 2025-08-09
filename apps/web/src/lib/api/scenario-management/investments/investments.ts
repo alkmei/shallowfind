@@ -21,7 +21,7 @@ export const getInvestments = () => {
     options?: AxiosRequestConfig
   ): Promise<TData> => {
     return axios.post(
-      `http://localhost:5050/api/scenarios/${scenarioId}/investments`,
+      `http://localhost:5010/api/scenarios/${scenarioId}/investments`,
       createInvestmentRequest,
       options
     );
@@ -30,7 +30,7 @@ export const getInvestments = () => {
     scenarioId: string,
     options?: AxiosRequestConfig
   ): Promise<TData> => {
-    return axios.get(`http://localhost:5050/api/scenarios/${scenarioId}/investments`, options);
+    return axios.get(`http://localhost:5010/api/scenarios/${scenarioId}/investments`, options);
   };
   const getApiScenariosScenarioIdInvestmentsId = <TData = AxiosResponse<InvestmentResponse>>(
     scenarioId: string,
@@ -38,7 +38,7 @@ export const getInvestments = () => {
     options?: AxiosRequestConfig
   ): Promise<TData> => {
     return axios.get(
-      `http://localhost:5050/api/scenarios/${scenarioId}/investments/${id}`,
+      `http://localhost:5010/api/scenarios/${scenarioId}/investments/${id}`,
       options
     );
   };
@@ -49,7 +49,7 @@ export const getInvestments = () => {
     options?: AxiosRequestConfig
   ): Promise<TData> => {
     return axios.put(
-      `http://localhost:5050/api/scenarios/${scenarioId}/investments/${id}`,
+      `http://localhost:5010/api/scenarios/${scenarioId}/investments/${id}`,
       createInvestmentRequest,
       options
     );
@@ -61,7 +61,7 @@ export const getInvestments = () => {
     options?: AxiosRequestConfig
   ): Promise<TData> => {
     return axios.patch(
-      `http://localhost:5050/api/scenarios/${scenarioId}/investments/${id}`,
+      `http://localhost:5010/api/scenarios/${scenarioId}/investments/${id}`,
       updateInvestmentRequest,
       options
     );
@@ -72,7 +72,7 @@ export const getInvestments = () => {
     options?: AxiosRequestConfig
   ): Promise<TData> => {
     return axios
-      .delete(`http://localhost:5050/api/scenarios/${scenarioId}/investments/${id}`, options)
+      .delete(`http://localhost:5010/api/scenarios/${scenarioId}/investments/${id}`, options)
       .then((res) => {
         if (res.data === '') res.data = null;
         return res as TData;

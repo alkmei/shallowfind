@@ -20,7 +20,7 @@ export const getRebalanceEvents = () => {
     options?: AxiosRequestConfig
   ): Promise<TData> => {
     return axios.post(
-      `http://localhost:5050/api/scenarios/${scenarioId}/rebalance-events`,
+      `http://localhost:5010/api/scenarios/${scenarioId}/rebalance-events`,
       createRebalanceEventRequest,
       options
     );
@@ -29,7 +29,7 @@ export const getRebalanceEvents = () => {
     scenarioId: string,
     options?: AxiosRequestConfig
   ): Promise<TData> => {
-    return axios.get(`http://localhost:5050/api/scenarios/${scenarioId}/rebalance-events`, options);
+    return axios.get(`http://localhost:5010/api/scenarios/${scenarioId}/rebalance-events`, options);
   };
   const getApiScenariosScenarioIdRebalanceEventsId = <TData = AxiosResponse<EventSeriesResponse>>(
     scenarioId: string,
@@ -37,7 +37,7 @@ export const getRebalanceEvents = () => {
     options?: AxiosRequestConfig
   ): Promise<TData> => {
     return axios.get(
-      `http://localhost:5050/api/scenarios/${scenarioId}/rebalance-events/${id}`,
+      `http://localhost:5010/api/scenarios/${scenarioId}/rebalance-events/${id}`,
       options
     );
   };
@@ -48,7 +48,7 @@ export const getRebalanceEvents = () => {
     options?: AxiosRequestConfig
   ): Promise<TData> => {
     return axios.put(
-      `http://localhost:5050/api/scenarios/${scenarioId}/rebalance-events/${id}`,
+      `http://localhost:5010/api/scenarios/${scenarioId}/rebalance-events/${id}`,
       createRebalanceEventRequest,
       options
     );
@@ -59,7 +59,7 @@ export const getRebalanceEvents = () => {
     options?: AxiosRequestConfig
   ): Promise<TData> => {
     return axios
-      .delete(`http://localhost:5050/api/scenarios/${scenarioId}/rebalance-events/${id}`, options)
+      .delete(`http://localhost:5010/api/scenarios/${scenarioId}/rebalance-events/${id}`, options)
       .then((res) => {
         if (res.data === '') res.data = null;
         return res as TData;

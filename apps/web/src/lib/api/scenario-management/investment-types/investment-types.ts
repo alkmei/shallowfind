@@ -20,7 +20,7 @@ export const getInvestmentTypes = () => {
     options?: AxiosRequestConfig
   ): Promise<TData> => {
     return axios.post(
-      `http://localhost:5050/api/scenarios/${scenarioId}/investment-types`,
+      `http://localhost:5010/api/scenarios/${scenarioId}/investment-types`,
       createInvestmentTypeRequest,
       options
     );
@@ -31,7 +31,7 @@ export const getInvestmentTypes = () => {
     scenarioId: string,
     options?: AxiosRequestConfig
   ): Promise<TData> => {
-    return axios.get(`http://localhost:5050/api/scenarios/${scenarioId}/investment-types`, options);
+    return axios.get(`http://localhost:5010/api/scenarios/${scenarioId}/investment-types`, options);
   };
   const getApiScenariosScenarioIdInvestmentTypesId = <
     TData = AxiosResponse<InvestmentTypeResponse>
@@ -41,7 +41,7 @@ export const getInvestmentTypes = () => {
     options?: AxiosRequestConfig
   ): Promise<TData> => {
     return axios.get(
-      `http://localhost:5050/api/scenarios/${scenarioId}/investment-types/${id}`,
+      `http://localhost:5010/api/scenarios/${scenarioId}/investment-types/${id}`,
       options
     );
   };
@@ -54,7 +54,7 @@ export const getInvestmentTypes = () => {
     options?: AxiosRequestConfig
   ): Promise<TData> => {
     return axios.put(
-      `http://localhost:5050/api/scenarios/${scenarioId}/investment-types/${id}`,
+      `http://localhost:5010/api/scenarios/${scenarioId}/investment-types/${id}`,
       createInvestmentTypeRequest,
       options
     );
@@ -65,7 +65,7 @@ export const getInvestmentTypes = () => {
     options?: AxiosRequestConfig
   ): Promise<TData> => {
     return axios
-      .delete(`http://localhost:5050/api/scenarios/${scenarioId}/investment-types/${id}`, options)
+      .delete(`http://localhost:5010/api/scenarios/${scenarioId}/investment-types/${id}`, options)
       .then((res) => {
         if (res.data === '') res.data = null;
         return res as TData;
