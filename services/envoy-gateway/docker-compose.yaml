@@ -1,0 +1,13 @@
+services:
+  envoy-gateway:
+    image: envoyproxy/gateway:v1.4.2
+    network_mode: host
+    ports:
+      - "8888:8888" # Proxy port
+      # - "19000:19000" # (Optional) Admin port, see note below
+    volumes:
+      - ./:/tmp/envoy-gateway
+    command:
+      - "server"
+      - "--config-path"
+      - "/tmp/envoy-gateway/standalone.yaml"
