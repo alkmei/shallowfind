@@ -1,0 +1,28 @@
+apiVersion: gateway.envoyproxy.io/v1alpha1
+kind: SecurityPolicy
+metadata:
+  name: firebase-jwt-auth
+spec:
+  targetRefs:
+    - group: gateway.networking.k8s.io
+      kind: HTTPRoute
+      name: scenario-route # Replace with your HTTPRoute name
+  jwt:
+    providers:
+      - name: firebase
+        issuer: "https://securetoken.google.com/shallowfind-df121"
+        remoteJWKS:
+          uri: "https://www.googleapis.com/service_accounts/v1/jwk/securetoken@system.gserviceaccount.com"
+        audiences:
+          - "shallowfind-df121"
+  authorization:
+    defaultAction: Deny
+    rules:
+      - name: "allow-verified-users"
+        action: Allow
+        principal:
+          jwt:
+            provider: firebase
+            claims:
+              - name: aud
+                values: ["shallowfind-df121"]
