@@ -7,3 +7,11 @@
 
 <h1 class="text-2xl">My Scenarios</h1>
 <DraftScenarioDialog {data} />
+
+<ul>
+  {#each data.scenarios as scenario}
+    <li>
+      <a href={`/dashboard/scenarios/${scenario.id}`}>{scenario.name}</a>
+    </li>
+  {/each}
+</ul>
