@@ -19,8 +19,13 @@ export const actions: Actions = {
       });
     }
 
+    const idToken = event.cookies.get('idToken');
+
     const response = await getScenarios().postApiScenarios(form.data, {
-      withCredentials: true
+      headers: {
+        Authorization: `Bearer ${idToken}`
+      }
+      // withCredentials: true
     });
 
     return {

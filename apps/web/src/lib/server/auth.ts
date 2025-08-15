@@ -1,15 +1,15 @@
 import { adminAuth } from '$lib/firebase/admin';
 import type { RequestEvent } from '@sveltejs/kit';
 
-export async function getUserFromSession(event: RequestEvent) {
-  const sessionCookie = event.cookies.get('session');
+export async function getUserFromId(event: RequestEvent) {
+  const idCookie = event.cookies.get('idToken');
 
-  if (!sessionCookie) {
+  if (!idCookie) {
     return null;
   }
 
   try {
-    const decodedClaims = await adminAuth.verifySessionCookie(sessionCookie, true);
+    const decodedClaims = await adminAuth.verifyIdToken(idCookie, true);
     return {
       uid: decodedClaims.uid,
       email: decodedClaims.email,

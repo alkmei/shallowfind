@@ -4,7 +4,7 @@ import type { LayoutServerLoad } from './$types';
 export const load: LayoutServerLoad = async ({ locals }) => {
   // Check if user is authenticated (this should already be handled by hooks)
   if (!locals.user) {
-    throw redirect(302, '/login');
+    throw redirect(302, '/');
   }
 
   // Return user data and any other dashboard-specific data

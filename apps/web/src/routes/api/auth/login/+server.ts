@@ -11,16 +11,10 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
 
     // Verify the ID token
     const decodedToken = await adminAuth.verifyIdToken(idToken);
-    // const uid = decodedToken.uid;
 
-    // Create a session cookie (optional - you can also just use the ID token)
-    // Session cookies last longer and can be configured
-    const expiresIn = 60 * 60 * 24 * 5 * 1000; // 5 days
-    const sessionCookie = await adminAuth.createSessionCookie(idToken, { expiresIn });
-
-    // Set the session cookie
-    cookies.set('session', sessionCookie, {
-      maxAge: expiresIn / 1000, // Convert to seconds
+    // Store the ID token directly as a cookie
+    cookies.set('idToken', idToken, {
+      maxAge: 60 * 60, // 1 hour (ID tokens typically expire in 1 hour)
       httpOnly: true,
       secure: true,
       sameSite: 'lax',
