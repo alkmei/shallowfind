@@ -1,4 +1,5 @@
 <script lang="ts">
+  import ScenarioCard from '$lib/components/scenario-card.svelte';
   import type { PageData } from './$types';
   import DraftScenarioDialog from './draft-scenario-dialog.svelte';
 
@@ -8,10 +9,8 @@
 <h1 class="text-2xl">My Scenarios</h1>
 <DraftScenarioDialog {data} />
 
-<ul>
+<ul class="grid grid-cols-2 gap-4 lg:grid-cols-4">
   {#each data.scenarios as scenario}
-    <li>
-      <a href={`/dashboard/scenarios/${scenario.id}`}>{scenario.name}</a>
-    </li>
+    <ScenarioCard {scenario} />
   {/each}
 </ul>
