@@ -37,6 +37,6 @@ export const actions: Actions = {
       });
     }
 
-    redirect(303, `/dashboard/scenarios/${response.data.id}`);
+    redirect(303, `/dashboard/scenarios/${response.data.id}/edit`);
   }
 };
