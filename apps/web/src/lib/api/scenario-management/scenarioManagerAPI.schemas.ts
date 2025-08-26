@@ -538,9 +538,12 @@ export interface ScenarioResponse {
   userBirthYear?: number | null;
   /** @nullable */
   spouseBirthYear?: number | null;
+  userLifeExpectancy?: Distribution;
+  spouseLifeExpectancy?: Distribution;
   financialGoal?: number;
   /** @nullable */
   stateOfResidence?: string | null;
+  inflationAssumption?: Distribution;
   annualRetirementContributionLimit?: number;
   rothOptimizerEnabled?: boolean;
   /** @nullable */

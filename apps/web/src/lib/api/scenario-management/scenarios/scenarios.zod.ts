@@ -26,8 +26,38 @@ export const postApiScenariosResponse = zod.object({
   updatedAt: zod.string().datetime({}).optional(),
   userBirthYear: zod.number().nullish(),
   spouseBirthYear: zod.number().nullish(),
+  userLifeExpectancy: zod
+    .object({
+      type: zod.string().nullable(),
+      value: zod.number().nullish(),
+      mean: zod.number().nullish(),
+      stdev: zod.number().nullish(),
+      lower: zod.number().nullish(),
+      upper: zod.number().nullish()
+    })
+    .optional(),
+  spouseLifeExpectancy: zod
+    .object({
+      type: zod.string().nullable(),
+      value: zod.number().nullish(),
+      mean: zod.number().nullish(),
+      stdev: zod.number().nullish(),
+      lower: zod.number().nullish(),
+      upper: zod.number().nullish()
+    })
+    .optional(),
   financialGoal: zod.number().optional(),
   stateOfResidence: zod.string().nullish(),
+  inflationAssumption: zod
+    .object({
+      type: zod.string().nullable(),
+      value: zod.number().nullish(),
+      mean: zod.number().nullish(),
+      stdev: zod.number().nullish(),
+      lower: zod.number().nullish(),
+      upper: zod.number().nullish()
+    })
+    .optional(),
   annualRetirementContributionLimit: zod.number().optional(),
   rothOptimizerEnabled: zod.boolean().optional(),
   rothOptimizerStartYear: zod.number().nullish(),
@@ -48,8 +78,38 @@ export const getApiScenariosResponseItem = zod.object({
   updatedAt: zod.string().datetime({}).optional(),
   userBirthYear: zod.number().nullish(),
   spouseBirthYear: zod.number().nullish(),
+  userLifeExpectancy: zod
+    .object({
+      type: zod.string().nullable(),
+      value: zod.number().nullish(),
+      mean: zod.number().nullish(),
+      stdev: zod.number().nullish(),
+      lower: zod.number().nullish(),
+      upper: zod.number().nullish()
+    })
+    .optional(),
+  spouseLifeExpectancy: zod
+    .object({
+      type: zod.string().nullable(),
+      value: zod.number().nullish(),
+      mean: zod.number().nullish(),
+      stdev: zod.number().nullish(),
+      lower: zod.number().nullish(),
+      upper: zod.number().nullish()
+    })
+    .optional(),
   financialGoal: zod.number().optional(),
   stateOfResidence: zod.string().nullish(),
+  inflationAssumption: zod
+    .object({
+      type: zod.string().nullable(),
+      value: zod.number().nullish(),
+      mean: zod.number().nullish(),
+      stdev: zod.number().nullish(),
+      lower: zod.number().nullish(),
+      upper: zod.number().nullish()
+    })
+    .optional(),
   annualRetirementContributionLimit: zod.number().optional(),
   rothOptimizerEnabled: zod.boolean().optional(),
   rothOptimizerStartYear: zod.number().nullish(),
@@ -75,8 +135,38 @@ export const getApiScenariosIdResponse = zod.object({
   updatedAt: zod.string().datetime({}).optional(),
   userBirthYear: zod.number().nullish(),
   spouseBirthYear: zod.number().nullish(),
+  userLifeExpectancy: zod
+    .object({
+      type: zod.string().nullable(),
+      value: zod.number().nullish(),
+      mean: zod.number().nullish(),
+      stdev: zod.number().nullish(),
+      lower: zod.number().nullish(),
+      upper: zod.number().nullish()
+    })
+    .optional(),
+  spouseLifeExpectancy: zod
+    .object({
+      type: zod.string().nullable(),
+      value: zod.number().nullish(),
+      mean: zod.number().nullish(),
+      stdev: zod.number().nullish(),
+      lower: zod.number().nullish(),
+      upper: zod.number().nullish()
+    })
+    .optional(),
   financialGoal: zod.number().optional(),
   stateOfResidence: zod.string().nullish(),
+  inflationAssumption: zod
+    .object({
+      type: zod.string().nullable(),
+      value: zod.number().nullish(),
+      mean: zod.number().nullish(),
+      stdev: zod.number().nullish(),
+      lower: zod.number().nullish(),
+      upper: zod.number().nullish()
+    })
+    .optional(),
   annualRetirementContributionLimit: zod.number().optional(),
   rothOptimizerEnabled: zod.boolean().optional(),
   rothOptimizerStartYear: zod.number().nullish(),
@@ -148,8 +238,38 @@ export const putApiScenariosIdResponse = zod.object({
   updatedAt: zod.string().datetime({}).optional(),
   userBirthYear: zod.number().nullish(),
   spouseBirthYear: zod.number().nullish(),
+  userLifeExpectancy: zod
+    .object({
+      type: zod.string().nullable(),
+      value: zod.number().nullish(),
+      mean: zod.number().nullish(),
+      stdev: zod.number().nullish(),
+      lower: zod.number().nullish(),
+      upper: zod.number().nullish()
+    })
+    .optional(),
+  spouseLifeExpectancy: zod
+    .object({
+      type: zod.string().nullable(),
+      value: zod.number().nullish(),
+      mean: zod.number().nullish(),
+      stdev: zod.number().nullish(),
+      lower: zod.number().nullish(),
+      upper: zod.number().nullish()
+    })
+    .optional(),
   financialGoal: zod.number().optional(),
   stateOfResidence: zod.string().nullish(),
+  inflationAssumption: zod
+    .object({
+      type: zod.string().nullable(),
+      value: zod.number().nullish(),
+      mean: zod.number().nullish(),
+      stdev: zod.number().nullish(),
+      lower: zod.number().nullish(),
+      upper: zod.number().nullish()
+    })
+    .optional(),
   annualRetirementContributionLimit: zod.number().optional(),
   rothOptimizerEnabled: zod.boolean().optional(),
   rothOptimizerStartYear: zod.number().nullish(),

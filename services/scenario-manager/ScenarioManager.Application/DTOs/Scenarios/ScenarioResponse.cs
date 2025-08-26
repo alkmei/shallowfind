@@ -1,3 +1,4 @@
+using ScenarioManager.Domain.Entities;
 using ScenarioManager.Domain.Enums;
 
 namespace ScenarioManager.Application.DTOs.Scenarios;
@@ -17,9 +18,14 @@ public class ScenarioResponse
     public int? UserBirthYear { get; set; }
     public int? SpouseBirthYear { get; set; }
 
+    public Distribution? UserLifeExpectancy { get; set; }
+    public Distribution? SpouseLifeExpectancy { get; set; }
+
+
     // Financial Settings
     public decimal FinancialGoal { get; set; }
     public string? StateOfResidence { get; set; }
+    public Distribution? InflationAssumption { get; set; }
     public decimal AnnualRetirementContributionLimit { get; set; }
 
     // Roth Conversion Optimizer

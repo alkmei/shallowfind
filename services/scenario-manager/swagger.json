@@ -3084,6 +3084,12 @@
             "format": "int32",
             "nullable": true
           },
+          "userLifeExpectancy": {
+            "$ref": "#/components/schemas/Distribution"
+          },
+          "spouseLifeExpectancy": {
+            "$ref": "#/components/schemas/Distribution"
+          },
           "financialGoal": {
             "type": "number",
             "format": "double"
@@ -3091,6 +3097,9 @@
           "stateOfResidence": {
             "type": "string",
             "nullable": true
+          },
+          "inflationAssumption": {
+            "$ref": "#/components/schemas/Distribution"
           },
           "annualRetirementContributionLimit": {
             "type": "number",
