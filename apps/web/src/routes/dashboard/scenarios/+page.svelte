@@ -1,14 +1,16 @@
-<script>
-  import Button from '$lib/components/ui/button/button.svelte';
+<script lang="ts">
+  import ScenarioCard from '$lib/components/scenario-card.svelte';
+  import type { PageData } from './$types';
+  import DraftScenarioDialog from './draft-scenario-dialog.svelte';
+
+  let { data }: { data: PageData } = $props();
 </script>
 
-<header class="px-6">
-  <div class="flex items-center justify-between">
-    <h1 class="text-4xl">My Scenarios</h1>
-    <Button class="mt-4" variant="default" href="/dashboard/scenarios/create">
-      Create New Scenario
-    </Button>
-  </div>
-  <p class="text-muted-foreground mt-2">Manage and explore your financial scenarios.</p>
-</header>
-<main></main>
+<h1 class="text-2xl">My Scenarios</h1>
+<DraftScenarioDialog {data} />
+
+<ul class="grid grid-cols-2 gap-4 lg:grid-cols-4">
+  {#each data.scenarios as scenario}
+    <ScenarioCard {scenario} />
+  {/each}
+</ul>

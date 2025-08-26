@@ -1,12 +1,11 @@
 <script lang="ts">
-  import Benjamin from '$lib/images/benjamin.jpg';
   let { children } = $props();
 </script>
 
 <div class="flex h-screen w-full">
   <div
     class="relative h-full w-1/2 border-r-4 border-white bg-cover bg-center"
-    style={`background-image: url(${Benjamin})`}
+    style={`background-image: url('https://images.unsplash.com/photo-1623118176012-9b0c6fa0712d?q=80&w=1740&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D')`}
   >
     <div class="absolute inset-0 flex -translate-y-32 flex-col items-end justify-center pr-8">
       <h1 class="text-right text-3xl leading-tight text-white drop-shadow">

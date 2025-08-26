@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { scenariosCreateBody } from '$lib/api/scenarios/scenarios.zod';
+  import { putApiScenariosIdBody } from '$lib/api/scenario-management/scenarios/scenarios.zod';
   import * as Form from '$lib/components/ui/form';
   import type { SuperForm } from 'sveltekit-superforms';
   import z from 'zod';
@@ -7,7 +7,7 @@
   import { Input } from '../ui/input';
   import LifeExpectancy from './life-expectancy.svelte';
 
-  type ScenariosCreateBody = z.infer<typeof scenariosCreateBody>;
+  type ScenariosCreateBody = z.infer<typeof putApiScenariosIdBody>;
 
   const {
     form
@@ -19,17 +19,17 @@
   $formData.userBirthYear = $formData.userBirthYear || new Date().getFullYear() - 30;
   let isMarried = $state({
     get value() {
-      return $formData.maritalStatus === 'couple';
+      return $formData.scenarioType === 'MarriedCouple';
     },
     set value(newValue: boolean) {
-      $formData.maritalStatus = newValue ? 'couple' : 'individual';
+      $formData.scenarioType = newValue ? 'MarriedCouple' : 'Individual';
     }
   });
 </script>
 
 <div class="flex flex-col gap-3">
   <h2 class="text-xl font-bold">Demographic Information</h2>
-  <Form.Field {form} name="maritalStatus" class="flex items-center gap-2">
+  <Form.Field {form} name="scenarioType" class="flex items-center gap-2">
     <Form.Control>
       {#snippet children({ props })}
         <Form.Label>is Married?</Form.Label>
@@ -55,7 +55,7 @@
       <Form.Description>Enter your birth year.</Form.Description>
       <Form.FieldErrors />
     </Form.Field>
-    {#if $formData.maritalStatus === 'couple'}
+    {#if $formData.scenarioType === 'MarriedCouple'}
       <Form.Field {form} name="spouseBirthYear" class="flex-grow">
         <Form.Control>
           {#snippet children({ props })}

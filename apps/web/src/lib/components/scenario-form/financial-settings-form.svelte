@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { scenariosCreateBody } from '$lib/api/scenarios/scenarios.zod';
+  import { putApiScenariosIdBody } from '$lib/api/scenario-management/scenarios/scenarios.zod';
   import * as Form from '$lib/components/ui/form';
   import type { SuperForm } from 'sveltekit-superforms';
   import z from 'zod';
@@ -8,7 +8,7 @@
   import { Switch } from '../ui/switch';
   import { Label } from '../ui/label';
 
-  type ScenariosCreateBody = z.infer<typeof scenariosCreateBody>;
+  type ScenariosCreateBody = z.infer<typeof putApiScenariosIdBody>;
 
   const {
     form
@@ -21,11 +21,11 @@
 <div class="flex flex-col gap-3">
   <h2 class="text-xl font-bold">Inflation Assumption</h2>
 
-  <Tabs.Root bind:value={$formData.inflationAssumption.type}>
+  <Tabs.Root bind:value={$formData.inflationAssumption?.type ?? 'Fixed'}>
     <Tabs.List class="w-full">
-      <Tabs.Trigger value="fixed">Fixed</Tabs.Trigger>
-      <Tabs.Trigger value="normal">Normal</Tabs.Trigger>
-      <Tabs.Trigger value="uniform">Uniform</Tabs.Trigger>
+      <Tabs.Trigger value="Fixed">Fixed</Tabs.Trigger>
+      <Tabs.Trigger value="Normal">Normal</Tabs.Trigger>
+      <Tabs.Trigger value="Uniform">Uniform</Tabs.Trigger>
     </Tabs.List>
     <Tabs.Content value="fixed">
       <Form.Field {form} name="inflationAssumption.value">

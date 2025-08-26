@@ -1,14 +1,14 @@
 <script lang="ts">
-  import { QueryClient, QueryClientProvider } from '@tanstack/svelte-query';
-  import '../app.css';
-  import { ModeWatcher } from 'mode-watcher';
+	import '../app.css';
+	import favicon from '$lib/assets/favicon.svg';
+	import { ModeWatcher } from 'mode-watcher';
 
-  let { children } = $props();
-
-  const queryClient = new QueryClient();
+	let { children } = $props();
 </script>
 
+<svelte:head>
+	<link rel="icon" href={favicon} />
+</svelte:head>
+
 <ModeWatcher />
-<QueryClientProvider client={queryClient}>
-  {@render children()}
-</QueryClientProvider>
+{@render children?.()}

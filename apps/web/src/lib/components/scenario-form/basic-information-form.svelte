@@ -1,12 +1,12 @@
 <script lang="ts">
-  import type { scenariosCreateBody } from '$lib/api/scenarios/scenarios.zod';
+  import { putApiScenariosIdBody } from '$lib/api/scenario-management/scenarios/scenarios.zod';
   import * as Form from '$lib/components/ui/form';
   import { Input } from '$lib/components/ui/input';
   import type { SuperForm } from 'sveltekit-superforms';
   import z from 'zod';
   import Textarea from '../ui/textarea/textarea.svelte';
 
-  type ScenariosCreateBody = z.infer<typeof scenariosCreateBody>;
+  type ScenariosCreateBody = z.infer<typeof putApiScenariosIdBody>;
 
   const {
     form

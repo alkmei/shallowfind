@@ -1,0 +1,28 @@
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: scenario-route
+spec:
+  parentRefs:
+    - name: eg
+  hostnames:
+    - "www.example.com"
+  rules:
+    - backendRefs:
+        - group: "gateway.envoyproxy.io"
+          kind: Backend
+          name: scenario-manager
+      matches:
+        - path:
+            type: PathPrefix
+            value: /api/scenarios
+---
+apiVersion: gateway.envoyproxy.io/v1alpha1
+kind: Backend
+metadata:
+  name: scenario-manager
+spec:
+  endpoints:
+    - ip:
+        address: 0.0.0.0 # this address is for demo purpose only, do not use it in production!
+        port: 5010

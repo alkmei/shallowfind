@@ -1,7 +1,19 @@
-<script lang="ts" module>
-  import AudioWaveformIcon from '@lucide/svelte/icons/audio-waveform';
-  import CommandIcon from '@lucide/svelte/icons/command';
-  import GalleryVerticalEndIcon from '@lucide/svelte/icons/gallery-vertical-end';
+<script lang="ts">
+  import NavMain from './nav-main.svelte';
+  import NavUser from './nav-user.svelte';
+  import SidebarLogo from './sidebar-logo.svelte';
+  import * as Sidebar from '$lib/components/ui/sidebar';
+  import type { ComponentProps } from 'svelte';
+  import { BadgeDollarSign, Layers, TrendingUp, Wrench } from '@lucide/svelte';
+
+  let {
+    ref = $bindable(null),
+    collapsible = 'icon',
+    user,
+    ...restProps
+  }: ComponentProps<typeof Sidebar.Root> & {
+    user: { name: string; email: string };
+  } = $props();
 
   const data = {
     navMain: [
@@ -14,10 +26,6 @@
           {
             title: 'My Scenarios',
             url: '/dashboard/scenarios'
-          },
-          {
-            title: 'Create New Scenario',
-            url: '/dashboard/scenarios/create'
           },
           {
             title: 'Scenario Explorer',
@@ -100,23 +108,6 @@
       }
     ]
   };
-</script>
-
-<script lang="ts">
-  import NavMain from './nav-main.svelte';
-  import NavUser from './nav-user.svelte';
-  import SidebarLogo from './sidebar-logo.svelte';
-  import * as Sidebar from '$lib/components/ui/sidebar/index.js';
-  import type { ComponentProps } from 'svelte';
-  import type { AdminUser } from '$lib/api/shallowfind.schemas';
-  import { BadgeDollarSign, Layers, TrendingUp, Wrench } from '@lucide/svelte';
-
-  let {
-    ref = $bindable(null),
-    collapsible = 'icon',
-    user,
-    ...restProps
-  }: ComponentProps<typeof Sidebar.Root> & { user: AdminUser } = $props();
 </script>
 
 <Sidebar.Root {collapsible} {...restProps}>

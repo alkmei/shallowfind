@@ -1,12 +1,13 @@
 import { defineConfig } from 'orval';
 
 export default defineConfig({
-  shallowfind: {
-    input: '../server/schema.yml',
+  scenario: {
+    input: '../../services/scenario-manager/swagger.json',
     output: {
       mode: 'tags-split',
-      target: './src/lib/api/',
-      client: 'svelte-query',
+      target: './src/lib/api/scenario-management',
+      baseUrl: 'http://localhost:5010',
+      client: 'axios',
       override: {
         query: {
           options: {
@@ -17,11 +18,11 @@ export default defineConfig({
       }
     }
   },
-  shallowfindZod: {
-    input: '../server/schema.yml',
+  scenarioZod: {
+    input: '../../services/scenario-manager/swagger.json',
     output: {
       mode: 'tags-split',
-      target: './src/lib/api/',
+      target: './src/lib/api/scenario-management',
       client: 'zod',
       fileExtension: '.zod.ts'
     }

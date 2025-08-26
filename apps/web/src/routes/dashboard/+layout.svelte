@@ -1,26 +1,21 @@
 <script lang="ts">
-  import { createUsersMeRetrieve } from '$lib/api/users/users';
   import AppSidebar from '$lib/components/sidebar/app-sidebar.svelte';
-  import * as Breadcrumb from '$lib/components/ui/breadcrumb/index.js';
-  import { Separator } from '$lib/components/ui/separator/index.js';
-  import * as Sidebar from '$lib/components/ui/sidebar/index.js';
+  import * as Sidebar from '$lib/components/ui/sidebar';
+  import { Separator } from '$lib/components/ui/separator';
+  import * as Breadcrumb from '$lib/components/ui/breadcrumb';
+  import type { LayoutProps } from './$types';
 
-  let { children } = $props();
-  const userQuery = createUsersMeRetrieve();
+  let { data, children }: LayoutProps = $props();
 </script>
 
 <Sidebar.Provider>
-  {#if $userQuery.isLoading}
-    <div class="flex h-full items-center justify-center">
-      <span class="text-gray-500">Loading...</span>
-    </div>
-  {:else if $userQuery.isError}
-    <div class="flex h-full items-center justify-center">
-      <span class="text-red-500">Error loading user data</span>
-    </div>
-  {:else if $userQuery.isSuccess}
-    <AppSidebar user={$userQuery.data?.data} />
-  {/if}
+  <AppSidebar
+    user={{
+      name: data.user.name ?? data.user.email?.split('@')[0] ?? 'Anonymous',
+      email: data.user.email ?? 'anon@example.com'
+    }}
+  />
+
   <Sidebar.Inset>
     <header
       class="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12"
@@ -42,7 +37,9 @@
       </div>
     </header>
     <div class="flex flex-1 flex-col gap-4 p-4 pt-0">
-      {@render children()}
+      <div class="min-h-[100vh] flex-1 rounded-xl border p-4 md:min-h-min">
+        {@render children?.()}
+      </div>
     </div>
   </Sidebar.Inset>
 </Sidebar.Provider>
