@@ -1,3 +1,0 @@
-include:
-  - "services/scenario-manager/docker-compose.yaml"
-  # - "services/envoy-gateway/docker-compose.yaml"
