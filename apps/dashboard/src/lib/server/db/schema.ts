@@ -33,7 +33,7 @@ interface UniformDistribution {
 type Distribution = NormalDistribution | FixedDistribution | UniformDistribution;
 
 // prettier-ignore
-const stateEnum = pgEnum('state', [
+export const stateEnum = pgEnum('state', [
 	'AL', 'AK', 'AZ', 'AR', 'CA', 'CO', 'CT', 'DE', 'FL', 'GA',
 	'HI', 'ID', 'IL', 'IN', 'IA', 'KS', 'KY', 'LA', 'ME', 'MD',
 	'MA', 'MI', 'MN', 'MS', 'MO', 'MT', 'NE', 'NV', 'NH', 'NJ',
@@ -41,30 +41,30 @@ const stateEnum = pgEnum('state', [
 	'SD', 'TN', 'TX', 'UT', 'VT', 'VA', 'WA', 'WV', 'WI', 'WY'
 ]);
 
-const scenarioTypeEnum = pgEnum('scenario_type', ['individual', 'married_couple']);
-const scenarioStatusEnum = pgEnum('scenario_status', ['draft', 'active', 'archived']);
-const accountTaxStatusEnum = pgEnum('account_tax_status', [
+export const scenarioTypeEnum = pgEnum('scenario_type', ['individual', 'married_couple']);
+export const scenarioStatusEnum = pgEnum('scenario_status', ['draft', 'active', 'archived']);
+export const accountTaxStatusEnum = pgEnum('account_tax_status', [
 	'non_retirement',
 	'pre_tax_retirement',
 	'after_tax_retirement'
 ]);
-const investmentTaxabilityEnum = pgEnum('investment_taxability', ['taxable', 'tax_exempt']);
-const eventSeriesTypeEnum = pgEnum('event_series_type', [
+export const investmentTaxabilityEnum = pgEnum('investment_taxability', ['taxable', 'tax_exempt']);
+export const eventSeriesTypeEnum = pgEnum('event_series_type', [
 	'income',
 	'expense',
 	'invest',
 	'rebalance'
 ]);
-const strategyTypeEnum = pgEnum('strategy_type', [
+export const strategyTypeEnum = pgEnum('strategy_type', [
 	'spending',
 	'expense_withdrawal',
 	'rmd',
 	'roth_conversion'
 ]);
-const sharePermissionEnum = pgEnum('share_permission', ['ro', 'rw']);
+export const sharePermissionEnum = pgEnum('share_permission', ['ro', 'rw']);
 
 // For event series timing
-const startTimingTypeEnum = pgEnum('start_timing_type', [
+export const startTimingTypeEnum = pgEnum('start_timing_type', [
 	'same_year',
 	'year_after',
 	'distribution'
@@ -101,7 +101,7 @@ export const scenario = pgTable('scenario', {
 
 export const investmentType = pgTable('investment_type', {
 	id: serial('id').primaryKey(),
-	scenarioId: integer('scenario_id')
+	scenarioId: uuid('scenario_id')
 		.references(() => scenario.id)
 		.notNull(),
 
@@ -116,7 +116,7 @@ export const investmentType = pgTable('investment_type', {
 
 export const eventSeries = pgTable('event_series', {
 	id: serial('id').primaryKey(),
-	scenarioId: integer('scenario_id')
+	scenarioId: uuid('scenario_id')
 		.references(() => scenario.id)
 		.notNull(),
 	name: varchar('name', { length: 255 }).notNull(),
@@ -153,9 +153,11 @@ export const eventSeries = pgTable('event_series', {
 
 export const strategy = pgTable('strategy', {
 	id: serial('id').primaryKey(),
-	scenarioId: integer('scenario_id')
+	scenarioId: uuid('scenario_id')
 		.references(() => scenario.id)
 		.notNull(),
+
+	type: strategyTypeEnum('type').notNull(),
 
 	name: varchar('name', { length: 255 }).notNull(),
 	description: text('description').notNull(),
@@ -168,7 +170,7 @@ export const strategy = pgTable('strategy', {
 
 export const scenarioSharing = pgTable('scenario_sharing', {
 	id: serial('id').primaryKey(),
-	scenarioId: integer('scenario_id')
+	scenarioId: uuid('scenario_id')
 		.references(() => scenario.id)
 		.notNull(),
 
