@@ -71,7 +71,7 @@ export const startTimingTypeEnum = pgEnum('start_timing_type', [
 ]);
 
 export const scenario = pgTable('scenario', {
-	id: uuid('id').primaryKey(),
+	id: uuid('id').primaryKey().defaultRandom(),
 	userId: varchar('user_id').notNull(),
 	title: varchar('title', { length: 255 }).notNull(),
 	description: text('description').notNull(),

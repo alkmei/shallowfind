@@ -7,14 +7,14 @@
   import { Label } from '$lib/components/ui/label';
   import { Textarea } from '$lib/components/ui/textarea';
 
-  import { postApiScenariosBody } from '$lib/api/scenario-management/scenarios/scenarios.zod';
   import { superForm, type Infer, type SuperValidated } from 'sveltekit-superforms';
   import { zodClient } from 'sveltekit-superforms/adapters';
+	import { createScenarioSchema, type CreateScenarioSchema } from './schema';
 
-  let { data }: { data: { form: SuperValidated<Infer<typeof postApiScenariosBody>> } } = $props();
+  let { data }: { data: { form: SuperValidated<Infer<CreateScenarioSchema>> } } = $props();
 
   const form = superForm(data.form, {
-    validators: zodClient(postApiScenariosBody)
+    validators: zodClient(createScenarioSchema)
   });
 
   const { form: formData, errors, enhance } = form;
