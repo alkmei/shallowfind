@@ -9,7 +9,8 @@ import {
 	decimal,
 	pgEnum,
 	boolean,
-	type AnyPgColumn
+	type AnyPgColumn,
+	uuid
 } from 'drizzle-orm/pg-core';
 
 interface NormalDistribution {
@@ -70,22 +71,24 @@ const startTimingTypeEnum = pgEnum('start_timing_type', [
 ]);
 
 export const scenario = pgTable('scenario', {
-	id: serial('id').primaryKey(),
+	id: uuid('id').primaryKey(),
 	userId: varchar('user_id').notNull(),
 	title: varchar('title', { length: 255 }).notNull(),
 	description: text('description').notNull(),
+	scenarioType: scenarioTypeEnum('scenario_type').notNull(),
+	scenarioStatus: scenarioStatusEnum('scenario_status').notNull().default('draft'),
 
 	// Personal information
-	userBirthYear: integer('user_birth_year').notNull(),
-	spouseBirthYear: integer('spouse_birth_year').notNull(),
-	userLifeExpectancy: jsonb('user_life_expectancy').$type<Distribution>().notNull(),
-	spouseLifeExpectancy: jsonb('spouse_life_expectancy').$type<Distribution>().notNull(),
+	userBirthYear: integer('user_birth_year'),
+	spouseBirthYear: integer('spouse_birth_year'),
+	userLifeExpectancy: jsonb('user_life_expectancy').$type<Distribution>(),
+	spouseLifeExpectancy: jsonb('spouse_life_expectancy').$type<Distribution>(),
 
 	// Financial settings
-	financialGoal: decimal('financial_goal').notNull(),
+	financialGoal: decimal('financial_goal'),
 	stateOfResidence: stateEnum('state_of_residence').notNull(),
-	inflationAssumption: jsonb('inflation_assumption').$type<Distribution>().notNull(),
-	annualRetirementContributionLimit: decimal('annual_retirement_contribution_limit').notNull(),
+	inflationAssumption: jsonb('inflation_assumption').$type<Distribution>(),
+	annualRetirementContributionLimit: decimal('annual_retirement_contribution_limit'),
 
 	// Roth optimization
 	rothOptimizerEnabled: boolean('roth_optimizer_enabled').notNull().default(false),
