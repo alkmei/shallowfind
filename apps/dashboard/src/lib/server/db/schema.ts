@@ -1,5 +1,4 @@
 import {
-	pgTable,
 	serial,
 	varchar,
 	text,
@@ -7,10 +6,10 @@ import {
 	integer,
 	jsonb,
 	decimal,
-	pgEnum,
 	boolean,
 	type AnyPgColumn,
-	uuid
+	uuid,
+	pgSchema
 } from 'drizzle-orm/pg-core';
 
 interface NormalDistribution {
@@ -32,8 +31,10 @@ interface UniformDistribution {
 
 type Distribution = NormalDistribution | FixedDistribution | UniformDistribution;
 
+export const shallowfindSchema = pgSchema('shallowfind');
+
 // prettier-ignore
-export const stateEnum = pgEnum('state', [
+export const stateEnum = shallowfindSchema.enum('state', [
 	'AL', 'AK', 'AZ', 'AR', 'CA', 'CO', 'CT', 'DE', 'FL', 'GA',
 	'HI', 'ID', 'IL', 'IN', 'IA', 'KS', 'KY', 'LA', 'ME', 'MD',
 	'MA', 'MI', 'MN', 'MS', 'MO', 'MT', 'NE', 'NV', 'NH', 'NJ',
@@ -41,36 +42,46 @@ export const stateEnum = pgEnum('state', [
 	'SD', 'TN', 'TX', 'UT', 'VT', 'VA', 'WA', 'WV', 'WI', 'WY'
 ]);
 
-export const scenarioTypeEnum = pgEnum('scenario_type', ['individual', 'married_couple']);
-export const scenarioStatusEnum = pgEnum('scenario_status', ['draft', 'active', 'archived']);
-export const accountTaxStatusEnum = pgEnum('account_tax_status', [
+export const scenarioTypeEnum = shallowfindSchema.enum('scenario_type', [
+	'individual',
+	'married_couple'
+]);
+export const scenarioStatusEnum = shallowfindSchema.enum('scenario_status', [
+	'draft',
+	'active',
+	'archived'
+]);
+export const accountTaxStatusEnum = shallowfindSchema.enum('account_tax_status', [
 	'non_retirement',
 	'pre_tax_retirement',
 	'after_tax_retirement'
 ]);
-export const investmentTaxabilityEnum = pgEnum('investment_taxability', ['taxable', 'tax_exempt']);
-export const eventSeriesTypeEnum = pgEnum('event_series_type', [
+export const investmentTaxabilityEnum = shallowfindSchema.enum('investment_taxability', [
+	'taxable',
+	'tax_exempt'
+]);
+export const eventSeriesTypeEnum = shallowfindSchema.enum('event_series_type', [
 	'income',
 	'expense',
 	'invest',
 	'rebalance'
 ]);
-export const strategyTypeEnum = pgEnum('strategy_type', [
+export const strategyTypeEnum = shallowfindSchema.enum('strategy_type', [
 	'spending',
 	'expense_withdrawal',
 	'rmd',
 	'roth_conversion'
 ]);
-export const sharePermissionEnum = pgEnum('share_permission', ['ro', 'rw']);
+export const sharePermissionEnum = shallowfindSchema.enum('share_permission', ['ro', 'rw']);
 
 // For event series timing
-export const startTimingTypeEnum = pgEnum('start_timing_type', [
+export const startTimingTypeEnum = shallowfindSchema.enum('start_timing_type', [
 	'same_year',
 	'year_after',
 	'distribution'
 ]);
 
-export const scenario = pgTable('scenario', {
+export const scenario = shallowfindSchema.table('scenario', {
 	id: uuid('id').primaryKey().defaultRandom(),
 	userId: varchar('user_id').notNull(),
 	title: varchar('title', { length: 255 }).notNull(),
@@ -99,7 +110,7 @@ export const scenario = pgTable('scenario', {
 	updatedAt: timestamp('updated_at').defaultNow()
 });
 
-export const investmentType = pgTable('investment_type', {
+export const investmentType = shallowfindSchema.table('investment_type', {
 	id: serial('id').primaryKey(),
 	scenarioId: uuid('scenario_id')
 		.references(() => scenario.id)
@@ -114,7 +125,7 @@ export const investmentType = pgTable('investment_type', {
 	isCash: boolean('is_cash').notNull().default(false)
 });
 
-export const eventSeries = pgTable('event_series', {
+export const eventSeries = shallowfindSchema.table('event_series', {
 	id: serial('id').primaryKey(),
 	scenarioId: uuid('scenario_id')
 		.references(() => scenario.id)
@@ -151,7 +162,7 @@ export const eventSeries = pgTable('event_series', {
 	targetTaxStatus: accountTaxStatusEnum('target_tax_status').notNull() // For rebalance events
 });
 
-export const strategy = pgTable('strategy', {
+export const strategy = shallowfindSchema.table('strategy', {
 	id: serial('id').primaryKey(),
 	scenarioId: uuid('scenario_id')
 		.references(() => scenario.id)
@@ -168,7 +179,7 @@ export const strategy = pgTable('strategy', {
 	ordering: jsonb('ordering').$type<number[]>()
 });
 
-export const scenarioSharing = pgTable('scenario_sharing', {
+export const scenarioSharing = shallowfindSchema.table('scenario_sharing', {
 	id: serial('id').primaryKey(),
 	scenarioId: uuid('scenario_id')
 		.references(() => scenario.id)
