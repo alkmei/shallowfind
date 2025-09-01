@@ -1,12 +1,12 @@
 {
-  "id": "f41a1b4d-4823-48b9-afc9-938b8408b772",
+  "id": "ef9d9769-4f07-4315-9dd2-b8ab5e538f1e",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
-    "public.event_series": {
+    "shallowfind.event_series": {
       "name": "event_series",
-      "schema": "",
+      "schema": "shallowfind",
       "columns": {
         "id": {
           "name": "id",
@@ -35,7 +35,7 @@
         "type": {
           "name": "type",
           "type": "event_series_type",
-          "typeSchema": "public",
+          "typeSchema": "shallowfind",
           "primaryKey": false,
           "notNull": true
         },
@@ -60,7 +60,7 @@
         "start_timing_type": {
           "name": "start_timing_type",
           "type": "start_timing_type",
-          "typeSchema": "public",
+          "typeSchema": "shallowfind",
           "primaryKey": false,
           "notNull": true
         },
@@ -150,7 +150,7 @@
         "target_tax_status": {
           "name": "target_tax_status",
           "type": "account_tax_status",
-          "typeSchema": "public",
+          "typeSchema": "shallowfind",
           "primaryKey": false,
           "notNull": true
         }
@@ -161,6 +161,7 @@
           "name": "event_series_scenario_id_scenario_id_fk",
           "tableFrom": "event_series",
           "tableTo": "scenario",
+          "schemaTo": "shallowfind",
           "columnsFrom": [
             "scenario_id"
           ],
@@ -174,6 +175,7 @@
           "name": "event_series_reference_event_series_id_event_series_id_fk",
           "tableFrom": "event_series",
           "tableTo": "event_series",
+          "schemaTo": "shallowfind",
           "columnsFrom": [
             "reference_event_series_id"
           ],
@@ -190,9 +192,9 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
-    "public.investment_type": {
+    "shallowfind.investment_type": {
       "name": "investment_type",
-      "schema": "",
+      "schema": "shallowfind",
       "columns": {
         "id": {
           "name": "id",
@@ -239,7 +241,7 @@
         "taxability": {
           "name": "taxability",
           "type": "investment_taxability",
-          "typeSchema": "public",
+          "typeSchema": "shallowfind",
           "primaryKey": false,
           "notNull": true
         },
@@ -257,6 +259,7 @@
           "name": "investment_type_scenario_id_scenario_id_fk",
           "tableFrom": "investment_type",
           "tableTo": "scenario",
+          "schemaTo": "shallowfind",
           "columnsFrom": [
             "scenario_id"
           ],
@@ -273,15 +276,16 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
-    "public.scenario": {
+    "shallowfind.scenario": {
       "name": "scenario",
-      "schema": "",
+      "schema": "shallowfind",
       "columns": {
         "id": {
           "name": "id",
           "type": "uuid",
           "primaryKey": true,
-          "notNull": true
+          "notNull": true,
+          "default": "gen_random_uuid()"
         },
         "user_id": {
           "name": "user_id",
@@ -304,14 +308,14 @@
         "scenario_type": {
           "name": "scenario_type",
           "type": "scenario_type",
-          "typeSchema": "public",
+          "typeSchema": "shallowfind",
           "primaryKey": false,
           "notNull": true
         },
         "scenario_status": {
           "name": "scenario_status",
           "type": "scenario_status",
-          "typeSchema": "public",
+          "typeSchema": "shallowfind",
           "primaryKey": false,
           "notNull": true,
           "default": "'draft'"
@@ -349,7 +353,7 @@
         "state_of_residence": {
           "name": "state_of_residence",
           "type": "state",
-          "typeSchema": "public",
+          "typeSchema": "shallowfind",
           "primaryKey": false,
           "notNull": true
         },
@@ -407,9 +411,9 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
-    "public.scenario_sharing": {
+    "shallowfind.scenario_sharing": {
       "name": "scenario_sharing",
-      "schema": "",
+      "schema": "shallowfind",
       "columns": {
         "id": {
           "name": "id",
@@ -432,7 +436,7 @@
         "permission": {
           "name": "permission",
           "type": "share_permission",
-          "typeSchema": "public",
+          "typeSchema": "shallowfind",
           "primaryKey": false,
           "notNull": true
         }
@@ -443,6 +447,7 @@
           "name": "scenario_sharing_scenario_id_scenario_id_fk",
           "tableFrom": "scenario_sharing",
           "tableTo": "scenario",
+          "schemaTo": "shallowfind",
           "columnsFrom": [
             "scenario_id"
           ],
@@ -459,9 +464,9 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
-    "public.strategy": {
+    "shallowfind.strategy": {
       "name": "strategy",
-      "schema": "",
+      "schema": "shallowfind",
       "columns": {
         "id": {
           "name": "id",
@@ -478,7 +483,7 @@
         "type": {
           "name": "type",
           "type": "strategy_type",
-          "typeSchema": "public",
+          "typeSchema": "shallowfind",
           "primaryKey": false,
           "notNull": true
         },
@@ -514,6 +519,7 @@
           "name": "strategy_scenario_id_scenario_id_fk",
           "tableFrom": "strategy",
           "tableTo": "scenario",
+          "schemaTo": "shallowfind",
           "columnsFrom": [
             "scenario_id"
           ],
@@ -532,18 +538,18 @@
     }
   },
   "enums": {
-    "public.account_tax_status": {
+    "shallowfind.account_tax_status": {
       "name": "account_tax_status",
-      "schema": "public",
+      "schema": "shallowfind",
       "values": [
         "non_retirement",
         "pre_tax_retirement",
         "after_tax_retirement"
       ]
     },
-    "public.event_series_type": {
+    "shallowfind.event_series_type": {
       "name": "event_series_type",
-      "schema": "public",
+      "schema": "shallowfind",
       "values": [
         "income",
         "expense",
@@ -551,51 +557,51 @@
         "rebalance"
       ]
     },
-    "public.investment_taxability": {
+    "shallowfind.investment_taxability": {
       "name": "investment_taxability",
-      "schema": "public",
+      "schema": "shallowfind",
       "values": [
         "taxable",
         "tax_exempt"
       ]
     },
-    "public.scenario_status": {
+    "shallowfind.scenario_status": {
       "name": "scenario_status",
-      "schema": "public",
+      "schema": "shallowfind",
       "values": [
         "draft",
         "active",
         "archived"
       ]
     },
-    "public.scenario_type": {
+    "shallowfind.scenario_type": {
       "name": "scenario_type",
-      "schema": "public",
+      "schema": "shallowfind",
       "values": [
         "individual",
         "married_couple"
       ]
     },
-    "public.share_permission": {
+    "shallowfind.share_permission": {
       "name": "share_permission",
-      "schema": "public",
+      "schema": "shallowfind",
       "values": [
         "ro",
         "rw"
       ]
     },
-    "public.start_timing_type": {
+    "shallowfind.start_timing_type": {
       "name": "start_timing_type",
-      "schema": "public",
+      "schema": "shallowfind",
       "values": [
         "same_year",
         "year_after",
         "distribution"
       ]
     },
-    "public.state": {
+    "shallowfind.state": {
       "name": "state",
-      "schema": "public",
+      "schema": "shallowfind",
       "values": [
         "AL",
         "AK",
@@ -649,9 +655,9 @@
         "WY"
       ]
     },
-    "public.strategy_type": {
+    "shallowfind.strategy_type": {
       "name": "strategy_type",
-      "schema": "public",
+      "schema": "shallowfind",
       "values": [
         "spending",
         "expense_withdrawal",
@@ -660,7 +666,9 @@
       ]
     }
   },
-  "schemas": {},
+  "schemas": {
+    "shallowfind": "shallowfind"
+  },
   "sequences": {},
   "roles": {},
   "policies": {},

@@ -31,13 +31,17 @@ export const actions: Actions = {
 			});
 		}
 
-		db.insert(scenario).values({
-			userId: user.uid,
-			title: form.data.name,
-			description: form.data.description || '',
-			scenarioType: form.data.scenarioType
-		});
+		const newScenario = await db
+			.insert(scenario)
+			.values({
+				userId: user.uid,
+				title: form.data.name,
+				description: form.data.description || '',
+				scenarioType: form.data.scenarioType,
+				stateOfResidence: 'NY'
+			})
+			.returning({ insertedId: scenario.id });
 
-		redirect(303, `/dashboard/scenarios/${response.data.id}/edit`);
+		redirect(303, `/dashboard/scenarios/${newScenario.at(0)?.insertedId}/edit`);
 	}
 };
