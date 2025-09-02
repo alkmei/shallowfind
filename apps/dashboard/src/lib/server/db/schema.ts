@@ -135,31 +135,31 @@ export const eventSeries = shallowfindSchema.table('event_series', {
 	type: eventSeriesTypeEnum('type').notNull(),
 
 	// Timing
-	startYear: jsonb('start_year').$type<Distribution>().notNull(),
-	duration: jsonb('duration').$type<Distribution>().notNull(),
-	referenceEventSeriesId: integer('reference_event_series_id')
-		.references((): AnyPgColumn => eventSeries.id)
-		.notNull(),
-	startTimingType: startTimingTypeEnum('start_timing_type').notNull(),
+	startYear: jsonb('start_year').$type<Distribution>(),
+	duration: jsonb('duration').$type<Distribution>(),
+	referenceEventSeriesId: integer('reference_event_series_id').references(
+		(): AnyPgColumn => eventSeries.id
+	),
+	startTimingType: startTimingTypeEnum('start_timing_type'),
 
 	isActive: boolean('is_active').notNull().default(true),
 	orderIndex: integer('order_index').notNull(),
 
 	// Income/Expense fields
-	initialAmount: decimal('initial_amount').notNull(),
-	annualChange: jsonb('annual_change').$type<Distribution>().notNull(),
-	inflationAdjusted: boolean('inflation_adjusted').notNull().default(false),
-	userPercentage: decimal('user_percentage').notNull(), // For married couples
-	isSocialSecurity: boolean('is_social_security').notNull().default(false), // For income event
-	isDiscretionary: boolean('is_discretionary').notNull().default(false), // For expense event
+	initialAmount: decimal('initial_amount'),
+	annualChange: jsonb('annual_change').$type<Distribution>(),
+	inflationAdjusted: boolean('inflation_adjusted').default(false),
+	userPercentage: decimal('user_percentage'), // For married couples
+	isSocialSecurity: boolean('is_social_security').default(false), // For income event
+	isDiscretionary: boolean('is_discretionary').default(false), // For expense event
 
 	// Invest/Rebalance fields
-	assetAllocation: jsonb('asset_allocation').$type<Record<number, number>>().notNull(), // Percentage per investment type ID
-	isGlidePath: boolean('is_glide_path').notNull().default(false),
+	assetAllocation: jsonb('asset_allocation').$type<Record<number, number>>(), // Percentage per investment type ID
+	isGlidePath: boolean('is_glide_path').default(false),
 	initialAllocation: jsonb('initial_allocation').$type<Record<number, number>>(), // For glide path
 	finalAllocation: jsonb('final_allocation').$type<Record<number, number>>(), // For glide path
-	maximumCash: decimal('maximum_cash').notNull(), // For invest events
-	targetTaxStatus: accountTaxStatusEnum('target_tax_status').notNull() // For rebalance events
+	maximumCash: decimal('maximum_cash'), // For invest events
+	targetTaxStatus: accountTaxStatusEnum('target_tax_status') // For rebalance events
 });
 
 export const strategy = shallowfindSchema.table('strategy', {

@@ -2,22 +2,73 @@
   import * as Dialog from '$lib/components/ui/dialog';
   import * as Form from '$lib/components/ui/form';
   import * as RadioGroup from '$lib/components/ui/radio-group';
+  import * as Select from '$lib/components/ui/select';
   import Button from '$lib/components/ui/button/button.svelte';
   import { Input } from '$lib/components/ui/input';
   import { Label } from '$lib/components/ui/label';
   import { Textarea } from '$lib/components/ui/textarea';
 
   import { superForm, type Infer, type SuperValidated } from 'sveltekit-superforms';
-  import { zodClient } from 'sveltekit-superforms/adapters';
-	import { createScenarioSchema, type CreateScenarioSchema } from './schema';
+  import { type CreateScenarioSchema } from './schema';
 
   let { data }: { data: { form: SuperValidated<Infer<CreateScenarioSchema>> } } = $props();
 
-  const form = superForm(data.form, {
-    validators: zodClient(createScenarioSchema)
-  });
+  const states = {
+    AL: { name: 'Alabama', code: 'AL' },
+    AK: { name: 'Alaska', code: 'AK' },
+    AZ: { name: 'Arizona', code: 'AZ' },
+    AR: { name: 'Arkansas', code: 'AR' },
+    CA: { name: 'California', code: 'CA' },
+    CO: { name: 'Colorado', code: 'CO' },
+    CT: { name: 'Connecticut', code: 'CT' },
+    DE: { name: 'Delaware', code: 'DE' },
+    FL: { name: 'Florida', code: 'FL' },
+    GA: { name: 'Georgia', code: 'GA' },
+    HI: { name: 'Hawaii', code: 'HI' },
+    ID: { name: 'Idaho', code: 'ID' },
+    IL: { name: 'Illinois', code: 'IL' },
+    IN: { name: 'Indiana', code: 'IN' },
+    IA: { name: 'Iowa', code: 'IA' },
+    KS: { name: 'Kansas', code: 'KS' },
+    KY: { name: 'Kentucky', code: 'KY' },
+    LA: { name: 'Louisiana', code: 'LA' },
+    ME: { name: 'Maine', code: 'ME' },
+    MD: { name: 'Maryland', code: 'MD' },
+    MA: { name: 'Massachusetts', code: 'MA' },
+    MI: { name: 'Michigan', code: 'MI' },
+    MN: { name: 'Minnesota', code: 'MN' },
+    MS: { name: 'Mississippi', code: 'MS' },
+    MO: { name: 'Missouri', code: 'MO' },
+    MT: { name: 'Montana', code: 'MT' },
+    NE: { name: 'Nebraska', code: 'NE' },
+    NV: { name: 'Nevada', code: 'NV' },
+    NH: { name: 'New Hampshire', code: 'NH' },
+    NJ: { name: 'New Jersey', code: 'NJ' },
+    NM: { name: 'New Mexico', code: 'NM' },
+    NY: { name: 'New York', code: 'NY' },
+    NC: { name: 'North Carolina', code: 'NC' },
+    ND: { name: 'North Dakota', code: 'ND' },
+    OH: { name: 'Ohio', code: 'OH' },
+    OK: { name: 'Oklahoma', code: 'OK' },
+    OR: { name: 'Oregon', code: 'OR' },
+    PA: { name: 'Pennsylvania', code: 'PA' },
+    RI: { name: 'Rhode Island', code: 'RI' },
+    SC: { name: 'South Carolina', code: 'SC' },
+    SD: { name: 'South Dakota', code: 'SD' },
+    TN: { name: 'Tennessee', code: 'TN' },
+    TX: { name: 'Texas', code: 'TX' },
+    UT: { name: 'Utah', code: 'UT' },
+    VT: { name: 'Vermont', code: 'VT' },
+    VA: { name: 'Virginia', code: 'VA' },
+    WA: { name: 'Washington', code: 'WA' },
+    WV: { name: 'West Virginia', code: 'WV' },
+    WI: { name: 'Wisconsin', code: 'WI' },
+    WY: { name: 'Wyoming', code: 'WY' }
+  };
 
-  const { form: formData, errors, enhance } = form;
+  const form = superForm(data.form);
+
+  const { form: formData, enhance } = form;
 </script>
 
 <Dialog.Root>
@@ -63,6 +114,24 @@
                 <Label for="married-couple">Married Couple</Label>
               </div>
             </RadioGroup.Root>
+          {/snippet}
+        </Form.Control>
+      </Form.Field>
+
+      <Form.Field {form} name="stateOfResidence" class="mb-4">
+        <Form.Control>
+          {#snippet children({ props })}
+            <Form.Label>State of Residence *</Form.Label>
+            <Select.Root {...props} type="single" bind:value={$formData.stateOfResidence}>
+              <Select.Trigger>{states[$formData.stateOfResidence].name}</Select.Trigger>
+              <Select.Content>
+                {#each Object.values(states) as state}
+                  <Select.Item value={state.code}>
+                    {state.name}
+                  </Select.Item>
+                {/each}
+              </Select.Content>
+            </Select.Root>
           {/snippet}
         </Form.Control>
       </Form.Field>

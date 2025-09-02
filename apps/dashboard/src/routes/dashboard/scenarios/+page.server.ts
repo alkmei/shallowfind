@@ -4,6 +4,7 @@ import type { Actions, PageServerLoad } from './$types';
 import { redirect } from '@sveltejs/kit';
 import { createScenarioSchema } from './schema';
 import { db } from '$lib/server/db';
+import { eq } from 'drizzle-orm';
 import { scenario } from '$lib/server/db/schema';
 
 export const load: PageServerLoad = async (event) => {
@@ -11,7 +12,7 @@ export const load: PageServerLoad = async (event) => {
 	if (!user) {
 		return fail(401, { message: 'Unauthorized' });
 	}
-	const scenarios = await db.query.scenario.findMany({ with: { userId: user.uid } });
+	const scenarios = await db.select().from(scenario).where(eq(scenario.userId, user.uid));
 	return {
 		form: await superValidate(zod4(createScenarioSchema)),
 		scenarios: scenarios
