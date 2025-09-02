@@ -106,11 +106,11 @@
             <Form.Label>Scenario Type *</Form.Label>
             <RadioGroup.Root {...props} bind:value={$formData.scenarioType}>
               <div class="flex items-center space-x-2">
-                <RadioGroup.Item value="Individual" id="individual" />
+                <RadioGroup.Item value="individual" id="individual" />
                 <Label for="individual">Individual</Label>
               </div>
               <div class="flex items-center space-x-2">
-                <RadioGroup.Item value="MarriedCouple" id="married-couple" />
+                <RadioGroup.Item value="married_couple" id="married-couple" />
                 <Label for="married-couple">Married Couple</Label>
               </div>
             </RadioGroup.Root>
