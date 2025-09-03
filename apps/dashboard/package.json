@@ -59,10 +59,10 @@
 		"vitest-browser-svelte": "^0.1.0"
 	},
 	"dependencies": {
+		"@supabase/ssr": "^0.7.0",
+		"@supabase/supabase-js": "^2.57.0",
 		"axios": "^1.11.0",
 		"drizzle-orm": "^0.40.0",
-		"firebase": "^12.2.1",
-		"firebase-admin": "^13.5.0",
 		"mode-watcher": "^1.1.0",
 		"postgres": "^3.4.5",
 		"zod": "^3.24.2"

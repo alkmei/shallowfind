@@ -3,97 +3,98 @@
   import { Input } from '$lib/components/ui/input';
   import { Button } from '$lib/components/ui/button';
   import { User } from '@lucide/svelte';
-  import {
-    signInWithEmailAndPassword,
-    signInAnonymously,
-    GoogleAuthProvider,
-    signInWithPopup
-  } from 'firebase/auth';
-  import { auth } from '$lib/firebase/client';
+  // import {
+  //   signInWithEmailAndPassword,
+  //   signInAnonymously,
+  //   GoogleAuthProvider,
+  //   signInWithPopup
+  // } from 'firebase/auth';
+  // import { auth } from '$lib/firebase/client';
   import { goto } from '$app/navigation';
 
-  const googleAuthProvider = new GoogleAuthProvider();
-  const id = $props.id();
+  // const googleAuthProvider = new GoogleAuthProvider();
+  // const id = $props.id();
 
-  let email = $state('');
-  let password = $state('');
-  let loading = $state(false);
-  let error = $state('');
+  // let email = $state('');
+  // let password = $state('');
+  // let loading = $state(false);
+  // let error = $state('');
 
-  async function setSessionCookie(idToken: string) {
-    try {
-      const response = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ idToken })
-      });
+  // async function setSessionCookie(idToken: string) {
+  //   try {
+  //     const response = await fetch('/api/auth/login', {
+  //       method: 'POST',
+  //       headers: {
+  //         'Content-Type': 'application/json'
+  //       },
+  //       body: JSON.stringify({ idToken })
+  //     });
 
-      if (!response.ok) {
-        throw new Error('Failed to set session cookie');
-      }
+  //     if (!response.ok) {
+  //       throw new Error('Failed to set session cookie');
+  //     }
 
-      return await response.json();
-    } catch (err) {
-      console.error('Session cookie error:', err);
-      throw err;
-    }
-  }
+  //     return await response.json();
+  //   } catch (err) {
+  //     console.error('Session cookie error:', err);
+  //     throw err;
+  //   }
+  // }
 
-  async function handleEmailLogin(event: Event) {
-    event.preventDefault();
-    loading = true;
-    error = '';
+  // async function handleEmailLogin(event: Event) {
+  //   event.preventDefault();
+  //   loading = true;
+  //   error = '';
 
-    try {
-      const userCredential = await signInWithEmailAndPassword(auth, email, password);
-      const idToken = await userCredential.user.getIdToken();
-      await setSessionCookie(idToken);
-      await goto('/dashboard');
-    } catch (err: any) {
-      error = err.message;
-      console.error('Email login error:', err);
-    } finally {
-      loading = false;
-    }
-  }
+  //   try {
+  //     const userCredential = await signInWithEmailAndPassword(auth, email, password);
+  //     const idToken = await userCredential.user.getIdToken();
+  //     await setSessionCookie(idToken);
+  //     await goto('/dashboard');
+  //   } catch (err: any) {
+  //     error = err.message;
+  //     console.error('Email login error:', err);
+  //   } finally {
+  //     loading = false;
+  //   }
+  // }
 
-  async function handleGoogleLogin() {
-    loading = true;
-    error = '';
+  // async function handleGoogleLogin() {
+  //   loading = true;
+  //   error = '';
 
-    try {
-      const result = await signInWithPopup(auth, googleAuthProvider);
-      const idToken = await result.user.getIdToken();
-      await setSessionCookie(idToken);
-      await goto('/dashboard');
-    } catch (err: any) {
-      error = err.message;
-      console.error('Google login error:', err);
-    } finally {
-      loading = false;
-    }
-  }
+  //   try {
+  //     const result = await signInWithPopup(auth, googleAuthProvider);
+  //     const idToken = await result.user.getIdToken();
+  //     await setSessionCookie(idToken);
+  //     await goto('/dashboard');
+  //   } catch (err: any) {
+  //     error = err.message;
+  //     console.error('Google login error:', err);
+  //   } finally {
+  //     loading = false;
+  //   }
+  // }
 
-  async function handleAnonymousLogin() {
-    loading = true;
-    error = '';
+  // async function handleAnonymousLogin() {
+  //   loading = true;
+  //   error = '';
 
-    try {
-      const userCredential = await signInAnonymously(auth);
-      const idToken = await userCredential.user.getIdToken();
-      await setSessionCookie(idToken);
-      await goto('/dashboard');
-    } catch (err: any) {
-      error = err.message;
-      console.error('Anonymous login error:', err);
-    } finally {
-      loading = false;
-    }
-  }
+  //   try {
+  //     const userCredential = await signInAnonymously(auth);
+  //     const idToken = await userCredential.user.getIdToken();
+  //     await setSessionCookie(idToken);
+  //     await goto('/dashboard');
+  //   } catch (err: any) {
+  //     error = err.message;
+  //     console.error('Anonymous login error:', err);
+  //   } finally {
+  //     loading = false;
+  //   }
+  // }
 </script>
 
+<!-- 
 <form class="flex flex-col gap-6" onsubmit={handleEmailLogin}>
   <div class="flex flex-col items-center gap-2 text-center">
     <h1 class="text-2xl font-bold">Login to your account</h1>
@@ -187,4 +188,4 @@
     Don't have an account?
     <a href="/register" class="underline underline-offset-4"> Sign up </a>
   </div>
-</form>
+</form> -->
