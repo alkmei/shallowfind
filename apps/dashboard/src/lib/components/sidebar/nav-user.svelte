@@ -70,7 +70,7 @@
           </DropdownMenu.Item>
         </DropdownMenu.Group>
         <DropdownMenu.Separator />
-        <DropdownMenu.Item>
+        <DropdownMenu.Item onclick={() => fetch('/api/auth/logout', { method: 'POST' })}>
           <LogOutIcon />
           Log out
         </DropdownMenu.Item>

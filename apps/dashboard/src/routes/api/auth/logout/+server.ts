@@ -1,8 +1,11 @@
 import { json, type RequestHandler } from '@sveltejs/kit';
 
-export const POST: RequestHandler = async ({ cookies }) => {
+export const POST: RequestHandler = async ({ locals: { supabase } }) => {
   // Clear the session cookie
-  cookies.delete('session', { path: '/' });
+  const { error } = await supabase.auth.signOut();
 
+  if (error) {
+    return json({ error: error.message }, { status: 400 });
+  }
   return json({ success: true });
 };
