@@ -1,19 +1,9 @@
 <script lang="ts">
-  import { putApiScenariosIdBody } from '$lib/api/scenario-management/scenarios/scenarios.zod';
   import * as Form from '$lib/components/ui/form';
   import { Input } from '$lib/components/ui/input';
   import type { SuperForm } from 'sveltekit-superforms';
   import z from 'zod';
   import Textarea from '../ui/textarea/textarea.svelte';
-
-  type ScenariosCreateBody = z.infer<typeof putApiScenariosIdBody>;
-
-  const {
-    form
-  }: {
-    form: SuperForm<ScenariosCreateBody>;
-  } = $props();
-  const { form: formData } = form;
 </script>
 
 <div class="flex flex-col gap-3">

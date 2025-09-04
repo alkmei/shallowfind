@@ -99,6 +99,7 @@
             <Textarea {...props} bind:value={$formData.description} />
           {/snippet}
         </Form.Control>
+        <Form.FieldErrors />
       </Form.Field>
       <Form.Field {form} name="scenarioType" class="mb-4">
         <Form.Control>
@@ -116,6 +117,7 @@
             </RadioGroup.Root>
           {/snippet}
         </Form.Control>
+        <Form.FieldErrors />
       </Form.Field>
 
       <Form.Field {form} name="stateOfResidence" class="mb-4">
@@ -134,6 +136,7 @@
             </Select.Root>
           {/snippet}
         </Form.Control>
+        <Form.FieldErrors />
       </Form.Field>
 
       <Dialog.Footer>

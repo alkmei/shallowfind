@@ -116,6 +116,22 @@ export const investmentType = pgTable('investment_type', {
   isCash: boolean('is_cash').notNull().default(false)
 });
 
+export const investment = pgTable('investment', {
+  id: uuid('id').primaryKey(),
+  scenarioId: uuid('scenario_id')
+    .references(() => scenario.id)
+    .notNull(),
+  investmentTypeId: uuid('investment_type_id')
+    .references(() => investmentType.id)
+    .notNull(),
+
+  name: varchar('name', { length: 255 }).notNull(),
+  currentValue: decimal('current_value').notNull().default(0),
+  accountTaxStatus: accountTaxStatusEnum('account_tax_status').notNull(),
+
+  orderIndex: integer('order_index').notNull()
+});
+
 export const eventSeries = pgTable('event_series', {
   id: uuid('id').primaryKey(),
   scenarioId: uuid('scenario_id')
