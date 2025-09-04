@@ -111,7 +111,7 @@ export const scenario = shallowfindSchema.table('scenario', {
 });
 
 export const investmentType = shallowfindSchema.table('investment_type', {
-	id: serial('id').primaryKey(),
+	id: uuid('id').primaryKey().defaultRandom(),
 	scenarioId: uuid('scenario_id')
 		.references(() => scenario.id)
 		.notNull(),
@@ -126,7 +126,7 @@ export const investmentType = shallowfindSchema.table('investment_type', {
 });
 
 export const eventSeries = shallowfindSchema.table('event_series', {
-	id: serial('id').primaryKey(),
+	id: uuid('id').primaryKey().defaultRandom(),
 	scenarioId: uuid('scenario_id')
 		.references(() => scenario.id)
 		.notNull(),
@@ -163,7 +163,7 @@ export const eventSeries = shallowfindSchema.table('event_series', {
 });
 
 export const strategy = shallowfindSchema.table('strategy', {
-	id: serial('id').primaryKey(),
+	id: uuid('id').primaryKey().defaultRandom(),
 	scenarioId: uuid('scenario_id')
 		.references(() => scenario.id)
 		.notNull(),
@@ -180,11 +180,11 @@ export const strategy = shallowfindSchema.table('strategy', {
 });
 
 export const scenarioSharing = shallowfindSchema.table('scenario_sharing', {
-	id: serial('id').primaryKey(),
+	id: uuid('id').primaryKey().defaultRandom(),
 	scenarioId: uuid('scenario_id')
 		.references(() => scenario.id)
 		.notNull(),
 
-	sharedWithUserId: varchar('shared_with_user_id').notNull(),
+	sharedWithUserId: uuid('shared_with_user_id').notNull(),
 	permission: sharePermissionEnum('permission').notNull()
 });
