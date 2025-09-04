@@ -5,7 +5,7 @@ import { redirect } from '@sveltejs/kit';
 import { createScenarioSchema } from './schema';
 import { db } from '$lib/server/db';
 import { eq } from 'drizzle-orm';
-import { scenario } from '$lib/server/db/schema';
+import { scenario } from '$lib/server/db/schema/schema';
 
 export const load: PageServerLoad = async (event) => {
   const user = event.locals.user;

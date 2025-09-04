@@ -128,7 +128,7 @@ export const eventSeries = pgTable('event_series', {
   // Timing
   startYear: jsonb('start_year').$type<Distribution>(),
   duration: jsonb('duration').$type<Distribution>(),
-  referenceEventSeriesId: integer('reference_event_series_id').references(
+  referenceEventSeriesId: uuid('reference_event_series_id').references(
     (): AnyPgColumn => eventSeries.id
   ),
   startTimingType: startTimingTypeEnum('start_timing_type'),

@@ -1,5 +1,5 @@
 import { z } from 'zod/v4';
-import { scenarioTypeEnum, stateEnum } from '$lib/server/db/schema';
+import { scenarioTypeEnum, stateEnum } from '$lib/server/db/schema/schema';
 
 const distributionSchema = z.discriminatedUnion('type', [
   z.object({

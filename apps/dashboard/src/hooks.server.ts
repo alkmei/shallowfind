@@ -1,10 +1,18 @@
+import { auth } from '$lib/auth';
+import { svelteKitHandler } from 'better-auth/svelte-kit';
+import { building } from '$app/environment';
 import type { Handle } from '@sveltejs/kit';
-import { getUserFromId } from '$lib/server/auth';
 
 export const handle: Handle = async ({ event, resolve }) => {
-	// Add user to locals for access in routes
-	event.locals.user = await getUserFromId(event);
+  const session = await auth.api.getSession({
+    headers: event.request.headers
+  });
 
-	const response = await resolve(event);
-	return response;
+  // Make session and user available on server
+  if (session) {
+    event.locals.session = session.session;
+    event.locals.user = session.user;
+  }
+
+  return svelteKitHandler({ event, resolve, auth, building });
 };

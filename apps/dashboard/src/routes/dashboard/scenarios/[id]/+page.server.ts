@@ -1,6 +1,6 @@
 import { db } from '$lib/server/db';
 import { eq } from 'drizzle-orm';
-import { scenario as scenarioSchema } from '$lib/server/db/schema';
+import { scenario as scenarioSchema } from '$lib/server/db/schema/schema';
 import type { PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ params }) => {
