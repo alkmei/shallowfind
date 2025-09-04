@@ -12,7 +12,7 @@ export const load: PageServerLoad = async (event) => {
   if (!user) {
     return fail(401, { message: 'Unauthorized' });
   }
-  const scenarios = await db.select().from(scenario).where(eq(scenario.userId, user.uid));
+  const scenarios = await db.select().from(scenario).where(eq(scenario.userId, user.id));
   return {
     form: await superValidate(zod4(createScenarioSchema)),
     scenarios: scenarios
@@ -35,7 +35,7 @@ export const actions: Actions = {
     const newScenario = await db
       .insert(scenario)
       .values({
-        userId: user.uid,
+        userId: user.id,
         title: form.data.name,
         description: form.data.description || '',
         scenarioType: form.data.scenarioType,
