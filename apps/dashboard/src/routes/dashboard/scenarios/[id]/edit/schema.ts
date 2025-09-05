@@ -1,8 +1,6 @@
 import { z } from 'zod/v4';
 import {
-  eventSeriesTypeEnum,
   investmentTaxabilityEnum,
-  scenarioTypeEnum,
   startTimingTypeEnum,
   stateEnum,
   accountTaxStatusEnum,
