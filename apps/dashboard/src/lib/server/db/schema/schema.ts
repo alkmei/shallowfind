@@ -12,6 +12,17 @@ import {
   pgTable
 } from 'drizzle-orm/pg-core';
 import { user } from './auth-schema';
+import {
+  ACCOUNT_TAX_STATUS_VALUES,
+  EVENT_SERIES_TYPE_VALUES,
+  INVESTMENT_TAXABILITY_VALUES,
+  SCENARIO_STATUS_VALUES,
+  SCENARIO_TYPE_VALUES,
+  SHARE_PERMISSION_VALUES,
+  START_TIMING_TYPE_VALUES,
+  STATE_VALUES,
+  STRATEGY_TYPE_VALUES
+} from '$lib/enums';
 
 interface NormalDistribution {
   type: 'normal';
@@ -33,42 +44,21 @@ interface UniformDistribution {
 type Distribution = NormalDistribution | FixedDistribution | UniformDistribution;
 
 // prettier-ignore
-export const stateEnum = pgEnum('state', [
-	'AL', 'AK', 'AZ', 'AR', 'CA', 'CO', 'CT', 'DE', 'FL', 'GA',
-	'HI', 'ID', 'IL', 'IN', 'IA', 'KS', 'KY', 'LA', 'ME', 'MD',
-	'MA', 'MI', 'MN', 'MS', 'MO', 'MT', 'NE', 'NV', 'NH', 'NJ',
-	'NM', 'NY', 'NC', 'ND', 'OH', 'OK', 'OR', 'PA', 'RI', 'SC',
-	'SD', 'TN', 'TX', 'UT', 'VT', 'VA', 'WA', 'WV', 'WI', 'WY'
-]);
+export const stateEnum = pgEnum('state', STATE_VALUES);
 
-export const scenarioTypeEnum = pgEnum('scenario_type', ['individual', 'married_couple']);
-export const scenarioStatusEnum = pgEnum('scenario_status', ['draft', 'active', 'archived']);
-export const accountTaxStatusEnum = pgEnum('account_tax_status', [
-  'non_retirement',
-  'pre_tax_retirement',
-  'after_tax_retirement'
-]);
-export const investmentTaxabilityEnum = pgEnum('investment_taxability', ['taxable', 'tax_exempt']);
-export const eventSeriesTypeEnum = pgEnum('event_series_type', [
-  'income',
-  'expense',
-  'invest',
-  'rebalance'
-]);
-export const strategyTypeEnum = pgEnum('strategy_type', [
-  'spending',
-  'expense_withdrawal',
-  'rmd',
-  'roth_conversion'
-]);
-export const sharePermissionEnum = pgEnum('share_permission', ['ro', 'rw']);
+export const scenarioTypeEnum = pgEnum('scenario_type', SCENARIO_TYPE_VALUES);
+export const scenarioStatusEnum = pgEnum('scenario_status', SCENARIO_STATUS_VALUES);
+export const accountTaxStatusEnum = pgEnum('account_tax_status', ACCOUNT_TAX_STATUS_VALUES);
+export const investmentTaxabilityEnum = pgEnum(
+  'investment_taxability',
+  INVESTMENT_TAXABILITY_VALUES
+);
+export const eventSeriesTypeEnum = pgEnum('event_series_type', EVENT_SERIES_TYPE_VALUES);
+export const strategyTypeEnum = pgEnum('strategy_type', STRATEGY_TYPE_VALUES);
+export const sharePermissionEnum = pgEnum('share_permission', SHARE_PERMISSION_VALUES);
 
 // For event series timing
-export const startTimingTypeEnum = pgEnum('start_timing_type', [
-  'same_year',
-  'year_after',
-  'distribution'
-]);
+export const startTimingTypeEnum = pgEnum('start_timing_type', START_TIMING_TYPE_VALUES);
 
 export const scenario = pgTable('scenario', {
   id: uuid('id').primaryKey().defaultRandom(),
@@ -126,7 +116,7 @@ export const investment = pgTable('investment', {
     .notNull(),
 
   name: varchar('name', { length: 255 }).notNull(),
-  currentValue: decimal('current_value').notNull().default(0),
+  currentValue: decimal('current_value').notNull().default('0'),
   accountTaxStatus: accountTaxStatusEnum('account_tax_status').notNull(),
 
   orderIndex: integer('order_index').notNull()
