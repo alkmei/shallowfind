@@ -1,8 +1,6 @@
 <script lang="ts">
   import * as Form from '$lib/components/ui/form';
   import { Input } from '$lib/components/ui/input';
-  import type { SuperForm } from 'sveltekit-superforms';
-  import z from 'zod';
   import Textarea from '../ui/textarea/textarea.svelte';
 </script>
 

@@ -9,64 +9,13 @@
   import { Textarea } from '$lib/components/ui/textarea';
 
   import { superForm, type Infer, type SuperValidated } from 'sveltekit-superforms';
-  import { type CreateScenarioSchema } from './schema';
+  import { createScenarioSchema, type CreateScenarioSchema } from './schema';
+  import { zod4Client } from 'sveltekit-superforms/adapters';
+  import { STATE_MAPPING } from '$lib/enums';
 
   let { data }: { data: { form: SuperValidated<Infer<CreateScenarioSchema>> } } = $props();
 
-  const states = {
-    AL: { name: 'Alabama', code: 'AL' },
-    AK: { name: 'Alaska', code: 'AK' },
-    AZ: { name: 'Arizona', code: 'AZ' },
-    AR: { name: 'Arkansas', code: 'AR' },
-    CA: { name: 'California', code: 'CA' },
-    CO: { name: 'Colorado', code: 'CO' },
-    CT: { name: 'Connecticut', code: 'CT' },
-    DE: { name: 'Delaware', code: 'DE' },
-    FL: { name: 'Florida', code: 'FL' },
-    GA: { name: 'Georgia', code: 'GA' },
-    HI: { name: 'Hawaii', code: 'HI' },
-    ID: { name: 'Idaho', code: 'ID' },
-    IL: { name: 'Illinois', code: 'IL' },
-    IN: { name: 'Indiana', code: 'IN' },
-    IA: { name: 'Iowa', code: 'IA' },
-    KS: { name: 'Kansas', code: 'KS' },
-    KY: { name: 'Kentucky', code: 'KY' },
-    LA: { name: 'Louisiana', code: 'LA' },
-    ME: { name: 'Maine', code: 'ME' },
-    MD: { name: 'Maryland', code: 'MD' },
-    MA: { name: 'Massachusetts', code: 'MA' },
-    MI: { name: 'Michigan', code: 'MI' },
-    MN: { name: 'Minnesota', code: 'MN' },
-    MS: { name: 'Mississippi', code: 'MS' },
-    MO: { name: 'Missouri', code: 'MO' },
-    MT: { name: 'Montana', code: 'MT' },
-    NE: { name: 'Nebraska', code: 'NE' },
-    NV: { name: 'Nevada', code: 'NV' },
-    NH: { name: 'New Hampshire', code: 'NH' },
-    NJ: { name: 'New Jersey', code: 'NJ' },
-    NM: { name: 'New Mexico', code: 'NM' },
-    NY: { name: 'New York', code: 'NY' },
-    NC: { name: 'North Carolina', code: 'NC' },
-    ND: { name: 'North Dakota', code: 'ND' },
-    OH: { name: 'Ohio', code: 'OH' },
-    OK: { name: 'Oklahoma', code: 'OK' },
-    OR: { name: 'Oregon', code: 'OR' },
-    PA: { name: 'Pennsylvania', code: 'PA' },
-    RI: { name: 'Rhode Island', code: 'RI' },
-    SC: { name: 'South Carolina', code: 'SC' },
-    SD: { name: 'South Dakota', code: 'SD' },
-    TN: { name: 'Tennessee', code: 'TN' },
-    TX: { name: 'Texas', code: 'TX' },
-    UT: { name: 'Utah', code: 'UT' },
-    VT: { name: 'Vermont', code: 'VT' },
-    VA: { name: 'Virginia', code: 'VA' },
-    WA: { name: 'Washington', code: 'WA' },
-    WV: { name: 'West Virginia', code: 'WV' },
-    WI: { name: 'Wisconsin', code: 'WI' },
-    WY: { name: 'Wyoming', code: 'WY' }
-  };
-
-  const form = superForm(data.form);
+  const form = superForm(data.form, { validators: zod4Client(createScenarioSchema) });
 
   const { form: formData, enhance } = form;
 </script>
@@ -125,10 +74,10 @@
           {#snippet children({ props })}
             <Form.Label>State of Residence *</Form.Label>
             <Select.Root {...props} type="single" bind:value={$formData.stateOfResidence}>
-              <Select.Trigger>{states[$formData.stateOfResidence].name}</Select.Trigger>
+              <Select.Trigger>{STATE_MAPPING[$formData.stateOfResidence].name}</Select.Trigger>
               <Select.Content>
-                {#each Object.values(states) as state}
-                  <Select.Item value={state.code}>
+                {#each Object.entries(STATE_MAPPING) as [key, state]}
+                  <Select.Item value={key}>
                     {state.name}
                   </Select.Item>
                 {/each}
