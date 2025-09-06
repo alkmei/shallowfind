@@ -10,7 +10,7 @@
   import { Separator } from '$lib/components/ui/separator';
   import InvestmentForm from './investment-form.svelte';
 
-  let { data }: PageProps = $props();
+  let { data, params, form: formProp }: PageProps = $props();
 
   const form = superForm(data.form, {
     validators: zod4Client(scenarioFormSchema),
@@ -31,6 +31,6 @@
   <Separator />
   <FinancialSettingsForm {form} />
   <Separator />
-  <InvestmentForm {data} />
+  <InvestmentForm {data} {params} form={formProp} />
   <SuperDebug data={$formData} />
 </form>

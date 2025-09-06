@@ -10,7 +10,7 @@
   import { Switch } from '$lib/components/ui/switch';
   import { Checkbox } from '$lib/components/ui/checkbox';
   import { investmentTypeSchema } from './schema';
-  import { superForm, type Infer, type SuperValidated } from 'sveltekit-superforms';
+  import SuperDebug, { superForm, type Infer, type SuperValidated } from 'sveltekit-superforms';
   import { zod4Client } from 'sveltekit-superforms/adapters';
   import type { PageProps } from './$types';
 
@@ -43,12 +43,15 @@
   <Dialog.Trigger>
     <Button class="w-48"><Plus /> New Investment Type</Button>
   </Dialog.Trigger>
-  <Dialog.Content class="max-w-2xl">
-    <form method="POST" use:enhance>
+  <Dialog.Content class="min-w-4xl">
+    <Dialog.Header>
       <Dialog.Title>Add New Investment Type</Dialog.Title>
       <Dialog.Description>
         Add a new investment type to categorize your investments. Names should be unique.
       </Dialog.Description>
+    </Dialog.Header>
+
+    <form method="POST" use:enhance action="?/investmentType">
       <div class="flex flex-col gap-4">
         <Form.Field {form} name="name" class="flex flex-col gap-2">
           <Form.Control>
@@ -69,14 +72,16 @@
           </Form.Control>
         </Form.Field>
         <Form.Field {form} name="returnPercent" class="flex items-center gap-2">
-          <Form.Label>Return Amount or Percentage</Form.Label>
-          <Switch bind:checked={$formData.returnPercent} />
-          <span class="text-sm text-muted-foreground">
-            {$formData.returnPercent ? 'Percentage' : 'Amount'}
-          </span>
+          <Form.Control>
+            <Form.Label>Return Amount or Percentage</Form.Label>
+            <Switch bind:checked={$formData.returnPercent} />
+            <span class="text-sm text-muted-foreground">
+              {$formData.returnPercent ? 'Percentage' : 'Amount'}
+            </span>
+          </Form.Control>
         </Form.Field>
         <div class="flex flex-col gap-2">
-          <Label>Return Distribution</Label>
+          <p>Return Distribution</p>
           <Tabs.Root bind:value={$formData.expectedAnnualReturn.type}>
             <Tabs.List class="w-full">
               <Tabs.Trigger value="fixed">Fixed</Tabs.Trigger>
@@ -104,25 +109,29 @@
                   name="expectedAnnualReturn.mean"
                   class="flex flex-grow flex-col gap-2"
                 >
-                  <Form.Label>Mean Return ({returnIsAmount ? '$' : '%'})</Form.Label>
-                  <Input
-                    type="number"
-                    step="0.01"
-                    bind:value={$formData.expectedAnnualReturn.mean}
-                  />
+                  <Form.Control>
+                    <Form.Label>Mean Return ({returnIsAmount ? '$' : '%'})</Form.Label>
+                    <Input
+                      type="number"
+                      step="0.01"
+                      bind:value={$formData.expectedAnnualReturn.mean}
+                    />
+                  </Form.Control>
                 </Form.Field>
                 <Form.Field
                   {form}
                   name="expectedAnnualReturn.stdev"
                   class="flex flex-grow flex-col gap-2"
                 >
-                  <Form.Label>Standard Deviation ({returnIsAmount ? '$' : '%'})</Form.Label>
-                  <Input
-                    type="number"
-                    step="0.01"
-                    min="0"
-                    bind:value={$formData.expectedAnnualReturn.stdev}
-                  />
+                  <Form.Control>
+                    <Form.Label>Standard Deviation ({returnIsAmount ? '$' : '%'})</Form.Label>
+                    <Input
+                      type="number"
+                      step="0.01"
+                      min="0"
+                      bind:value={$formData.expectedAnnualReturn.stdev}
+                    />
+                  </Form.Control>
                 </Form.Field>
               {/if}
             </Tabs.Content>
@@ -133,38 +142,44 @@
                   name="expectedAnnualIncome.min"
                   class="flex flex-grow flex-col gap-2"
                 >
-                  <Label>Lower Bound ({returnIsAmount ? '$' : '%'})</Label>
-                  <Input
-                    type="number"
-                    step="0.01"
-                    bind:value={$formData.expectedAnnualIncome.min}
-                  />
+                  <Form.Control>
+                    <Form.Label>Lower Bound ({returnIsAmount ? '$' : '%'})</Form.Label>
+                    <Input
+                      type="number"
+                      step="0.01"
+                      bind:value={$formData.expectedAnnualIncome.min}
+                    />
+                  </Form.Control>
                 </Form.Field>
                 <Form.Field
                   {form}
                   name="expectedAnnualIncome.max"
                   class="flex flex-grow flex-col gap-2"
                 >
-                  <Label>Upper Bound ({returnIsAmount ? '$' : '%'})</Label>
-                  <Input
-                    type="number"
-                    step="0.01"
-                    bind:value={$formData.expectedAnnualIncome.max}
-                  />
+                  <Form.Control>
+                    <Form.Label>Upper Bound ({returnIsAmount ? '$' : '%'})</Form.Label>
+                    <Input
+                      type="number"
+                      step="0.01"
+                      bind:value={$formData.expectedAnnualIncome.max}
+                    />
+                  </Form.Control>
                 </Form.Field>
               {/if}
             </Tabs.Content>
           </Tabs.Root>
         </div>
         <Form.Field {form} name="incomePercent" class="flex items-center gap-2">
-          <Form.Label>Income Amount or Percentage</Form.Label>
-          <Switch bind:checked={$formData.incomePercent} />
-          <span class="text-sm text-muted-foreground">
-            {$formData.incomePercent ? 'Percentage' : 'Amount'}
-          </span>
+          <Form.Control>
+            <Form.Label>Income Amount or Percentage</Form.Label>
+            <Switch bind:checked={$formData.incomePercent} />
+            <span class="text-sm text-muted-foreground">
+              {$formData.incomePercent ? 'Percentage' : 'Amount'}
+            </span>
+          </Form.Control>
         </Form.Field>
         <div class="flex flex-col gap-2">
-          <Label>Income Distribution</Label>
+          <p>Income Distribution</p>
           <Tabs.Root bind:value={$formData.expectedAnnualIncome.type}>
             <Tabs.List class="w-full">
               <Tabs.Trigger value="fixed">Fixed</Tabs.Trigger>
@@ -174,12 +189,14 @@
             <Tabs.Content value="fixed">
               {#if $formData.expectedAnnualIncome.type === 'fixed'}
                 <Form.Field {form} name="expectedAnnualIncome.value" class="flex flex-col gap-2">
-                  <Form.Label>Fixed Income Value ({incomeIsAmount ? '$' : '%'})</Form.Label>
-                  <Input
-                    type="number"
-                    step="0.01"
-                    bind:value={$formData.expectedAnnualIncome.value}
-                  />
+                  <Form.Control>
+                    <Form.Label>Fixed Income Value ({incomeIsAmount ? '$' : '%'})</Form.Label>
+                    <Input
+                      type="number"
+                      step="0.01"
+                      bind:value={$formData.expectedAnnualIncome.value}
+                    />
+                  </Form.Control>
                 </Form.Field>
               {/if}
             </Tabs.Content>
@@ -190,25 +207,29 @@
                   name="expectedAnnualIncome.mean"
                   class="flex flex-grow flex-col gap-2"
                 >
-                  <Form.Label>Mean Income ({incomeIsAmount ? '$' : '%'})</Form.Label>
-                  <Input
-                    type="number"
-                    step="0.01"
-                    bind:value={$formData.expectedAnnualIncome.mean}
-                  />
+                  <Form.Control>
+                    <Form.Label>Mean Income ({incomeIsAmount ? '$' : '%'})</Form.Label>
+                    <Input
+                      type="number"
+                      step="0.01"
+                      bind:value={$formData.expectedAnnualIncome.mean}
+                    />
+                  </Form.Control>
                 </Form.Field>
                 <Form.Field
                   {form}
                   name="expectedAnnualIncome.stdev"
                   class="flex flex-grow flex-col gap-2"
                 >
-                  <Form.Label>Standard Deviation ({incomeIsAmount ? '$' : '%'})</Form.Label>
-                  <Input
-                    type="number"
-                    step="0.01"
-                    min="0"
-                    bind:value={$formData.expectedAnnualIncome.stdev}
-                  />
+                  <Form.Control>
+                    <Form.Label>Standard Deviation ({incomeIsAmount ? '$' : '%'})</Form.Label>
+                    <Input
+                      type="number"
+                      step="0.01"
+                      min="0"
+                      bind:value={$formData.expectedAnnualIncome.stdev}
+                    />
+                  </Form.Control>
                 </Form.Field>
               {/if}
             </Tabs.Content>
@@ -219,38 +240,47 @@
                   name="expectedAnnualIncome.min"
                   class="flex flex-grow flex-col gap-2"
                 >
-                  <Form.Label>Lower Bound ({incomeIsAmount ? '$' : '%'})</Form.Label>
-                  <Input
-                    type="number"
-                    step="0.01"
-                    bind:value={$formData.expectedAnnualIncome.min}
-                  />
+                  <Form.Control>
+                    <Form.Label>Lower Bound ({incomeIsAmount ? '$' : '%'})</Form.Label>
+                    <Input
+                      type="number"
+                      step="0.01"
+                      bind:value={$formData.expectedAnnualIncome.min}
+                    />
+                  </Form.Control>
                 </Form.Field>
                 <Form.Field
                   {form}
                   name="expectedAnnualIncome.max"
                   class="flex flex-grow flex-col gap-2"
                 >
-                  <Form.Label>Upper Bound ({incomeIsAmount ? '$' : '%'})</Form.Label>
-                  <Input
-                    type="number"
-                    step="0.01"
-                    bind:value={$formData.expectedAnnualIncome.max}
-                  />
+                  <Form.Control>
+                    <Form.Label>Upper Bound ({incomeIsAmount ? '$' : '%'})</Form.Label>
+                    <Input
+                      type="number"
+                      step="0.01"
+                      bind:value={$formData.expectedAnnualIncome.max}
+                    />
+                  </Form.Control>
                 </Form.Field>
               {/if}
             </Tabs.Content>
           </Tabs.Root>
         </div>
         <Form.Field {form} name="taxability" class="flex items-center gap-2">
-          <Form.Label>Taxable</Form.Label>
-          <Checkbox bind:checked={isTaxable.value} />
+          <Form.Control>
+            <Form.Label>Taxable</Form.Label>
+            <Checkbox bind:checked={isTaxable.value} />
+          </Form.Control>
         </Form.Field>
       </div>
       <Dialog.Footer>
-        <Button variant="outline" onclick={() => (open = false)}>Cancel</Button>
-        <Form.Button type="submit">Save Investment Type</Form.Button>
+        <Form.Control>
+          <Button variant="outline" onclick={() => (open = false)}>Cancel</Button>
+          <Form.Button type="submit">Save Investment Type</Form.Button>
+        </Form.Control>
       </Dialog.Footer>
     </form>
+    <SuperDebug data={$formData} />
   </Dialog.Content>
 </Dialog.Root>

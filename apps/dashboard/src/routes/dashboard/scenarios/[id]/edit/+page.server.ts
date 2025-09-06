@@ -1,11 +1,12 @@
-import type { PageServerLoad } from './$types';
+import type { Actions, PageServerLoad } from './$types';
 import { db } from '$lib/server/db';
-import { scenario as scenarioSchema } from '$lib/server/db/schema/schema';
+import { scenario as scenarioSchema, type InvestmentType } from '$lib/server/db/schema/schema';
 import { eq } from 'drizzle-orm';
-import { error } from '@sveltejs/kit';
+import { error, fail } from '@sveltejs/kit';
 import { superValidate } from 'sveltekit-superforms';
 import { zod4 } from 'sveltekit-superforms/adapters';
 import scenarioFormSchema, { investmentTypeSchema, type ScenarioForm } from './schema';
+import { investmentType } from '$lib/server/db/schema';
 
 export const load: PageServerLoad = async ({ params }) => {
   const id = params.id;
@@ -50,7 +51,43 @@ export const load: PageServerLoad = async ({ params }) => {
 
   return {
     form: await superValidate(scenarioData, zod4(scenarioFormSchema)),
-    investmentTypeForm: await superValidate(zod4(investmentTypeSchema)),
+    investmentTypeForm: await superValidate(
+      { scenarioId: scenario.id },
+      zod4(investmentTypeSchema)
+    ),
     scenario
   };
 };
+
+export const actions = {
+  investmentType: async ({ request, locals }) => {
+    const result = await superValidate(request, zod4(investmentTypeSchema));
+
+    if (!result.valid) {
+      return fail(400, { form: result });
+    }
+
+    // Process the valid form data
+    const newInvestmentType = result.data;
+    const dbInvestmentType: InvestmentType = {
+      scenarioId: newInvestmentType.scenarioId,
+      name: newInvestmentType.name,
+      description: newInvestmentType.description,
+      expenseRatio: newInvestmentType.expenseRatio,
+      returnPercent: newInvestmentType.returnPercent,
+      expectedAnnualReturn: newInvestmentType.expectedAnnualReturn,
+      incomePercent: newInvestmentType.incomePercent,
+      expectedAnnualIncome: newInvestmentType.expectedAnnualIncome,
+      taxability: newInvestmentType.taxability,
+      isCash: newInvestmentType.isCash
+    };
+
+    // Save the new investment type to the database
+    await db.insert(investmentType).values(dbInvestmentType);
+
+    return {
+      success: true,
+      investmentType: newInvestmentType
+    };
+  }
+} satisfies Actions;

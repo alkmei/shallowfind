@@ -118,6 +118,7 @@ export const scenarioFormSchema = z
 
 // Investment Types (separate form/API)
 export const investmentTypeSchema = z.object({
+  scenarioId: z.uuid(),
   name: z.string().min(1).max(255),
   description: z.string().max(1000).default(''),
   expectedAnnualReturn: distributionSchema,
@@ -129,37 +130,37 @@ export const investmentTypeSchema = z.object({
   isCash: z.boolean().default(false)
 });
 
-export const investmentTypesSchema = z
-  .object({
-    scenarioId: z.uuid(),
-    investmentTypes: z
-      .array(investmentTypeSchema)
-      .min(1, 'At least one investment type is required')
-  })
-  .refine(
-    (data) => {
-      // Ensure there's exactly one cash investment type
-      const cashTypes = data.investmentTypes.filter((type) => type.isCash);
-      return cashTypes.length === 1;
-    },
-    {
-      message: 'Exactly one investment type must be marked as cash',
-      path: ['investmentTypes']
-    }
-  )
-  .refine(
-    (data) => {
-      // Tax-exempt investments should not be marked as cash
-      const taxExemptCash = data.investmentTypes.some(
-        (type) => type.isCash && type.taxability === 'tax_exempt'
-      );
-      return !taxExemptCash;
-    },
-    {
-      message: 'Cash investment type cannot be tax-exempt',
-      path: ['investmentTypes']
-    }
-  );
+// export const investmentTypesSchema = z
+//   .object({
+//     scenarioId: z.uuid(),
+//     investmentTypes: z
+//       .array(investmentTypeSchema)
+//       .min(1, 'At least one investment type is required')
+//   })
+//   .refine(
+//     (data) => {
+//       // Ensure there's exactly one cash investment type
+//       const cashTypes = data.investmentTypes.filter((type) => type.isCash);
+//       return cashTypes.length === 1;
+//     },
+//     {
+//       message: 'Exactly one investment type must be marked as cash',
+//       path: ['investmentTypes']
+//     }
+//   )
+//   .refine(
+//     (data) => {
+//       // Tax-exempt investments should not be marked as cash
+//       const taxExemptCash = data.investmentTypes.some(
+//         (type) => type.isCash && type.taxability === 'tax_exempt'
+//       );
+//       return !taxExemptCash;
+//     },
+//     {
+//       message: 'Cash investment type cannot be tax-exempt',
+//       path: ['investmentTypes']
+//     }
+//   );
 
 // Investments (separate form/API)
 export const investmentSchema = z.object({
@@ -265,7 +266,7 @@ export const strategyUpdateSchema = z.object({
 export type ScenarioForm = z.infer<typeof scenarioFormSchema>;
 export type Distribution = z.infer<typeof distributionSchema>;
 export type InvestmentType = z.infer<typeof investmentTypeSchema>;
-export type InvestmentTypes = z.infer<typeof investmentTypesSchema>;
+// export type InvestmentTypes = z.infer<typeof investmentTypesSchema>;
 export type Investment = z.infer<typeof investmentSchema>;
 export type Investments = z.infer<typeof investmentsSchema>;
 export type EventSeries = z.infer<typeof eventSeriesSchema>;
