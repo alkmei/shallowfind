@@ -7,7 +7,7 @@ import {
 } from '$lib/server/db/schema/schema';
 import { eq } from 'drizzle-orm';
 import { error, fail } from '@sveltejs/kit';
-import { superValidate } from 'sveltekit-superforms';
+import { message, superValidate } from 'sveltekit-superforms';
 import { zod4 } from 'sveltekit-superforms/adapters';
 import scenarioFormSchema, { investmentTypeSchema, type ScenarioForm } from './schema';
 
@@ -107,9 +107,6 @@ export const actions = {
     // Save the new investment type to the database
     await db.insert(investmentType).values(dbInvestmentType);
 
-    return {
-      success: true,
-      investmentType: newInvestmentType
-    };
+    return message(result, 'Investment type created successfully');
   }
 } satisfies Actions;

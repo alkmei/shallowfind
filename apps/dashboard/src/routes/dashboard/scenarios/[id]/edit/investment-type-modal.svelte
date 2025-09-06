@@ -27,6 +27,7 @@
     dataType: 'json',
     onUpdated: ({ form }) => {
       open = false;
+      console.log('Submitting new investment type', form.data);
       onSubmit(form.data as InvestmentType);
     }
   });
@@ -43,7 +44,7 @@
 </script>
 
 <Dialog.Root bind:open>
-  <Dialog.Trigger class={'w-48' + buttonVariants({ variant: 'default' })}>
+  <Dialog.Trigger class={'w-48' + buttonVariants({ variant: 'default' })} type="button">
     <Plus /> New Investment Type
   </Dialog.Trigger>
   <Dialog.Content class="min-w-4xl">
