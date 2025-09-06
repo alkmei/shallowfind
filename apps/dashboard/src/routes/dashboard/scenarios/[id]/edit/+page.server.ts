@@ -19,7 +19,7 @@ export const load: PageServerLoad = async ({ params }) => {
   }
 
   return {
-    form: await superValidate(zod4(scenarioFormSchema)),
+    form: await superValidate(scenario, zod4(scenarioFormSchema)),
     scenario
   };
 };
