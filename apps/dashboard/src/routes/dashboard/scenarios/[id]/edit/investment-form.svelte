@@ -1,36 +1,39 @@
 <script lang="ts">
-  import type { scenariosCreateBody } from '$lib/api/scenarios/scenarios.zod';
-  import type { SuperForm } from 'sveltekit-superforms';
-  import z from 'zod';
-  import type { InvestmentType } from '$lib/api/shallowfind.schemas';
-  import InvestmentTypeModal from './investment-type-modal.svelte';
+  import type { Infer, SuperForm, SuperValidated } from 'sveltekit-superforms';
+  import type { InvestmentType, ScenarioForm, InvestmentTypes } from './schema';
   import * as Card from '$lib/components/ui/card';
-  import InvestmentModal from './investment-modal.svelte';
+  import type {
+    Scenario,
+    InvestmentType as InvestmentTypeModel
+  } from '$lib/server/db/schema/schema';
+  import InvestmentTypeModal from './investment-type-modal.svelte';
+  import type { PageProps } from './$types';
 
-  type ScenariosCreateBody = z.infer<typeof scenariosCreateBody>;
+  let { params, data, form }: PageProps = $props();
 
-  let { form }: { form: SuperForm<ScenariosCreateBody> } = $props();
-
-  let investmentTypes: InvestmentType[] = $state([]);
+  let scenarioInvestmentTypes: InvestmentTypes = $state({
+    scenarioId: data.scenario.id,
+    investmentTypes: data.scenario.investmentTypes || []
+  });
 </script>
 
 <div class="mb-4 flex flex-col gap-8">
   <div class="flex justify-between">
     <h2 class="grow text-xl font-bold">Investment Types</h2>
-    <InvestmentTypeModal {investmentTypes} />
+    <InvestmentTypeModal {params} {data} {form} />
   </div>
-  {#if investmentTypes.length > 0}
+  {#if scenarioInvestmentTypes.investmentTypes.length > 0}
     <ul class="flex flex-col gap-2 rounded border p-2">
-      {#each investmentTypes as type (type.name)}
+      {#each scenarioInvestmentTypes.investmentTypes as type (type.name)}
         <Card.Root>
           <Card.Header>
             <Card.Title>{type.name}</Card.Title>
             <Card.Description>{type.description}</Card.Description>
           </Card.Header>
           <Card.Content>
-            <p>Return: {type.returnDistribution.mean} {type.returnAmtOrPct}</p>
+            <p>Return: {type.expectedAnnualReturn.mean} {type.returnPercent ? '%' : '$'}</p>
             <p>Expense Ratio: {type.expenseRatio}%</p>
-            <p>Income: {type.incomeDistribution.mean} {type.incomeAmtOrPct}</p>
+            <p>Income: {type.expectedAnnualIncome.mean} {type.incomePercent ? '%' : '$'}</p>
             <p>Taxable: {type.taxability ? 'Yes' : 'No'}</p>
           </Card.Content>
         </Card.Root>
@@ -46,6 +49,6 @@
 <div class="flex flex-col gap-3">
   <div class="flex justify-between">
     <h2 class="grow text-xl font-bold">Investments</h2>
-    <InvestmentModal {form} {investmentTypes} />
+    <!-- <InvestmentModal {form} {investmentTypes} /> -->
   </div>
 </div>

@@ -7,8 +7,10 @@
   import DemographicsForm from './demographics-form.svelte';
   import SuperDebug from 'sveltekit-superforms';
   import FinancialSettingsForm from './financial-settings-form.svelte';
-  let { data }: PageProps = $props();
   import { Separator } from '$lib/components/ui/separator';
+  import InvestmentForm from './investment-form.svelte';
+
+  let { data }: PageProps = $props();
 
   const form = superForm(data.form, {
     validators: zod4Client(scenarioFormSchema),
@@ -28,5 +30,7 @@
   <DemographicsForm {form} />
   <Separator />
   <FinancialSettingsForm {form} />
+  <Separator />
+  <InvestmentForm {data} />
   <SuperDebug data={$formData} />
 </form>

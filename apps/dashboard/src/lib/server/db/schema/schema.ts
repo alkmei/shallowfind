@@ -22,7 +22,8 @@ import {
   START_TIMING_TYPE_VALUES,
   STATE_VALUES,
   STRATEGY_TYPE_VALUES
-} from '$lib/enums';
+} from '../../../enums';
+import { relations } from 'drizzle-orm';
 
 interface NormalDistribution {
   type: 'normal';
@@ -91,6 +92,15 @@ export const scenario = pgTable('scenario', {
   updatedAt: timestamp('updated_at').defaultNow()
 });
 
+export const scenarioRelations = relations(scenario, ({ many }) => ({
+  user: many(user),
+  investmentTypes: many(investmentType),
+  investments: many(investment),
+  eventSeries: many(eventSeries),
+  strategies: many(strategy),
+  sharedWith: many(scenarioSharing)
+}));
+
 export const investmentType = pgTable('investment_type', {
   id: uuid('id').primaryKey(),
   scenarioId: uuid('scenario_id')
@@ -100,11 +110,18 @@ export const investmentType = pgTable('investment_type', {
   name: varchar('name', { length: 255 }).notNull(),
   description: text('description').notNull(),
   expectedAnnualReturn: jsonb('expected_annual_return').$type<Distribution>().notNull(),
+  returnPercent: boolean('return_percent').notNull().default(false),
   expenseRatio: decimal('expense_ratio').notNull(), // Fixed percentage
   expectedAnnualIncome: jsonb('expected_annual_income').$type<Distribution>().notNull(),
+  incomePercent: boolean('income_percent').notNull().default(false),
   taxability: investmentTaxabilityEnum('taxability').notNull(),
   isCash: boolean('is_cash').notNull().default(false)
 });
+
+export const investmentTypeRelations = relations(investmentType, ({ one, many }) => ({
+  scenario: one(scenario, { fields: [investmentType.scenarioId], references: [scenario.id] }),
+  investments: many(investment)
+}));
 
 export const investment = pgTable('investment', {
   id: uuid('id').primaryKey(),
@@ -121,6 +138,14 @@ export const investment = pgTable('investment', {
 
   orderIndex: integer('order_index').notNull()
 });
+
+export const investmentRelations = relations(investment, ({ one }) => ({
+  scenario: one(scenario, { fields: [investment.scenarioId], references: [scenario.id] }),
+  investmentType: one(investmentType, {
+    fields: [investment.investmentTypeId],
+    references: [investmentType.id]
+  })
+}));
 
 export const eventSeries = pgTable('event_series', {
   id: uuid('id').primaryKey(),
@@ -159,6 +184,15 @@ export const eventSeries = pgTable('event_series', {
   targetTaxStatus: accountTaxStatusEnum('target_tax_status') // For rebalance events
 });
 
+export const eventSeriesRelations = relations(eventSeries, ({ one, many }) => ({
+  scenario: one(scenario, { fields: [eventSeries.scenarioId], references: [scenario.id] }),
+  referenceEventSeries: one(eventSeries, {
+    fields: [eventSeries.referenceEventSeriesId],
+    references: [eventSeries.id]
+  }),
+  referencingEventSeries: many(eventSeries)
+}));
+
 export const strategy = pgTable('strategy', {
   id: uuid('id').primaryKey(),
   scenarioId: uuid('scenario_id')
@@ -176,6 +210,10 @@ export const strategy = pgTable('strategy', {
   ordering: jsonb('ordering').$type<number[]>()
 });
 
+export const strategyRelations = relations(strategy, ({ one }) => ({
+  scenario: one(scenario, { fields: [strategy.scenarioId], references: [scenario.id] })
+}));
+
 export const scenarioSharing = pgTable('scenario_sharing', {
   id: uuid('id').primaryKey(),
   scenarioId: uuid('scenario_id')
@@ -185,3 +223,14 @@ export const scenarioSharing = pgTable('scenario_sharing', {
   sharedWithUserId: text('shared_with_user_id').notNull(),
   permission: sharePermissionEnum('permission').notNull()
 });
+
+export const scenarioSharingRelations = relations(scenarioSharing, ({ one }) => ({
+  scenario: one(scenario, { fields: [scenarioSharing.scenarioId], references: [scenario.id] })
+}));
+
+export type Scenario = typeof scenario.$inferSelect;
+export type InvestmentType = typeof investmentType.$inferSelect;
+export type Investment = typeof investment.$inferSelect;
+export type EventSeries = typeof eventSeries.$inferSelect;
+export type Strategy = typeof strategy.$inferSelect;
+export type ScenarioSharing = typeof scenarioSharing.$inferSelect;

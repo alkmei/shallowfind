@@ -1,8 +1,7 @@
 <script lang="ts">
-  import type { InvestmentType, Distribution } from '$lib/api/shallowfind.schemas';
-  import { AmountOrPercentEnum } from '$lib/api/shallowfind.schemas';
   import * as Dialog from '$lib/components/ui/dialog';
   import * as Tabs from '$lib/components/ui/tabs';
+  import * as Form from '$lib/components/ui/form';
   import { Button } from '$lib/components/ui/button';
   import { Label } from '$lib/components/ui/label';
   import { Input } from '$lib/components/ui/input';
@@ -10,98 +9,34 @@
   import { Plus } from '@lucide/svelte';
   import { Switch } from '$lib/components/ui/switch';
   import { Checkbox } from '$lib/components/ui/checkbox';
+  import { investmentTypeSchema } from './schema';
+  import { superForm, type Infer, type SuperValidated } from 'sveltekit-superforms';
+  import { zod4Client } from 'sveltekit-superforms/adapters';
+  import type { PageProps } from './$types';
 
-  const { investmentTypes }: { investmentTypes: InvestmentType[] } = $props();
+  const { data }: PageProps = $props();
 
   let open = $state(false);
-  let formData = $state({
-    name: '',
-    description: '',
-    returnAmtOrPct: AmountOrPercentEnum.percent as AmountOrPercentEnum,
-    returnDistribution: {
-      type: 'fixed',
-      value: null,
-      mean: null,
-      stdev: null,
-      lower: null,
-      upper: null
-    } as Distribution,
-    expenseRatio: 0,
-    incomeAmtOrPct: AmountOrPercentEnum.percent as AmountOrPercentEnum,
-    incomeDistribution: {
-      type: 'fixed',
-      value: null,
-      mean: null,
-      stdev: null,
-      lower: null,
-      upper: null
-    } as Distribution,
-    taxability: false
-  });
 
-  // Create separate boolean variables for switches
   let returnIsAmount = $state(false);
   let incomeIsAmount = $state(false);
 
-  // Update enum values when boolean changes
-  $effect(() => {
-    formData.returnAmtOrPct = returnIsAmount
-      ? AmountOrPercentEnum.amount
-      : AmountOrPercentEnum.percent;
+  let { investmentTypeForm } = data;
+
+  const form = superForm(investmentTypeForm, {
+    validators: zod4Client(investmentTypeSchema),
+    dataType: 'json'
   });
+  let { form: formData, enhance } = form;
 
-  $effect(() => {
-    formData.incomeAmtOrPct = incomeIsAmount
-      ? AmountOrPercentEnum.amount
-      : AmountOrPercentEnum.percent;
+  let isTaxable = $state({
+    get value() {
+      return $formData.taxability === 'taxable';
+    },
+    set value(newValue: boolean) {
+      $formData.taxability = newValue ? 'taxable' : 'tax_exempt';
+    }
   });
-
-  function handleSubmit() {
-    const newInvestmentType: InvestmentType = {
-      name: formData.name,
-      description: formData.description,
-      returnAmtOrPct: formData.returnAmtOrPct,
-      returnDistribution: formData.returnDistribution,
-      expenseRatio: formData.expenseRatio,
-      incomeAmtOrPct: formData.incomeAmtOrPct,
-      incomeDistribution: formData.incomeDistribution,
-      taxability: formData.taxability
-    };
-
-    investmentTypes.push(newInvestmentType);
-
-    // Reset form
-    formData = {
-      name: '',
-      description: '',
-      returnAmtOrPct: AmountOrPercentEnum.percent,
-      returnDistribution: {
-        type: 'fixed',
-        value: null,
-        mean: null,
-        stdev: null,
-        lower: null,
-        upper: null
-      },
-      expenseRatio: 0,
-      incomeAmtOrPct: AmountOrPercentEnum.percent,
-      incomeDistribution: {
-        type: 'fixed',
-        value: null,
-        mean: null,
-        stdev: null,
-        lower: null,
-        upper: null
-      },
-      taxability: false
-    };
-
-    // Reset switch states
-    returnIsAmount = false;
-    incomeIsAmount = false;
-
-    open = false;
-  }
 </script>
 
 <Dialog.Root bind:open>
@@ -109,142 +44,213 @@
     <Button class="w-48"><Plus /> New Investment Type</Button>
   </Dialog.Trigger>
   <Dialog.Content class="max-w-2xl">
-    <Dialog.Title>Add New Investment Type</Dialog.Title>
-    <Dialog.Description>
-      Add a new investment type to categorize your investments. Names should be unique.
-    </Dialog.Description>
-
-    <div class="flex flex-col gap-4">
-      <div class="flex flex-col gap-2">
-        <Label for="name">Name</Label>
-        <Input id="name" bind:value={formData.name} maxlength={100} />
+    <form method="POST" use:enhance>
+      <Dialog.Title>Add New Investment Type</Dialog.Title>
+      <Dialog.Description>
+        Add a new investment type to categorize your investments. Names should be unique.
+      </Dialog.Description>
+      <div class="flex flex-col gap-4">
+        <Form.Field {form} name="name" class="flex flex-col gap-2">
+          <Form.Control>
+            <Form.Label>Name</Form.Label>
+            <Input bind:value={$formData.name} maxlength={100} />
+          </Form.Control>
+        </Form.Field>
+        <Form.Field {form} name="description" class="flex flex-col gap-2">
+          <Form.Control>
+            <Form.Label>Description</Form.Label>
+            <Textarea bind:value={$formData.description} />
+          </Form.Control>
+        </Form.Field>
+        <Form.Field {form} name="expenseRatio" class="flex flex-col gap-2">
+          <Form.Control>
+            <Form.Label>Expense Ratio</Form.Label>
+            <Input type="number" step="0.01" min="0" bind:value={$formData.expenseRatio} />
+          </Form.Control>
+        </Form.Field>
+        <Form.Field {form} name="returnPercent" class="flex items-center gap-2">
+          <Form.Label>Return Amount or Percentage</Form.Label>
+          <Switch bind:checked={$formData.returnPercent} />
+          <span class="text-sm text-muted-foreground">
+            {$formData.returnPercent ? 'Percentage' : 'Amount'}
+          </span>
+        </Form.Field>
+        <div class="flex flex-col gap-2">
+          <Label>Return Distribution</Label>
+          <Tabs.Root bind:value={$formData.expectedAnnualReturn.type}>
+            <Tabs.List class="w-full">
+              <Tabs.Trigger value="fixed">Fixed</Tabs.Trigger>
+              <Tabs.Trigger value="normal">Normal</Tabs.Trigger>
+              <Tabs.Trigger value="uniform">Uniform</Tabs.Trigger>
+            </Tabs.List>
+            <Tabs.Content value="fixed">
+              {#if $formData.expectedAnnualReturn.type === 'fixed'}
+                <Form.Field {form} name="expectedAnnualReturn.value" class="flex flex-col gap-2">
+                  <Form.Label>
+                    Fixed Return Value ({$formData.returnPercent ? '%' : '$'})
+                  </Form.Label>
+                  <Input
+                    type="number"
+                    step="0.01"
+                    bind:value={$formData.expectedAnnualReturn.value}
+                  />
+                </Form.Field>
+              {/if}
+            </Tabs.Content>
+            <Tabs.Content value="normal" class="flex flex-row gap-3">
+              {#if $formData.expectedAnnualReturn.type === 'normal'}
+                <Form.Field
+                  {form}
+                  name="expectedAnnualReturn.mean"
+                  class="flex flex-grow flex-col gap-2"
+                >
+                  <Form.Label>Mean Return ({returnIsAmount ? '$' : '%'})</Form.Label>
+                  <Input
+                    type="number"
+                    step="0.01"
+                    bind:value={$formData.expectedAnnualReturn.mean}
+                  />
+                </Form.Field>
+                <Form.Field
+                  {form}
+                  name="expectedAnnualReturn.stdev"
+                  class="flex flex-grow flex-col gap-2"
+                >
+                  <Form.Label>Standard Deviation ({returnIsAmount ? '$' : '%'})</Form.Label>
+                  <Input
+                    type="number"
+                    step="0.01"
+                    min="0"
+                    bind:value={$formData.expectedAnnualReturn.stdev}
+                  />
+                </Form.Field>
+              {/if}
+            </Tabs.Content>
+            <Tabs.Content value="uniform" class="flex flex-row gap-3">
+              {#if $formData.expectedAnnualIncome.type === 'uniform'}
+                <Form.Field
+                  {form}
+                  name="expectedAnnualIncome.min"
+                  class="flex flex-grow flex-col gap-2"
+                >
+                  <Label>Lower Bound ({returnIsAmount ? '$' : '%'})</Label>
+                  <Input
+                    type="number"
+                    step="0.01"
+                    bind:value={$formData.expectedAnnualIncome.min}
+                  />
+                </Form.Field>
+                <Form.Field
+                  {form}
+                  name="expectedAnnualIncome.max"
+                  class="flex flex-grow flex-col gap-2"
+                >
+                  <Label>Upper Bound ({returnIsAmount ? '$' : '%'})</Label>
+                  <Input
+                    type="number"
+                    step="0.01"
+                    bind:value={$formData.expectedAnnualIncome.max}
+                  />
+                </Form.Field>
+              {/if}
+            </Tabs.Content>
+          </Tabs.Root>
+        </div>
+        <Form.Field {form} name="incomePercent" class="flex items-center gap-2">
+          <Form.Label>Income Amount or Percentage</Form.Label>
+          <Switch bind:checked={$formData.incomePercent} />
+          <span class="text-sm text-muted-foreground">
+            {$formData.incomePercent ? 'Percentage' : 'Amount'}
+          </span>
+        </Form.Field>
+        <div class="flex flex-col gap-2">
+          <Label>Income Distribution</Label>
+          <Tabs.Root bind:value={$formData.expectedAnnualIncome.type}>
+            <Tabs.List class="w-full">
+              <Tabs.Trigger value="fixed">Fixed</Tabs.Trigger>
+              <Tabs.Trigger value="normal">Normal</Tabs.Trigger>
+              <Tabs.Trigger value="uniform">Uniform</Tabs.Trigger>
+            </Tabs.List>
+            <Tabs.Content value="fixed">
+              {#if $formData.expectedAnnualIncome.type === 'fixed'}
+                <Form.Field {form} name="expectedAnnualIncome.value" class="flex flex-col gap-2">
+                  <Form.Label>Fixed Income Value ({incomeIsAmount ? '$' : '%'})</Form.Label>
+                  <Input
+                    type="number"
+                    step="0.01"
+                    bind:value={$formData.expectedAnnualIncome.value}
+                  />
+                </Form.Field>
+              {/if}
+            </Tabs.Content>
+            <Tabs.Content value="normal" class="flex flex-row gap-3">
+              {#if $formData.expectedAnnualIncome.type === 'normal'}
+                <Form.Field
+                  {form}
+                  name="expectedAnnualIncome.mean"
+                  class="flex flex-grow flex-col gap-2"
+                >
+                  <Form.Label>Mean Income ({incomeIsAmount ? '$' : '%'})</Form.Label>
+                  <Input
+                    type="number"
+                    step="0.01"
+                    bind:value={$formData.expectedAnnualIncome.mean}
+                  />
+                </Form.Field>
+                <Form.Field
+                  {form}
+                  name="expectedAnnualIncome.stdev"
+                  class="flex flex-grow flex-col gap-2"
+                >
+                  <Form.Label>Standard Deviation ({incomeIsAmount ? '$' : '%'})</Form.Label>
+                  <Input
+                    type="number"
+                    step="0.01"
+                    min="0"
+                    bind:value={$formData.expectedAnnualIncome.stdev}
+                  />
+                </Form.Field>
+              {/if}
+            </Tabs.Content>
+            <Tabs.Content value="uniform" class="flex flex-row gap-3">
+              {#if $formData.expectedAnnualIncome.type === 'uniform'}
+                <Form.Field
+                  {form}
+                  name="expectedAnnualIncome.min"
+                  class="flex flex-grow flex-col gap-2"
+                >
+                  <Form.Label>Lower Bound ({incomeIsAmount ? '$' : '%'})</Form.Label>
+                  <Input
+                    type="number"
+                    step="0.01"
+                    bind:value={$formData.expectedAnnualIncome.min}
+                  />
+                </Form.Field>
+                <Form.Field
+                  {form}
+                  name="expectedAnnualIncome.max"
+                  class="flex flex-grow flex-col gap-2"
+                >
+                  <Form.Label>Upper Bound ({incomeIsAmount ? '$' : '%'})</Form.Label>
+                  <Input
+                    type="number"
+                    step="0.01"
+                    bind:value={$formData.expectedAnnualIncome.max}
+                  />
+                </Form.Field>
+              {/if}
+            </Tabs.Content>
+          </Tabs.Root>
+        </div>
+        <Form.Field {form} name="taxability" class="flex items-center gap-2">
+          <Form.Label>Taxable</Form.Label>
+          <Checkbox bind:checked={isTaxable.value} />
+        </Form.Field>
       </div>
-
-      <div class="flex flex-col gap-2">
-        <Label for="description">Description</Label>
-        <Textarea id="description" bind:value={formData.description} />
-      </div>
-
-      <div class="flex flex-col gap-2">
-        <Label for="expenseRatio">Expense Ratio</Label>
-        <Input
-          id="expenseRatio"
-          type="number"
-          step="0.01"
-          min="0"
-          bind:value={formData.expenseRatio}
-        />
-      </div>
-
-      <div class="flex items-center gap-2">
-        <Label for="returnAmtOrPct">Return Amount or Percentage</Label>
-        <Switch id="returnAmtOrPct" bind:checked={returnIsAmount} />
-        <span class="text-muted-foreground text-sm">
-          {returnIsAmount ? 'Amount' : 'Percentage'}
-        </span>
-      </div>
-
-      <div class="flex flex-col gap-2">
-        <Label>Return Distribution</Label>
-        <Tabs.Root bind:value={formData.returnDistribution.type}>
-          <Tabs.List class="w-full">
-            <Tabs.Trigger value="fixed">Fixed</Tabs.Trigger>
-            <Tabs.Trigger value="normal">Normal</Tabs.Trigger>
-            <Tabs.Trigger value="uniform">Uniform</Tabs.Trigger>
-          </Tabs.List>
-          <Tabs.Content value="fixed">
-            <div class="flex flex-col gap-2">
-              <Label>Fixed Return Value ({returnIsAmount ? '$' : '%'})</Label>
-              <Input type="number" step="0.01" bind:value={formData.returnDistribution.value} />
-            </div>
-          </Tabs.Content>
-          <Tabs.Content value="normal" class="flex flex-row gap-3">
-            <div class="flex flex-grow flex-col gap-2">
-              <Label>Mean Return ({returnIsAmount ? '$' : '%'})</Label>
-              <Input type="number" step="0.01" bind:value={formData.returnDistribution.mean} />
-            </div>
-            <div class="flex flex-grow flex-col gap-2">
-              <Label>Standard Deviation ({returnIsAmount ? '$' : '%'})</Label>
-              <Input
-                type="number"
-                step="0.01"
-                min="0"
-                bind:value={formData.returnDistribution.stdev}
-              />
-            </div>
-          </Tabs.Content>
-          <Tabs.Content value="uniform" class="flex flex-row gap-3">
-            <div class="flex flex-grow flex-col gap-2">
-              <Label>Lower Bound ({returnIsAmount ? '$' : '%'})</Label>
-              <Input type="number" step="0.01" bind:value={formData.returnDistribution.lower} />
-            </div>
-            <div class="flex flex-grow flex-col gap-2">
-              <Label>Upper Bound ({returnIsAmount ? '$' : '%'})</Label>
-              <Input type="number" step="0.01" bind:value={formData.returnDistribution.upper} />
-            </div>
-          </Tabs.Content>
-        </Tabs.Root>
-      </div>
-
-      <div class="flex items-center gap-2">
-        <Label for="incomeAmtOrPct">Income Amount or Percentage</Label>
-        <Switch id="incomeAmtOrPct" bind:checked={incomeIsAmount} />
-        <span class="text-muted-foreground text-sm">
-          {incomeIsAmount ? 'Amount' : 'Percentage'}
-        </span>
-      </div>
-
-      <div class="flex flex-col gap-2">
-        <Label>Income Distribution</Label>
-        <Tabs.Root bind:value={formData.incomeDistribution.type}>
-          <Tabs.List class="w-full">
-            <Tabs.Trigger value="fixed">Fixed</Tabs.Trigger>
-            <Tabs.Trigger value="normal">Normal</Tabs.Trigger>
-            <Tabs.Trigger value="uniform">Uniform</Tabs.Trigger>
-          </Tabs.List>
-          <Tabs.Content value="fixed">
-            <div class="flex flex-col gap-2">
-              <Label>Fixed Income Value ({incomeIsAmount ? '$' : '%'})</Label>
-              <Input type="number" step="0.01" bind:value={formData.incomeDistribution.value} />
-            </div>
-          </Tabs.Content>
-          <Tabs.Content value="normal" class="flex flex-row gap-3">
-            <div class="flex flex-grow flex-col gap-2">
-              <Label>Mean Income ({incomeIsAmount ? '$' : '%'})</Label>
-              <Input type="number" step="0.01" bind:value={formData.incomeDistribution.mean} />
-            </div>
-            <div class="flex flex-grow flex-col gap-2">
-              <Label>Standard Deviation ({incomeIsAmount ? '$' : '%'})</Label>
-              <Input
-                type="number"
-                step="0.01"
-                min="0"
-                bind:value={formData.incomeDistribution.stdev}
-              />
-            </div>
-          </Tabs.Content>
-          <Tabs.Content value="uniform" class="flex flex-row gap-3">
-            <div class="flex flex-grow flex-col gap-2">
-              <Label>Lower Bound ({incomeIsAmount ? '$' : '%'})</Label>
-              <Input type="number" step="0.01" bind:value={formData.incomeDistribution.lower} />
-            </div>
-            <div class="flex flex-grow flex-col gap-2">
-              <Label>Upper Bound ({incomeIsAmount ? '$' : '%'})</Label>
-              <Input type="number" step="0.01" bind:value={formData.incomeDistribution.upper} />
-            </div>
-          </Tabs.Content>
-        </Tabs.Root>
-      </div>
-
-      <div class="flex items-center gap-2">
-        <Checkbox id="taxability" bind:checked={formData.taxability} />
-        <Label for="taxability">Taxable</Label>
-      </div>
-    </div>
-
-    <Dialog.Footer>
-      <Button variant="outline" onclick={() => (open = false)}>Cancel</Button>
-      <Button type="submit" onclick={handleSubmit}>Save Investment Type</Button>
-    </Dialog.Footer>
+      <Dialog.Footer>
+        <Button variant="outline" onclick={() => (open = false)}>Cancel</Button>
+        <Form.Button type="submit">Save Investment Type</Form.Button>
+      </Dialog.Footer>
+    </form>
   </Dialog.Content>
 </Dialog.Root>

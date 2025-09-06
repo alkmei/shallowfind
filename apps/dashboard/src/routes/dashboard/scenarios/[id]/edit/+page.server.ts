@@ -5,14 +5,21 @@ import { eq } from 'drizzle-orm';
 import { error } from '@sveltejs/kit';
 import { superValidate } from 'sveltekit-superforms';
 import { zod4 } from 'sveltekit-superforms/adapters';
-import scenarioFormSchema, { type ScenarioForm } from './schema';
+import scenarioFormSchema, { investmentTypeSchema, type ScenarioForm } from './schema';
 
 export const load: PageServerLoad = async ({ params }) => {
   const id = params.id;
 
-  const scenarios = await db.select().from(scenarioSchema).where(eq(scenarioSchema.id, id));
-
-  const scenario = scenarios[0];
+  const scenario = await db.query.scenario.findFirst({
+    where: eq(scenarioSchema.id, id),
+    with: {
+      investmentTypes: true,
+      investments: true,
+      eventSeries: true,
+      strategies: true,
+      sharedWith: true
+    }
+  });
 
   if (!scenario) {
     throw error(404, { message: 'Scenario not found' });
@@ -43,6 +50,7 @@ export const load: PageServerLoad = async ({ params }) => {
 
   return {
     form: await superValidate(scenarioData, zod4(scenarioFormSchema)),
+    investmentTypeForm: await superValidate(zod4(investmentTypeSchema)),
     scenario
   };
 };

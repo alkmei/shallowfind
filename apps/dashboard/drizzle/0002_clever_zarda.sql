@@ -1,0 +1,2 @@
+ALTER TABLE "investment_type" ADD COLUMN "return_percent" boolean DEFAULT false NOT NULL;--> statement-breakpoint
+ALTER TABLE "investment_type" ADD COLUMN "income_percent" boolean DEFAULT false NOT NULL;

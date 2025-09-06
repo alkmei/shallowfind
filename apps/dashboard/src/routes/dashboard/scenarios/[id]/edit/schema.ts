@@ -26,7 +26,7 @@ const distributionSchema = z.discriminatedUnion('type', [
   })
 ]);
 
-const nonNegativeDecimalRegex = /^\d+(\.\d{1,4})?$/;
+const nonNegativeDecimalRegex = /^\d+(\.\d{1,2})?$/;
 
 // Main scenario form schema (single page)
 export const scenarioFormSchema = z
@@ -50,8 +50,8 @@ export const scenarioFormSchema = z
 
     // Roth Optimizer Settings
     rothOptimizerEnabled: z.boolean().default(false),
-    rothOptimizerStartYear: z.number().int().min(1900).optional(),
-    rothOptimizerEndYear: z.number().int().min(1900).optional(),
+    rothOptimizerStartYear: z.number().int().min(new Date().getFullYear()).optional(),
+    rothOptimizerEndYear: z.number().int().min(new Date().getFullYear()).optional(),
 
     // Sharing Settings
     shares: z
@@ -121,15 +121,17 @@ export const investmentTypeSchema = z.object({
   name: z.string().min(1).max(255),
   description: z.string().max(1000).default(''),
   expectedAnnualReturn: distributionSchema,
+  returnPercent: z.boolean().default(false),
   expectedAnnualIncome: distributionSchema,
-  expenseRatio: z.number().min(0).max(1), // Percentage as decimal
+  incomePercent: z.boolean().default(false),
+  expenseRatio: z.string().regex(nonNegativeDecimalRegex),
   taxability: z.enum(INVESTMENT_TAXABILITY_VALUES),
   isCash: z.boolean().default(false)
 });
 
 export const investmentTypesSchema = z
   .object({
-    scenarioId: z.string().uuid(),
+    scenarioId: z.uuid(),
     investmentTypes: z
       .array(investmentTypeSchema)
       .min(1, 'At least one investment type is required')

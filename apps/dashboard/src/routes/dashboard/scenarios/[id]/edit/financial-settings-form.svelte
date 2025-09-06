@@ -118,8 +118,6 @@
     <Form.FieldErrors />
   </Form.Field>
 
-  <h2 class="text-xl font-bold">Roth Conversion Optimizer</h2>
-
   <Card.Root>
     <Card.Header>
       <Card.Title>Roth Conversion Optimizer</Card.Title>
