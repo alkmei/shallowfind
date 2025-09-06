@@ -37,7 +37,7 @@
       </div>
     </header>
     <div class="flex flex-1 flex-col gap-4 p-4 pt-0">
-      <div class="min-h-[100vh] flex-1 rounded-xl border p-4 md:min-h-min">
+      <div class="min-h-[100vh] flex-1 p-4 md:min-h-min">
         {@render children?.()}
       </div>
     </div>

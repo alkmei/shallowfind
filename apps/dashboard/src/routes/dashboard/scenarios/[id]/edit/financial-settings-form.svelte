@@ -1,19 +1,17 @@
 <script lang="ts">
-  import { putApiScenariosIdBody } from '$lib/api/scenario-management/scenarios/scenarios.zod';
   import * as Form from '$lib/components/ui/form';
   import type { SuperForm } from 'sveltekit-superforms';
   import z from 'zod';
   import * as Tabs from '$lib/components/ui/tabs';
-  import { Input } from '../ui/input';
-  import { Switch } from '../ui/switch';
-  import { Label } from '../ui/label';
-
-  type ScenariosCreateBody = z.infer<typeof putApiScenariosIdBody>;
+  import { Input } from '$lib/components/ui/input';
+  import { Switch } from '$lib/components/ui/switch';
+  import { Label } from '$lib/components/ui/label';
+  import type { ScenarioForm } from './schema';
 
   const {
     form
   }: {
-    form: SuperForm<ScenariosCreateBody>;
+    form: SuperForm<ScenarioForm>;
   } = $props();
   const { form: formData } = form;
 </script>

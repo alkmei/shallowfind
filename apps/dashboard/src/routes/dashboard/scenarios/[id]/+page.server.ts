@@ -6,7 +6,8 @@ import type { PageServerLoad } from './$types';
 export const load: PageServerLoad = async ({ params }) => {
   const id = params.id;
 
-  const scenario = await db.select().from(scenarioSchema).where(eq(scenarioSchema.id, id));
+  const scenarios = await db.select().from(scenarioSchema).where(eq(scenarioSchema.id, id));
+  const scenario = scenarios[0];
 
   if (!scenario) {
     throw new Error('Scenario not found');

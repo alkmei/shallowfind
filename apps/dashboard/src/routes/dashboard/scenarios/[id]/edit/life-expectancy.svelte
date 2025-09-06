@@ -4,18 +4,13 @@
   import { Label } from '$lib/components/ui/label';
   import { Switch } from '$lib/components/ui/switch';
   import type { SuperForm } from 'sveltekit-superforms';
-  import { scenariosCreateBody } from '$lib/api/scenarios/scenarios.zod';
-  import { z } from 'zod';
-  import * as Card from '../ui/card';
-
-  type ScenariosCreateBody = z.infer<typeof scenariosCreateBody>;
+  import * as Card from '$lib/components/ui/card';
+  import type { ScenarioForm } from './schema';
 
   const {
-    form,
-    isMarried
+    form
   }: {
-    form: SuperForm<ScenariosCreateBody>;
-    isMarried: boolean;
+    form: SuperForm<ScenarioForm>;
   } = $props();
   const { form: formData } = form;
 
@@ -37,9 +32,22 @@
       $formData.spouseLifeExpectancy.type = newValue ? 'normal' : 'fixed';
     }
   });
+
+  formData.update(
+    (form) => {
+      if (!form.userLifeExpectancy) {
+        form.userLifeExpectancy = { type: 'fixed', value: 78 };
+      }
+      if (form.scenarioType === 'married_couple' && !form.spouseLifeExpectancy) {
+        form.spouseLifeExpectancy = { type: 'fixed', value: 78 };
+      }
+      return form;
+    },
+    { taint: false }
+  );
 </script>
 
-<Card.Root>
+<Card.Root class="w-full">
   <Card.Header>
     <Card.Title>Life Expectancy</Card.Title>
     <Card.Description>
@@ -52,14 +60,14 @@
       <div class="flex items-center space-x-2">
         <Label for="distribution-switch">Use Normal Distribution</Label>
         <Switch id="distribution-switch" bind:checked={isSelfNormalDistribution.value} />
-        <span class="text-muted-foreground text-sm">
+        <span class="text-sm text-muted-foreground">
           {isSelfNormalDistribution.value ? 'Normal (mean ± std dev)' : 'Fixed value'}
         </span>
       </div>
 
       <!-- Life Expectancy Fields -->
       <div class="space-y-3">
-        {#if isSelfNormalDistribution.value}
+        {#if $formData.userLifeExpectancy.type === 'normal'}
           <!-- Normal Distribution Fields -->
           <div class="grid grid-cols-2 gap-3">
             <Form.Field {form} name="userLifeExpectancy.mean">
@@ -95,7 +103,7 @@
               <Form.FieldErrors />
             </Form.Field>
           </div>
-        {:else}
+        {:else if $formData.userLifeExpectancy.type === 'fixed'}
           <!-- Fixed Distribution Field -->
           <Form.Field {form} name="userLifeExpectancy.value">
             <Form.Control>
@@ -116,8 +124,9 @@
     </div>
   </Card.Content>
 </Card.Root>
-{#if isMarried}
-  <Card.Root>
+
+{#if $formData.scenarioType === 'married_couple'}
+  <Card.Root class="w-full">
     <Card.Header>
       <Card.Title>Spouse Life Expectancy</Card.Title>
       <Card.Description>
@@ -130,14 +139,14 @@
         <div class="flex items-center space-x-2">
           <Label for="distribution-switch">Use Normal Distribution</Label>
           <Switch id="distribution-switch" bind:checked={isSpouseNormalDistribution.value} />
-          <span class="text-muted-foreground text-sm">
+          <span class="text-sm text-muted-foreground">
             {isSpouseNormalDistribution.value ? 'Normal (mean ± std dev)' : 'Fixed value'}
           </span>
         </div>
 
         <!-- Life Expectancy Fields -->
         <div class="space-y-3">
-          {#if isSpouseNormalDistribution.value}
+          {#if $formData.spouseLifeExpectancy?.type === 'normal'}
             <!-- Normal Distribution Fields -->
             <div class="grid grid-cols-2 gap-3">
               <Form.Field {form} name="spouseLifeExpectancy.mean">
@@ -173,7 +182,7 @@
                 <Form.FieldErrors />
               </Form.Field>
             </div>
-          {:else}
+          {:else if $formData.spouseLifeExpectancy?.type === 'fixed'}
             <!-- Fixed Distribution Field -->
             <Form.Field {form} name="spouseLifeExpectancy.value">
               <Form.Control>

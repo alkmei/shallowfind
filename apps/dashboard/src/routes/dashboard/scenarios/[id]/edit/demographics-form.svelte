@@ -1,28 +1,36 @@
 <script lang="ts">
-  import { putApiScenariosIdBody } from '$lib/api/scenario-management/scenarios/scenarios.zod';
   import * as Form from '$lib/components/ui/form';
   import type { SuperForm } from 'sveltekit-superforms';
-  import z from 'zod';
-  import { Checkbox } from '../ui/checkbox';
-  import { Input } from '../ui/input';
+  import { Checkbox } from '$lib/components/ui/checkbox';
+  import { Input } from '$lib/components/ui/input';
   import LifeExpectancy from './life-expectancy.svelte';
-
-  type ScenariosCreateBody = z.infer<typeof putApiScenariosIdBody>;
+  import type { ScenarioForm } from './schema';
 
   const {
     form
   }: {
-    form: SuperForm<ScenariosCreateBody>;
+    form: SuperForm<ScenarioForm>;
   } = $props();
   const { form: formData } = form;
 
   $formData.userBirthYear = $formData.userBirthYear || new Date().getFullYear() - 30;
+  formData.update((form) => {
+    if (form.scenarioType === 'individual') {
+      form.spouseBirthYear = undefined;
+      form.spouseLifeExpectancy = undefined;
+    } else {
+      if (!form.spouseBirthYear) form.spouseBirthYear = new Date().getFullYear() - 30;
+    }
+
+    return form;
+  });
+
   let isMarried = $state({
     get value() {
-      return $formData.scenarioType === 'MarriedCouple';
+      return $formData.scenarioType === 'married_couple';
     },
     set value(newValue: boolean) {
-      $formData.scenarioType = newValue ? 'MarriedCouple' : 'Individual';
+      $formData.scenarioType = newValue ? 'married_couple' : 'individual';
     }
   });
 </script>
@@ -38,7 +46,7 @@
     </Form.Control>
     <Form.FieldErrors />
   </Form.Field>
-  <div class="flex w-full flex-row gap-3">
+  <div class="grid grid-cols-2 gap-3">
     <Form.Field {form} name="userBirthYear" class="flex-grow">
       <Form.Control>
         {#snippet children({ props })}
@@ -55,7 +63,7 @@
       <Form.Description>Enter your birth year.</Form.Description>
       <Form.FieldErrors />
     </Form.Field>
-    {#if $formData.scenarioType === 'MarriedCouple'}
+    {#if $formData.scenarioType === 'married_couple'}
       <Form.Field {form} name="spouseBirthYear" class="flex-grow">
         <Form.Control>
           {#snippet children({ props })}
@@ -74,6 +82,7 @@
         <Form.FieldErrors />
       </Form.Field>
     {/if}
+
+    <LifeExpectancy {form} />
   </div>
-  <LifeExpectancy {form} isMarried={isMarried.value} />
 </div>
