@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { InvestmentType, ScenarioForm } from './schema';
+  import type { InvestmentType } from './schema';
   import * as Card from '$lib/components/ui/card';
   import InvestmentTypeModal from './investment-type-modal.svelte';
   import type { PageProps } from './$types';
@@ -7,12 +7,16 @@
   let { params, data, form }: PageProps = $props();
 
   let investmentTypes: InvestmentType[] = $state(data.scenario.investmentTypes || []);
+
+  const addInvestmentType = (it: InvestmentType) => {
+    investmentTypes = [...investmentTypes, it];
+  };
 </script>
 
 <div class="mb-4 flex flex-col gap-8">
   <div class="flex justify-between">
     <h2 class="grow text-xl font-bold">Investment Types</h2>
-    <InvestmentTypeModal {params} {data} {form} />
+    <InvestmentTypeModal {params} {data} {form} onSubmit={addInvestmentType} />
   </div>
   {#if investmentTypes.length > 0}
     <ul class="flex flex-col gap-2 rounded border p-2">

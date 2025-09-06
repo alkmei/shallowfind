@@ -102,7 +102,7 @@ export const scenarioRelations = relations(scenario, ({ many }) => ({
 }));
 
 export const investmentType = pgTable('investment_type', {
-  id: uuid('id').primaryKey(),
+  id: uuid('id').primaryKey().defaultRandom(),
   scenarioId: uuid('scenario_id')
     .references(() => scenario.id)
     .notNull(),
@@ -124,7 +124,7 @@ export const investmentTypeRelations = relations(investmentType, ({ one, many })
 }));
 
 export const investment = pgTable('investment', {
-  id: uuid('id').primaryKey(),
+  id: uuid('id').primaryKey().defaultRandom(),
   scenarioId: uuid('scenario_id')
     .references(() => scenario.id)
     .notNull(),
@@ -148,7 +148,7 @@ export const investmentRelations = relations(investment, ({ one }) => ({
 }));
 
 export const eventSeries = pgTable('event_series', {
-  id: uuid('id').primaryKey(),
+  id: uuid('id').primaryKey().defaultRandom(),
   scenarioId: uuid('scenario_id')
     .references(() => scenario.id)
     .notNull(),
@@ -194,7 +194,7 @@ export const eventSeriesRelations = relations(eventSeries, ({ one, many }) => ({
 }));
 
 export const strategy = pgTable('strategy', {
-  id: uuid('id').primaryKey(),
+  id: uuid('id').primaryKey().defaultRandom(),
   scenarioId: uuid('scenario_id')
     .references(() => scenario.id)
     .notNull(),
@@ -215,7 +215,7 @@ export const strategyRelations = relations(strategy, ({ one }) => ({
 }));
 
 export const scenarioSharing = pgTable('scenario_sharing', {
-  id: uuid('id').primaryKey(),
+  id: uuid('id').primaryKey().defaultRandom(),
   scenarioId: uuid('scenario_id')
     .references(() => scenario.id)
     .notNull(),

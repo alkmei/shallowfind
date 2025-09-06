@@ -1,12 +1,15 @@
 import type { Actions, PageServerLoad } from './$types';
 import { db } from '$lib/server/db';
-import { scenario as scenarioSchema, type InvestmentType } from '$lib/server/db/schema/schema';
+import {
+  scenario as scenarioSchema,
+  type InvestmentType,
+  investmentType
+} from '$lib/server/db/schema/schema';
 import { eq } from 'drizzle-orm';
 import { error, fail } from '@sveltejs/kit';
 import { superValidate } from 'sveltekit-superforms';
 import { zod4 } from 'sveltekit-superforms/adapters';
 import scenarioFormSchema, { investmentTypeSchema, type ScenarioForm } from './schema';
-import { investmentType } from '$lib/server/db/schema';
 
 export const load: PageServerLoad = async ({ params }) => {
   const id = params.id;
@@ -61,6 +64,12 @@ export const load: PageServerLoad = async ({ params }) => {
 
 export const actions = {
   investmentType: async ({ request, locals }) => {
+    const user = locals.user;
+
+    if (!user) {
+      return fail(401, { message: 'Unauthorized' });
+    }
+
     const result = await superValidate(request, zod4(investmentTypeSchema));
 
     if (!result.valid) {
@@ -69,7 +78,20 @@ export const actions = {
 
     // Process the valid form data
     const newInvestmentType = result.data;
-    const dbInvestmentType: InvestmentType = {
+
+    const scenario = await db.query.scenario.findFirst({
+      where: eq(scenarioSchema.id, newInvestmentType.scenarioId)
+    });
+
+    if (!scenario) {
+      return fail(404, { message: 'Scenario not found' });
+    }
+
+    if (scenario.userId !== user.id) {
+      return fail(403, { message: 'Forbidden' });
+    }
+
+    const dbInvestmentType: Omit<InvestmentType, 'id'> = {
       scenarioId: newInvestmentType.scenarioId,
       name: newInvestmentType.name,
       description: newInvestmentType.description,

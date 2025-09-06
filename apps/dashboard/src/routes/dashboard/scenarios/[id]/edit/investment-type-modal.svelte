@@ -2,19 +2,18 @@
   import * as Dialog from '$lib/components/ui/dialog';
   import * as Tabs from '$lib/components/ui/tabs';
   import * as Form from '$lib/components/ui/form';
-  import { Button } from '$lib/components/ui/button';
-  import { Label } from '$lib/components/ui/label';
+  import { Button, buttonVariants } from '$lib/components/ui/button';
   import { Input } from '$lib/components/ui/input';
   import { Textarea } from '$lib/components/ui/textarea';
   import { Plus } from '@lucide/svelte';
   import { Switch } from '$lib/components/ui/switch';
   import { Checkbox } from '$lib/components/ui/checkbox';
-  import { investmentTypeSchema } from './schema';
-  import SuperDebug, { superForm, type Infer, type SuperValidated } from 'sveltekit-superforms';
+  import { investmentTypeSchema, type InvestmentType } from './schema';
+  import SuperDebug, { superForm } from 'sveltekit-superforms';
   import { zod4Client } from 'sveltekit-superforms/adapters';
   import type { PageProps } from './$types';
 
-  const { data }: PageProps = $props();
+  const { data, onSubmit }: PageProps & { onSubmit: (it: InvestmentType) => void } = $props();
 
   let open = $state(false);
 
@@ -25,7 +24,11 @@
 
   const form = superForm(investmentTypeForm, {
     validators: zod4Client(investmentTypeSchema),
-    dataType: 'json'
+    dataType: 'json',
+    onUpdated: ({ form }) => {
+      open = false;
+      onSubmit(form.data as InvestmentType);
+    }
   });
   let { form: formData, enhance } = form;
 
@@ -40,8 +43,8 @@
 </script>
 
 <Dialog.Root bind:open>
-  <Dialog.Trigger>
-    <Button class="w-48"><Plus /> New Investment Type</Button>
+  <Dialog.Trigger class={'w-48' + buttonVariants({ variant: 'default' })}>
+    <Plus /> New Investment Type
   </Dialog.Trigger>
   <Dialog.Content class="min-w-4xl">
     <Dialog.Header>
@@ -68,7 +71,7 @@
         <Form.Field {form} name="expenseRatio" class="flex flex-col gap-2">
           <Form.Control>
             <Form.Label>Expense Ratio</Form.Label>
-            <Input type="number" step="0.01" min="0" bind:value={$formData.expenseRatio} />
+            <Input bind:value={$formData.expenseRatio} />
           </Form.Control>
         </Form.Field>
         <Form.Field {form} name="returnPercent" class="flex items-center gap-2">
@@ -88,20 +91,24 @@
               <Tabs.Trigger value="normal">Normal</Tabs.Trigger>
               <Tabs.Trigger value="uniform">Uniform</Tabs.Trigger>
             </Tabs.List>
+
             <Tabs.Content value="fixed">
               {#if $formData.expectedAnnualReturn.type === 'fixed'}
                 <Form.Field {form} name="expectedAnnualReturn.value" class="flex flex-col gap-2">
-                  <Form.Label>
-                    Fixed Return Value ({$formData.returnPercent ? '%' : '$'})
-                  </Form.Label>
-                  <Input
-                    type="number"
-                    step="0.01"
-                    bind:value={$formData.expectedAnnualReturn.value}
-                  />
+                  <Form.Control>
+                    <Form.Label>
+                      Fixed Return Value ({$formData.returnPercent ? '%' : '$'})
+                    </Form.Label>
+                    <Input
+                      type="number"
+                      step="0.01"
+                      bind:value={$formData.expectedAnnualReturn.value}
+                    />
+                  </Form.Control>
                 </Form.Field>
               {/if}
             </Tabs.Content>
+
             <Tabs.Content value="normal" class="flex flex-row gap-3">
               {#if $formData.expectedAnnualReturn.type === 'normal'}
                 <Form.Field
@@ -276,11 +283,14 @@
       </div>
       <Dialog.Footer>
         <Form.Control>
-          <Button variant="outline" onclick={() => (open = false)}>Cancel</Button>
-          <Form.Button type="submit">Save Investment Type</Form.Button>
+          <Dialog.Close>
+            <Button variant="outline">Cancel</Button>
+          </Dialog.Close>
+          <Form.Button>Save Investment Type</Form.Button>
         </Form.Control>
       </Dialog.Footer>
     </form>
-    <SuperDebug data={$formData} />
   </Dialog.Content>
 </Dialog.Root>
+
+<!-- <SuperDebug data={$formData} /> -->
