@@ -7,6 +7,7 @@
   import * as Card from '$lib/components/ui/card';
   import { Label } from '$lib/components/ui/label';
   import { Switch } from '$lib/components/ui/switch';
+  import { fromStore } from 'svelte/store';
 
   const {
     form
@@ -16,12 +17,36 @@
   const { form: formData } = form;
 
   $formData.userBirthYear = $formData.userBirthYear || new Date().getFullYear() - 30;
-  formData.update((form) => {
+  formData.subscribe((form) => {
     if (form.scenarioType === 'individual') {
       form.spouseBirthYear = undefined;
       form.spouseLifeExpectancy = undefined;
     } else {
-      if (!form.spouseBirthYear) form.spouseBirthYear = new Date().getFullYear() - 30;
+      if (form.spouseBirthYear === undefined) {
+        form.spouseBirthYear = new Date().getFullYear() - 30;
+      }
+      if (!form.spouseLifeExpectancy) {
+        form.spouseLifeExpectancy = { type: 'fixed', value: 85 };
+      }
+    }
+
+    if (form.userLifeExpectancy.type === 'fixed' && form.userLifeExpectancy.value === undefined) {
+      form.userLifeExpectancy.value = 85;
+    } else if (form.userLifeExpectancy.type === 'normal') {
+      if (form.userLifeExpectancy.mean === undefined) form.userLifeExpectancy.mean = 85;
+      if (form.userLifeExpectancy.stdev === undefined) form.userLifeExpectancy.stdev = 5;
+    }
+
+    if (form.spouseLifeExpectancy) {
+      if (
+        form.spouseLifeExpectancy.type === 'fixed' &&
+        form.spouseLifeExpectancy.value === undefined
+      ) {
+        form.spouseLifeExpectancy.value = 85;
+      } else if (form.spouseLifeExpectancy.type === 'normal') {
+        if (form.spouseLifeExpectancy.mean === undefined) form.spouseLifeExpectancy.mean = 85;
+        if (form.spouseLifeExpectancy.stdev === undefined) form.spouseLifeExpectancy.stdev = 5;
+      }
     }
 
     return form;
@@ -102,7 +127,7 @@
             <div class="flex items-center space-x-2">
               <Label for="distribution-switch">Distribution Type</Label>
               <Switch id="distribution-switch" bind:checked={isSelfNormalDistribution.value} />
-              <span class="text-muted-foreground text-sm">
+              <span class="text-sm text-muted-foreground">
                 {isSelfNormalDistribution.value ? 'Normal (mean ± std dev)' : 'Fixed value'}
               </span>
             </div>
@@ -167,7 +192,7 @@
     </div>
 
     {#if $formData.scenarioType === 'married_couple'}
-      <div class="">
+      <div class="space-y-4">
         <Form.Field {form} name="spouseBirthYear">
           <Form.Control>
             {#snippet children({ props })}
@@ -199,7 +224,7 @@
               <div class="flex items-center space-x-2">
                 <Label for="distribution-switch">Distribution Type</Label>
                 <Switch id="distribution-switch" bind:checked={isSpouseNormalDistribution.value} />
-                <span class="text-muted-foreground text-sm">
+                <span class="text-sm text-muted-foreground">
                   {isSpouseNormalDistribution.value ? 'Normal (mean ± std dev)' : 'Fixed value'}
                 </span>
               </div>
@@ -213,7 +238,7 @@
                         <Form.Label>Mean Age</Form.Label>
                         <Input
                           type="number"
-                          bind:value={$formData.spouseLifeExpectancy!.mean}
+                          bind:value={$formData.spouseLifeExpectancy.mean}
                           min="1"
                           max="120"
                           placeholder="e.g., 78"
@@ -230,7 +255,7 @@
                         <Form.Label>Standard Deviation</Form.Label>
                         <Input
                           type="number"
-                          bind:value={$formData.spouseLifeExpectancy!.stdev}
+                          bind:value={$formData.spouseLifeExpectancy.stdev}
                           min="0.1"
                           max="20"
                           step="0.1"
@@ -247,7 +272,7 @@
                       <Form.Label>Life Expectancy (Years)</Form.Label>
                       <Input
                         type="number"
-                        bind:value={$formData.spouseLifeExpectancy!.value}
+                        bind:value={$formData.spouseLifeExpectancy.value}
                         min="1"
                         max="120"
                         placeholder="e.g., 78"

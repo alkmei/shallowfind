@@ -54,14 +54,14 @@ export const scenarioFormSchema = z
     rothOptimizerEndYear: z.number().int().min(1900).optional(),
 
     // Sharing Settings
-    // shares: z
-    //   .array(
-    //     z.object({
-    //       sharedWithUserId: z.string().min(1),
-    //       permission: z.enum(SHARE_PERMISSION_VALUES)
-    //     })
-    //   )
-    //   .default([])
+    shares: z
+      .array(
+        z.object({
+          sharedWithUserId: z.string().min(1),
+          permission: z.enum(SHARE_PERMISSION_VALUES)
+        })
+      )
+      .default([])
   })
   .refine(
     (data) => {
@@ -102,17 +102,17 @@ export const scenarioFormSchema = z
       path: ['rothOptimizerEndYear']
     }
   )
-// .refine(
-//   (data) => {
-//     // Ensure no duplicate user shares
-//     const userIds = data.shares.map((share) => share.sharedWithUserId);
-//     return userIds.length === new Set(userIds).size;
-//   },
-//   {
-//     message: 'Cannot share with the same user multiple times',
-//     path: ['shares']
-//   }
-// );
+  .refine(
+    (data) => {
+      // Ensure no duplicate user shares
+      const userIds = data.shares.map((share) => share.sharedWithUserId);
+      return userIds.length === new Set(userIds).size;
+    },
+    {
+      message: 'Cannot share with the same user multiple times',
+      path: ['shares']
+    }
+  );
 
 // Separate schemas for the complex models that will be handled independently
 

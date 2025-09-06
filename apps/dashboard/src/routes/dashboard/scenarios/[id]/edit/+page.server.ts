@@ -27,16 +27,19 @@ export const load: PageServerLoad = async ({ params }) => {
     stateOfResidence: scenario.stateOfResidence,
     scenarioType: scenario.scenarioType,
     userBirthYear: scenario.userBirthYear || new Date().getFullYear() - 25,
-    spouseBirthYear: scenario.spouseBirthYear || (isMarried ? new Date().getFullYear() - 25 : undefined),
+    spouseBirthYear:
+      scenario.spouseBirthYear || (isMarried ? new Date().getFullYear() - 25 : undefined),
     userLifeExpectancy: scenario.userLifeExpectancy || { type: 'fixed', value: 85 },
-    spouseLifeExpectancy: scenario.spouseLifeExpectancy || (isMarried ? { type: 'fixed', value: 85 } : undefined),
-    financialGoal: scenario.financialGoal || "0",
+    spouseLifeExpectancy:
+      scenario.spouseLifeExpectancy || (isMarried ? { type: 'fixed', value: 85 } : undefined),
+    financialGoal: scenario.financialGoal || '0',
     inflationAssumption: scenario.inflationAssumption || { type: 'fixed', value: 0.03 },
-    annualRetirementContributionLimit: scenario.annualRetirementContributionLimit || "0",
+    annualRetirementContributionLimit: scenario.annualRetirementContributionLimit || '0',
     rothOptimizerEnabled: scenario.rothOptimizerEnabled || false,
     rothOptimizerStartYear: scenario.rothOptimizerStartYear || undefined,
     rothOptimizerEndYear: scenario.rothOptimizerEndYear || undefined,
-  }
+    shares: []
+  };
 
   return {
     form: await superValidate(scenarioData, zod4(scenarioFormSchema)),

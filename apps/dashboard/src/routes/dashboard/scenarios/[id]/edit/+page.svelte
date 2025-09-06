@@ -5,6 +5,7 @@
   import scenarioFormSchema from './schema';
   import BasicInformationForm from './basic-information-form.svelte';
   import DemographicsForm from './demographics-form.svelte';
+  import SuperDebug from 'sveltekit-superforms';
   let { data }: PageProps = $props();
 
   const form = superForm(data.form, {
@@ -12,12 +13,13 @@
     dataType: 'json'
   });
 
-  const { enhance } = form;
+  const { form: formData, enhance } = form;
 </script>
 
 <h1>Edit Scenario</h1>
 
-<form method="POST" use:enhance>
+<form method="POST" use:enhance class="flex flex-col gap-4">
   <BasicInformationForm {form} />
   <DemographicsForm {form} />
+  <SuperDebug data={$formData} />
 </form>
