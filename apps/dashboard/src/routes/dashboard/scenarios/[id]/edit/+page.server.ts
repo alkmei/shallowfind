@@ -20,6 +20,7 @@ export const load: PageServerLoad = async ({ params }) => {
 
   const isMarried = scenario.scenarioType === 'married_couple';
 
+  // FIXME: Figure out why refreshes reset the form even with superValidate
   const scenarioData: ScenarioForm = {
     title: scenario.title,
     description: scenario.description,
