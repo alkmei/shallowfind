@@ -7,7 +7,6 @@
   import * as Card from '$lib/components/ui/card';
   import { Label } from '$lib/components/ui/label';
   import { Switch } from '$lib/components/ui/switch';
-  import { fromStore } from 'svelte/store';
 
   const {
     form
