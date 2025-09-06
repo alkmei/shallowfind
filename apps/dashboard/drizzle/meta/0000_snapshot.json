@@ -1,16 +1,323 @@
 {
-  "id": "ef9d9769-4f07-4315-9dd2-b8ab5e538f1e",
+  "id": "beb88789-b4de-429b-b2a9-3d5b0f8d0b2d",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
-    "shallowfind.event_series": {
-      "name": "event_series",
-      "schema": "shallowfind",
+    "public.account": {
+      "name": "account",
+      "schema": "",
       "columns": {
         "id": {
           "name": "id",
-          "type": "serial",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "account_id": {
+          "name": "account_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "provider_id": {
+          "name": "provider_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "access_token": {
+          "name": "access_token",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "refresh_token": {
+          "name": "refresh_token",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "id_token": {
+          "name": "id_token",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "access_token_expires_at": {
+          "name": "access_token_expires_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "refresh_token_expires_at": {
+          "name": "refresh_token_expires_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "scope": {
+          "name": "scope",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "password": {
+          "name": "password",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "account_user_id_user_id_fk": {
+          "name": "account_user_id_user_id_fk",
+          "tableFrom": "account",
+          "tableTo": "user",
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.session": {
+      "name": "session",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "expires_at": {
+          "name": "expires_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "token": {
+          "name": "token",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "ip_address": {
+          "name": "ip_address",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "user_agent": {
+          "name": "user_agent",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "session_user_id_user_id_fk": {
+          "name": "session_user_id_user_id_fk",
+          "tableFrom": "session",
+          "tableTo": "user",
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "session_token_unique": {
+          "name": "session_token_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "token"
+          ]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.user": {
+      "name": "user",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "name": {
+          "name": "name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "email": {
+          "name": "email",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "email_verified": {
+          "name": "email_verified",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        },
+        "image": {
+          "name": "image",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "user_email_unique": {
+          "name": "user_email_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "email"
+          ]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.verification": {
+      "name": "verification",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "identifier": {
+          "name": "identifier",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "value": {
+          "name": "value",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "expires_at": {
+          "name": "expires_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.event_series": {
+      "name": "event_series",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
           "primaryKey": true,
           "notNull": true
         },
@@ -35,7 +342,7 @@
         "type": {
           "name": "type",
           "type": "event_series_type",
-          "typeSchema": "shallowfind",
+          "typeSchema": "public",
           "primaryKey": false,
           "notNull": true
         },
@@ -43,26 +350,26 @@
           "name": "start_year",
           "type": "jsonb",
           "primaryKey": false,
-          "notNull": true
+          "notNull": false
         },
         "duration": {
           "name": "duration",
           "type": "jsonb",
           "primaryKey": false,
-          "notNull": true
+          "notNull": false
         },
         "reference_event_series_id": {
           "name": "reference_event_series_id",
-          "type": "integer",
+          "type": "uuid",
           "primaryKey": false,
-          "notNull": true
+          "notNull": false
         },
         "start_timing_type": {
           "name": "start_timing_type",
           "type": "start_timing_type",
-          "typeSchema": "shallowfind",
+          "typeSchema": "public",
           "primaryKey": false,
-          "notNull": true
+          "notNull": false
         },
         "is_active": {
           "name": "is_active",
@@ -81,52 +388,52 @@
           "name": "initial_amount",
           "type": "numeric",
           "primaryKey": false,
-          "notNull": true
+          "notNull": false
         },
         "annual_change": {
           "name": "annual_change",
           "type": "jsonb",
           "primaryKey": false,
-          "notNull": true
+          "notNull": false
         },
         "inflation_adjusted": {
           "name": "inflation_adjusted",
           "type": "boolean",
           "primaryKey": false,
-          "notNull": true,
+          "notNull": false,
           "default": false
         },
         "user_percentage": {
           "name": "user_percentage",
           "type": "numeric",
           "primaryKey": false,
-          "notNull": true
+          "notNull": false
         },
         "is_social_security": {
           "name": "is_social_security",
           "type": "boolean",
           "primaryKey": false,
-          "notNull": true,
+          "notNull": false,
           "default": false
         },
         "is_discretionary": {
           "name": "is_discretionary",
           "type": "boolean",
           "primaryKey": false,
-          "notNull": true,
+          "notNull": false,
           "default": false
         },
         "asset_allocation": {
           "name": "asset_allocation",
           "type": "jsonb",
           "primaryKey": false,
-          "notNull": true
+          "notNull": false
         },
         "is_glide_path": {
           "name": "is_glide_path",
           "type": "boolean",
           "primaryKey": false,
-          "notNull": true,
+          "notNull": false,
           "default": false
         },
         "initial_allocation": {
@@ -145,14 +452,14 @@
           "name": "maximum_cash",
           "type": "numeric",
           "primaryKey": false,
-          "notNull": true
+          "notNull": false
         },
         "target_tax_status": {
           "name": "target_tax_status",
           "type": "account_tax_status",
-          "typeSchema": "shallowfind",
+          "typeSchema": "public",
           "primaryKey": false,
-          "notNull": true
+          "notNull": false
         }
       },
       "indexes": {},
@@ -161,7 +468,6 @@
           "name": "event_series_scenario_id_scenario_id_fk",
           "tableFrom": "event_series",
           "tableTo": "scenario",
-          "schemaTo": "shallowfind",
           "columnsFrom": [
             "scenario_id"
           ],
@@ -175,7 +481,6 @@
           "name": "event_series_reference_event_series_id_event_series_id_fk",
           "tableFrom": "event_series",
           "tableTo": "event_series",
-          "schemaTo": "shallowfind",
           "columnsFrom": [
             "reference_event_series_id"
           ],
@@ -192,13 +497,13 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
-    "shallowfind.investment_type": {
+    "public.investment_type": {
       "name": "investment_type",
-      "schema": "shallowfind",
+      "schema": "",
       "columns": {
         "id": {
           "name": "id",
-          "type": "serial",
+          "type": "uuid",
           "primaryKey": true,
           "notNull": true
         },
@@ -241,7 +546,7 @@
         "taxability": {
           "name": "taxability",
           "type": "investment_taxability",
-          "typeSchema": "shallowfind",
+          "typeSchema": "public",
           "primaryKey": false,
           "notNull": true
         },
@@ -259,7 +564,6 @@
           "name": "investment_type_scenario_id_scenario_id_fk",
           "tableFrom": "investment_type",
           "tableTo": "scenario",
-          "schemaTo": "shallowfind",
           "columnsFrom": [
             "scenario_id"
           ],
@@ -276,9 +580,9 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
-    "shallowfind.scenario": {
+    "public.scenario": {
       "name": "scenario",
-      "schema": "shallowfind",
+      "schema": "",
       "columns": {
         "id": {
           "name": "id",
@@ -289,7 +593,7 @@
         },
         "user_id": {
           "name": "user_id",
-          "type": "varchar",
+          "type": "text",
           "primaryKey": false,
           "notNull": true
         },
@@ -308,14 +612,14 @@
         "scenario_type": {
           "name": "scenario_type",
           "type": "scenario_type",
-          "typeSchema": "shallowfind",
+          "typeSchema": "public",
           "primaryKey": false,
           "notNull": true
         },
         "scenario_status": {
           "name": "scenario_status",
           "type": "scenario_status",
-          "typeSchema": "shallowfind",
+          "typeSchema": "public",
           "primaryKey": false,
           "notNull": true,
           "default": "'draft'"
@@ -353,7 +657,7 @@
         "state_of_residence": {
           "name": "state_of_residence",
           "type": "state",
-          "typeSchema": "shallowfind",
+          "typeSchema": "public",
           "primaryKey": false,
           "notNull": true
         },
@@ -404,20 +708,34 @@
         }
       },
       "indexes": {},
-      "foreignKeys": {},
+      "foreignKeys": {
+        "scenario_user_id_user_id_fk": {
+          "name": "scenario_user_id_user_id_fk",
+          "tableFrom": "scenario",
+          "tableTo": "user",
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {},
       "policies": {},
       "checkConstraints": {},
       "isRLSEnabled": false
     },
-    "shallowfind.scenario_sharing": {
+    "public.scenario_sharing": {
       "name": "scenario_sharing",
-      "schema": "shallowfind",
+      "schema": "",
       "columns": {
         "id": {
           "name": "id",
-          "type": "serial",
+          "type": "uuid",
           "primaryKey": true,
           "notNull": true
         },
@@ -429,14 +747,14 @@
         },
         "shared_with_user_id": {
           "name": "shared_with_user_id",
-          "type": "varchar",
+          "type": "text",
           "primaryKey": false,
           "notNull": true
         },
         "permission": {
           "name": "permission",
           "type": "share_permission",
-          "typeSchema": "shallowfind",
+          "typeSchema": "public",
           "primaryKey": false,
           "notNull": true
         }
@@ -447,7 +765,6 @@
           "name": "scenario_sharing_scenario_id_scenario_id_fk",
           "tableFrom": "scenario_sharing",
           "tableTo": "scenario",
-          "schemaTo": "shallowfind",
           "columnsFrom": [
             "scenario_id"
           ],
@@ -464,13 +781,13 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
-    "shallowfind.strategy": {
+    "public.strategy": {
       "name": "strategy",
-      "schema": "shallowfind",
+      "schema": "",
       "columns": {
         "id": {
           "name": "id",
-          "type": "serial",
+          "type": "uuid",
           "primaryKey": true,
           "notNull": true
         },
@@ -483,7 +800,7 @@
         "type": {
           "name": "type",
           "type": "strategy_type",
-          "typeSchema": "shallowfind",
+          "typeSchema": "public",
           "primaryKey": false,
           "notNull": true
         },
@@ -519,7 +836,6 @@
           "name": "strategy_scenario_id_scenario_id_fk",
           "tableFrom": "strategy",
           "tableTo": "scenario",
-          "schemaTo": "shallowfind",
           "columnsFrom": [
             "scenario_id"
           ],
@@ -538,18 +854,18 @@
     }
   },
   "enums": {
-    "shallowfind.account_tax_status": {
+    "public.account_tax_status": {
       "name": "account_tax_status",
-      "schema": "shallowfind",
+      "schema": "public",
       "values": [
         "non_retirement",
         "pre_tax_retirement",
         "after_tax_retirement"
       ]
     },
-    "shallowfind.event_series_type": {
+    "public.event_series_type": {
       "name": "event_series_type",
-      "schema": "shallowfind",
+      "schema": "public",
       "values": [
         "income",
         "expense",
@@ -557,51 +873,51 @@
         "rebalance"
       ]
     },
-    "shallowfind.investment_taxability": {
+    "public.investment_taxability": {
       "name": "investment_taxability",
-      "schema": "shallowfind",
+      "schema": "public",
       "values": [
         "taxable",
         "tax_exempt"
       ]
     },
-    "shallowfind.scenario_status": {
+    "public.scenario_status": {
       "name": "scenario_status",
-      "schema": "shallowfind",
+      "schema": "public",
       "values": [
         "draft",
         "active",
         "archived"
       ]
     },
-    "shallowfind.scenario_type": {
+    "public.scenario_type": {
       "name": "scenario_type",
-      "schema": "shallowfind",
+      "schema": "public",
       "values": [
         "individual",
         "married_couple"
       ]
     },
-    "shallowfind.share_permission": {
+    "public.share_permission": {
       "name": "share_permission",
-      "schema": "shallowfind",
+      "schema": "public",
       "values": [
         "ro",
         "rw"
       ]
     },
-    "shallowfind.start_timing_type": {
+    "public.start_timing_type": {
       "name": "start_timing_type",
-      "schema": "shallowfind",
+      "schema": "public",
       "values": [
         "same_year",
         "year_after",
         "distribution"
       ]
     },
-    "shallowfind.state": {
+    "public.state": {
       "name": "state",
-      "schema": "shallowfind",
+      "schema": "public",
       "values": [
         "AL",
         "AK",
@@ -655,9 +971,9 @@
         "WY"
       ]
     },
-    "shallowfind.strategy_type": {
+    "public.strategy_type": {
       "name": "strategy_type",
-      "schema": "shallowfind",
+      "schema": "public",
       "values": [
         "spending",
         "expense_withdrawal",
@@ -666,9 +982,7 @@
       ]
     }
   },
-  "schemas": {
-    "shallowfind": "shallowfind"
-  },
+  "schemas": {},
   "sequences": {},
   "roles": {},
   "policies": {},

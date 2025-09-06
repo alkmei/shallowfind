@@ -4,6 +4,7 @@
   import { Button } from '$lib/components/ui/button';
   import { User } from '@lucide/svelte';
   import { goto } from '$app/navigation';
+  import { authClient } from '$lib/client';
 
   const id = $props.id();
 
@@ -17,57 +18,30 @@
     loading = true;
     error = '';
 
-    const res = await fetch('/api/auth/login', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
+    await authClient.signIn.email(
+      {
+        email,
+        password
       },
-      body: JSON.stringify({ email, password })
-    });
-
-    if (!res.ok) {
-      const data = await res.json();
-      throw new Error(data.message || 'Login failed');
-    }
-
-    if (res.redirected) {
-      goto(res.url);
-    }
+      {
+        onRequest: () => {
+          loading = true;
+          error = '';
+        },
+        onSuccess: () => goto('/dashboard'),
+        onError: (ctx) => {
+          console.error('Email login error:', ctx.error);
+          error = ctx.error.message!;
+        }
+      }
+    );
 
     loading = false;
   }
 
-  async function handleGoogleLogin() {
-    // loading = true;
-    // error = '';
-    // try {
-    //   const result = await signInWithPopup(auth, googleAuthProvider);
-    //   const idToken = await result.user.getIdToken();
-    //   await setSessionCookie(idToken);
-    //   await goto('/dashboard');
-    // } catch (err: any) {
-    //   error = err.message;
-    //   console.error('Google login error:', err);
-    // } finally {
-    //   loading = false;
-    // }
-  }
+  async function handleGoogleLogin() {}
 
-  async function handleAnonymousLogin() {
-    // loading = true;
-    // error = '';
-    // try {
-    //   const userCredential = await signInAnonymously(auth);
-    //   const idToken = await userCredential.user.getIdToken();
-    //   await setSessionCookie(idToken);
-    //   await goto('/dashboard');
-    // } catch (err: any) {
-    //   error = err.message;
-    //   console.error('Anonymous login error:', err);
-    // } finally {
-    //   loading = false;
-    // }
-  }
+  async function handleAnonymousLogin() {}
 </script>
 
 <form class="flex flex-col gap-6" onsubmit={handleEmailLogin}>
