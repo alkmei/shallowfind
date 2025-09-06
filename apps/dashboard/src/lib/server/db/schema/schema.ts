@@ -42,7 +42,7 @@ interface UniformDistribution {
   max: number;
 }
 
-type Distribution = NormalDistribution | FixedDistribution | UniformDistribution;
+export type Distribution = NormalDistribution | FixedDistribution | UniformDistribution;
 
 // prettier-ignore
 export const stateEnum = pgEnum('state', STATE_VALUES);

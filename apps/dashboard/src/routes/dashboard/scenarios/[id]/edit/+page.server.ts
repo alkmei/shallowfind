@@ -7,7 +7,7 @@ import {
 } from '$lib/server/db/schema/schema';
 import { eq } from 'drizzle-orm';
 import { error, fail } from '@sveltejs/kit';
-import { message, superValidate } from 'sveltekit-superforms';
+import { superValidate } from 'sveltekit-superforms';
 import { zod4 } from 'sveltekit-superforms/adapters';
 import scenarioFormSchema, { investmentTypeSchema, type ScenarioForm } from './schema';
 
@@ -70,14 +70,14 @@ export const actions = {
       return fail(401, { message: 'Unauthorized' });
     }
 
-    const result = await superValidate(request, zod4(investmentTypeSchema));
+    const form = await superValidate(request, zod4(investmentTypeSchema));
 
-    if (!result.valid) {
-      return fail(400, { form: result });
+    if (!form.valid) {
+      return fail(400, { form });
     }
 
     // Process the valid form data
-    const newInvestmentType = result.data;
+    const newInvestmentType = form.data;
 
     const scenario = await db.query.scenario.findFirst({
       where: eq(scenarioSchema.id, newInvestmentType.scenarioId)
@@ -105,8 +105,8 @@ export const actions = {
     };
 
     // Save the new investment type to the database
-    await db.insert(investmentType).values(dbInvestmentType);
+    const result = await db.insert(investmentType).values(dbInvestmentType).returning();
 
-    return message(result, 'Investment type created successfully');
+    return { form, uuid: result[0].id, message: 'Investment type created successfully' };
   }
 } satisfies Actions;
