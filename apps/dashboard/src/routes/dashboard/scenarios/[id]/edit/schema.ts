@@ -26,6 +26,8 @@ const distributionSchema = z.discriminatedUnion('type', [
   })
 ]);
 
+const nonNegativeDecimalRegex = /^\d+(\.\d{1,4})?$/;
+
 // Main scenario form schema (single page)
 export const scenarioFormSchema = z
   .object({
@@ -42,9 +44,9 @@ export const scenarioFormSchema = z
     spouseLifeExpectancy: distributionSchema.optional(),
 
     // Financial Settings
-    financialGoal: z.number().min(0),
+    financialGoal: z.string().regex(nonNegativeDecimalRegex),
     inflationAssumption: distributionSchema,
-    annualRetirementContributionLimit: z.number().min(0),
+    annualRetirementContributionLimit: z.string().regex(nonNegativeDecimalRegex),
 
     // Roth Optimizer Settings
     rothOptimizerEnabled: z.boolean().default(false),
@@ -52,14 +54,14 @@ export const scenarioFormSchema = z
     rothOptimizerEndYear: z.number().int().min(1900).optional(),
 
     // Sharing Settings
-    shares: z
-      .array(
-        z.object({
-          sharedWithUserId: z.string().min(1),
-          permission: z.enum(SHARE_PERMISSION_VALUES)
-        })
-      )
-      .default([])
+    // shares: z
+    //   .array(
+    //     z.object({
+    //       sharedWithUserId: z.string().min(1),
+    //       permission: z.enum(SHARE_PERMISSION_VALUES)
+    //     })
+    //   )
+    //   .default([])
   })
   .refine(
     (data) => {
@@ -100,17 +102,17 @@ export const scenarioFormSchema = z
       path: ['rothOptimizerEndYear']
     }
   )
-  .refine(
-    (data) => {
-      // Ensure no duplicate user shares
-      const userIds = data.shares.map((share) => share.sharedWithUserId);
-      return userIds.length === new Set(userIds).size;
-    },
-    {
-      message: 'Cannot share with the same user multiple times',
-      path: ['shares']
-    }
-  );
+// .refine(
+//   (data) => {
+//     // Ensure no duplicate user shares
+//     const userIds = data.shares.map((share) => share.sharedWithUserId);
+//     return userIds.length === new Set(userIds).size;
+//   },
+//   {
+//     message: 'Cannot share with the same user multiple times',
+//     path: ['shares']
+//   }
+// );
 
 // Separate schemas for the complex models that will be handled independently
 
