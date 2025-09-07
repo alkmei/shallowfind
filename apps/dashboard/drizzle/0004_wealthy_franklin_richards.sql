@@ -1,0 +1,1 @@
+ALTER TABLE "investment" DROP COLUMN "order_index";

@@ -4,6 +4,8 @@
   import { Textarea } from '$lib/components/ui/textarea';
   import type { SuperForm } from 'sveltekit-superforms';
   import type { ScenarioForm } from './schema';
+  import * as Select from '$lib/components/ui/select';
+  import { STATE_MAPPING } from '$lib/enums';
 
   const { form }: { form: SuperForm<ScenarioForm> } = $props();
 
@@ -29,6 +31,25 @@
         <Textarea {...props} bind:value={$formData.description} />
       {/snippet}
     </Form.Control>
+    <Form.FieldErrors />
+  </Form.Field>
+  <Form.Field {form} name="stateOfResidence">
+    <Form.Control>
+      {#snippet children({ props })}
+        <Form.Label>State of Residence <span class="text-red-500">*</span></Form.Label>
+        <Select.Root {...props} type="single" bind:value={$formData.stateOfResidence}>
+          <Select.Trigger>{STATE_MAPPING[$formData.stateOfResidence].name}</Select.Trigger>
+          <Select.Content>
+            {#each Object.entries(STATE_MAPPING) as [key, state]}
+              <Select.Item value={key}>
+                {state.name}
+              </Select.Item>
+            {/each}
+          </Select.Content>
+        </Select.Root>
+      {/snippet}
+    </Form.Control>
+    <Form.Description>Choose the state where you reside.</Form.Description>
     <Form.FieldErrors />
   </Form.Field>
 </div>

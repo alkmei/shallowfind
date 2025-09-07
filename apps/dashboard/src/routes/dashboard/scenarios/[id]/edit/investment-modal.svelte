@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { superForm } from 'sveltekit-superforms';
+  import SuperDebug, { superForm } from 'sveltekit-superforms';
   import * as Dialog from '$lib/components/ui/dialog';
   import * as Form from '$lib/components/ui/form';
   import * as Select from '$lib/components/ui/select';
@@ -11,16 +11,23 @@
   import { investmentSchema } from './schema';
   import * as RadioGroup from '$lib/components/ui/radio-group';
   import { Label } from '$lib/components/ui/label';
+  import type { Investment } from '$lib/server/db/schema/schema';
 
-  const { data }: PageProps = $props();
+  const { data, form, onSubmit }: PageProps & { onSubmit: (inv: Investment) => void } = $props();
+
+  let open = $state(false);
 
   const investmentForm = superForm(data.investmentForm, {
-    validators: zod4Client(investmentSchema)
+    validators: zod4Client(investmentSchema),
+    dataType: 'json',
+    onUpdated: (event) => {
+      open = false;
+      const inv = { ...event.form.data, id: form?.uuid } as Investment;
+      onSubmit(inv);
+    }
   });
 
   const { form: formData, enhance } = investmentForm;
-
-  let open = $state(false);
 
   const taxStatusOptions = [
     { value: 'non_retirement', label: 'Non-retirement' },
@@ -100,7 +107,7 @@
         <Dialog.Close>
           <Button type="button" variant="outline">Cancel</Button>
         </Dialog.Close>
-        <Form.Button type="submit">Add Investment</Form.Button>
+        <Form.Button>Add Investment</Form.Button>
       </Dialog.Footer>
     </form>
   </Dialog.Content>

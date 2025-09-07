@@ -3,7 +3,9 @@ import { db } from '$lib/server/db';
 import {
   scenario as scenarioSchema,
   type InvestmentType,
-  investmentType
+  investmentType,
+  type Investment,
+  investment
 } from '$lib/server/db/schema/schema';
 import { eq } from 'drizzle-orm';
 import { error, fail } from '@sveltejs/kit';
@@ -112,5 +114,55 @@ export const actions = {
     const result = await db.insert(investmentType).values(dbInvestmentType).returning();
 
     return { form, uuid: result[0].id, message: 'Investment type created successfully' };
+  },
+
+  investment: async ({ request, locals }) => {
+    const user = locals.user;
+
+    if (!user) {
+      return fail(401, { message: 'Unauthorized' });
+    }
+
+    const form = await superValidate(request, zod4(investmentSchema));
+
+    if (!form.valid) {
+      return fail(400, { form });
+    }
+
+    // Process the valid form data
+    const newInvestment = form.data;
+
+    const scenario = await db.query.scenario.findFirst({
+      where: eq(scenarioSchema.id, newInvestment.scenarioId)
+    });
+
+    if (!scenario) {
+      return fail(404, { message: 'Scenario not found' });
+    }
+
+    if (scenario.userId !== user.id) {
+      return fail(403, { message: 'Forbidden' });
+    }
+
+    const it = await db.query.investmentType.findFirst({
+      where: eq(investmentType.id, newInvestment.investmentTypeId)
+    });
+
+    if (!it || it.scenarioId !== scenario.id) {
+      return fail(400, { message: 'Invalid investment type' });
+    }
+
+    const dbInvestment: Omit<Investment, 'id'> = {
+      scenarioId: newInvestment.scenarioId,
+      name: newInvestment.name,
+      currentValue: newInvestment.currentValue,
+      accountTaxStatus: newInvestment.accountTaxStatus,
+      investmentTypeId: newInvestment.investmentTypeId
+    };
+
+    // Save the new investment to the database
+    const result = await db.insert(investment).values(dbInvestment).returning();
+
+    return { form, uuid: result[0].id, message: 'Investment created successfully' };
   }
 } satisfies Actions;

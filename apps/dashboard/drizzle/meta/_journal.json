@@ -29,6 +29,13 @@
       "when": 1757191069864,
       "tag": "0003_young_george_stacy",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1757210068564,
+      "tag": "0004_wealthy_franklin_richards",
+      "breakpoints": true
     }
   ]
 }
