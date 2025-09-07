@@ -20,7 +20,7 @@
     <InvestmentTypeModal {params} {data} {form} onSubmit={addInvestmentType} />
   </div>
   {#if investmentTypes.length > 0}
-    <ScrollArea class="h-128 w-full rounded border">
+    <ScrollArea class="h-256 w-full rounded border">
       <ul class="flex flex-col gap-4 p-4">
         {#each investmentTypes as type (type.id)}
           <InvestmentTypeDisplayCard investmentType={type} />

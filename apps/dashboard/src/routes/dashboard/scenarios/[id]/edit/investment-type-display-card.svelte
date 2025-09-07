@@ -56,7 +56,7 @@
   }
 
   function formatExpenseRatio(ratio: string): string {
-    return `${(parseFloat(ratio) * 100).toFixed(3)}%`;
+    return `${parseFloat(ratio).toFixed(2)}%`;
   }
 </script>
 
@@ -71,7 +71,7 @@
     <div class="flex items-start justify-between">
       <div class="flex-1">
         <div class="mb-2 flex items-center gap-2">
-          <Card.Title class="text-lg">{investmentType.name} {investmentType.id}</Card.Title>
+          <Card.Title class="text-lg">{investmentType.name}</Card.Title>
           <div class="flex gap-1">
             {#if investmentType.isCash}
               <Badge variant="default" class="bg-green-100 text-green-800 hover:bg-green-100">
