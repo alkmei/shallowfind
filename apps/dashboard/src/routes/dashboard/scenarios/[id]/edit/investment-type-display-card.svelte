@@ -60,13 +60,7 @@
   }
 </script>
 
-<Card.Root
-  class="border-l-4 {investmentType.isCash
-    ? 'border-l-green-500'
-    : investmentType.taxability === 'tax_exempt'
-      ? 'border-l-blue-500'
-      : 'border-l-gray-300'}"
->
+<Card.Root>
   <Card.Header class="pb-3">
     <div class="flex items-start justify-between">
       <div class="flex-1">
