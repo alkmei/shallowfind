@@ -9,6 +9,7 @@
   import FinancialSettingsForm from './financial-settings-form.svelte';
   import { Separator } from '$lib/components/ui/separator';
   import InvestmentForm from './investment-form.svelte';
+  import EventSeriesForm from './event-series-form.svelte';
 
   let { data, params, form: formProp }: PageProps = $props();
 
@@ -32,5 +33,7 @@
   <FinancialSettingsForm {form} />
   <Separator />
   <InvestmentForm {data} {params} form={formProp} />
+  <Separator />
+  <EventSeriesForm {data} {params} form={formProp} />
   <SuperDebug data={$formData} />
 </form>

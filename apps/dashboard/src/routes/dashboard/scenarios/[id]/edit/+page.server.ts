@@ -12,6 +12,7 @@ import { error, fail } from '@sveltejs/kit';
 import { superValidate } from 'sveltekit-superforms';
 import { zod4 } from 'sveltekit-superforms/adapters';
 import scenarioFormSchema, {
+  eventSeriesCreateSchema,
   investmentSchema,
   investmentTypeSchema,
   type ScenarioForm
@@ -64,6 +65,10 @@ export const load: PageServerLoad = async ({ params }) => {
       zod4(investmentTypeSchema)
     ),
     investmentForm: await superValidate({ scenarioId: scenario.id }, zod4(investmentSchema)),
+    eventSeriesForm: await superValidate(
+      { scenarioId: scenario.id },
+      zod4(eventSeriesCreateSchema)
+    ),
     scenario
   };
 };

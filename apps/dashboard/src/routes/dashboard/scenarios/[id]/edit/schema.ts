@@ -249,7 +249,7 @@ export const strategySchema = z.object({
   name: z.string().min(1).max(255),
   description: z.string().max(1000).default(''),
   isActive: z.boolean().default(true),
-  ordering: z.array(z.string().uuid()).min(1, 'Strategy must include at least one item')
+  ordering: z.array(z.uuid()).min(1, 'Strategy must include at least one item')
 });
 
 export const strategyCreateSchema = z.object({
