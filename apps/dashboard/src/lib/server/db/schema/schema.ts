@@ -134,9 +134,7 @@ export const investment = pgTable('investment', {
 
   name: varchar('name', { length: 255 }).notNull(),
   currentValue: decimal('current_value').notNull().default('0'),
-  accountTaxStatus: accountTaxStatusEnum('account_tax_status').notNull(),
-
-  orderIndex: integer('order_index').notNull()
+  accountTaxStatus: accountTaxStatusEnum('account_tax_status').notNull()
 });
 
 export const investmentRelations = relations(investment, ({ one }) => ({

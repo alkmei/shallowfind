@@ -4,6 +4,7 @@
   import type { PageProps } from './$types';
   import ScrollArea from '$lib/components/ui/scroll-area/scroll-area.svelte';
   import InvestmentTypeDisplayCard from './investment-type-display-card.svelte';
+  import InvestmentModal from './investment-modal.svelte';
 
   let { params, data, form }: PageProps = $props();
 
@@ -37,6 +38,6 @@
 <div class="flex flex-col gap-3">
   <div class="flex justify-between">
     <h2 class="grow text-xl font-bold">Investments</h2>
-    <!-- <InvestmentModal {form} {investmentTypes} /> -->
+    <InvestmentModal {params} {data} {form} />
   </div>
 </div>

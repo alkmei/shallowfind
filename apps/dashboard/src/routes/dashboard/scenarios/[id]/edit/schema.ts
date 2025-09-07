@@ -164,11 +164,11 @@ export const investmentTypeSchema = z.object({
 
 // Investments (separate form/API)
 export const investmentSchema = z.object({
+  scenarioId: z.uuid(),
   name: z.string().min(1).max(255),
   investmentTypeId: z.uuid(),
-  currentValue: z.number().min(0),
-  accountTaxStatus: z.enum(ACCOUNT_TAX_STATUS_VALUES),
-  orderIndex: z.number().int().min(0).default(0)
+  currentValue: z.string().regex(nonNegativeDecimalRegex),
+  accountTaxStatus: z.enum(ACCOUNT_TAX_STATUS_VALUES)
 });
 
 export const investmentsSchema = z.object({

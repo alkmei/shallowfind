@@ -9,7 +9,11 @@ import { eq } from 'drizzle-orm';
 import { error, fail } from '@sveltejs/kit';
 import { superValidate } from 'sveltekit-superforms';
 import { zod4 } from 'sveltekit-superforms/adapters';
-import scenarioFormSchema, { investmentTypeSchema, type ScenarioForm } from './schema';
+import scenarioFormSchema, {
+  investmentSchema,
+  investmentTypeSchema,
+  type ScenarioForm
+} from './schema';
 
 export const load: PageServerLoad = async ({ params }) => {
   const id = params.id;
@@ -31,7 +35,6 @@ export const load: PageServerLoad = async ({ params }) => {
 
   const isMarried = scenario.scenarioType === 'married_couple';
 
-  // FIXME: Figure out why refreshes reset the form even with superValidate
   const scenarioData: ScenarioForm = {
     title: scenario.title,
     description: scenario.description,
@@ -58,6 +61,7 @@ export const load: PageServerLoad = async ({ params }) => {
       { scenarioId: scenario.id },
       zod4(investmentTypeSchema)
     ),
+    investmentForm: await superValidate({ scenarioId: scenario.id }, zod4(investmentSchema)),
     scenario
   };
 };
