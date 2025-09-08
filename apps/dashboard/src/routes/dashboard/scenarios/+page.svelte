@@ -2,14 +2,18 @@
   import ScenarioCard from '$lib/components/scenario-card.svelte';
   import type { PageData } from './$types';
   import DraftScenarioDialog from './draft-scenario-dialog.svelte';
+  import ImportScenarioDialog from './import-scenario-dialog.svelte';
 
   let { data }: { data: PageData } = $props();
 </script>
 
-<h1 class="text-2xl">My Scenarios</h1>
+<h1 class="mb-2 text-2xl">My Scenarios</h1>
 
 {#if data.form}
-  <DraftScenarioDialog {data} />
+  <div class="mb-2">
+    <DraftScenarioDialog {data} />
+    <ImportScenarioDialog />
+  </div>
 {/if}
 
 <ul class="grid grid-cols-2 gap-4 lg:grid-cols-4">
