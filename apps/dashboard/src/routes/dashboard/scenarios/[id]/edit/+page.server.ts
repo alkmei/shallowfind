@@ -71,7 +71,17 @@ export const load: PageServerLoad = async ({ params }) => {
       {
         scenarioId: scenario.id,
         eventSeries: {
-          startYear: { type: 'fixed', value: 2025 }
+          name: '',
+          description: '',
+          type: 'income' as const,
+          startYear: { type: 'fixed', value: 2025 },
+          duration: {
+            type: 'fixed',
+            value: 10
+          },
+          startTimingType: 'distribution' as const,
+          referenceEventSeriesId: undefined,
+          initialAmount: 0
         }
       },
       zod4(eventSeriesCreateSchema)
