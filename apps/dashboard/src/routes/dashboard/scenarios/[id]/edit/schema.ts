@@ -210,7 +210,7 @@ const expenseEventSeriesSchema = baseEventSeriesSchema.extend({
 
 const investEventSeriesSchema = baseEventSeriesSchema.extend({
   type: z.literal('invest'),
-  assetAllocation: z.record(z.string(), z.number().min(0).max(100)),
+  assetAllocation: z.record(z.uuid(), z.number().min(0).max(100)),
   isGlidePath: z.boolean().default(false),
   initialAllocation: z.record(z.string(), z.number().min(0).max(100)).optional(),
   finalAllocation: z.record(z.string(), z.number().min(0).max(100)).optional(),
@@ -219,7 +219,7 @@ const investEventSeriesSchema = baseEventSeriesSchema.extend({
 
 const rebalanceEventSeriesSchema = baseEventSeriesSchema.extend({
   type: z.literal('rebalance'),
-  assetAllocation: z.record(z.string(), z.number().min(0).max(100)),
+  assetAllocation: z.record(z.uuid(), z.number().min(0).max(100)),
   isGlidePath: z.boolean().default(false),
   initialAllocation: z.record(z.string(), z.number().min(0).max(100)).optional(),
   finalAllocation: z.record(z.string(), z.number().min(0).max(100)).optional(),

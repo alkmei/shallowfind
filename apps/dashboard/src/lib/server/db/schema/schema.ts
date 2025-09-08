@@ -92,8 +92,8 @@ export const scenario = pgTable('scenario', {
   updatedAt: timestamp('updated_at').defaultNow()
 });
 
-export const scenarioRelations = relations(scenario, ({ many }) => ({
-  user: many(user),
+export const scenarioRelations = relations(scenario, ({ one, many }) => ({
+  user: one(user, { fields: [scenario.userId], references: [user.id] }),
   investmentTypes: many(investmentType),
   investments: many(investment),
   eventSeries: many(eventSeries),
@@ -174,7 +174,7 @@ export const eventSeries = pgTable('event_series', {
   isDiscretionary: boolean('is_discretionary').default(false), // For expense event
 
   // Invest/Rebalance fields
-  assetAllocation: jsonb('asset_allocation').$type<Record<number, number>>(), // Percentage per investment type ID
+  assetAllocation: jsonb('asset_allocation').$type<Record<string, number>>(), // Percentage per investment type ID
   isGlidePath: boolean('is_glide_path').default(false),
   initialAllocation: jsonb('initial_allocation').$type<Record<number, number>>(), // For glide path
   finalAllocation: jsonb('final_allocation').$type<Record<number, number>>(), // For glide path
@@ -205,7 +205,7 @@ export const strategy = pgTable('strategy', {
 
   // Ordering configuration - JSONField containing ordered list of investment IDs
   // or event series IDs depending on strategy type
-  ordering: jsonb('ordering').$type<number[]>()
+  ordering: jsonb('ordering').$type<string[]>()
 });
 
 export const strategyRelations = relations(strategy, ({ one }) => ({

@@ -11,12 +11,10 @@
   import * as Form from '$lib/components/ui/form';
   import * as Tabs from '$lib/components/ui/tabs';
   import ScrollArea from '$lib/components/ui/scroll-area/scroll-area.svelte';
-  import { Switch } from '$lib/components/ui/switch';
-  import Separator from '$lib/components/ui/separator/separator.svelte';
-  import { PlusCircle, Trash2, Plus } from '@lucide/svelte';
+  import { Plus } from '@lucide/svelte';
   import type { EventSeries } from '$lib/server/db/schema/schema';
   import type { PageProps } from './$types';
-  import { superForm } from 'sveltekit-superforms';
+  import SuperDebug, { superForm } from 'sveltekit-superforms';
   import { zod4Client } from 'sveltekit-superforms/adapters';
   import { eventSeriesCreateSchema } from './schema';
 
@@ -150,7 +148,13 @@
                 <Form.Control>
                   <Form.Label>Start Timing Type</Form.Label>
                   <Select.Root bind:value={$formData.eventSeries.startTimingType} type="single">
-                    <Select.Trigger>Select timing type</Select.Trigger>
+                    <Select.Trigger
+                      >{$formData.eventSeries.startTimingType
+                        ? startTimingOptions.find(
+                            (option) => option.value === $formData.eventSeries.startTimingType
+                          )?.label
+                        : 'Select timing type'}</Select.Trigger
+                    >
                     <Select.Content>
                       {#each startTimingOptions as option}
                         <Select.Item value={option.value}>{option.label}</Select.Item>
@@ -614,6 +618,7 @@
               </Card.Content>
             </Card.Root>
           {/if}
+          <SuperDebug data={eventSeriesForm.form} />
         </div>
       </ScrollArea>
       <Dialog.Footer class="mt-6 flex justify-end gap-2">

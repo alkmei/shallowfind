@@ -5,7 +5,9 @@ import {
   type InvestmentType,
   investmentType,
   type Investment,
-  investment
+  investment,
+  type EventSeries,
+  eventSeries
 } from '$lib/server/db/schema/schema';
 import { eq } from 'drizzle-orm';
 import { error, fail } from '@sveltejs/kit';
@@ -66,7 +68,12 @@ export const load: PageServerLoad = async ({ params }) => {
     ),
     investmentForm: await superValidate({ scenarioId: scenario.id }, zod4(investmentSchema)),
     eventSeriesForm: await superValidate(
-      { scenarioId: scenario.id },
+      {
+        scenarioId: scenario.id,
+        eventSeries: {
+          startYear: { type: 'fixed', value: 2025 }
+        }
+      },
       zod4(eventSeriesCreateSchema)
     ),
     scenario
@@ -169,5 +176,182 @@ export const actions = {
     const result = await db.insert(investment).values(dbInvestment).returning();
 
     return { form, uuid: result[0].id, message: 'Investment created successfully' };
+  },
+
+  eventSeries: async ({ request, locals }) => {
+    const user = locals.user;
+    if (!user) {
+      return fail(401, { message: 'Unauthorized' });
+    }
+
+    const form = await superValidate(request, zod4(eventSeriesCreateSchema));
+    if (!form.valid) {
+      return fail(400, { form });
+    }
+
+    const { data } = form;
+
+    // Verify scenario exists and user owns it
+    const scenario = await db.query.scenario.findFirst({
+      where: eq(scenarioSchema.id, data.scenarioId)
+    });
+
+    if (!scenario) {
+      return fail(404, { message: 'Scenario not found' });
+    }
+
+    if (scenario.userId !== user.id) {
+      return fail(403, { message: 'Forbidden' });
+    }
+
+    // Validate reference event series if provided
+    if (data.eventSeries.referenceEventSeriesId) {
+      const refEventSeries = await db.query.eventSeries.findFirst({
+        where: eq(eventSeries.id, data.eventSeries.referenceEventSeriesId)
+      });
+
+      if (!refEventSeries || refEventSeries.scenarioId !== scenario.id) {
+        return fail(400, { message: 'Invalid reference event series' });
+      }
+    }
+
+    // Build the database record
+    const dbEventSeries: Omit<EventSeries, 'id'> = {
+      scenarioId: data.scenarioId,
+      name: data.eventSeries.name,
+      description: data.eventSeries.description,
+      type: data.eventSeries.type,
+      startYear: data.eventSeries.startYear || null, // Start year should not be null when using distribution
+      duration: data.eventSeries.duration,
+      referenceEventSeriesId: data.eventSeries.referenceEventSeriesId || null,
+      startTimingType: data.eventSeries.startTimingType,
+      isActive: data.eventSeries.isActive,
+      orderIndex: data.eventSeries.orderIndex,
+
+      // Income/Expense specific fields
+      initialAmount: null,
+      annualChange: null,
+      inflationAdjusted: null,
+      userPercentage: null,
+      isSocialSecurity: null,
+      isDiscretionary: null,
+
+      // Invest/Rebalance specific fields
+      assetAllocation: null,
+      isGlidePath: null,
+      initialAllocation: null,
+      finalAllocation: null,
+      maximumCash: null,
+      targetTaxStatus: null
+    };
+
+    // Set type-specific fields based on discriminated union
+    switch (data.eventSeries.type) {
+      case 'income':
+        dbEventSeries.initialAmount = data.eventSeries.initialAmount.toString();
+        dbEventSeries.annualChange = data.eventSeries.annualChange;
+        dbEventSeries.inflationAdjusted = data.eventSeries.inflationAdjusted;
+        dbEventSeries.userPercentage = data.eventSeries.userPercentage?.toString() || null;
+        dbEventSeries.isSocialSecurity = data.eventSeries.isSocialSecurity;
+        break;
+
+      case 'expense':
+        dbEventSeries.initialAmount = data.eventSeries.initialAmount.toString();
+        dbEventSeries.annualChange = data.eventSeries.annualChange;
+        dbEventSeries.inflationAdjusted = data.eventSeries.inflationAdjusted;
+        dbEventSeries.userPercentage = data.eventSeries.userPercentage?.toString() || null;
+        dbEventSeries.isDiscretionary = data.eventSeries.isDiscretionary;
+        break;
+
+      case 'invest': {
+        // Validate that asset allocation percentages sum to 100
+        const investTotal = Object.values(data.eventSeries.assetAllocation).reduce(
+          (sum, pct) => sum + pct,
+          0
+        );
+        if (Math.abs(investTotal - 100) > 0.01) {
+          return fail(400, { message: 'Asset allocation percentages must sum to 100%' });
+        }
+
+        dbEventSeries.assetAllocation = data.eventSeries.assetAllocation;
+        dbEventSeries.isGlidePath = data.eventSeries.isGlidePath;
+        dbEventSeries.initialAllocation = data.eventSeries.initialAllocation || null;
+        dbEventSeries.finalAllocation = data.eventSeries.finalAllocation || null;
+        dbEventSeries.maximumCash = data.eventSeries.maximumCash.toString();
+
+        // Validate glide path allocations if using glide path
+        if (data.eventSeries.isGlidePath) {
+          if (!data.eventSeries.initialAllocation || !data.eventSeries.finalAllocation) {
+            return fail(400, { message: 'Initial and final allocations required for glide path' });
+          }
+
+          const initialTotal = Object.values(data.eventSeries.initialAllocation).reduce(
+            (sum, pct) => sum + pct,
+            0
+          );
+          const finalTotal = Object.values(data.eventSeries.finalAllocation).reduce(
+            (sum, pct) => sum + pct,
+            0
+          );
+
+          if (Math.abs(initialTotal - 100) > 0.01 || Math.abs(finalTotal - 100) > 0.01) {
+            return fail(400, { message: 'Glide path allocations must each sum to 100%' });
+          }
+        }
+        break;
+      }
+
+      case 'rebalance': {
+        // Validate that asset allocation percentages sum to 100
+        const rebalanceTotal = Object.values(data.eventSeries.assetAllocation).reduce(
+          (sum, pct) => sum + pct,
+          0
+        );
+        if (Math.abs(rebalanceTotal - 100) > 0.01) {
+          return fail(400, { message: 'Asset allocation percentages must sum to 100%' });
+        }
+
+        dbEventSeries.assetAllocation = data.eventSeries.assetAllocation;
+        dbEventSeries.isGlidePath = data.eventSeries.isGlidePath;
+        dbEventSeries.initialAllocation = data.eventSeries.initialAllocation || null;
+        dbEventSeries.finalAllocation = data.eventSeries.finalAllocation || null;
+        dbEventSeries.targetTaxStatus = data.eventSeries.targetTaxStatus;
+
+        // Validate glide path allocations if using glide path
+        if (data.eventSeries.isGlidePath) {
+          if (!data.eventSeries.initialAllocation || !data.eventSeries.finalAllocation) {
+            return fail(400, { message: 'Initial and final allocations required for glide path' });
+          }
+
+          const initialTotal = Object.values(data.eventSeries.initialAllocation).reduce(
+            (sum, pct) => sum + pct,
+            0
+          );
+          const finalTotal = Object.values(data.eventSeries.finalAllocation).reduce(
+            (sum, pct) => sum + pct,
+            0
+          );
+
+          if (Math.abs(initialTotal - 100) > 0.01 || Math.abs(finalTotal - 100) > 0.01) {
+            return fail(400, { message: 'Glide path allocations must each sum to 100%' });
+          }
+        }
+        break;
+      }
+    }
+
+    try {
+      // Save the new event series to the database
+      const result = await db.insert(eventSeries).values(dbEventSeries).returning();
+
+      return {
+        form,
+        uuid: result[0].id,
+        message: 'Event series created successfully'
+      };
+    } catch (error) {
+      console.error('Failed to create event series:', error);
+      return fail(500, { message: 'Failed to create event series' });
+    }
   }
 } satisfies Actions;
