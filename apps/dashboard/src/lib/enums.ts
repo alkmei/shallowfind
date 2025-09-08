@@ -36,12 +36,7 @@ export const STRATEGY_TYPE_VALUES = [
 ] as const;
 export type StrategyType = (typeof STRATEGY_TYPE_VALUES)[number];
 
-export const START_TIMING_TYPE_VALUES = [
-  'same_year',
-  'year_after',
-  'event_series',
-  'distribution'
-] as const;
+export const START_TIMING_TYPE_VALUES = ['same_year', 'year_after', 'distribution'] as const;
 export type StartTimingType = (typeof START_TIMING_TYPE_VALUES)[number];
 
 export const SHARE_PERMISSION_VALUES = ['ro', 'rw'] as const;
