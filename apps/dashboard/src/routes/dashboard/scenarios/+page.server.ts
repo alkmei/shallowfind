@@ -14,7 +14,8 @@ import {
   type Distribution,
   type EventSeries,
   type Investment,
-  type InvestmentType
+  type InvestmentType,
+  type Strategy
 } from '$lib/server/db/schema/schema';
 import * as YAML from 'yaml';
 
@@ -228,7 +229,7 @@ export const actions: Actions = {
 
         // Create strategies
         if (yamlData.spendingStrategy) {
-          const spendingStrategyRecord = {
+          const spendingStrategyRecord: Omit<Strategy, 'id'> = {
             scenarioId,
             type: 'spending',
             name: 'Spending Strategy',
@@ -244,7 +245,7 @@ export const actions: Actions = {
         }
 
         if (yamlData.expenseWithdrawalStrategy) {
-          const withdrawalStrategyRecord = {
+          const withdrawalStrategyRecord: Omit<Strategy, 'id'> = {
             scenarioId,
             type: 'expense_withdrawal',
             name: 'Expense Withdrawal Strategy',
@@ -258,7 +259,7 @@ export const actions: Actions = {
         }
 
         if (yamlData.RMDStrategy) {
-          const rmdStrategyRecord = {
+          const rmdStrategyRecord: Omit<Strategy, 'id'> = {
             scenarioId,
             type: 'rmd',
             name: 'RMD Strategy',
@@ -272,7 +273,7 @@ export const actions: Actions = {
         }
 
         if (yamlData.RothConversionStrategy) {
-          const rothStrategyRecord = {
+          const rothStrategyRecord: Omit<Strategy, 'id'> = {
             scenarioId,
             type: 'roth_conversion',
             name: 'Roth Conversion Strategy',
