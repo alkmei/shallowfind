@@ -103,7 +103,7 @@ export const actions: Actions = {
         const [newScenario] = await tx
           .insert(scenario)
           .values({
-            // @ts-ignore IDE error
+            // @ts-expect-error IDE error
             userId: user.id,
             title: scenarioData.name,
             description: scenarioData.name, // Using name as description since YAML doesn't have separate description
@@ -114,7 +114,7 @@ export const actions: Actions = {
             userLifeExpectancy: scenarioData.lifeExpectancy[0],
             spouseLifeExpectancy: scenarioData.lifeExpectancy[1] || null,
             financialGoal: scenarioData.financialGoal.toString(),
-            stateOfResidence: scenarioData.residenceState.toUpperCase() as any, // Cast to match enum
+            stateOfResidence: scenarioData.residenceState.toUpperCase(), // Cast to match enum
             inflationAssumption: scenarioData.inflationAssumption,
             annualRetirementContributionLimit: scenarioData.afterTaxContributionLimit.toString(),
             rothOptimizerEnabled: scenarioData.RothConversionOpt,
@@ -130,7 +130,7 @@ export const actions: Actions = {
           const [newInvestmentType] = await tx
             .insert(investmentType)
             .values({
-              // @ts-ignore IDE error
+              // @ts-expect-error IDE error
               scenarioId: newScenario.id,
               name: invType.name,
               description: invType.description,
@@ -185,7 +185,7 @@ export const actions: Actions = {
           const [newEventSeries] = await tx
             .insert(eventSeries)
             .values({
-              // @ts-ignore IDE error
+              // @ts-expect-error IDE error
               scenarioId: newScenario.id,
               name: es.name,
               description: es.name, // Using name as description
@@ -216,31 +216,31 @@ export const actions: Actions = {
               assetAllocation:
                 'assetAllocation' in es
                   ? // Convert investment IDs to database IDs
-                  Object.fromEntries(
-                    Object.entries(es.assetAllocation).map(([invId, percentage]) => [
-                      investmentMap.get(invId) || invId,
-                      percentage
-                    ])
-                  )
+                    Object.fromEntries(
+                      Object.entries(es.assetAllocation).map(([invId, percentage]) => [
+                        investmentMap.get(invId) || invId,
+                        percentage
+                      ])
+                    )
                   : null,
               isGlidePath: 'glidePath' in es ? es.glidePath : false,
               initialAllocation:
                 'assetAllocation' in es
                   ? Object.fromEntries(
-                    Object.entries(es.assetAllocation).map(([invId, percentage]) => [
-                      investmentMap.get(invId) || invId,
-                      percentage
-                    ])
-                  )
+                      Object.entries(es.assetAllocation).map(([invId, percentage]) => [
+                        investmentMap.get(invId) || invId,
+                        percentage
+                      ])
+                    )
                   : null,
               finalAllocation:
                 'assetAllocation2' in es && es.assetAllocation2
                   ? Object.fromEntries(
-                    Object.entries(es.assetAllocation2).map(([invId, percentage]) => [
-                      investmentMap.get(invId) || invId,
-                      percentage
-                    ])
-                  )
+                      Object.entries(es.assetAllocation2).map(([invId, percentage]) => [
+                        investmentMap.get(invId) || invId,
+                        percentage
+                      ])
+                    )
                   : null,
               maximumCash: 'maxCash' in es ? es.maxCash?.toString() : null,
               targetTaxStatus: es.type === 'rebalance' ? 'non_retirement' : null // Default for rebalance
@@ -292,7 +292,7 @@ export const actions: Actions = {
         // Add Roth conversion strategy if enabled
         if (scenarioData.RothConversionOpt && scenarioData.RothConversionStrategy) {
           strategies.push({
-            // @ts-ignore IDE error
+            // @ts-expect-error IDE error
             type: 'roth_conversion' as const,
             name: 'Roth Conversion Strategy',
             description: 'Order of pre-tax investments for Roth conversion',
