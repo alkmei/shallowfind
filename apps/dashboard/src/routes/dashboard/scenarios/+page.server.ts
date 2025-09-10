@@ -27,7 +27,7 @@ export const load: PageServerLoad = async (event) => {
 };
 
 export const actions: Actions = {
-  default: async (event) => {
+  create: async (event) => {
     const form = await superValidate(event, zod4(createScenarioSchema));
     const user = event.locals.user;
     if (!user) {
@@ -106,14 +106,14 @@ export const actions: Actions = {
             userId: user.id,
             title: scenarioData.name,
             description: scenarioData.name, // Using name as description since YAML doesn't have separate description
-            scenarioType: scenarioData.maritalStatus === 'couple' ? 'couple' : 'individual',
+            scenarioType: scenarioData.maritalStatus === 'couple' ? 'married_couple' : 'individual',
             scenarioStatus: 'draft',
             userBirthYear: scenarioData.birthYears[0],
             spouseBirthYear: scenarioData.birthYears[1] || null,
             userLifeExpectancy: scenarioData.lifeExpectancy[0],
             spouseLifeExpectancy: scenarioData.lifeExpectancy[1] || null,
             financialGoal: scenarioData.financialGoal.toString(),
-            stateOfResidence: scenarioData.residenceState.toLowerCase() as any, // Cast to match enum
+            stateOfResidence: scenarioData.residenceState.toUpperCase() as any, // Cast to match enum
             inflationAssumption: scenarioData.inflationAssumption,
             annualRetirementContributionLimit: scenarioData.afterTaxContributionLimit.toString(),
             rothOptimizerEnabled: scenarioData.RothConversionOpt,
@@ -193,10 +193,10 @@ export const actions: Actions = {
               startTimingType:
                 typeof es.start === 'object' && 'type' in es.start
                   ? es.start.type === 'startWith'
-                    ? 'start_with'
+                    ? 'same_year'
                     : es.start.type === 'startAfter'
-                      ? 'start_after'
-                      : null
+                      ? 'year_after'
+                      : 'distribution'
                   : null,
               isActive: true,
               orderIndex: i,
@@ -213,31 +213,31 @@ export const actions: Actions = {
               assetAllocation:
                 'assetAllocation' in es
                   ? // Convert investment IDs to database IDs
-                    Object.fromEntries(
-                      Object.entries(es.assetAllocation).map(([invId, percentage]) => [
-                        investmentMap.get(invId) || invId,
-                        percentage
-                      ])
-                    )
+                  Object.fromEntries(
+                    Object.entries(es.assetAllocation).map(([invId, percentage]) => [
+                      investmentMap.get(invId) || invId,
+                      percentage
+                    ])
+                  )
                   : null,
               isGlidePath: 'glidePath' in es ? es.glidePath : false,
               initialAllocation:
                 'assetAllocation' in es
                   ? Object.fromEntries(
-                      Object.entries(es.assetAllocation).map(([invId, percentage]) => [
-                        investmentMap.get(invId) || invId,
-                        percentage
-                      ])
-                    )
+                    Object.entries(es.assetAllocation).map(([invId, percentage]) => [
+                      investmentMap.get(invId) || invId,
+                      percentage
+                    ])
+                  )
                   : null,
               finalAllocation:
                 'assetAllocation2' in es && es.assetAllocation2
                   ? Object.fromEntries(
-                      Object.entries(es.assetAllocation2).map(([invId, percentage]) => [
-                        investmentMap.get(invId) || invId,
-                        percentage
-                      ])
-                    )
+                    Object.entries(es.assetAllocation2).map(([invId, percentage]) => [
+                      investmentMap.get(invId) || invId,
+                      percentage
+                    ])
+                  )
                   : null,
               maximumCash: 'maxCash' in es ? es.maxCash?.toString() : null,
               targetTaxStatus: es.type === 'rebalance' ? 'non_retirement' : null // Default for rebalance
