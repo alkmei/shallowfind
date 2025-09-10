@@ -1,5 +1,6 @@
 from enum import Enum
-from typing import List, Optional, Dict, Union
+from typing import List, Literal, Optional, Dict, Union
+from typing_extensions import Annotated
 from pydantic import BaseModel, Field, UUID4
 from datetime import datetime
 from decimal import Decimal
@@ -51,20 +52,20 @@ class StrategyType(str, Enum):
     ROTH = 'roth'
 
 class NormalDistribution(BaseModel):
-    type: str = Field('normal', frozen=True)
+    type: Literal['normal'] 
     mean: float
     stdev: float
 
 class FixedDistribution(BaseModel):
-    type: str = Field('fixed', frozen=True)
+    type: Literal['fixed']
     value: float
 
 class UniformDistribution(BaseModel):
-    type: str = Field('uniform', frozen=True)
+    type: Literal['uniform']
     min: float
     max: float
 
-Distribution = Union[NormalDistribution, FixedDistribution, UniformDistribution]
+Distribution = Annotated[Union[NormalDistribution, FixedDistribution, UniformDistribution], Field(discriminator='type')]
 
 class InvestmentType(BaseModel):
     id: UUID4
@@ -138,7 +139,7 @@ class Scenario(BaseModel):
     scenario_type: ScenarioType
     scenario_status: ScenarioStatus = ScenarioStatus.DRAFT
     # Personal info
-    user_birth_year: Optional[int]
+    user_birth_year: int
     spouse_birth_year: Optional[int]
     user_life_expectancy: Optional[Distribution]
     spouse_life_expectancy: Optional[Distribution]

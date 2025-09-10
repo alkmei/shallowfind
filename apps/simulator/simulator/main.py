@@ -1,12 +1,10 @@
 import numpy as np
 from decimal import Decimal
-from typing import List, Dict, Optional
+from typing import Dict, Optional
 from datetime import datetime
 from .model import (
-    Scenario, EventSeries, InvestmentType, Investment, Strategy,
-    Distribution, FixedDistribution, AccountTaxStatus,
-    EventSeriesType, SharePermission, ScenarioType, ScenarioStatus,
-    StartTimingType, StrategyType, InvestmentTaxability
+    Scenario, Distribution, FixedDistribution, AccountTaxStatus,
+    EventSeriesType, InvestmentTaxability
 )
 
 # Assume Pydantic models Scenario, EventSeries, InvestmentType, Investment, Strategy, Distribution etc. are imported
