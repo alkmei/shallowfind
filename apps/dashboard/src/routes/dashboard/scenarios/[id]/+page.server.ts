@@ -6,8 +6,16 @@ import type { PageServerLoad } from './$types';
 export const load: PageServerLoad = async ({ params }) => {
   const id = params.id;
 
-  const scenarios = await db.select().from(scenarioSchema).where(eq(scenarioSchema.id, id));
-  const scenario = scenarios[0];
+  const scenario = await db.query.scenario.findFirst({
+    where: eq(scenarioSchema.id, id),
+    with: {
+      investmentTypes: true,
+      investments: true,
+      eventSeries: true,
+      strategies: true,
+      sharedWith: true
+    }
+  });
 
   if (!scenario) {
     throw new Error('Scenario not found');

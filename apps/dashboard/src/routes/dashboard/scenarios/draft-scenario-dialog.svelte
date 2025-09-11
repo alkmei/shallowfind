@@ -32,7 +32,7 @@
       </Dialog.Description>
     </Dialog.Header>
 
-    <form method="POST" use:enhance>
+    <form method="POST" action="?/create" use:enhance>
       <Form.Field {form} name="name" class="mb-4">
         <Form.Control>
           {#snippet children({ props })}

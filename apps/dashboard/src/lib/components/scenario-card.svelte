@@ -1,17 +1,17 @@
 <script lang="ts">
-  import type { ScenarioResponse } from '$lib/api/scenario-management/scenarioManagerAPI.schemas';
   import { ClipboardPen, Edit } from '@lucide/svelte';
   import * as Card from './ui/card';
   import * as Tooltip from './ui/tooltip';
+  import type { Scenario } from '$lib/server/db/schema/schema';
 
-  let { scenario }: { scenario: ScenarioResponse } = $props();
+  let { scenario }: { scenario: Scenario } = $props();
 </script>
 
-<Card.Root class="transition-all hover:border-accent-foreground">
+<Card.Root class="hover:border-accent-foreground transition-all">
   <Card.Header>
     <Card.Title class="flex items-center justify-between">
-      <a class="hover:underline" href={`/dashboard/scenarios/${scenario.id}`}>{scenario.name}</a>
-      {#if scenario.status === 'Draft'}
+      <a class="hover:underline" href={`/dashboard/scenarios/${scenario.id}`}>{scenario.title}</a>
+      {#if scenario.scenarioStatus === 'draft'}
         <Tooltip.Root>
           <Tooltip.Trigger>
             <ClipboardPen class="opacity-40" strokeWidth={1} />

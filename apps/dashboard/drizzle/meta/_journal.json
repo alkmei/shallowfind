@@ -36,6 +36,13 @@
       "when": 1757210068564,
       "tag": "0004_wealthy_franklin_richards",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1757550458975,
+      "tag": "0005_low_stick",
+      "breakpoints": true
     }
   ]
 }

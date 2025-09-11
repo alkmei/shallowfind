@@ -2,7 +2,7 @@ import { fail, superValidate } from 'sveltekit-superforms';
 import { zod4 } from 'sveltekit-superforms/adapters';
 import type { Actions, PageServerLoad } from './$types';
 import { redirect } from '@sveltejs/kit';
-import { createScenarioSchema } from './schema';
+import { createScenarioSchema, YAMLScenarioSchema, type YAMLScenarioType } from './schema';
 import { db } from '$lib/server/db';
 import { eq } from 'drizzle-orm';
 import {
@@ -10,14 +10,9 @@ import {
   investment,
   investmentType,
   scenario,
-  strategy,
-  type Distribution,
-  type EventSeries,
-  type Investment,
-  type InvestmentType,
-  type Strategy
+  strategy
 } from '$lib/server/db/schema/schema';
-import * as YAML from 'yaml';
+import { parse as parseYaml } from 'yaml';
 
 export const load: PageServerLoad = async (event) => {
   const user = event.locals.user;
@@ -32,7 +27,7 @@ export const load: PageServerLoad = async (event) => {
 };
 
 export const actions: Actions = {
-  default: async (event) => {
+  create: async (event) => {
     const form = await superValidate(event, zod4(createScenarioSchema));
     const user = event.locals.user;
     if (!user) {
@@ -80,297 +75,274 @@ export const actions: Actions = {
     }
 
     try {
-      const text = await file.text();
-      const yamlData = YAML.parse(text);
+      // Read and parse YAML file
+      const yamlContent = await file.text();
+      const parsedYaml = parseYaml(yamlContent);
+
+      // Validate against Zod schema
+      const validationResult = YAMLScenarioSchema.safeParse(parsedYaml);
+
+      if (!validationResult.success) {
+        const errors = validationResult.error.issues.map((issue) => ({
+          path: issue.path.join('.'),
+          message: issue.message
+        }));
+
+        return fail(400, {
+          message: 'Invalid YAML format',
+          errors,
+          details: 'Please check the file format and try again.'
+        });
+      }
+
+      const scenarioData: YAMLScenarioType = validationResult.data;
 
       // Start database transaction
       const result = await db.transaction(async (tx) => {
-        // Create main scenario
-        const scenarioData = {
-          userId: user.id,
-          title: yamlData.name,
-          description: yamlData.description || '',
-          scenarioType:
-            yamlData.maritalStatus === 'couple'
-              ? ('married_couple' as const)
-              : ('individual' as const),
-          stateOfResidence: yamlData.residenceState,
-          userBirthYear: yamlData.birthYears[0],
-          spouseBirthYear: yamlData.birthYears[1] || null,
-          userLifeExpectancy: convertDistribution(yamlData.lifeExpectancy[0]),
-          spouseLifeExpectancy: yamlData.lifeExpectancy[1]
-            ? convertDistribution(yamlData.lifeExpectancy[1])
-            : null,
-          financialGoal: yamlData.financialGoal.toString(),
-          inflationAssumption: convertDistribution(yamlData.inflationAssumption),
-          annualRetirementContributionLimit: yamlData.afterTaxContributionLimit.toString(),
-          rothOptimizerEnabled: yamlData.RothConversionOpt,
-          rothOptimizerStartYear: yamlData.RothConversionStart,
-          rothOptimizerEndYear: yamlData.RothConversionEnd
-        };
+        // 1. Create the scenario record
+        const [newScenario] = await tx
+          .insert(scenario)
+          .values({
+            // @ts-expect-error IDE error
+            userId: user.id,
+            title: scenarioData.name,
+            description: scenarioData.name, // Using name as description since YAML doesn't have separate description
+            scenarioType: scenarioData.maritalStatus === 'couple' ? 'married_couple' : 'individual',
+            scenarioStatus: 'draft',
+            userBirthYear: scenarioData.birthYears[0],
+            spouseBirthYear: scenarioData.birthYears[1] || null,
+            userLifeExpectancy: scenarioData.lifeExpectancy[0],
+            spouseLifeExpectancy: scenarioData.lifeExpectancy[1] || null,
+            financialGoal: scenarioData.financialGoal.toString(),
+            stateOfResidence: scenarioData.residenceState.toUpperCase(), // Cast to match enum
+            inflationAssumption: scenarioData.inflationAssumption,
+            annualRetirementContributionLimit: scenarioData.afterTaxContributionLimit.toString(),
+            rothOptimizerEnabled: scenarioData.RothConversionOpt,
+            rothOptimizerStartYear: scenarioData.RothConversionStart || null,
+            rothOptimizerEndYear: scenarioData.RothConversionEnd || null
+          })
+          .returning();
 
-        const [newScenario] = await tx.insert(scenario).values(scenarioData).returning();
-        const scenarioId = newScenario.id;
+        // 2. Create investment types
+        const investmentTypeMap = new Map<string, string>(); // name -> id mapping
 
-        // Create investment types
-        const investmentTypeMap = new Map<string, string>();
-        for (const investmentTypeData of yamlData.investmentTypes) {
-          const investmentTypeRecord: Omit<InvestmentType, 'id'> = {
-            scenarioId,
-            taxability:
-              investmentTypeData.taxability === true
-                ? 'taxable'
-                : ('tax_exempt' as 'taxable' | 'tax_exempt'),
-            name: investmentTypeData.name,
-            description: investmentTypeData.description,
-            expectedAnnualReturn: convertDistribution(investmentTypeData.returnDistribution),
-            returnPercent: investmentTypeData.returnAmtOrPct === 'percent',
-            expenseRatio: investmentTypeData.expenseRatio.toString(),
-            expectedAnnualIncome: convertDistribution(investmentTypeData.incomeDistribution),
-            incomePercent: investmentTypeData.incomeAmtOrPct === 'percent',
-            isCash: investmentTypeData.name === 'cash'
-          };
-
-          const [insertedInvestmentType] = await tx
+        for (const invType of scenarioData.investmentTypes) {
+          const [newInvestmentType] = await tx
             .insert(investmentType)
-            .values(investmentTypeRecord)
+            .values({
+              // @ts-expect-error IDE error
+              scenarioId: newScenario.id,
+              name: invType.name,
+              description: invType.description,
+              expectedAnnualReturn: invType.returnDistribution,
+              returnPercent: invType.returnAmtOrPct === 'percent',
+              expenseRatio: invType.expenseRatio.toString(),
+              expectedAnnualIncome: invType.incomeDistribution,
+              incomePercent: invType.incomeAmtOrPct === 'percent',
+              taxability: invType.taxability ? 'taxable' : 'tax_exempt',
+              isCash: invType.name === 'cash'
+            })
             .returning();
 
-          investmentTypeMap.set(investmentTypeData.name, insertedInvestmentType.id);
+          investmentTypeMap.set(invType.name, newInvestmentType.id);
         }
 
-        // Create investments
-        const investmentMap = new Map<string, string>();
-        for (const investmentData of yamlData.investments) {
-          const investmentTypeId = investmentTypeMap.get(investmentData.investmentType);
+        // 3. Create investments
+        const investmentMap = new Map<string, string>(); // yaml id -> db id mapping
+
+        for (const inv of scenarioData.investments) {
+          const investmentTypeId = investmentTypeMap.get(inv.investmentType);
           if (!investmentTypeId) {
-            throw new Error(`Investment type not found: ${investmentData.investmentType}`);
+            throw new Error(`Investment type ${inv.investmentType} not found`);
           }
 
-          const taxStatus = convertTaxStatus(investmentData.taxStatus);
-          const investmentRecord: Omit<Investment, 'id'> = {
-            scenarioId,
-            investmentTypeId,
-            name: investmentData.id,
-            currentValue: investmentData.value.toString(),
-            accountTaxStatus: taxStatus
-          };
-
-          const [insertedInvestment] = await tx
+          const [newInvestment] = await tx
             .insert(investment)
-            .values(investmentRecord)
+            .values({
+              scenarioId: newScenario.id,
+              investmentTypeId,
+              name: inv.id, // Using YAML id as name
+              currentValue: inv.value.toString(),
+              accountTaxStatus:
+                inv.taxStatus === 'non-retirement'
+                  ? 'non_retirement'
+                  : inv.taxStatus === 'pre-tax'
+                    ? 'pre_tax_retirement'
+                    : 'after_tax_retirement'
+            })
             .returning();
 
-          investmentMap.set(investmentData.id, insertedInvestment.id);
+          investmentMap.set(inv.id, newInvestment.id);
         }
 
-        // Create event series
-        const eventSeriesMap = new Map<string, string>();
-        for (const eventData of yamlData.eventSeries) {
-          const eventRecord: Omit<EventSeries, 'id'> = {
-            scenarioId,
-            name: eventData.name,
-            description: eventData.description || '',
-            type: eventData.type,
-            startYear: convertStartDistribution(eventData.start),
-            duration: convertDistribution(eventData.duration),
-            startTimingType: getStartTimingType(eventData.start) ?? 'distribution', // FIXME: CCheck this
-            referenceEventSeriesId: getReferencedEventId(eventData.start, eventSeriesMap),
-            isActive: true,
-            orderIndex: 0,
-            // Type-specific fields
-            ...(eventData.type === 'income' || eventData.type === 'expense'
-              ? {
-                  initialAmount: eventData.initialAmount?.toString() || '0',
-                  annualChange: convertChangeDistribution(eventData),
-                  inflationAdjusted: eventData.inflationAdjusted || false,
-                  userPercentage: eventData.userFraction
-                    ? (eventData.userFraction * 100).toString()
-                    : null,
-                  isSocialSecurity: eventData.socialSecurity || false,
-                  isDiscretionary: eventData.discretionary || false
-                }
-              : {}),
-            ...(eventData.type === 'invest'
-              ? {
-                  assetAllocation: convertAssetAllocation(eventData.assetAllocation, investmentMap),
-                  isGlidePath: eventData.glidePath || false,
-                  initialAllocation: eventData.glidePath
-                    ? convertAssetAllocation(eventData.assetAllocation, investmentMap)
-                    : null,
-                  finalAllocation: eventData.glidePath
-                    ? convertAssetAllocation(eventData.assetAllocation2, investmentMap)
-                    : null,
-                  maximumCash: eventData.maxCash?.toString() || '0'
-                }
-              : {}),
-            ...(eventData.type === 'rebalance'
-              ? {
-                  assetAllocation: convertAssetAllocation(eventData.assetAllocation, investmentMap),
-                  isGlidePath: eventData.glidePath || false,
-                  initialAllocation: eventData.glidePath
-                    ? convertAssetAllocation(eventData.assetAllocation, investmentMap)
-                    : null,
-                  finalAllocation: eventData.glidePath
-                    ? convertAssetAllocation(eventData.assetAllocation2, investmentMap)
-                    : null,
-                  targetTaxStatus: 'non_retirement' // Default, could be inferred from asset allocation
-                }
-              : {})
-          };
+        // 4. Create event series
+        const eventSeriesMap = new Map<string, string>(); // name -> id mapping
 
-          const [insertedEventSeries] = await tx
+        // First pass: create all event series without references
+        for (let i = 0; i < scenarioData.eventSeries.length; i++) {
+          const es = scenarioData.eventSeries[i];
+
+          const [newEventSeries] = await tx
             .insert(eventSeries)
-            .values(eventRecord)
+            .values({
+              // @ts-expect-error IDE error
+              scenarioId: newScenario.id,
+              name: es.name,
+              description: es.name, // Using name as description
+              type: es.type,
+              startYear: typeof es.start === 'object' && 'value' in es.start ? es.start : null,
+              duration: es.duration,
+              referenceEventSeriesId: null, // Will update in second pass
+              startTimingType:
+                typeof es.start === 'object' && 'type' in es.start
+                  ? es.start.type === 'startWith'
+                    ? 'same_year'
+                    : es.start.type === 'startAfter'
+                      ? 'year_after'
+                      : 'distribution'
+                  : null,
+              isActive: true,
+              orderIndex: i,
+
+              // Income/Expense fields
+              initialAmount: 'initialAmount' in es ? es.initialAmount?.toString() : null,
+              annualChange: 'changeDistribution' in es ? es.changeDistribution : null,
+              inflationAdjusted: 'inflationAdjusted' in es ? es.inflationAdjusted : null,
+              userPercentage: 'userFraction' in es ? es.userFraction?.toString() : null,
+              isSocialSecurity: 'socialSecurity' in es ? es.socialSecurity : false,
+              isDiscretionary: 'discretionary' in es ? es.discretionary : false,
+
+              // Invest/Rebalance fields
+              assetAllocation:
+                'assetAllocation' in es
+                  ? // Convert investment IDs to database IDs
+                    Object.fromEntries(
+                      Object.entries(es.assetAllocation).map(([invId, percentage]) => [
+                        investmentMap.get(invId) || invId,
+                        percentage
+                      ])
+                    )
+                  : null,
+              isGlidePath: 'glidePath' in es ? es.glidePath : false,
+              initialAllocation:
+                'assetAllocation' in es
+                  ? Object.fromEntries(
+                      Object.entries(es.assetAllocation).map(([invId, percentage]) => [
+                        investmentMap.get(invId) || invId,
+                        percentage
+                      ])
+                    )
+                  : null,
+              finalAllocation:
+                'assetAllocation2' in es && es.assetAllocation2
+                  ? Object.fromEntries(
+                      Object.entries(es.assetAllocation2).map(([invId, percentage]) => [
+                        investmentMap.get(invId) || invId,
+                        percentage
+                      ])
+                    )
+                  : null,
+              maximumCash: 'maxCash' in es ? es.maxCash?.toString() : null,
+              targetTaxStatus: es.type === 'rebalance' ? 'non_retirement' : null // Default for rebalance
+            })
             .returning();
 
-          eventSeriesMap.set(eventData.name, insertedEventSeries.id);
+          eventSeriesMap.set(es.name, newEventSeries.id);
         }
 
-        // Create strategies
-        if (yamlData.spendingStrategy) {
-          const spendingStrategyRecord: Omit<Strategy, 'id'> = {
-            scenarioId,
-            type: 'spending',
+        // Second pass: update event series references
+        for (const es of scenarioData.eventSeries) {
+          if (typeof es.start === 'object' && 'eventSeries' in es.start) {
+            const referenceId = eventSeriesMap.get(es.start.eventSeries);
+            const currentId = eventSeriesMap.get(es.name);
+
+            if (referenceId && currentId) {
+              await tx
+                .update(eventSeries)
+                .set({ referenceEventSeriesId: referenceId })
+                .where(eq(eventSeries.id, currentId));
+            }
+          }
+        }
+
+        // 5. Create strategies
+        const strategies = [
+          {
+            type: 'spending' as const,
             name: 'Spending Strategy',
-            description: 'Imported spending strategy',
-            isActive: true,
-            ordering: yamlData.spendingStrategy
-              .map(
-                (name: string) => [...eventSeriesMap.entries()].find(([key]) => key === name)?.[1]
-              )
-              .filter(Boolean)
-          };
-          await tx.insert(strategy).values(spendingStrategyRecord);
-        }
-
-        if (yamlData.expenseWithdrawalStrategy) {
-          const withdrawalStrategyRecord: Omit<Strategy, 'id'> = {
-            scenarioId,
-            type: 'expense_withdrawal',
-            name: 'Expense Withdrawal Strategy',
-            description: 'Imported expense withdrawal strategy',
-            isActive: true,
-            ordering: yamlData.expenseWithdrawalStrategy
-              .map((id: string) => investmentMap.get(id))
-              .filter(Boolean)
-          };
-          await tx.insert(strategy).values(withdrawalStrategyRecord);
-        }
-
-        if (yamlData.RMDStrategy) {
-          const rmdStrategyRecord: Omit<Strategy, 'id'> = {
-            scenarioId,
-            type: 'rmd',
-            name: 'RMD Strategy',
-            description: 'Imported RMD strategy',
-            isActive: true,
-            ordering: yamlData.RMDStrategy.map((id: string) => investmentMap.get(id)).filter(
-              Boolean
+            description: 'Order of discretionary expenses',
+            ordering: scenarioData.spendingStrategy.map(
+              (esName) => eventSeriesMap.get(esName) || esName
             )
-          };
-          await tx.insert(strategy).values(rmdStrategyRecord);
-        }
+          },
+          {
+            type: 'expense_withdrawal' as const,
+            name: 'Expense Withdrawal Strategy',
+            description: 'Order of investments to sell for expenses',
+            ordering: scenarioData.expenseWithdrawalStrategy.map(
+              (invId) => investmentMap.get(invId) || invId
+            )
+          },
+          {
+            type: 'rmd' as const,
+            name: 'RMD Strategy',
+            description: 'Order of pre-tax investments for RMD',
+            ordering: scenarioData.RMDStrategy.map((invId) => investmentMap.get(invId) || invId)
+          }
+        ];
 
-        if (yamlData.RothConversionStrategy) {
-          const rothStrategyRecord: Omit<Strategy, 'id'> = {
-            scenarioId,
-            type: 'roth_conversion',
+        // Add Roth conversion strategy if enabled
+        if (scenarioData.RothConversionOpt && scenarioData.RothConversionStrategy) {
+          strategies.push({
+            // @ts-expect-error IDE error
+            type: 'roth_conversion' as const,
             name: 'Roth Conversion Strategy',
-            description: 'Imported Roth conversion strategy',
-            isActive: true,
-            ordering: yamlData.RothConversionStrategy.map((id: string) =>
-              investmentMap.get(id)
-            ).filter(Boolean)
-          };
-          await tx.insert(strategy).values(rothStrategyRecord);
+            description: 'Order of pre-tax investments for Roth conversion',
+            ordering: scenarioData.RothConversionStrategy.map(
+              (invId) => investmentMap.get(invId) || invId
+            )
+          });
         }
 
-        return newScenario.id;
+        for (const strat of strategies) {
+          await tx.insert(strategy).values({
+            scenarioId: newScenario.id,
+            type: strat.type,
+            name: strat.name,
+            description: strat.description,
+            isActive: true,
+            ordering: strat.ordering
+          });
+        }
+
+        return newScenario;
       });
 
-      redirect(303, `/dashboard/scenarios/${result}/edit`);
+      return {
+        success: true,
+        scenarioId: result.id,
+        message: 'Scenario imported successfully'
+      };
     } catch (error) {
       console.error('Error importing scenario:', error);
-      return fail(400, {
-        message: `Failed to import scenario: ${error instanceof Error ? error.message : 'Unknown error'}`
+
+      if (error instanceof Error) {
+        if (error.message.includes('YAML')) {
+          return fail(400, {
+            message: 'Invalid YAML format',
+            details: error.message
+          });
+        }
+
+        return fail(500, {
+          message: 'Failed to import scenario',
+          details: error.message
+        });
+      }
+
+      return fail(500, {
+        message: 'An unexpected error occurred while importing the scenario'
       });
     }
   }
 };
-
-// Helper functions
-function convertDistribution(dist: any): Distribution {
-  if (dist.type === 'fixed') {
-    return { type: 'fixed', value: dist.value };
-  } else if (dist.type === 'normal') {
-    return { type: 'normal', mean: dist.mean, stdev: dist.stdev };
-  } else if (dist.type === 'uniform') {
-    return { type: 'uniform', min: dist.lower, max: dist.upper };
-  }
-  throw new Error(`Unknown distribution type: ${dist.type}`);
-}
-
-function convertStartDistribution(start: any): Distribution | null {
-  if (start.type === 'startWith' || start.type === 'startAfter') {
-    return null; // These use reference event series instead
-  }
-  return convertDistribution(start);
-}
-
-function getStartTimingType(start: any): 'distribution' | 'same_year' | 'year_after' {
-  if (start.type === 'startWith') return 'same_year';
-  if (start.type === 'startAfter') return 'year_after';
-  return 'distribution';
-}
-
-function getReferencedEventId(start: any, eventMap: Map<string, string>): string | null {
-  if (start.type === 'startWith' || start.type === 'startAfter') {
-    return eventMap.get(start.eventSeries) || null;
-  }
-  return null;
-}
-
-function convertChangeDistribution(eventData: any): Distribution {
-  if (eventData.changeAmtOrPct === 'percent') {
-    // Convert percentage change to decimal
-    const dist = eventData.changeDistribution;
-    if (dist.type === 'fixed') {
-      return { type: 'fixed', value: dist.value };
-    } else if (dist.type === 'normal') {
-      return { type: 'normal', mean: dist.mean, stdev: dist.stdev };
-    } else if (dist.type === 'uniform') {
-      return { type: 'uniform', min: dist.lower, max: dist.upper };
-    }
-  }
-  return convertDistribution(eventData.changeDistribution);
-}
-
-function convertTaxStatus(
-  status: string
-): 'non_retirement' | 'pre_tax_retirement' | 'after_tax_retirement' {
-  switch (status) {
-    case 'non-retirement':
-      return 'non_retirement';
-    case 'pre-tax':
-      return 'pre_tax_retirement';
-    case 'after-tax':
-      return 'after_tax_retirement';
-    default:
-      return 'non_retirement';
-  }
-}
-
-function convertAssetAllocation(
-  allocation: Record<string, number>,
-  investmentMap: Map<string, string>
-): Record<string, number> {
-  const result: Record<string, number> = {};
-  for (const [investmentId, percentage] of Object.entries(allocation)) {
-    const dbInvestmentId = investmentMap.get(investmentId);
-    if (dbInvestmentId) {
-      result[dbInvestmentId] = percentage * 100; // Convert to percentage
-    }
-  }
-  return result;
-}

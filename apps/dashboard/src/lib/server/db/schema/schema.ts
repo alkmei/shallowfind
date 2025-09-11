@@ -104,7 +104,7 @@ export const scenarioRelations = relations(scenario, ({ one, many }) => ({
 export const investmentType = pgTable('investment_type', {
   id: uuid('id').primaryKey().defaultRandom(),
   scenarioId: uuid('scenario_id')
-    .references(() => scenario.id)
+    .references(() => scenario.id, { onDelete: 'cascade' })
     .notNull(),
 
   name: varchar('name', { length: 255 }).notNull(),
@@ -126,7 +126,7 @@ export const investmentTypeRelations = relations(investmentType, ({ one, many })
 export const investment = pgTable('investment', {
   id: uuid('id').primaryKey().defaultRandom(),
   scenarioId: uuid('scenario_id')
-    .references(() => scenario.id)
+    .references(() => scenario.id, { onDelete: 'cascade' })
     .notNull(),
   investmentTypeId: uuid('investment_type_id')
     .references(() => investmentType.id)
@@ -148,7 +148,7 @@ export const investmentRelations = relations(investment, ({ one }) => ({
 export const eventSeries = pgTable('event_series', {
   id: uuid('id').primaryKey().defaultRandom(),
   scenarioId: uuid('scenario_id')
-    .references(() => scenario.id)
+    .references(() => scenario.id, { onDelete: 'cascade' })
     .notNull(),
   name: varchar('name', { length: 255 }).notNull(),
   description: text('description').notNull(),
@@ -194,7 +194,7 @@ export const eventSeriesRelations = relations(eventSeries, ({ one, many }) => ({
 export const strategy = pgTable('strategy', {
   id: uuid('id').primaryKey().defaultRandom(),
   scenarioId: uuid('scenario_id')
-    .references(() => scenario.id)
+    .references(() => scenario.id, { onDelete: 'cascade' })
     .notNull(),
 
   type: strategyTypeEnum('type').notNull(),
@@ -215,7 +215,7 @@ export const strategyRelations = relations(strategy, ({ one }) => ({
 export const scenarioSharing = pgTable('scenario_sharing', {
   id: uuid('id').primaryKey().defaultRandom(),
   scenarioId: uuid('scenario_id')
-    .references(() => scenario.id)
+    .references(() => scenario.id, { onDelete: 'cascade' })
     .notNull(),
 
   sharedWithUserId: text('shared_with_user_id').notNull(),
