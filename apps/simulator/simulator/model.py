@@ -5,67 +5,84 @@ from pydantic import BaseModel, Field, UUID4
 from datetime import datetime
 from decimal import Decimal
 
+
 class AccountTaxStatus(str, Enum):
-    NON_RETIREMENT = 'non-retirement'
-    PRE_TAX_RETIREMENT = 'pre-tax retirement'
-    AFTER_TAX_RETIREMENT = 'after-tax retirement'
+    NON_RETIREMENT = "non-retirement"
+    PRE_TAX_RETIREMENT = "pre-tax retirement"
+    AFTER_TAX_RETIREMENT = "after-tax retirement"
+
 
 class EventSeriesType(str, Enum):
-    INCOME = 'income'
-    EXPENSE = 'expense'
-    INVEST = 'invest'
-    REBALANCE = 'rebalance'
+    INCOME = "income"
+    EXPENSE = "expense"
+    INVEST = "invest"
+    REBALANCE = "rebalance"
+
 
 class InvestmentTaxability(str, Enum):
-    TAXABLE = 'taxable'
-    TAX_EXEMPT = 'tax-exempt'
+    TAXABLE = "taxable"
+    TAX_EXEMPT = "tax-exempt"
+
 
 class ScenarioStatus(str, Enum):
-    DRAFT = 'draft'
-    ACTIVE = 'active'
-    ARCHIVED = 'archived'
+    DRAFT = "draft"
+    ACTIVE = "active"
+    ARCHIVED = "archived"
+
 
 class ScenarioType(str, Enum):
-    INDIVIDUAL = 'individual'
-    MARRIED = 'married'
+    INDIVIDUAL = "individual"
+    MARRIED = "married"
+
 
 class SharePermission(str, Enum):
-    READ = 'read'
-    WRITE = 'write'
+    READ = "read"
+    WRITE = "write"
+
 
 class StartTimingType(str, Enum):
-    FIXED = 'fixed'
-    DEPENDENT = 'dependent'
-    AFTER = 'after'
-    SAME_YEAR = 'same_year'
+    FIXED = "fixed"
+    DEPENDENT = "dependent"
+    AFTER = "after"
+    SAME_YEAR = "same_year"
+
 
 class State(str, Enum):
-    NY = 'NY'
-    NJ = 'NJ'
-    CT = 'CT'
+    NY = "NY"
+    NJ = "NJ"
+    CT = "CT"
     # Extend as needed
 
+
 class StrategyType(str, Enum):
-    SPENDING = 'spending'
-    WITHDRAWAL = 'withdrawal'
-    RMD = 'rmd'
-    ROTH = 'roth'
+    SPENDING = "spending"
+    WITHDRAWAL = "withdrawal"
+    RMD = "rmd"
+    ROTH = "roth"
+
 
 class NormalDistribution(BaseModel):
-    type: Literal['normal'] 
+    type: Literal["normal"]
     mean: float
     stdev: float
 
+
 class FixedDistribution(BaseModel):
-    type: Literal['fixed']
+    type: Literal["fixed"]
     value: float
 
+
 class UniformDistribution(BaseModel):
-    type: Literal['uniform']
+    type: Literal["uniform"]
     min: float
     max: float
 
-Distribution = Annotated[Union[NormalDistribution, FixedDistribution, UniformDistribution], Field(discriminator='type')]
+
+Distribution = Annotated[
+    Union[NormalDistribution, FixedDistribution, UniformDistribution],
+    Field(discriminator="type"),
+]
+
 
 class InvestmentType(BaseModel):
     id: UUID4
@@ -80,13 +97,15 @@ class InvestmentType(BaseModel):
     taxability: InvestmentTaxability
     is_cash: bool = False
 
+
 class Investment(BaseModel):
     id: UUID4
     scenario_id: UUID4
     investment_type_id: UUID4
     name: str
-    current_value: Decimal = Decimal('0')
+    current_value: Decimal = Decimal("0")
     account_tax_status: AccountTaxStatus
+
 
 class EventSeries(BaseModel):
     id: UUID4
@@ -116,6 +135,7 @@ class EventSeries(BaseModel):
     maximum_cash: Optional[Decimal]
     target_tax_status: Optional[AccountTaxStatus]
 
+
 class Strategy(BaseModel):
     id: UUID4
     scenario_id: UUID4
@@ -125,11 +145,13 @@ class Strategy(BaseModel):
     is_active: bool = True
     ordering: Optional[List[str]] = None
 
+
 class ScenarioSharing(BaseModel):
     id: UUID4
     scenario_id: UUID4
     user_id: str
     permission: SharePermission
+
 
 class Scenario(BaseModel):
     id: UUID4
@@ -146,7 +168,7 @@ class Scenario(BaseModel):
     # Financial settings
     financial_goal: Optional[Decimal]
     state_of_residence: State
-    inflation_assumption: Optional[Distribution]
+    inflation_assumption: Distribution
     annual_retirement_contribution_limit: Optional[Decimal]
     # Roth optimizer
     roth_optimizer_enabled: bool = False
@@ -160,5 +182,6 @@ class Scenario(BaseModel):
     event_series: Optional[List[EventSeries]] = None
     strategies: Optional[List[Strategy]] = None
     shared_with: Optional[List[ScenarioSharing]] = None
+
 
 Scenario.model_rebuild()
