@@ -87,7 +87,7 @@ class Simulation:
             # Advance to next year
             year += 1
             
-        print("Simulation ended.")
+        print("Simulation ended")
         
     def _run_income_events(self, year: int):
         income_events = [e for e in self.scenario.event_series or [] if e.type == EventSeriesType.INCOME]
