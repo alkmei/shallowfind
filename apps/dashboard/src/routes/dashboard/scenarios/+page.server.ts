@@ -271,7 +271,9 @@ export const actions: Actions = {
             type: 'spending' as const,
             name: 'Spending Strategy',
             description: 'Order of discretionary expenses',
-            ordering: scenarioData.spendingStrategy
+            ordering: scenarioData.spendingStrategy.map(
+              (esName) => eventSeriesMap.get(esName) || esName
+            )
           },
           {
             type: 'expense_withdrawal' as const,
